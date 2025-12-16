@@ -1,0 +1,64 @@
+services:
+  # Base de datos MySQL
+  db:
+    image: mysql:8.0
+    container_name: gesfer_api_db
+    restart: unless-stopped
+    command: 
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --max_allowed_packet=256M
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ScrapDb
+      MYSQL_USER: scrapuser
+      MYSQL_PASSWORD: scrappassword
+      TZ: UTC
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker_data/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - gesfer_network
+
+  # Caché Memcached
+  cache:
+    image: memcached:alpine
+    container_name: gesfer_api_cache
+    restart: unless-stopped
+    ports:
+      - "11211:11211"
+    command: ["-m", "128"]
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "11211"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - gesfer_network
+
+  # Adminer - Para ver la base de datos visualmente vía web
+  adminer:
+    image: adminer:latest
+    container_name: gesfer_api_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - gesfer_network
+
+networks:
+  gesfer_network:
+    driver: bridge

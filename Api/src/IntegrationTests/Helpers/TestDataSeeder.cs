@@ -1,0 +1,154 @@
+using GesFer.Domain.Entities;
+using GesFer.Infrastructure.Data;
+using BCrypt.Net;
+using Microsoft.EntityFrameworkCore;
+
+namespace GesFer.IntegrationTests.Helpers;
+
+/// <summary>
+/// Clase helper para insertar datos de prueba en la base de datos
+/// </summary>
+public static class TestDataSeeder
+{
+    /// <summary>
+    /// Inserta datos de prueba en la base de datos
+    /// </summary>
+    public static async Task SeedTestDataAsync(ApplicationDbContext context)
+    {
+        // Limpiar datos existentes usando IgnoreQueryFilters para incluir soft-deleted
+        var existingCompanies = await context.Companies.IgnoreQueryFilters().ToListAsync();
+        var existingUsers = await context.Users.IgnoreQueryFilters().ToListAsync();
+        var existingGroups = await context.Groups.IgnoreQueryFilters().ToListAsync();
+        var existingPermissions = await context.Permissions.IgnoreQueryFilters().ToListAsync();
+        var existingUserGroups = await context.UserGroups.IgnoreQueryFilters().ToListAsync();
+        var existingUserPermissions = await context.UserPermissions.IgnoreQueryFilters().ToListAsync();
+        var existingGroupPermissions = await context.GroupPermissions.IgnoreQueryFilters().ToListAsync();
+        
+        context.Companies.RemoveRange(existingCompanies);
+        context.Users.RemoveRange(existingUsers);
+        context.Groups.RemoveRange(existingGroups);
+        context.Permissions.RemoveRange(existingPermissions);
+        context.UserGroups.RemoveRange(existingUserGroups);
+        context.UserPermissions.RemoveRange(existingUserPermissions);
+        context.GroupPermissions.RemoveRange(existingGroupPermissions);
+        await context.SaveChangesAsync();
+
+        // Crear empresa
+        var company = new Company
+        {
+            Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            Name = "Empresa Demo",
+            TaxId = "B12345678",
+            Address = "Calle Demo 123",
+            Phone = "912345678",
+            Email = "demo@empresa.com",
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        };
+        context.Companies.Add(company);
+
+        // Crear grupo
+        var group = new Group
+        {
+            Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+            Name = "Administradores",
+            Description = "Grupo de administradores del sistema",
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        };
+        context.Groups.Add(group);
+
+        // Crear permisos
+        var permissions = new List<Permission>
+        {
+            new Permission
+            {
+                Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                Key = "users.read",
+                Description = "Ver usuarios",
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            },
+            new Permission
+            {
+                Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+                Key = "users.write",
+                Description = "Crear/editar usuarios",
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            },
+            new Permission
+            {
+                Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
+                Key = "articles.read",
+                Description = "Ver artículos",
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            }
+        };
+        context.Permissions.AddRange(permissions);
+
+        // Asignar permisos al grupo
+        var groupPermissions = new List<GroupPermission>
+        {
+            new GroupPermission
+            {
+                Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                GroupId = group.Id,
+                PermissionId = permissions[0].Id,
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            },
+            new GroupPermission
+            {
+                Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                GroupId = group.Id,
+                PermissionId = permissions[1].Id,
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            }
+        };
+        context.GroupPermissions.AddRange(groupPermissions);
+
+        // Crear usuario
+        var user = new User
+        {
+            Id = Guid.Parse("99999999-9999-9999-9999-999999999999"),
+            CompanyId = company.Id,
+            Username = "admin",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123", BCrypt.Net.BCrypt.GenerateSalt(11)),
+            FirstName = "Administrador",
+            LastName = "Sistema",
+            Email = "admin@empresa.com",
+            Phone = "912345678",
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        };
+        context.Users.Add(user);
+
+        // Asignar usuario al grupo
+        var userGroup = new UserGroup
+        {
+            Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
+            UserId = user.Id,
+            GroupId = group.Id,
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        };
+        context.UserGroups.Add(userGroup);
+
+        // Asignar permiso directo al usuario
+        var userPermission = new UserPermission
+        {
+            Id = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+            UserId = user.Id,
+            PermissionId = permissions[2].Id,
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        };
+        context.UserPermissions.Add(userPermission);
+
+        await context.SaveChangesAsync();
+    }
+}
+

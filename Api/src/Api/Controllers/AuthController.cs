@@ -1,0 +1,86 @@
+using GesFer.Application.DTOs.Auth;
+using GesFer.Application.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace GesFer.Api.Controllers;
+
+/// <summary>
+/// Controlador para autenticación
+/// </summary>
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase
+{
+    private readonly IAuthApplicationService _authService;
+    private readonly ILogger<AuthController> _logger;
+
+    public AuthController(
+        IAuthApplicationService authService,
+        ILogger<AuthController> logger)
+    {
+        _authService = authService;
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// Realiza el login del usuario
+    /// </summary>
+    /// <param name="request">Datos de login (Empresa, Usuario, Contraseña)</param>
+    /// <returns>Información del usuario autenticado y sus permisos</returns>
+    /// <remarks>
+    /// Ejemplo de solicitud:
+    /// 
+    ///     POST /api/auth/login
+    ///     {
+    ///         "empresa": "Empresa Demo",
+    ///         "usuario": "admin",
+    ///         "contraseña": "admin123"
+    ///     }
+    /// </remarks>
+    [HttpPost("login")]
+    [ProducesResponseType(typeof(LoginResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+    {
+        try
+        {
+
+            var result = await _authService.LoginAsync(request);
+
+            if (result == null)
+            {
+                return Unauthorized(new { message = "Credenciales inválidas" });
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al realizar login");
+            return StatusCode(500, new { message = "Error interno del servidor" });
+        }
+    }
+
+    /// <summary>
+    /// Obtiene los permisos de un usuario
+    /// </summary>
+    /// <param name="userId">ID del usuario</param>
+    /// <returns>Lista de permisos del usuario</returns>
+    [HttpGet("permissions/{userId}")]
+    [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUserPermissions(Guid userId)
+    {
+        try
+        {
+            var permissions = await _authService.GetUserPermissionsAsync(userId);
+            return Ok(permissions);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener permisos del usuario {UserId}", userId);
+            return StatusCode(500, new { message = "Error interno del servidor" });
+        }
+    }
+}
+
+
