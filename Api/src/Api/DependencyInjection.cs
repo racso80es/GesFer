@@ -1,11 +1,15 @@
 using GesFer.Api.Services;
-using GesFer.Application.Services;
+using GesFer.Application.Common.Interfaces;
+using GesFer.Application.Handlers.Auth;
+using GesFer.Application.Handlers.PurchaseDeliveryNote;
+using GesFer.Application.Handlers.SalesDeliveryNote;
 using GesFer.Domain.Services;
 using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Repositories;
 using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
+using System.Reflection;
 
 namespace GesFer.Api;
 
@@ -53,15 +57,41 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IStockService, StockService>();
 
-        // Servicios de aplicación
-        services.AddScoped<IAuthApplicationService, AuthApplicationService>();
-        services.AddScoped<IPurchaseDeliveryNoteService, PurchaseDeliveryNoteService>();
-        services.AddScoped<ISalesDeliveryNoteService, SalesDeliveryNoteService>();
+        // Command Handlers - Registro automático de todos los handlers
+        RegisterCommandHandlers(services);
 
         // Servicios de API
         services.AddScoped<ISetupService, SetupService>();
 
         return services;
+    }
+
+    /// <summary>
+    /// Registra todos los Command Handlers automáticamente mediante reflexión
+    /// </summary>
+    private static void RegisterCommandHandlers(IServiceCollection services)
+    {
+        var assembly = typeof(Application.Common.Interfaces.ICommandHandler<>).Assembly;
+        var handlerTypes = assembly.GetTypes()
+            .Where(t => t.GetInterfaces()
+                .Any(i => i.IsGenericType && 
+                    (i.GetGenericTypeDefinition() == typeof(ICommandHandler<,>) || 
+                     i.GetGenericTypeDefinition() == typeof(ICommandHandler<>))))
+            .ToList();
+
+        foreach (var handlerType in handlerTypes)
+        {
+            var interfaces = handlerType.GetInterfaces()
+                .Where(i => i.IsGenericType && 
+                    (i.GetGenericTypeDefinition() == typeof(ICommandHandler<,>) || 
+                     i.GetGenericTypeDefinition() == typeof(ICommandHandler<>)))
+                .ToList();
+
+            foreach (var interfaceType in interfaces)
+            {
+                services.AddScoped(interfaceType, handlerType);
+            }
+        }
     }
 }
 

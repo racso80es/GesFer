@@ -1,19 +1,21 @@
+using GesFer.Application.Commands.PurchaseDeliveryNote;
+using GesFer.Application.Common.Interfaces;
 using GesFer.Domain.Entities;
 using GesFer.Domain.Services;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace GesFer.Application.Services;
+namespace GesFer.Application.Handlers.PurchaseDeliveryNote;
 
 /// <summary>
-/// Servicio de aplicación para gestión de albaranes de compra
+/// Handler para crear un albarán de compra
 /// </summary>
-public class PurchaseDeliveryNoteService : IPurchaseDeliveryNoteService
+public class CreatePurchaseDeliveryNoteCommandHandler : ICommandHandler<CreatePurchaseDeliveryNoteCommand, Domain.Entities.PurchaseDeliveryNote>
 {
     private readonly ApplicationDbContext _context;
     private readonly IStockService _stockService;
 
-    public PurchaseDeliveryNoteService(
+    public CreatePurchaseDeliveryNoteCommandHandler(
         ApplicationDbContext context,
         IStockService stockService)
     {
@@ -21,43 +23,35 @@ public class PurchaseDeliveryNoteService : IPurchaseDeliveryNoteService
         _stockService = stockService;
     }
 
-    /// <summary>
-    /// Crea un albarán de compra y actualiza el stock automáticamente
-    /// </summary>
-    public async Task<PurchaseDeliveryNote> CreatePurchaseDeliveryNoteAsync(
-        Guid companyId,
-        Guid supplierId,
-        DateTime date,
-        string? reference,
-        List<PurchaseDeliveryNoteLineDto> lines)
+    public async Task<Domain.Entities.PurchaseDeliveryNote> HandleAsync(CreatePurchaseDeliveryNoteCommand command, CancellationToken cancellationToken = default)
     {
         // Validar que el proveedor existe y pertenece a la empresa
         var supplier = await _context.Suppliers
             .Include(s => s.BuyTariff)
                 .ThenInclude(t => t!.TariffItems)
-            .FirstOrDefaultAsync(s => s.Id == supplierId && s.CompanyId == companyId && !s.IsDeleted);
+            .FirstOrDefaultAsync(s => s.Id == command.SupplierId && s.CompanyId == command.CompanyId && s.DeletedAt == null, cancellationToken);
 
         if (supplier == null)
-            throw new InvalidOperationException($"El proveedor con ID {supplierId} no existe o no pertenece a la empresa");
+            throw new InvalidOperationException($"El proveedor con ID {command.SupplierId} no existe o no pertenece a la empresa");
 
         // Crear el albarán
-        var deliveryNote = new PurchaseDeliveryNote
+        var deliveryNote = new Domain.Entities.PurchaseDeliveryNote
         {
-            CompanyId = companyId,
-            SupplierId = supplierId,
-            Date = date,
-            Reference = reference,
+            CompanyId = command.CompanyId,
+            SupplierId = command.SupplierId,
+            Date = command.Date,
+            Reference = command.Reference,
             BillingStatus = BillingStatus.Pending
         };
 
         _context.PurchaseDeliveryNotes.Add(deliveryNote);
 
         // Crear las líneas y calcular precios
-        foreach (var lineDto in lines)
+        foreach (var lineDto in command.Lines)
         {
             var article = await _context.Articles
                 .Include(a => a.Family)
-                .FirstOrDefaultAsync(a => a.Id == lineDto.ArticleId && a.CompanyId == companyId && !a.IsDeleted);
+                .FirstOrDefaultAsync(a => a.Id == lineDto.ArticleId && a.CompanyId == command.CompanyId && a.DeletedAt == null, cancellationToken);
 
             if (article == null)
                 throw new InvalidOperationException($"El artículo con ID {lineDto.ArticleId} no existe");
@@ -87,40 +81,18 @@ public class PurchaseDeliveryNoteService : IPurchaseDeliveryNoteService
             await _stockService.IncreaseStockAsync(article.Id, lineDto.Quantity);
         }
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         // Cargar relaciones para devolver el objeto completo
         await _context.Entry(deliveryNote)
             .Collection(dn => dn.Lines)
-            .LoadAsync();
+            .LoadAsync(cancellationToken);
 
         await _context.Entry(deliveryNote)
             .Reference(dn => dn.Supplier)
-            .LoadAsync();
+            .LoadAsync(cancellationToken);
 
         return deliveryNote;
-    }
-
-    /// <summary>
-    /// Confirma un albarán de compra (si no estaba confirmado) y actualiza el stock
-    /// Nota: En este caso, el stock ya se actualizó al crear el albarán,
-    /// pero este método puede usarse para validaciones adicionales
-    /// </summary>
-    public async Task ConfirmPurchaseDeliveryNoteAsync(Guid deliveryNoteId)
-    {
-        var deliveryNote = await _context.PurchaseDeliveryNotes
-            .Include(dn => dn.Lines)
-            .FirstOrDefaultAsync(dn => dn.Id == deliveryNoteId && !dn.IsDeleted);
-
-        if (deliveryNote == null)
-            throw new InvalidOperationException($"El albarán con ID {deliveryNoteId} no existe");
-
-        // Si el albarán ya está confirmado, no hacer nada
-        // (En este caso, el stock ya se actualizó al crear el albarán)
-
-        // Aquí podrías agregar lógica adicional de confirmación si es necesario
-        deliveryNote.UpdatedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync();
     }
 
     /// <summary>
@@ -132,7 +104,7 @@ public class PurchaseDeliveryNoteService : IPurchaseDeliveryNoteService
         if (supplier.BuyTariffId.HasValue && supplier.BuyTariff != null)
         {
             var tariffItem = supplier.BuyTariff.TariffItems
-                .FirstOrDefault(ti => ti.ArticleId == article.Id && !ti.IsDeleted);
+                .FirstOrDefault(ti => ti.ArticleId == article.Id && ti.DeletedAt == null);
 
             if (tariffItem != null)
                 return tariffItem.Price;

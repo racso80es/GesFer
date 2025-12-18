@@ -1,19 +1,21 @@
+using GesFer.Application.Commands.SalesDeliveryNote;
+using GesFer.Application.Common.Interfaces;
 using GesFer.Domain.Entities;
 using GesFer.Domain.Services;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace GesFer.Application.Services;
+namespace GesFer.Application.Handlers.SalesDeliveryNote;
 
 /// <summary>
-/// Servicio de aplicación para gestión de albaranes de venta
+/// Handler para crear un albarán de venta
 /// </summary>
-public class SalesDeliveryNoteService : ISalesDeliveryNoteService
+public class CreateSalesDeliveryNoteCommandHandler : ICommandHandler<CreateSalesDeliveryNoteCommand, Domain.Entities.SalesDeliveryNote>
 {
     private readonly ApplicationDbContext _context;
     private readonly IStockService _stockService;
 
-    public SalesDeliveryNoteService(
+    public CreateSalesDeliveryNoteCommandHandler(
         ApplicationDbContext context,
         IStockService stockService)
     {
@@ -21,33 +23,25 @@ public class SalesDeliveryNoteService : ISalesDeliveryNoteService
         _stockService = stockService;
     }
 
-    /// <summary>
-    /// Crea un albarán de venta y disminuye el stock automáticamente
-    /// </summary>
-    public async Task<SalesDeliveryNote> CreateSalesDeliveryNoteAsync(
-        Guid companyId,
-        Guid customerId,
-        DateTime date,
-        string? reference,
-        List<SalesDeliveryNoteLineDto> lines)
+    public async Task<Domain.Entities.SalesDeliveryNote> HandleAsync(CreateSalesDeliveryNoteCommand command, CancellationToken cancellationToken = default)
     {
         // Validar que el cliente existe y pertenece a la empresa
         var customer = await _context.Customers
             .Include(c => c.SellTariff)
                 .ThenInclude(t => t!.TariffItems)
-            .FirstOrDefaultAsync(c => c.Id == customerId && c.CompanyId == companyId && !c.IsDeleted);
+            .FirstOrDefaultAsync(c => c.Id == command.CustomerId && c.CompanyId == command.CompanyId && c.DeletedAt == null, cancellationToken);
 
         if (customer == null)
-            throw new InvalidOperationException($"El cliente con ID {customerId} no existe o no pertenece a la empresa");
+            throw new InvalidOperationException($"El cliente con ID {command.CustomerId} no existe o no pertenece a la empresa");
 
         // Verificar stock antes de crear el albarán
-        foreach (var lineDto in lines)
+        foreach (var lineDto in command.Lines)
         {
             var hasStock = await _stockService.HasEnoughStockAsync(lineDto.ArticleId, lineDto.Quantity);
             if (!hasStock)
             {
                 var article = await _context.Articles
-                    .FirstOrDefaultAsync(a => a.Id == lineDto.ArticleId);
+                    .FirstOrDefaultAsync(a => a.Id == lineDto.ArticleId, cancellationToken);
                 throw new InvalidOperationException(
                     $"Stock insuficiente para el artículo {article?.Name}. " +
                     $"Stock disponible: {article?.Stock}, Cantidad solicitada: {lineDto.Quantity}");
@@ -55,23 +49,23 @@ public class SalesDeliveryNoteService : ISalesDeliveryNoteService
         }
 
         // Crear el albarán
-        var deliveryNote = new SalesDeliveryNote
+        var deliveryNote = new Domain.Entities.SalesDeliveryNote
         {
-            CompanyId = companyId,
-            CustomerId = customerId,
-            Date = date,
-            Reference = reference,
+            CompanyId = command.CompanyId,
+            CustomerId = command.CustomerId,
+            Date = command.Date,
+            Reference = command.Reference,
             BillingStatus = BillingStatus.Pending
         };
 
         _context.SalesDeliveryNotes.Add(deliveryNote);
 
         // Crear las líneas y calcular precios
-        foreach (var lineDto in lines)
+        foreach (var lineDto in command.Lines)
         {
             var article = await _context.Articles
                 .Include(a => a.Family)
-                .FirstOrDefaultAsync(a => a.Id == lineDto.ArticleId && a.CompanyId == companyId && !a.IsDeleted);
+                .FirstOrDefaultAsync(a => a.Id == lineDto.ArticleId && a.CompanyId == command.CompanyId && a.DeletedAt == null, cancellationToken);
 
             if (article == null)
                 throw new InvalidOperationException($"El artículo con ID {lineDto.ArticleId} no existe");
@@ -101,40 +95,18 @@ public class SalesDeliveryNoteService : ISalesDeliveryNoteService
             await _stockService.DecreaseStockAsync(article.Id, lineDto.Quantity);
         }
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         // Cargar relaciones para devolver el objeto completo
         await _context.Entry(deliveryNote)
             .Collection(dn => dn.Lines)
-            .LoadAsync();
+            .LoadAsync(cancellationToken);
 
         await _context.Entry(deliveryNote)
             .Reference(dn => dn.Customer)
-            .LoadAsync();
+            .LoadAsync(cancellationToken);
 
         return deliveryNote;
-    }
-
-    /// <summary>
-    /// Confirma un albarán de venta (si no estaba confirmado) y actualiza el stock
-    /// Nota: En este caso, el stock ya se actualizó al crear el albarán,
-    /// pero este método puede usarse para validaciones adicionales
-    /// </summary>
-    public async Task ConfirmSalesDeliveryNoteAsync(Guid deliveryNoteId)
-    {
-        var deliveryNote = await _context.SalesDeliveryNotes
-            .Include(dn => dn.Lines)
-            .FirstOrDefaultAsync(dn => dn.Id == deliveryNoteId && !dn.IsDeleted);
-
-        if (deliveryNote == null)
-            throw new InvalidOperationException($"El albarán con ID {deliveryNoteId} no existe");
-
-        // Si el albarán ya está confirmado, no hacer nada
-        // (En este caso, el stock ya se actualizó al crear el albarán)
-
-        // Aquí podrías agregar lógica adicional de confirmación si es necesario
-        deliveryNote.UpdatedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync();
     }
 
     /// <summary>
@@ -146,7 +118,7 @@ public class SalesDeliveryNoteService : ISalesDeliveryNoteService
         if (customer.SellTariffId.HasValue && customer.SellTariff != null)
         {
             var tariffItem = customer.SellTariff.TariffItems
-                .FirstOrDefault(ti => ti.ArticleId == article.Id && !ti.IsDeleted);
+                .FirstOrDefault(ti => ti.ArticleId == article.Id && ti.DeletedAt == null);
 
             if (tariffItem != null)
                 return tariffItem.Price;

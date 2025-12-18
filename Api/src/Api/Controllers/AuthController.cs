@@ -1,5 +1,6 @@
+using GesFer.Application.Commands.Auth;
+using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Auth;
-using GesFer.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GesFer.Api.Controllers;
@@ -11,14 +12,17 @@ namespace GesFer.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthApplicationService _authService;
+    private readonly ICommandHandler<LoginCommand, LoginResponseDto?> _loginHandler;
+    private readonly ICommandHandler<GetUserPermissionsCommand, List<string>> _getPermissionsHandler;
     private readonly ILogger<AuthController> _logger;
 
     public AuthController(
-        IAuthApplicationService authService,
+        ICommandHandler<LoginCommand, LoginResponseDto?> loginHandler,
+        ICommandHandler<GetUserPermissionsCommand, List<string>> getPermissionsHandler,
         ILogger<AuthController> logger)
     {
-        _authService = authService;
+        _loginHandler = loginHandler;
+        _getPermissionsHandler = getPermissionsHandler;
         _logger = logger;
     }
 
@@ -44,8 +48,14 @@ public class AuthController : ControllerBase
     {
         try
         {
+            var command = new LoginCommand
+            {
+                Empresa = request.Empresa,
+                Usuario = request.Usuario,
+                Contraseña = request.Contraseña
+            };
 
-            var result = await _authService.LoginAsync(request);
+            var result = await _loginHandler.HandleAsync(command);
 
             if (result == null)
             {
@@ -72,7 +82,12 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var permissions = await _authService.GetUserPermissionsAsync(userId);
+            var command = new GetUserPermissionsCommand
+            {
+                UserId = userId
+            };
+
+            var permissions = await _getPermissionsHandler.HandleAsync(command);
             return Ok(permissions);
         }
         catch (Exception ex)
