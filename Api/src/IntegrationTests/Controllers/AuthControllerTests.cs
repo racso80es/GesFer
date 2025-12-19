@@ -14,7 +14,7 @@ namespace GesFer.IntegrationTests.Controllers;
 /// <summary>
 /// Tests de integración para AuthController
 /// </summary>
-public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<GesFer.Api.Program>>
+public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<GesFer.Api.Program>>, IAsyncLifetime
 {
     private readonly HttpClient _client;
     private readonly CustomWebApplicationFactory<GesFer.Api.Program> _factory;
@@ -23,22 +23,29 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
     {
         _factory = factory;
         _client = factory.CreateClient();
-        
-        // Seed datos de prueba
-        SeedTestData();
     }
 
-    private void SeedTestData()
+    public async Task InitializeAsync()
+    {
+        await SeedTestDataAsync();
+    }
+
+    public Task DisposeAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    private async Task SeedTestDataAsync()
     {
         using var scope = _factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
         // Asegurar que la base de datos esté creada
-        context.Database.EnsureDeleted(); // Limpiar antes de crear
-        context.Database.EnsureCreated();
+        await context.Database.EnsureDeletedAsync(); // Limpiar antes de crear
+        await context.Database.EnsureCreatedAsync();
         
         // Seed datos
-        TestDataSeeder.SeedTestDataAsync(context).Wait();
+        await TestDataSeeder.SeedTestDataAsync(context);
     }
 
     [Fact]

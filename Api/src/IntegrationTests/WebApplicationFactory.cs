@@ -12,6 +12,14 @@ namespace GesFer.IntegrationTests;
 /// </summary>
 public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
 {
+    private readonly string _databaseName;
+
+    public CustomWebApplicationFactory()
+    {
+        // Crear un nombre único de base de datos por instancia de factory
+        _databaseName = $"GesFerTestDb_{Guid.NewGuid()}";
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
@@ -34,10 +42,10 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
                 services.Remove(dbContextDescriptor);
             }
 
-            // Agregar DbContext en memoria para tests
+            // Agregar DbContext en memoria para tests con nombre único por instancia
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseInMemoryDatabase("GesFerTestDb");
+                options.UseInMemoryDatabase(_databaseName);
             });
         });
 
