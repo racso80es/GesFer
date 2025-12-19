@@ -33,6 +33,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<SalesDeliveryNote> SalesDeliveryNotes => Set<SalesDeliveryNote>();
     public DbSet<SalesDeliveryNoteLine> SalesDeliveryNoteLines => Set<SalesDeliveryNoteLine>();
     public DbSet<SalesInvoice> SalesInvoices => Set<SalesInvoice>();
+    public DbSet<Country> Countries => Set<Country>();
+    public DbSet<State> States => Set<State>();
+    public DbSet<City> Cities => Set<City>();
+    public DbSet<PostalCode> PostalCodes => Set<PostalCode>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

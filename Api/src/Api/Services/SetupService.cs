@@ -107,8 +107,30 @@ public class SetupService : ISetupService
             await CreateDatabaseAsync();
             result.Steps.Add("   ✓ Base de datos creada");
 
-            // Paso 6: Insertar datos iniciales (incluyendo usuarios)
-            result.Steps.Add("6. Insertando datos iniciales (empresa, grupos, permisos, usuarios)...");
+            // Paso 6: Insertar datos maestros (países, provincias, ciudades, códigos postales)
+            result.Steps.Add("6. Insertando datos maestros de España...");
+            _logger.LogInformation("Insertando datos maestros de España...");
+            
+            try
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var masterDataSeeder = new GesFer.Infrastructure.Services.MasterDataSeeder(
+                        scope.ServiceProvider.GetRequiredService<ApplicationDbContext>(),
+                        scope.ServiceProvider.GetRequiredService<ILogger<GesFer.Infrastructure.Services.MasterDataSeeder>>());
+                    await masterDataSeeder.SeedSpainDataAsync();
+                }
+                result.Steps.Add("   ✓ Datos maestros de España insertados");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Error al insertar datos maestros de España");
+                result.Errors.Add($"Error al insertar datos maestros: {ex.Message}");
+                result.Steps.Add($"   ⚠ Advertencia: Error al insertar datos maestros: {ex.Message}");
+            }
+
+            // Paso 7: Insertar datos iniciales (incluyendo usuarios)
+            result.Steps.Add("7. Insertando datos iniciales (empresa, grupos, permisos, usuarios)...");
             _logger.LogInformation("Insertando datos iniciales...");
             
             var seedResult = await SeedInitialDataAsync();
@@ -123,8 +145,8 @@ public class SetupService : ISetupService
                 result.Steps.Add("   ✓ Datos iniciales insertados");
             }
 
-            // Paso 7: Verificar que los usuarios se insertaron correctamente
-            result.Steps.Add("7. Verificando usuarios insertados...");
+            // Paso 8: Verificar que los usuarios se insertaron correctamente
+            result.Steps.Add("8. Verificando usuarios insertados...");
             _logger.LogInformation("Verificando usuarios insertados...");
             
             var verifyResult = await VerifyUsersInsertedAsync();
