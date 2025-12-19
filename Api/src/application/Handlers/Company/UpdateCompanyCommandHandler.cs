@@ -30,11 +30,48 @@ public class UpdateCompanyCommandHandler : ICommandHandler<UpdateCompanyCommand,
         if (existingCompany != null)
             throw new InvalidOperationException($"Ya existe otra empresa con el nombre '{command.Dto.Name}'");
 
+        // Validar IDs de dirección si se proporcionan
+        if (command.Dto.PostalCodeId.HasValue)
+        {
+            var postalCodeExists = await _context.PostalCodes
+                .AnyAsync(pc => pc.Id == command.Dto.PostalCodeId.Value && pc.DeletedAt == null, cancellationToken);
+            if (!postalCodeExists)
+                throw new InvalidOperationException($"No se encontró el código postal con ID {command.Dto.PostalCodeId.Value}");
+        }
+
+        if (command.Dto.CityId.HasValue)
+        {
+            var cityExists = await _context.Cities
+                .AnyAsync(c => c.Id == command.Dto.CityId.Value && c.DeletedAt == null, cancellationToken);
+            if (!cityExists)
+                throw new InvalidOperationException($"No se encontró la ciudad con ID {command.Dto.CityId.Value}");
+        }
+
+        if (command.Dto.StateId.HasValue)
+        {
+            var stateExists = await _context.States
+                .AnyAsync(s => s.Id == command.Dto.StateId.Value && s.DeletedAt == null, cancellationToken);
+            if (!stateExists)
+                throw new InvalidOperationException($"No se encontró la provincia con ID {command.Dto.StateId.Value}");
+        }
+
+        if (command.Dto.CountryId.HasValue)
+        {
+            var countryExists = await _context.Countries
+                .AnyAsync(c => c.Id == command.Dto.CountryId.Value && c.DeletedAt == null, cancellationToken);
+            if (!countryExists)
+                throw new InvalidOperationException($"No se encontró el país con ID {command.Dto.CountryId.Value}");
+        }
+
         company.Name = command.Dto.Name;
         company.TaxId = command.Dto.TaxId;
         company.Address = command.Dto.Address;
         company.Phone = command.Dto.Phone;
         company.Email = command.Dto.Email;
+        company.PostalCodeId = command.Dto.PostalCodeId;
+        company.CityId = command.Dto.CityId;
+        company.StateId = command.Dto.StateId;
+        company.CountryId = command.Dto.CountryId;
         company.IsActive = command.Dto.IsActive;
         company.UpdatedAt = DateTime.UtcNow;
 
@@ -48,6 +85,10 @@ public class UpdateCompanyCommandHandler : ICommandHandler<UpdateCompanyCommand,
             Address = company.Address,
             Phone = company.Phone,
             Email = company.Email,
+            PostalCodeId = company.PostalCodeId,
+            CityId = company.CityId,
+            StateId = company.StateId,
+            CountryId = company.CountryId,
             IsActive = company.IsActive,
             CreatedAt = company.CreatedAt,
             UpdatedAt = company.UpdatedAt

@@ -40,6 +40,11 @@ public class GetAllUsersCommandHandler : ICommandHandler<GetAllUsersCommand, Lis
                 LastName = u.LastName,
                 Email = u.Email,
                 Phone = u.Phone,
+                Address = u.Address,
+                PostalCodeId = u.PostalCodeId,
+                CityId = u.CityId,
+                StateId = u.StateId,
+                CountryId = u.CountryId,
                 IsActive = u.IsActive,
                 CreatedAt = u.CreatedAt,
                 UpdatedAt = u.UpdatedAt

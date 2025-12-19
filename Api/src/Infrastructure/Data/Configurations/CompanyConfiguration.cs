@@ -20,6 +20,7 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
             .HasMaxLength(50);
 
         builder.Property(c => c.Address)
+            .IsRequired()
             .HasMaxLength(500);
 
         builder.Property(c => c.Phone)
@@ -28,8 +29,37 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
         builder.Property(c => c.Email)
             .HasMaxLength(200);
 
+        // Relaciones de dirección (opcionales)
+        builder.HasOne(c => c.PostalCode)
+            .WithMany()
+            .HasForeignKey(c => c.PostalCodeId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(c => c.City)
+            .WithMany()
+            .HasForeignKey(c => c.CityId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(c => c.State)
+            .WithMany()
+            .HasForeignKey(c => c.StateId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(c => c.Country)
+            .WithMany()
+            .HasForeignKey(c => c.CountryId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
         // Índices
         builder.HasIndex(c => c.Name);
+        builder.HasIndex(c => c.PostalCodeId);
+        builder.HasIndex(c => c.CityId);
+        builder.HasIndex(c => c.StateId);
+        builder.HasIndex(c => c.CountryId);
     }
 }
 

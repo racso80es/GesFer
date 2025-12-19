@@ -13,6 +13,11 @@ public class UserDto
     public string LastName { get; set; } = string.Empty;
     public string? Email { get; set; }
     public string? Phone { get; set; }
+    public string? Address { get; set; }
+    public Guid? PostalCodeId { get; set; }
+    public Guid? CityId { get; set; }
+    public Guid? StateId { get; set; }
+    public Guid? CountryId { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
@@ -30,6 +35,11 @@ public class CreateUserDto
     public string LastName { get; set; } = string.Empty;
     public string? Email { get; set; }
     public string? Phone { get; set; }
+    public string? Address { get; set; }
+    public Guid? PostalCodeId { get; set; }
+    public Guid? CityId { get; set; }
+    public Guid? StateId { get; set; }
+    public Guid? CountryId { get; set; }
 }
 
 /// <summary>
@@ -43,6 +53,11 @@ public class UpdateUserDto
     public string LastName { get; set; } = string.Empty;
     public string? Email { get; set; }
     public string? Phone { get; set; }
+    public string? Address { get; set; }
+    public Guid? PostalCodeId { get; set; }
+    public Guid? CityId { get; set; }
+    public Guid? StateId { get; set; }
+    public Guid? CountryId { get; set; }
     public bool IsActive { get; set; }
 }
 

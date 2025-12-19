@@ -27,6 +27,10 @@ public class GetCompanyByIdCommandHandler : ICommandHandler<GetCompanyByIdComman
                 Address = c.Address,
                 Phone = c.Phone,
                 Email = c.Email,
+                PostalCodeId = c.PostalCodeId,
+                CityId = c.CityId,
+                StateId = c.StateId,
+                CountryId = c.CountryId,
                 IsActive = c.IsActive,
                 CreatedAt = c.CreatedAt,
                 UpdatedAt = c.UpdatedAt

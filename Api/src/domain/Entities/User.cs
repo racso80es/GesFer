@@ -15,8 +15,19 @@ public class User : BaseEntity
     public string? Email { get; set; }
     public string? Phone { get; set; }
 
+    // Campos de dirección (opcionales)
+    public string? Address { get; set; }
+    public Guid? PostalCodeId { get; set; }
+    public Guid? CityId { get; set; }
+    public Guid? StateId { get; set; }
+    public Guid? CountryId { get; set; }
+
     // Navegación
     public Company Company { get; set; } = null!;
+    public PostalCode? PostalCode { get; set; }
+    public City? City { get; set; }
+    public State? State { get; set; }
+    public Country? Country { get; set; }
     public ICollection<UserGroup> UserGroups { get; set; } = new List<UserGroup>();
     public ICollection<UserPermission> UserPermissions { get; set; } = new List<UserPermission>();
 }

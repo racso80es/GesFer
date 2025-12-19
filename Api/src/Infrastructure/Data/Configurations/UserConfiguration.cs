@@ -34,15 +34,47 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Phone)
             .HasMaxLength(50);
 
+        builder.Property(u => u.Address)
+            .HasMaxLength(500);
+
         // Relaciones
         builder.HasOne(u => u.Company)
             .WithMany(c => c.Users)
             .HasForeignKey(u => u.CompanyId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // Relaciones de dirección (opcionales)
+        builder.HasOne(u => u.PostalCode)
+            .WithMany()
+            .HasForeignKey(u => u.PostalCodeId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(u => u.City)
+            .WithMany()
+            .HasForeignKey(u => u.CityId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(u => u.State)
+            .WithMany()
+            .HasForeignKey(u => u.StateId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(u => u.Country)
+            .WithMany()
+            .HasForeignKey(u => u.CountryId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
         // Índices
         builder.HasIndex(u => new { u.CompanyId, u.Username })
             .IsUnique();
+        builder.HasIndex(u => u.PostalCodeId);
+        builder.HasIndex(u => u.CityId);
+        builder.HasIndex(u => u.StateId);
+        builder.HasIndex(u => u.CountryId);
     }
 }
 
