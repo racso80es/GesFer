@@ -507,20 +507,35 @@ public class SetupService : ISetupService
                 // Continuar de todas formas
             }
 
-            // Crear empresa
+            // Buscar datos maestros de dirección (España - Madrid)
+            var spain = await context.Countries.FirstOrDefaultAsync(c => c.Code == "ES");
+            var madridState = spain != null ? await context.States.FirstOrDefaultAsync(s => s.Code == "M" && s.CountryId == spain.Id) : null;
+            var madridCity = madridState != null ? await context.Cities.FirstOrDefaultAsync(c => c.Name == "Madrid" && c.StateId == madridState.Id) : null;
+            var madridPostalCode = madridCity != null ? await context.PostalCodes.FirstOrDefaultAsync(pc => pc.Code == "28001" && pc.CityId == madridCity.Id) : null;
+
+            if (spain == null || madridState == null || madridCity == null || madridPostalCode == null)
+            {
+                logger.LogWarning("No se encontraron todos los datos maestros de dirección. La empresa y usuario se crearán sin información de dirección completa.");
+            }
+
+            // Crear empresa con dirección completa
             var company = new Company
             {
                 Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                 Name = "Empresa Demo",
                 TaxId = "B12345678",
-                Address = "Calle Demo 123",
+                Address = "Calle Gran Vía, 1",
                 Phone = "912345678",
                 Email = "demo@empresa.com",
+                CountryId = spain?.Id,
+                StateId = madridState?.Id,
+                CityId = madridCity?.Id,
+                PostalCodeId = madridPostalCode?.Id,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
             };
             context.Companies.Add(company);
-            logger.LogInformation("Empresa creada: {CompanyName}", company.Name);
+            logger.LogInformation("Empresa creada: {CompanyName} con dirección en {City}", company.Name, madridCity?.Name ?? "Madrid");
 
             // Crear grupo
             var group = new Group
@@ -632,7 +647,7 @@ public class SetupService : ISetupService
             context.GroupPermissions.AddRange(groupPermissions);
             logger.LogInformation("Permisos asignados al grupo: {Count} permisos", groupPermissions.Count);
 
-            // Crear usuario con hash BCrypt
+            // Crear usuario con hash BCrypt y dirección
             var user = new User
             {
                 Id = Guid.Parse("99999999-9999-9999-9999-999999999999"),
@@ -643,11 +658,16 @@ public class SetupService : ISetupService
                 LastName = "Sistema",
                 Email = "admin@empresa.com",
                 Phone = "912345678",
+                Address = "Calle Serrano, 15",
+                CountryId = spain?.Id,
+                StateId = madridState?.Id,
+                CityId = madridCity?.Id,
+                PostalCodeId = madridPostalCode?.Id,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
             };
             context.Users.Add(user);
-            logger.LogInformation("Usuario creado: {Username}", user.Username);
+            logger.LogInformation("Usuario creado: {Username} con dirección en {City}", user.Username, madridCity?.Name ?? "Madrid");
 
             // Guardar empresa, grupo y usuario primero
             await context.SaveChangesAsync();
