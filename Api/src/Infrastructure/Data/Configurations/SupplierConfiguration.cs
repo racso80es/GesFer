@@ -39,8 +39,37 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
             .HasForeignKey(s => s.BuyTariffId)
             .OnDelete(DeleteBehavior.SetNull);
 
+        // Relaciones de dirección (opcionales)
+        builder.HasOne(s => s.PostalCode)
+            .WithMany()
+            .HasForeignKey(s => s.PostalCodeId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(s => s.City)
+            .WithMany()
+            .HasForeignKey(s => s.CityId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(s => s.State)
+            .WithMany()
+            .HasForeignKey(s => s.StateId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(s => s.Country)
+            .WithMany()
+            .HasForeignKey(s => s.CountryId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
         // Índices
         builder.HasIndex(s => new { s.CompanyId, s.Name });
+        builder.HasIndex(s => s.PostalCodeId);
+        builder.HasIndex(s => s.CityId);
+        builder.HasIndex(s => s.StateId);
+        builder.HasIndex(s => s.CountryId);
     }
 }
 

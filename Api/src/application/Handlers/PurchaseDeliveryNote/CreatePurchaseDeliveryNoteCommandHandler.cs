@@ -98,7 +98,7 @@ public class CreatePurchaseDeliveryNoteCommandHandler : ICommandHandler<CreatePu
     /// <summary>
     /// Obtiene el precio de la tarifa del proveedor o del artículo base
     /// </summary>
-    private decimal GetPriceFromTariffOrArticle(Supplier supplier, Article article)
+    private decimal GetPriceFromTariffOrArticle(GesFer.Domain.Entities.Supplier supplier, Article article)
     {
         // Si el proveedor tiene una tarifa de compra, buscar el precio en la tarifa
         if (supplier.BuyTariffId.HasValue && supplier.BuyTariff != null)

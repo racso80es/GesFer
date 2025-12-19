@@ -112,7 +112,7 @@ public class CreateSalesDeliveryNoteCommandHandler : ICommandHandler<CreateSales
     /// <summary>
     /// Obtiene el precio de la tarifa del cliente o del artículo base
     /// </summary>
-    private decimal GetPriceFromTariffOrArticle(Customer customer, Article article)
+    private decimal GetPriceFromTariffOrArticle(GesFer.Domain.Entities.Customer customer, Article article)
     {
         // Si el cliente tiene una tarifa de venta, buscar el precio en la tarifa
         if (customer.SellTariffId.HasValue && customer.SellTariff != null)
