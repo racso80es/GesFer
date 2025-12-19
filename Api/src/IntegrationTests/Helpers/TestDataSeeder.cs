@@ -23,6 +23,8 @@ public static class TestDataSeeder
         var existingUserGroups = await context.UserGroups.IgnoreQueryFilters().ToListAsync();
         var existingUserPermissions = await context.UserPermissions.IgnoreQueryFilters().ToListAsync();
         var existingGroupPermissions = await context.GroupPermissions.IgnoreQueryFilters().ToListAsync();
+        var existingSuppliers = await context.Suppliers.IgnoreQueryFilters().ToListAsync();
+        var existingCustomers = await context.Customers.IgnoreQueryFilters().ToListAsync();
         
         context.Companies.RemoveRange(existingCompanies);
         context.Users.RemoveRange(existingUsers);
@@ -31,6 +33,8 @@ public static class TestDataSeeder
         context.UserGroups.RemoveRange(existingUserGroups);
         context.UserPermissions.RemoveRange(existingUserPermissions);
         context.GroupPermissions.RemoveRange(existingGroupPermissions);
+        context.Suppliers.RemoveRange(existingSuppliers);
+        context.Customers.RemoveRange(existingCustomers);
         await context.SaveChangesAsync();
 
         // Crear empresa
@@ -147,6 +151,66 @@ public static class TestDataSeeder
             IsActive = true
         };
         context.UserPermissions.Add(userPermission);
+
+        // Crear proveedores de prueba
+        var suppliers = new List<Supplier>
+        {
+            new Supplier
+            {
+                Id = Guid.Parse("aaaaaaaa-1111-1111-1111-111111111111"),
+                CompanyId = company.Id,
+                Name = "Proveedor Test 1",
+                TaxId = "B11111111",
+                Address = "Calle Proveedor 1",
+                Phone = "911111111",
+                Email = "proveedor1@test.com",
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            },
+            new Supplier
+            {
+                Id = Guid.Parse("bbbbbbbb-2222-2222-2222-222222222222"),
+                CompanyId = company.Id,
+                Name = "Proveedor Test 2",
+                TaxId = "B22222222",
+                Address = "Calle Proveedor 2",
+                Phone = "922222222",
+                Email = "proveedor2@test.com",
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            }
+        };
+        context.Suppliers.AddRange(suppliers);
+
+        // Crear clientes de prueba
+        var customers = new List<Customer>
+        {
+            new Customer
+            {
+                Id = Guid.Parse("cccccccc-1111-1111-1111-111111111111"),
+                CompanyId = company.Id,
+                Name = "Cliente Test 1",
+                TaxId = "B33333333",
+                Address = "Calle Cliente 1",
+                Phone = "933333333",
+                Email = "cliente1@test.com",
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            },
+            new Customer
+            {
+                Id = Guid.Parse("dddddddd-2222-2222-2222-222222222222"),
+                CompanyId = company.Id,
+                Name = "Cliente Test 2",
+                TaxId = "B44444444",
+                Address = "Calle Cliente 2",
+                Phone = "944444444",
+                Email = "cliente2@test.com",
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            }
+        };
+        context.Customers.AddRange(customers);
 
         await context.SaveChangesAsync();
     }
