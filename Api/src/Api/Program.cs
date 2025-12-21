@@ -195,6 +195,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+// CORS debe ir ANTES de UseHttpsRedirection para que las peticiones preflight funcionen
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthorization();

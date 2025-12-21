@@ -1,0 +1,74 @@
+"use client";
+
+import React, { createContext, useContext, useEffect, useState } from "react";
+import type { LoginResponse } from "@/lib/types/api";
+import { authApi } from "@/lib/api/auth";
+
+interface AuthContextType {
+  user: LoginResponse | null;
+  isLoading: boolean;
+  login: (credentials: {
+    empresa: string;
+    usuario: string;
+    contraseña: string;
+  }) => Promise<void>;
+  logout: () => void;
+  isAuthenticated: boolean;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<LoginResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Cargar usuario desde localStorage al iniciar
+    const storedUser = authApi.getStoredUser();
+    if (storedUser) {
+      setUser(storedUser);
+    }
+    setIsLoading(false);
+  }, []);
+
+  const login = async (credentials: {
+    empresa: string;
+    usuario: string;
+    contraseña: string;
+  }) => {
+    try {
+      const response = await authApi.login(credentials);
+      setUser(response);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const logout = () => {
+    authApi.logout();
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoading,
+        login,
+        logout,
+        isAuthenticated: !!user,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth debe ser usado dentro de un AuthProvider");
+  }
+  return context;
+}
+
