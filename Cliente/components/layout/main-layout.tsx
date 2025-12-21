@@ -10,6 +10,7 @@ import {
   LogOut,
   Menu,
   X,
+  Briefcase,
 } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
@@ -21,6 +22,7 @@ interface MainLayoutProps {
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Empresas", href: "/empresas", icon: Briefcase },
   { name: "Usuarios", href: "/usuarios", icon: Users },
   { name: "Clientes", href: "/clientes", icon: Building2 },
 ];

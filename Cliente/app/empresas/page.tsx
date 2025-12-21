@@ -14,107 +14,104 @@ import {
   DialogDescription,
   DialogClose,
 } from "@/components/ui/dialog";
-import { UserForm } from "@/components/usuarios/user-form";
+import { CompanyForm } from "@/components/empresas/company-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { usersApi } from "@/lib/api/users";
-import { useAuth } from "@/contexts/auth-context";
-import { Plus, Edit, Trash2, Users as UsersIcon, Eye } from "lucide-react";
+import { companiesApi } from "@/lib/api/companies";
+import { Plus, Edit, Trash2, Building2, Eye } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import type { User, CreateUser, UpdateUser } from "@/lib/types/api";
+import type { Company, CreateCompany, UpdateCompany } from "@/lib/types/api";
 
-export default function UsuariosPage() {
+export default function EmpresasPage() {
   const router = useRouter();
-  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+  const [editingCompany, setEditingCompany] = useState<Company | null>(null);
+  const [deletingCompanyId, setDeletingCompanyId] = useState<string | null>(null);
 
   const {
-    data: usuarios,
+    data: empresas,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["users", user?.companyId],
-    queryFn: () => usersApi.getAll(user?.companyId),
-    enabled: !!user?.companyId,
+    queryKey: ["companies"],
+    queryFn: () => companiesApi.getAll(),
   });
 
   // Verificar si hay un parámetro de edición en la URL
   useEffect(() => {
-    if (typeof window !== "undefined" && usuarios) {
+    if (typeof window !== "undefined" && empresas) {
       const params = new URLSearchParams(window.location.search);
       const editId = params.get("edit");
       if (editId) {
-        const userToEdit = usuarios.find((u) => u.id === editId);
-        if (userToEdit) {
-          setEditingUser(userToEdit);
+        const companyToEdit = empresas.find((c) => c.id === editId);
+        if (companyToEdit) {
+          setEditingCompany(companyToEdit);
           // Limpiar la URL
-          window.history.replaceState({}, "", "/usuarios");
+          window.history.replaceState({}, "", "/empresas");
         }
       }
     }
-  }, [usuarios]);
+  }, [empresas]);
 
   const createMutation = useMutation({
-    mutationFn: (data: CreateUser) => usersApi.create(data),
+    mutationFn: (data: CreateCompany) => companiesApi.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
       setIsCreateModalOpen(false);
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateUser }) =>
-      usersApi.update(id, data),
+    mutationFn: ({ id, data }: { id: string; data: UpdateCompany }) =>
+      companiesApi.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-      setEditingUser(null);
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      setEditingCompany(null);
     },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => usersApi.delete(id),
+    mutationFn: (id: string) => companiesApi.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-      setDeletingUserId(null);
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      setDeletingCompanyId(null);
     },
   });
 
-  const handleCreate = async (data: CreateUser | UpdateUser) => {
-    await createMutation.mutateAsync(data as CreateUser);
+  const handleCreate = async (data: CreateCompany | UpdateCompany) => {
+    await createMutation.mutateAsync(data as CreateCompany);
   };
 
-  const handleUpdate = async (data: CreateUser | UpdateUser) => {
-    if (editingUser) {
+  const handleUpdate = async (data: CreateCompany | UpdateCompany) => {
+    if (editingCompany) {
       await updateMutation.mutateAsync({
-        id: editingUser.id,
-        data: data as UpdateUser,
+        id: editingCompany.id,
+        data: data as UpdateCompany,
       });
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
+    if (!confirm("¿Estás seguro de que deseas eliminar esta empresa?")) {
       return;
     }
-    setDeletingUserId(id);
+    setDeletingCompanyId(id);
     try {
       await deleteMutation.mutateAsync(id);
     } catch (error) {
       alert(
         error instanceof Error
           ? error.message
-          : "Error al eliminar el usuario"
+          : "Error al eliminar la empresa"
       );
     } finally {
-      setDeletingUserId(null);
+      setDeletingCompanyId(null);
     }
   };
 
   const handleView = (id: string) => {
-    router.push(`/usuarios/${id}`);
+    router.push(`/empresas/${id}`);
   };
 
   return (
@@ -123,20 +120,20 @@ export default function UsuariosPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold">Usuarios</h1>
+              <h1 className="text-3xl font-bold">Empresas</h1>
               <p className="text-muted-foreground">
-                Gestiona los usuarios del sistema
+                Gestiona las empresas del sistema
               </p>
             </div>
             <Button onClick={() => setIsCreateModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              Nuevo Usuario
+              Nueva Empresa
             </Button>
           </div>
 
           {isLoading && (
             <div className="flex justify-center py-12">
-              <Loading size="lg" text="Cargando usuarios..." />
+              <Loading size="lg" text="Cargando empresas..." />
             </div>
           )}
 
@@ -145,32 +142,32 @@ export default function UsuariosPage() {
               message={
                 error instanceof Error
                   ? error.message
-                  : "Error al cargar los usuarios"
+                  : "Error al cargar las empresas"
               }
             />
           )}
 
-          {usuarios && usuarios.length === 0 && (
+          {empresas && empresas.length === 0 && (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
-                <UsersIcon className="h-12 w-12 text-muted-foreground mb-4" />
+                <Building2 className="h-12 w-12 text-muted-foreground mb-4" />
                 <p className="text-muted-foreground mb-4">
-                  No hay usuarios registrados
+                  No hay empresas registradas
                 </p>
                 <Button onClick={() => setIsCreateModalOpen(true)}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Crear Primer Usuario
+                  Crear Primera Empresa
                 </Button>
               </CardContent>
             </Card>
           )}
 
-          {usuarios && usuarios.length > 0 && (
+          {empresas && empresas.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>Lista de Usuarios</CardTitle>
+                <CardTitle>Lista de Empresas</CardTitle>
                 <CardDescription>
-                  {usuarios.length} usuario(s) encontrado(s)
+                  {empresas.length} empresa(s) encontrada(s)
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -178,37 +175,35 @@ export default function UsuariosPage() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-2">Usuario</th>
                         <th className="text-left p-2">Nombre</th>
+                        <th className="text-left p-2">CIF/NIF</th>
                         <th className="text-left p-2">Email</th>
                         <th className="text-left p-2">Teléfono</th>
-                        <th className="text-left p-2">Empresa</th>
+                        <th className="text-left p-2">Dirección</th>
                         <th className="text-left p-2">Estado</th>
                         <th className="text-right p-2">Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {usuarios.map((usuario) => (
+                      {empresas.map((empresa) => (
                         <tr
-                          key={usuario.id}
+                          key={empresa.id}
                           className="border-b hover:bg-muted/50"
                         >
-                          <td className="p-2 font-medium">{usuario.username}</td>
-                          <td className="p-2">
-                            {usuario.firstName} {usuario.lastName}
-                          </td>
-                          <td className="p-2">{usuario.email || "-"}</td>
-                          <td className="p-2">{usuario.phone || "-"}</td>
-                          <td className="p-2">{usuario.companyName}</td>
+                          <td className="p-2 font-medium">{empresa.name}</td>
+                          <td className="p-2">{empresa.taxId || "-"}</td>
+                          <td className="p-2">{empresa.email || "-"}</td>
+                          <td className="p-2">{empresa.phone || "-"}</td>
+                          <td className="p-2">{empresa.address || "-"}</td>
                           <td className="p-2">
                             <span
                               className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                                usuario.isActive
+                                empresa.isActive
                                   ? "bg-green-100 text-green-800"
                                   : "bg-red-100 text-red-800"
                               }`}
                             >
-                              {usuario.isActive ? "Activo" : "Inactivo"}
+                              {empresa.isActive ? "Activa" : "Inactiva"}
                             </span>
                           </td>
                           <td className="p-2">
@@ -216,7 +211,7 @@ export default function UsuariosPage() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => handleView(usuario.id)}
+                                onClick={() => handleView(empresa.id)}
                                 title="Ver detalle"
                               >
                                 <Eye className="h-4 w-4" />
@@ -224,7 +219,7 @@ export default function UsuariosPage() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => setEditingUser(usuario)}
+                                onClick={() => setEditingCompany(empresa)}
                                 title="Editar"
                               >
                                 <Edit className="h-4 w-4" />
@@ -232,8 +227,8 @@ export default function UsuariosPage() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => handleDelete(usuario.id)}
-                                disabled={deletingUserId === usuario.id}
+                                onClick={() => handleDelete(empresa.id)}
+                                disabled={deletingCompanyId === empresa.id}
                                 title="Eliminar"
                               >
                                 <Trash2 className="h-4 w-4 text-destructive" />
@@ -249,17 +244,17 @@ export default function UsuariosPage() {
             </Card>
           )}
 
-          {/* Modal Crear Usuario */}
+          {/* Modal Crear Empresa */}
           <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
             <DialogContent>
               <DialogClose onClose={() => setIsCreateModalOpen(false)} />
               <DialogHeader>
-                <DialogTitle>Crear Nuevo Usuario</DialogTitle>
+                <DialogTitle>Crear Nueva Empresa</DialogTitle>
                 <DialogDescription>
-                  Completa el formulario para crear un nuevo usuario
+                  Completa el formulario para crear una nueva empresa
                 </DialogDescription>
               </DialogHeader>
-              <UserForm
+              <CompanyForm
                 onSubmit={handleCreate}
                 onCancel={() => setIsCreateModalOpen(false)}
                 isLoading={createMutation.isPending}
@@ -267,24 +262,24 @@ export default function UsuariosPage() {
             </DialogContent>
           </Dialog>
 
-          {/* Modal Editar Usuario */}
+          {/* Modal Editar Empresa */}
           <Dialog
-            open={!!editingUser}
-            onOpenChange={(open) => !open && setEditingUser(null)}
+            open={!!editingCompany}
+            onOpenChange={(open) => !open && setEditingCompany(null)}
           >
             <DialogContent>
-              <DialogClose onClose={() => setEditingUser(null)} />
+              <DialogClose onClose={() => setEditingCompany(null)} />
               <DialogHeader>
-                <DialogTitle>Editar Usuario</DialogTitle>
+                <DialogTitle>Editar Empresa</DialogTitle>
                 <DialogDescription>
-                  Modifica la información del usuario
+                  Modifica la información de la empresa
                 </DialogDescription>
               </DialogHeader>
-              {editingUser && (
-                <UserForm
-                  user={editingUser}
+              {editingCompany && (
+                <CompanyForm
+                  company={editingCompany}
                   onSubmit={handleUpdate}
-                  onCancel={() => setEditingUser(null)}
+                  onCancel={() => setEditingCompany(null)}
                   isLoading={updateMutation.isPending}
                 />
               )}
@@ -295,3 +290,4 @@ export default function UsuariosPage() {
     </ProtectedRoute>
   );
 }
+
