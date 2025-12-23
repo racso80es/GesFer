@@ -1,0 +1,37 @@
+{
+  "common": {
+    "welcome": "Bienvenido",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "actions": "Acciones",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "username": "Usuario",
+    "password": "Contraseña",
+    "company": "Empresa",
+    "loginError": "Error al iniciar sesión",
+    "invalidCredentials": "Credenciales inválidas"
+  },
+  "navigation": {
+    "dashboard": "Panel de control",
+    "users": "Usuarios",
+    "companies": "Empresas",
+    "customers": "Clientes"
+  }
+}

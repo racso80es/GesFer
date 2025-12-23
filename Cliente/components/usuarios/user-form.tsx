@@ -27,28 +27,40 @@ export function UserForm({
   // La empresa siempre es la del usuario logueado
   const companyId = loggedUser?.companyId || "";
   
-  const [formData, setFormData] = useState<CreateUser | UpdateUser>({
-    companyId: companyId,
-    username: user?.username || "",
-    password: "",
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
-    email: user?.email || "",
-    phone: user?.phone || "",
-    address: user?.address || "",
-    postalCodeId: user?.postalCodeId,
-    cityId: user?.cityId,
-    stateId: user?.stateId,
-    countryId: user?.countryId,
-    ...(isEditing && { isActive: user.isActive }),
-  });
+  const [formData, setFormData] = useState<CreateUser | UpdateUser>(
+    isEditing
+      ? ({
+          username: user?.username || "",
+          password: "",
+          firstName: user?.firstName || "",
+          lastName: user?.lastName || "",
+          email: user?.email || "",
+          phone: user?.phone || "",
+          address: user?.address || "",
+          postalCodeId: user?.postalCodeId,
+          cityId: user?.cityId,
+          stateId: user?.stateId,
+          countryId: user?.countryId,
+          isActive: user.isActive,
+        } as UpdateUser)
+      : ({
+          companyId: companyId,
+          username: "",
+          password: "",
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          address: "",
+        } as CreateUser)
+  );
 
-  // Asegurar que companyId siempre sea el del usuario logueado
+  // Asegurar que companyId siempre sea el del usuario logueado (solo para creación)
   useEffect(() => {
-    if (loggedUser?.companyId) {
-      setFormData((prev) => ({ ...prev, companyId: loggedUser.companyId }));
+    if (!isEditing && loggedUser?.companyId) {
+      setFormData((prev) => ({ ...prev, companyId: loggedUser.companyId } as CreateUser));
     }
-  }, [loggedUser?.companyId]);
+  }, [loggedUser?.companyId, isEditing]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -56,7 +68,8 @@ export function UserForm({
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.companyId) {
+    // Solo validar companyId si es creación (CreateUser)
+    if (!isEditing && !(formData as CreateUser).companyId) {
       newErrors.companyId = "La empresa es requerida";
     }
     if (!formData.username.trim()) {

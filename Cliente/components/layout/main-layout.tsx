@@ -15,22 +15,26 @@ import {
 import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
+import { useTranslations, useLocale } from 'next-intl';
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Empresas", href: "/empresas", icon: Briefcase },
-  { name: "Usuarios", href: "/usuarios", icon: Users },
-  { name: "Clientes", href: "/clientes", icon: Building2 },
-];
-
 export function MainLayout({ children }: MainLayoutProps) {
   const router = useRouter();
+  const locale = useLocale();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const t = useTranslations('navigation');
+  const tAuth = useTranslations('auth');
+
+  const navigation = [
+    { name: t('dashboard'), href: "/dashboard", icon: LayoutDashboard },
+    { name: t('companies'), href: "/empresas", icon: Briefcase },
+    { name: t('users'), href: "/usuarios", icon: Users },
+    { name: t('customers'), href: "/clientes", icon: Building2 },
+  ];
 
   const handleLogout = () => {
     logout();
@@ -55,6 +59,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             user={user}
             onLogout={handleLogout}
             onClose={() => setSidebarOpen(false)}
+            navigation={navigation}
           />
         </div>
       </div>
@@ -62,7 +67,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       {/* Sidebar desktop */}
       <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
         <div className="flex flex-col flex-grow bg-card border-r">
-          <SidebarContent user={user} onLogout={handleLogout} />
+          <SidebarContent user={user} onLogout={handleLogout} navigation={navigation} />
         </div>
       </div>
 
@@ -92,12 +97,27 @@ function SidebarContent({
   user,
   onLogout,
   onClose,
+  navigation,
 }: {
   user: any;
   onLogout: () => void;
   onClose?: () => void;
+  navigation: Array<{ name: string; href: string; icon: any }>;
 }) {
   const pathname = usePathname();
+  const tAuth = useTranslations('auth');
+
+  // Normalizar pathname para comparación (remover locale si está presente)
+  const normalizePathname = (path: string) => {
+    const segments = path.split('/');
+    // Si el primer segmento es un locale, removerlo
+    if (segments[1] && ['es', 'en', 'ca'].includes(segments[1])) {
+      return '/' + segments.slice(2).join('/') || '/';
+    }
+    return path;
+  };
+
+  const normalizedPathname = normalizePathname(pathname);
 
   return (
     <>
@@ -113,15 +133,16 @@ function SidebarContent({
       <nav className="flex-1 p-4 space-y-1">
         {navigation.map((item) => {
           const Icon = item.icon;
+          const isActive = normalizedPathname === item.href;
           return (
             <Link
-              key={item.name}
+              key={item.href}
               href={item.href}
               onClick={onClose}
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
                 "hover:bg-accent hover:text-accent-foreground",
-                pathname === item.href
+                isActive
                   ? "bg-accent text-accent-foreground"
                   : "text-muted-foreground"
               )}
@@ -146,7 +167,7 @@ function SidebarContent({
           onClick={onLogout}
         >
           <LogOut className="h-4 w-4 mr-2" />
-          Cerrar sesión
+          {tAuth('logout')}
         </Button>
       </div>
     </>

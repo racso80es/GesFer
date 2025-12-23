@@ -1,0 +1,38 @@
+{
+  "common": {
+    "welcome": "Benvingut",
+    "loading": "Carregant...",
+    "error": "Error",
+    "success": "Èxit",
+    "save": "Desar",
+    "cancel": "Cancel·lar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Cercar",
+    "filter": "Filtrar",
+    "actions": "Accions",
+    "back": "Tornar",
+    "next": "Següent",
+    "previous": "Anterior",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No"
+  },
+  "auth": {
+    "login": "Iniciar sessió",
+    "logout": "Tancar sessió",
+    "username": "Usuari",
+    "password": "Contrasenya",
+    "company": "Empresa",
+    "loginError": "Error en iniciar sessió",
+    "invalidCredentials": "Credencials invàlides"
+  },
+  "navigation": {
+    "dashboard": "Panell de control",
+    "users": "Usuaris",
+    "companies": "Empreses",
+    "customers": "Clients"
+  }
+}
+

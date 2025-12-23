@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import UsuariosPage from "@/app/usuarios/page";
+import UsuariosPage from "@/app/[locale]/usuarios/page";
 import { useAuth } from "@/contexts/auth-context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { usersApi } from "@/lib/api/users";
@@ -14,8 +14,20 @@ jest.mock("next/navigation", () => ({
     replace: jest.fn(),
     back: jest.fn(),
   }),
-  usePathname: () => "/usuarios",
+  usePathname: () => "/es/usuarios",
 }));
+jest.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => {
+    const translations: Record<string, string> = {
+      'navigation.dashboard': 'Panel de control',
+      'navigation.users': 'Usuarios',
+      'navigation.companies': 'Empresas',
+      'navigation.customers': 'Clientes',
+    };
+    return translations[key] || key;
+  },
+  useLocale: () => 'es',
+}))
 
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 const mockUseQuery = useQuery as jest.MockedFunction<typeof useQuery>;

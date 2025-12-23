@@ -9,10 +9,12 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { Building2, User, Lock, Loader2 } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 export default function LoginPage() {
   const router = useRouter();
   const { login, isAuthenticated } = useAuth();
+  const t = useTranslations('auth');
   const [formData, setFormData] = useState({
     empresa: "Empresa Demo",
     usuario: "admin",
@@ -38,7 +40,7 @@ export default function LoginPage() {
       setError(
         err instanceof Error
           ? err.message
-          : "Error al iniciar sesión. Verifica tus credenciales."
+          : t('loginError')
       );
     } finally {
       setIsLoading(false);
@@ -53,19 +55,19 @@ export default function LoginPage() {
             GesFer
           </CardTitle>
           <CardDescription className="text-center">
-            Inicia sesión en tu cuenta
+            {t('login')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="empresa">Empresa</Label>
+              <Label htmlFor="empresa">{t('company')}</Label>
               <div className="relative">
                 <Building2 className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="empresa"
                   type="text"
-                  placeholder="Nombre de la empresa"
+                  placeholder={t('company')}
                   value={formData.empresa}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setFormData({ ...formData, empresa: e.target.value })
@@ -77,13 +79,13 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="usuario">Usuario</Label>
+              <Label htmlFor="usuario">{t('username')}</Label>
               <div className="relative">
                 <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="usuario"
                   type="text"
-                  placeholder="Nombre de usuario"
+                  placeholder={t('username')}
                   value={formData.usuario}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setFormData({ ...formData, usuario: e.target.value })
@@ -95,13 +97,13 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="contraseña">Contraseña</Label>
+              <Label htmlFor="contraseña">{t('password')}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="contraseña"
                   type="password"
-                  placeholder="Contraseña"
+                  placeholder={t('password')}
                   value={formData.contraseña}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setFormData({ ...formData, contraseña: e.target.value })
@@ -122,10 +124,10 @@ export default function LoginPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Iniciando sesión...
+                  {t('login')}...
                 </>
               ) : (
-                "Iniciar sesión"
+                t('login')
               )}
             </Button>
           </form>

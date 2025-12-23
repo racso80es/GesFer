@@ -5,18 +5,20 @@ import { MainLayout } from "@/components/layout/main-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/auth-context";
 import { Users, Building2, Package, TrendingUp } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const t = useTranslations('navigation');
 
   return (
     <ProtectedRoute>
       <MainLayout>
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold">Dashboard</h1>
+            <h1 className="text-3xl font-bold">{t('dashboard')}</h1>
             <p className="text-muted-foreground">
-              Bienvenido, {user?.firstName} {user?.lastName}
+              {user?.firstName} {user?.lastName}
             </p>
           </div>
 
@@ -24,7 +26,7 @@ export default function DashboardPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Usuarios
+                  Total {t('users')}
                 </CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -39,7 +41,7 @@ export default function DashboardPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Clientes
+                  Total {t('customers')}
                 </CardTitle>
                 <Building2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
