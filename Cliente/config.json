@@ -1,5 +1,5 @@
 {
-  "apiUrl": "http://localhost:5001",
+  "apiUrl": "http://localhost:5000",
   "description": "Configuración de la URL de la API. Puedes cambiar esta URL según tu entorno."
 }
 
