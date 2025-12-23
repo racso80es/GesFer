@@ -18,12 +18,14 @@ public class Company : BaseEntity
     public Guid? CityId { get; set; }
     public Guid? StateId { get; set; }
     public Guid? CountryId { get; set; }
+    public Guid? LanguageId { get; set; }
 
     // Navegación
     public PostalCode? PostalCode { get; set; }
     public City? City { get; set; }
     public State? State { get; set; }
     public Country? Country { get; set; }
+    public Language? Language { get; set; }
     public ICollection<User> Users { get; set; } = new List<User>();
     public ICollection<Family> Families { get; set; } = new List<Family>();
     public ICollection<Article> Articles { get; set; } = new List<Article>();

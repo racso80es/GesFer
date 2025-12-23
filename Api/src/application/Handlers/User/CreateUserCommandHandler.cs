@@ -67,6 +67,35 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
                 throw new InvalidOperationException($"No se encontró el país con ID {command.Dto.CountryId.Value}");
         }
 
+        // Idioma: user > company > country > español
+        Guid? languageId = command.Dto.LanguageId;
+        if (languageId.HasValue)
+        {
+            var languageExists = await _context.Languages.AnyAsync(l => l.Id == languageId.Value && l.DeletedAt == null, cancellationToken);
+            if (!languageExists)
+                throw new InvalidOperationException($"No se encontró el idioma con ID {languageId.Value}");
+        }
+        else
+        {
+            languageId = company.LanguageId;
+
+            if (!languageId.HasValue && command.Dto.CountryId.HasValue)
+            {
+                languageId = await _context.Countries
+                    .Where(c => c.Id == command.Dto.CountryId.Value && c.DeletedAt == null)
+                    .Select(c => (Guid?)c.LanguageId)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
+
+            if (!languageId.HasValue)
+            {
+                languageId = await _context.Languages
+                    .Where(l => l.Code == "es" && l.DeletedAt == null)
+                    .Select(l => (Guid?)l.Id)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
+        }
+
         // Hash de la contraseña
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(command.Dto.Password, BCrypt.Net.BCrypt.GenerateSalt(11));
 
@@ -84,6 +113,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
             CityId = command.Dto.CityId,
             StateId = command.Dto.StateId,
             CountryId = command.Dto.CountryId,
+            LanguageId = languageId,
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         };
@@ -109,6 +139,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
             CityId = user.CityId,
             StateId = user.StateId,
             CountryId = user.CountryId,
+            LanguageId = user.LanguageId,
             IsActive = user.IsActive,
             CreatedAt = user.CreatedAt,
             UpdatedAt = user.UpdatedAt

@@ -21,6 +21,7 @@ public class User : BaseEntity
     public Guid? CityId { get; set; }
     public Guid? StateId { get; set; }
     public Guid? CountryId { get; set; }
+    public Guid? LanguageId { get; set; }
 
     // Navegación
     public Company Company { get; set; } = null!;
@@ -28,6 +29,7 @@ public class User : BaseEntity
     public City? City { get; set; }
     public State? State { get; set; }
     public Country? Country { get; set; }
+    public Language? Language { get; set; }
     public ICollection<UserGroup> UserGroups { get; set; } = new List<UserGroup>();
     public ICollection<UserPermission> UserPermissions { get; set; } = new List<UserPermission>();
 }

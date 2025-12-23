@@ -34,6 +34,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<SalesDeliveryNoteLine> SalesDeliveryNoteLines => Set<SalesDeliveryNoteLine>();
     public DbSet<SalesInvoice> SalesInvoices => Set<SalesInvoice>();
     public DbSet<Country> Countries => Set<Country>();
+    public DbSet<Language> Languages => Set<Language>();
     public DbSet<State> States => Set<State>();
     public DbSet<City> Cities => Set<City>();
     public DbSet<PostalCode> PostalCodes => Set<PostalCode>();

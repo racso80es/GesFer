@@ -14,6 +14,7 @@ public class CityControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
 {
     private readonly HttpClient _client;
     private readonly CustomWebApplicationFactory<GesFer.Api.Program> _factory;
+    private readonly Guid _languageEs = Guid.Parse("10000000-0000-0000-0000-000000000001");
     private Guid _testCountryId;
     private Guid _testStateId;
 
@@ -45,7 +46,8 @@ public class CityControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
         var createCountryDto = new CreateCountryDto
         {
             Name = "España",
-            Code = "ES"
+            Code = "ES",
+            LanguageId = _languageEs
         };
         var createCountryResponse = await _client.PostAsJsonAsync("/api/country", createCountryDto);
         var createdCountry = await createCountryResponse.Content.ReadFromJsonAsync<CountryDto>();

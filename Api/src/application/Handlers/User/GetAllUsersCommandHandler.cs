@@ -45,6 +45,7 @@ public class GetAllUsersCommandHandler : ICommandHandler<GetAllUsersCommand, Lis
                 CityId = u.CityId,
                 StateId = u.StateId,
                 CountryId = u.CountryId,
+                LanguageId = u.LanguageId,
                 IsActive = u.IsActive,
                 CreatedAt = u.CreatedAt,
                 UpdatedAt = u.UpdatedAt

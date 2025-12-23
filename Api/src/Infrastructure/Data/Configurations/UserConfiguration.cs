@@ -68,6 +68,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne(u => u.Language)
+            .WithMany(l => l.Users)
+            .HasForeignKey(u => u.LanguageId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
         // Índices
         builder.HasIndex(u => new { u.CompanyId, u.Username })
             .IsUnique();
@@ -75,6 +81,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasIndex(u => u.CityId);
         builder.HasIndex(u => u.StateId);
         builder.HasIndex(u => u.CountryId);
+        builder.HasIndex(u => u.LanguageId);
     }
 }
 

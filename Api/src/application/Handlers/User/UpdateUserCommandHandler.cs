@@ -67,6 +67,13 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserD
                 throw new InvalidOperationException($"No se encontró el país con ID {command.Dto.CountryId.Value}");
         }
 
+        if (command.Dto.LanguageId.HasValue)
+        {
+            var languageExists = await _context.Languages.AnyAsync(l => l.Id == command.Dto.LanguageId && l.DeletedAt == null, cancellationToken);
+            if (!languageExists)
+                throw new InvalidOperationException($"No se encontró el idioma con ID {command.Dto.LanguageId}");
+        }
+
         user.Username = command.Dto.Username;
         user.FirstName = command.Dto.FirstName;
         user.LastName = command.Dto.LastName;
@@ -77,6 +84,7 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserD
         user.CityId = command.Dto.CityId;
         user.StateId = command.Dto.StateId;
         user.CountryId = command.Dto.CountryId;
+        user.LanguageId = command.Dto.LanguageId ?? user.LanguageId;
         user.IsActive = command.Dto.IsActive;
         user.UpdatedAt = DateTime.UtcNow;
 
@@ -103,6 +111,7 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserD
             CityId = user.CityId,
             StateId = user.StateId,
             CountryId = user.CountryId,
+            LanguageId = user.LanguageId,
             IsActive = user.IsActive,
             CreatedAt = user.CreatedAt,
             UpdatedAt = user.UpdatedAt

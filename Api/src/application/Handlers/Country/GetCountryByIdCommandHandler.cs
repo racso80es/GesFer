@@ -24,6 +24,7 @@ public class GetCountryByIdCommandHandler : ICommandHandler<GetCountryByIdComman
                 Id = c.Id,
                 Name = c.Name,
                 Code = c.Code,
+                LanguageId = c.LanguageId,
                 IsActive = c.IsActive,
                 CreatedAt = c.CreatedAt,
                 UpdatedAt = c.UpdatedAt

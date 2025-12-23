@@ -37,6 +37,22 @@ public static class TestDataSeeder
         context.Customers.RemoveRange(existingCustomers);
         await context.SaveChangesAsync();
 
+        // Idiomas maestros
+        var languages = new[]
+        {
+            new Language { Id = Guid.Parse("10000000-0000-0000-0000-000000000001"), Name = "Español", Code = "es", Description = "Español", CreatedAt = DateTime.UtcNow, IsActive = true },
+            new Language { Id = Guid.Parse("10000000-0000-0000-0000-000000000002"), Name = "English", Code = "en", Description = "Inglés", CreatedAt = DateTime.UtcNow, IsActive = true },
+            new Language { Id = Guid.Parse("10000000-0000-0000-0000-000000000003"), Name = "Català", Code = "ca", Description = "Catalán", CreatedAt = DateTime.UtcNow, IsActive = true }
+        };
+        foreach (var lang in languages)
+        {
+            if (!await context.Languages.IgnoreQueryFilters().AnyAsync(l => l.Id == lang.Id))
+            {
+                context.Languages.Add(lang);
+            }
+        }
+        await context.SaveChangesAsync();
+
         // Crear empresa
         var company = new Company
         {
@@ -46,6 +62,7 @@ public static class TestDataSeeder
             Address = "Calle Demo 123",
             Phone = "912345678",
             Email = "demo@empresa.com",
+            LanguageId = Guid.Parse("10000000-0000-0000-0000-000000000001"),
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         };
@@ -125,6 +142,7 @@ public static class TestDataSeeder
             LastName = "Sistema",
             Email = "admin@empresa.com",
             Phone = "912345678",
+            LanguageId = Guid.Parse("10000000-0000-0000-0000-000000000001"),
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         };

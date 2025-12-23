@@ -54,12 +54,19 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne(c => c.Language)
+            .WithMany(l => l.Companies)
+            .HasForeignKey(c => c.LanguageId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
         // Índices
         builder.HasIndex(c => c.Name);
         builder.HasIndex(c => c.PostalCodeId);
         builder.HasIndex(c => c.CityId);
         builder.HasIndex(c => c.StateId);
         builder.HasIndex(c => c.CountryId);
+        builder.HasIndex(c => c.LanguageId);
     }
 }
 

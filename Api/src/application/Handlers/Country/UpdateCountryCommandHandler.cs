@@ -37,8 +37,15 @@ public class UpdateCountryCommandHandler : ICommandHandler<UpdateCountryCommand,
         if (existingCountryByName != null)
             throw new InvalidOperationException($"Ya existe otro país con el nombre '{command.Dto.Name}'");
 
+        // Validar idioma
+        var languageExists = await _context.Languages
+            .AnyAsync(l => l.Id == command.Dto.LanguageId && l.DeletedAt == null, cancellationToken);
+        if (!languageExists)
+            throw new InvalidOperationException($"No se encontró el idioma con ID {command.Dto.LanguageId}");
+
         country.Name = command.Dto.Name;
         country.Code = command.Dto.Code;
+        country.LanguageId = command.Dto.LanguageId;
         country.IsActive = command.Dto.IsActive;
         country.UpdatedAt = DateTime.UtcNow;
 
@@ -49,6 +56,7 @@ public class UpdateCountryCommandHandler : ICommandHandler<UpdateCountryCommand,
             Id = country.Id,
             Name = country.Name,
             Code = country.Code,
+            LanguageId = country.LanguageId,
             IsActive = country.IsActive,
             CreatedAt = country.CreatedAt,
             UpdatedAt = country.UpdatedAt

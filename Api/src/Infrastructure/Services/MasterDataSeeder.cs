@@ -20,6 +20,62 @@ public class MasterDataSeeder
     }
 
     /// <summary>
+    /// Carga idiomas maestros (es, en, ca).
+    /// </summary>
+    public async Task SeedLanguagesAsync()
+    {
+        _logger.LogInformation("Cargando idiomas maestros...");
+
+        var languages = new[]
+        {
+            new Language
+            {
+                Id = Guid.Parse("10000000-0000-0000-0000-000000000001"),
+                Name = "Español",
+                Code = "es",
+                Description = "Español",
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            },
+            new Language
+            {
+                Id = Guid.Parse("10000000-0000-0000-0000-000000000002"),
+                Name = "English",
+                Code = "en",
+                Description = "Inglés",
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            },
+            new Language
+            {
+                Id = Guid.Parse("10000000-0000-0000-0000-000000000003"),
+                Name = "Català",
+                Code = "ca",
+                Description = "Catalán",
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            }
+        };
+
+        foreach (var lang in languages)
+        {
+            var existing = await _context.Languages.IgnoreQueryFilters().FirstOrDefaultAsync(l => l.Code == lang.Code);
+            if (existing == null)
+            {
+                _context.Languages.Add(lang);
+            }
+            else if (existing.DeletedAt != null)
+            {
+                existing.DeletedAt = null;
+                existing.IsActive = true;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+        _logger.LogInformation("Idiomas maestros listos");
+    }
+
+    /// <summary>
     /// Carga los datos maestros de España
     /// </summary>
     public async Task SeedSpainDataAsync()
@@ -52,6 +108,7 @@ public class MasterDataSeeder
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                 Name = "España",
                 Code = "ES",
+                LanguageId = Guid.Parse("10000000-0000-0000-0000-000000000001"),
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
             };

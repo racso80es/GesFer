@@ -15,6 +15,7 @@ public class CompanyDto
     public Guid? CityId { get; set; }
     public Guid? StateId { get; set; }
     public Guid? CountryId { get; set; }
+    public Guid? LanguageId { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
@@ -34,6 +35,7 @@ public class CreateCompanyDto
     public Guid? CityId { get; set; }
     public Guid? StateId { get; set; }
     public Guid? CountryId { get; set; }
+    public Guid? LanguageId { get; set; }
 }
 
 /// <summary>
@@ -50,6 +52,7 @@ public class UpdateCompanyDto
     public Guid? CityId { get; set; }
     public Guid? StateId { get; set; }
     public Guid? CountryId { get; set; }
+    public Guid? LanguageId { get; set; }
     public bool IsActive { get; set; }
 }
 

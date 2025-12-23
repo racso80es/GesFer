@@ -32,6 +32,7 @@ public class GetAllCompaniesCommandHandler : ICommandHandler<GetAllCompaniesComm
                 CityId = c.CityId,
                 StateId = c.StateId,
                 CountryId = c.CountryId,
+                LanguageId = c.LanguageId,
                 IsActive = c.IsActive,
                 CreatedAt = c.CreatedAt,
                 UpdatedAt = c.UpdatedAt

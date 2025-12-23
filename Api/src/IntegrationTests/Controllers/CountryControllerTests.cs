@@ -12,6 +12,7 @@ public class CountryControllerTests : IClassFixture<CustomWebApplicationFactory<
 {
     private readonly HttpClient _client;
     private readonly CustomWebApplicationFactory<GesFer.Api.Program> _factory;
+    private readonly Guid _languageEs = Guid.Parse("10000000-0000-0000-0000-000000000001");
 
     public CountryControllerTests(CustomWebApplicationFactory<GesFer.Api.Program> factory)
     {
@@ -57,7 +58,8 @@ public class CountryControllerTests : IClassFixture<CustomWebApplicationFactory<
         var createDto = new CreateCountryDto
         {
             Name = "España",
-            Code = "ES"
+            Code = "ES",
+            LanguageId = _languageEs
         };
         var createResponse = await _client.PostAsJsonAsync("/api/country", createDto);
         var createdCountry = await createResponse.Content.ReadFromJsonAsync<CountryDto>();
@@ -95,7 +97,8 @@ public class CountryControllerTests : IClassFixture<CustomWebApplicationFactory<
         var createDto = new CreateCountryDto
         {
             Name = "Francia",
-            Code = "FR"
+            Code = "FR",
+            LanguageId = _languageEs
         };
 
         // Act
@@ -116,7 +119,8 @@ public class CountryControllerTests : IClassFixture<CustomWebApplicationFactory<
         var createDto1 = new CreateCountryDto
         {
             Name = "España",
-            Code = "ES"
+            Code = "ES",
+            LanguageId = _languageEs
         };
         await _client.PostAsJsonAsync("/api/country", createDto1);
 
@@ -124,7 +128,8 @@ public class CountryControllerTests : IClassFixture<CustomWebApplicationFactory<
         var createDto2 = new CreateCountryDto
         {
             Name = "España Duplicada",
-            Code = "ES" // Código duplicado
+            Code = "ES", // Código duplicado
+            LanguageId = _languageEs
         };
 
         // Act
@@ -141,7 +146,8 @@ public class CountryControllerTests : IClassFixture<CustomWebApplicationFactory<
         var createDto = new CreateCountryDto
         {
             Name = "Alemania",
-            Code = "DE"
+            Code = "DE",
+            LanguageId = _languageEs
         };
         var createResponse = await _client.PostAsJsonAsync("/api/country", createDto);
         var createdCountry = await createResponse.Content.ReadFromJsonAsync<CountryDto>();
@@ -151,6 +157,7 @@ public class CountryControllerTests : IClassFixture<CustomWebApplicationFactory<
         {
             Name = "Alemania Actualizada",
             Code = "DE",
+            LanguageId = _languageEs,
             IsActive = true
         };
 
@@ -173,6 +180,7 @@ public class CountryControllerTests : IClassFixture<CustomWebApplicationFactory<
         {
             Name = "Test",
             Code = "TE",
+            LanguageId = _languageEs,
             IsActive = true
         };
 
@@ -190,7 +198,8 @@ public class CountryControllerTests : IClassFixture<CustomWebApplicationFactory<
         var createDto = new CreateCountryDto
         {
             Name = "País Para Eliminar",
-            Code = "XX"
+            Code = "XX",
+            LanguageId = _languageEs
         };
         var createResponse = await _client.PostAsJsonAsync("/api/country", createDto);
         var createdCountry = await createResponse.Content.ReadFromJsonAsync<CountryDto>();

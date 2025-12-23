@@ -107,9 +107,9 @@ public class SetupService : ISetupService
             await CreateDatabaseAsync();
             result.Steps.Add("   ✓ Base de datos creada");
 
-            // Paso 6: Insertar datos maestros (países, provincias, ciudades, códigos postales)
-            result.Steps.Add("6. Insertando datos maestros de España...");
-            _logger.LogInformation("Insertando datos maestros de España...");
+            // Paso 6: Insertar idiomas maestros
+            result.Steps.Add("6. Insertando idiomas maestros...");
+            _logger.LogInformation("Insertando idiomas maestros...");
             
             try
             {
@@ -118,6 +118,12 @@ public class SetupService : ISetupService
                     var masterDataSeeder = new GesFer.Infrastructure.Services.MasterDataSeeder(
                         scope.ServiceProvider.GetRequiredService<ApplicationDbContext>(),
                         scope.ServiceProvider.GetRequiredService<ILogger<GesFer.Infrastructure.Services.MasterDataSeeder>>());
+                    await masterDataSeeder.SeedLanguagesAsync();
+                    result.Steps.Add("   ✓ Idiomas maestros insertados");
+
+                    // Paso 7: Insertar datos maestros de España
+                    result.Steps.Add("7. Insertando datos maestros de España...");
+                    _logger.LogInformation("Insertando datos maestros de España...");
                     await masterDataSeeder.SeedSpainDataAsync();
                 }
                 result.Steps.Add("   ✓ Datos maestros de España insertados");
@@ -129,8 +135,8 @@ public class SetupService : ISetupService
                 result.Steps.Add($"   ⚠ Advertencia: Error al insertar datos maestros: {ex.Message}");
             }
 
-            // Paso 7: Insertar datos iniciales (incluyendo usuarios)
-            result.Steps.Add("7. Insertando datos iniciales (empresa, grupos, permisos, usuarios, proveedores, clientes)...");
+            // Paso 8: Insertar datos iniciales (incluyendo usuarios)
+            result.Steps.Add("8. Insertando datos iniciales (empresa, grupos, permisos, usuarios, proveedores, clientes)...");
             _logger.LogInformation("Insertando datos iniciales...");
             
             var seedResult = await SeedInitialDataAsync();
@@ -145,8 +151,8 @@ public class SetupService : ISetupService
                 result.Steps.Add("   ✓ Datos iniciales insertados (empresa, grupos, permisos, usuarios, proveedores, clientes)");
             }
 
-            // Paso 8: Verificar que los usuarios se insertaron correctamente
-            result.Steps.Add("8. Verificando usuarios insertados...");
+            // Paso 9: Verificar que los usuarios se insertaron correctamente
+            result.Steps.Add("9. Verificando usuarios insertados...");
             _logger.LogInformation("Verificando usuarios insertados...");
             
             var verifyResult = await VerifyUsersInsertedAsync();
@@ -531,6 +537,7 @@ public class SetupService : ISetupService
                 StateId = madridState?.Id,
                 CityId = madridCity?.Id,
                 PostalCodeId = madridPostalCode?.Id,
+                LanguageId = spain?.LanguageId ?? Guid.Parse("10000000-0000-0000-0000-000000000001"),
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
             };
@@ -663,6 +670,7 @@ public class SetupService : ISetupService
                 StateId = madridState?.Id,
                 CityId = madridCity?.Id,
                 PostalCodeId = madridPostalCode?.Id,
+                LanguageId = spain?.LanguageId ?? company.LanguageId,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
             };

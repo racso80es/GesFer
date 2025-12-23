@@ -44,6 +44,11 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponseDt
         // Obtener todos los permisos del usuario (directos + de grupos)
         var permissions = await _authService.GetUserPermissionsAsync(user.Id);
 
+        var resolvedLanguageId = user.LanguageId
+            ?? user.Company!.LanguageId
+            ?? user.Company.Country?.LanguageId
+            ?? user.Country?.LanguageId;
+
         return new LoginResponseDto
         {
             UserId = user.Id,
@@ -52,6 +57,10 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponseDt
             LastName = user.LastName,
             CompanyId = user.CompanyId,
             CompanyName = user.Company.Name,
+            UserLanguageId = user.LanguageId,
+            CompanyLanguageId = user.Company.LanguageId,
+            CountryLanguageId = user.Company.Country?.LanguageId ?? user.Country?.LanguageId,
+            EffectiveLanguageId = resolvedLanguageId,
             Permissions = permissions.ToList(),
             Token = string.Empty // Para futura implementación de JWT
         };

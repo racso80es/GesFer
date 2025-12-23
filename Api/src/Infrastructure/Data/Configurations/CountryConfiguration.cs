@@ -20,6 +20,14 @@ public class CountryConfiguration : IEntityTypeConfiguration<Country>
             .IsRequired()
             .HasMaxLength(3);
 
+        builder.Property(c => c.LanguageId)
+            .IsRequired();
+
+        builder.HasOne(c => c.Language)
+            .WithMany(l => l.Countries)
+            .HasForeignKey(c => c.LanguageId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         // Relaciones
         builder.HasMany(c => c.States)
             .WithOne(s => s.Country)
@@ -30,6 +38,7 @@ public class CountryConfiguration : IEntityTypeConfiguration<Country>
         builder.HasIndex(c => c.Code)
             .IsUnique();
         builder.HasIndex(c => c.Name);
+        builder.HasIndex(c => c.LanguageId);
     }
 }
 

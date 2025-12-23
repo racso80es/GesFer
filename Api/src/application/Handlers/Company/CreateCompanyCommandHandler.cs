@@ -58,6 +58,29 @@ public class CreateCompanyCommandHandler : ICommandHandler<CreateCompanyCommand,
                 throw new InvalidOperationException($"No se encontró el país con ID {command.Dto.CountryId.Value}");
         }
 
+        // Idioma: si no se especifica, tomar el del país si existe; si no, usar español por defecto
+        Guid? languageId = command.Dto.LanguageId;
+        if (languageId.HasValue)
+        {
+            var languageExists = await _context.Languages.AnyAsync(l => l.Id == languageId.Value && l.DeletedAt == null, cancellationToken);
+            if (!languageExists)
+                throw new InvalidOperationException($"No se encontró el idioma con ID {languageId.Value}");
+        }
+        else if (command.Dto.CountryId.HasValue)
+        {
+            languageId = await _context.Countries
+                .Where(c => c.Id == command.Dto.CountryId.Value && c.DeletedAt == null)
+                .Select(c => (Guid?)c.LanguageId)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+        else
+        {
+            languageId = await _context.Languages
+                .Where(l => l.Code == "es" && l.DeletedAt == null)
+                .Select(l => (Guid?)l.Id)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         var company = new GesFer.Domain.Entities.Company
         {
             Name = command.Dto.Name,
@@ -69,6 +92,7 @@ public class CreateCompanyCommandHandler : ICommandHandler<CreateCompanyCommand,
             CityId = command.Dto.CityId,
             StateId = command.Dto.StateId,
             CountryId = command.Dto.CountryId,
+            LanguageId = languageId,
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         };
@@ -88,6 +112,7 @@ public class CreateCompanyCommandHandler : ICommandHandler<CreateCompanyCommand,
             CityId = company.CityId,
             StateId = company.StateId,
             CountryId = company.CountryId,
+            LanguageId = company.LanguageId,
             IsActive = company.IsActive,
             CreatedAt = company.CreatedAt,
             UpdatedAt = company.UpdatedAt

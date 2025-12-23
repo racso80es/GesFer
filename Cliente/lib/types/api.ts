@@ -12,6 +12,10 @@ export interface LoginResponse {
   lastName: string;
   companyId: string;
   companyName: string;
+   userLanguageId?: string;
+   companyLanguageId?: string;
+   countryLanguageId?: string;
+   effectiveLanguageId?: string;
   permissions: string[];
   token: string;
 }
@@ -31,6 +35,7 @@ export interface User {
   cityId?: string;
   stateId?: string;
   countryId?: string;
+  languageId?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt?: string;
@@ -49,6 +54,7 @@ export interface CreateUser {
   cityId?: string;
   stateId?: string;
   countryId?: string;
+  languageId?: string;
 }
 
 export interface UpdateUser {
@@ -63,6 +69,7 @@ export interface UpdateUser {
   cityId?: string;
   stateId?: string;
   countryId?: string;
+  languageId?: string;
   isActive: boolean;
 }
 
@@ -141,6 +148,7 @@ export interface Country {
   id: string;
   name: string;
   code?: string;
+  languageId: string;
   isActive: boolean;
   createdAt: string;
   updatedAt?: string;
@@ -169,6 +177,7 @@ export interface Company {
   cityId?: string;
   stateId?: string;
   countryId?: string;
+  languageId?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt?: string;
@@ -184,6 +193,7 @@ export interface CreateCompany {
   cityId?: string;
   stateId?: string;
   countryId?: string;
+  languageId?: string;
 }
 
 export interface UpdateCompany {
@@ -196,6 +206,7 @@ export interface UpdateCompany {
   cityId?: string;
   stateId?: string;
   countryId?: string;
+  languageId?: string;
   isActive: boolean;
 }
 

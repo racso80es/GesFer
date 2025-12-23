@@ -32,10 +32,17 @@ public class CreateCountryCommandHandler : ICommandHandler<CreateCountryCommand,
         if (existingCountryByName != null)
             throw new InvalidOperationException($"Ya existe un país con el nombre '{command.Dto.Name}'");
 
+        // Validar idioma
+        var languageExists = await _context.Languages
+            .AnyAsync(l => l.Id == command.Dto.LanguageId && l.DeletedAt == null, cancellationToken);
+        if (!languageExists)
+            throw new InvalidOperationException($"No se encontró el idioma con ID {command.Dto.LanguageId}");
+
         var country = new GesFer.Domain.Entities.Country
         {
             Name = command.Dto.Name,
             Code = command.Dto.Code,
+            LanguageId = command.Dto.LanguageId,
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         };
@@ -48,6 +55,7 @@ public class CreateCountryCommandHandler : ICommandHandler<CreateCountryCommand,
             Id = country.Id,
             Name = country.Name,
             Code = country.Code,
+            LanguageId = country.LanguageId,
             IsActive = country.IsActive,
             CreatedAt = country.CreatedAt,
             UpdatedAt = country.UpdatedAt

@@ -41,6 +41,13 @@ public class AuthService : IAuthService
         // Buscar el usuario con la empresa cargada
         var user = await _context.Users
             .Include(u => u.Company)
+                .ThenInclude(c => c.Language)
+            .Include(u => u.Company)
+                .ThenInclude(c => c.Country)
+                    .ThenInclude(c => c.Language)
+            .Include(u => u.Country)
+                .ThenInclude(c => c.Language)
+            .Include(u => u.Language)
             .Where(u => u.Username == username
                 && u.CompanyId == company.Id
                 && u.IsActive
