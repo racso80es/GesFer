@@ -13,6 +13,7 @@ interface AuthContextType {
     contraseña: string;
   }) => Promise<void>;
   logout: () => void;
+  updateUser: (updatedUser: Partial<LoginResponse>) => void;
   isAuthenticated: boolean;
 }
 
@@ -49,6 +50,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   };
 
+  const updateUser = (updatedUser: Partial<LoginResponse>) => {
+    if (user) {
+      const newUser = { ...user, ...updatedUser };
+      setUser(newUser);
+      // Actualizar también en localStorage y cookies
+      if (typeof window !== "undefined") {
+        localStorage.setItem("auth_user", JSON.stringify(newUser));
+        document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(newUser))}; path=/; max-age=86400`;
+      }
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -56,6 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         login,
         logout,
+        updateUser,
         isAuthenticated: !!user,
       }}
     >

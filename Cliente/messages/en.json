@@ -33,5 +33,35 @@
     "users": "Users",
     "companies": "Companies",
     "customers": "Customers"
+  },
+  "users": {
+    "title": "Users",
+    "subtitle": "Manage system users",
+    "newUser": "New User",
+    "createUser": "Create New User",
+    "createDescription": "Complete the form to create a new user",
+    "editUser": "Edit User",
+    "editDescription": "Modify user information",
+    "listTitle": "User List",
+    "listDescription": "{count} user(s) found",
+    "noUsers": "No registered users",
+    "createFirst": "Create First User",
+    "loading": "Loading users...",
+    "error": "Error loading users",
+    "table": {
+      "username": "Username",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company",
+      "status": "Status",
+      "actions": "Actions",
+      "view": "View details",
+      "edit": "Edit",
+      "delete": "Delete",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "deleteConfirm": "Are you sure you want to delete this user?"
   }
 }

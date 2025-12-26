@@ -2,14 +2,16 @@ import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { defaultLocale, locales, type Locale } from './i18n';
 
-// Mapeo de languageId a locale
-// Si los languageId son códigos como 'es', 'en', 'ca', este mapeo los mantiene igual
-// Si son IDs numéricos, necesitarías un mapeo desde la API
+// Mapeo de languageId (Guids) a locale
+// Estos son los IDs fijos de los idiomas según seed-data.sql
 const languageIdToLocale: Record<string, Locale> = {
+  '10000000-0000-0000-0000-000000000001': 'es', // Español
+  '10000000-0000-0000-0000-000000000002': 'en', // English
+  '10000000-0000-0000-0000-000000000003': 'ca', // Català
+  // También soportar códigos directos por compatibilidad
   'es': 'es',
   'en': 'en',
   'ca': 'ca',
-  // Agregar más mapeos si los languageId son diferentes (ej: '1': 'es', '2': 'en', etc.)
 };
 
 function getLocaleFromUser(request: NextRequest): Locale | null {
@@ -33,7 +35,7 @@ function getLocaleFromUser(request: NextRequest): Locale | null {
           return languageId as Locale;
         }
         
-        // Si es un ID numérico u otro formato, usar el mapeo
+        // Si es un Guid u otro formato, usar el mapeo
         const locale = languageIdToLocale[languageId];
         if (locale && locales.includes(locale)) {
           return locale;

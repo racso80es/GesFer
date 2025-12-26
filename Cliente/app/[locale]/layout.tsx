@@ -29,13 +29,13 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  // Cargar mensajes para el locale
-  const messages = await getMessages();
+  // Cargar mensajes para el locale específico
+  const messages = await getMessages({ locale });
 
   return (
     <html lang={locale}>
       <body className={inter.className}>
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <QueryProvider>
             <AuthProvider>{children}</AuthProvider>
           </QueryProvider>

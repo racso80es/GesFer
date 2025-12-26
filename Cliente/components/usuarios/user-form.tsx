@@ -41,7 +41,7 @@ export function UserForm({
           cityId: user?.cityId,
           stateId: user?.stateId,
           countryId: user?.countryId,
-          languageId: user?.languageId || "",
+          languageId: user?.languageId || undefined,
           isActive: user.isActive,
         } as UpdateUser)
       : ({
@@ -53,16 +53,27 @@ export function UserForm({
           email: "",
           phone: "",
           address: "",
-          languageId: "",
+          languageId: undefined,
         } as CreateUser)
   );
 
-  // Opciones de idioma disponibles
+  // Opciones de idioma disponibles (mapeo de códigos a Guids según seed-data.sql)
+  // Estos son los IDs fijos de los idiomas en la base de datos
   const languageOptions = [
-    { value: "es", label: "Español" },
-    { value: "en", label: "English" },
-    { value: "ca", label: "Català" },
+    { value: "10000000-0000-0000-0000-000000000001", label: "Español", code: "es" },
+    { value: "10000000-0000-0000-0000-000000000002", label: "English", code: "en" },
+    { value: "10000000-0000-0000-0000-000000000003", label: "Català", code: "ca" },
   ];
+  
+  // Función para obtener el Guid del idioma desde el código o mantener el Guid si ya lo es
+  const getLanguageId = (value: string | undefined): string | undefined => {
+    if (!value) return undefined;
+    // Si ya es un Guid (contiene guiones), devolverlo tal cual
+    if (value.includes("-")) return value;
+    // Si es un código, buscar el Guid correspondiente
+    const option = languageOptions.find(opt => opt.code === value);
+    return option?.value || undefined;
+  };
 
   // Asegurar que companyId siempre sea el del usuario logueado (solo para creación)
   useEffect(() => {
@@ -110,12 +121,20 @@ export function UserForm({
     }
 
     try {
+      // Preparar los datos para enviar
+      const dataToSubmit = { ...formData };
+      
+      // Asegurar que languageId sea undefined si está vacío
+      if (!dataToSubmit.languageId || dataToSubmit.languageId === "") {
+        dataToSubmit.languageId = undefined;
+      }
+      
       // Si es edición y no hay password, no lo incluimos
-      if (isEditing && !formData.password) {
-        const { password, ...updateData } = formData as UpdateUser;
+      if (isEditing && !dataToSubmit.password) {
+        const { password, ...updateData } = dataToSubmit as UpdateUser;
         await onSubmit(updateData);
       } else {
-        await onSubmit(formData);
+        await onSubmit(dataToSubmit);
       }
     } catch (error) {
       setSubmitError(
@@ -270,9 +289,11 @@ export function UserForm({
           <select
             id="languageId"
             value={formData.languageId || ""}
-            onChange={(e) =>
-              setFormData({ ...formData, languageId: e.target.value || undefined })
-            }
+            onChange={(e) => {
+              const selectedValue = e.target.value;
+              const languageId = getLanguageId(selectedValue);
+              setFormData({ ...formData, languageId });
+            }}
             disabled={isLoading}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >

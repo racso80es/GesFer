@@ -33,6 +33,36 @@
     "users": "Usuaris",
     "companies": "Empreses",
     "customers": "Clients"
+  },
+  "users": {
+    "title": "Usuaris",
+    "subtitle": "Gestiona els usuaris del sistema",
+    "newUser": "Nou Usuari",
+    "createUser": "Crear Nou Usuari",
+    "createDescription": "Completa el formulari per crear un nou usuari",
+    "editUser": "Editar Usuari",
+    "editDescription": "Modifica la informació de l'usuari",
+    "listTitle": "Llista d'Usuaris",
+    "listDescription": "{count} usuari(s) trobat(s)",
+    "noUsers": "No hi ha usuaris registrats",
+    "createFirst": "Crear Primer Usuari",
+    "loading": "Carregant usuaris...",
+    "error": "Error en carregar els usuaris",
+    "table": {
+      "username": "Usuari",
+      "name": "Nom",
+      "email": "Correu electrònic",
+      "phone": "Telèfon",
+      "company": "Empresa",
+      "status": "Estat",
+      "actions": "Accions",
+      "view": "Veure detall",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "active": "Actiu",
+      "inactive": "Inactiu"
+    },
+    "deleteConfirm": "Estàs segur que vols eliminar aquest usuari?"
   }
 }
 

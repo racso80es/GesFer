@@ -33,5 +33,35 @@
     "users": "Usuarios",
     "companies": "Empresas",
     "customers": "Clientes"
+  },
+  "users": {
+    "title": "Usuarios",
+    "subtitle": "Gestiona los usuarios del sistema",
+    "newUser": "Nuevo Usuario",
+    "createUser": "Crear Nuevo Usuario",
+    "createDescription": "Completa el formulario para crear un nuevo usuario",
+    "editUser": "Editar Usuario",
+    "editDescription": "Modifica la información del usuario",
+    "listTitle": "Lista de Usuarios",
+    "listDescription": "{count} usuario(s) encontrado(s)",
+    "noUsers": "No hay usuarios registrados",
+    "createFirst": "Crear Primer Usuario",
+    "loading": "Cargando usuarios...",
+    "error": "Error al cargar los usuarios",
+    "table": {
+      "username": "Usuario",
+      "name": "Nombre",
+      "email": "Email",
+      "phone": "Teléfono",
+      "company": "Empresa",
+      "status": "Estado",
+      "actions": "Acciones",
+      "view": "Ver detalle",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "active": "Activo",
+      "inactive": "Inactivo"
+    },
+    "deleteConfirm": "¿Estás seguro de que deseas eliminar este usuario?"
   }
 }
