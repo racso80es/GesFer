@@ -54,12 +54,14 @@ const httpRequest = (targetUrl: string, options?: { method?: string; headers?: R
 };
 
 describe("Auditoría de integridad API + Cliente", () => {
-  it("API: health responde healthy y login funciona con credenciales demo", async () => {
+  it("API: health responde healthy", async () => {
     const healthResp = await httpRequest(`${API_URL}/api/health`);
     expect(healthResp.status).toBe(200);
     const healthJson = JSON.parse(healthResp.body) as { status?: string };
     expect(healthJson.status).toBe("healthy");
+  });
 
+  it("API: login funciona correctamente con credenciales demo", async () => {
     const loginResp = await httpRequest(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -70,11 +72,164 @@ describe("Auditoría de integridad API + Cliente", () => {
       }),
     });
 
+    // El test DEBE fallar si el login no funciona
     expect(loginResp.status).toBe(200);
-    const loginJson = JSON.parse(loginResp.body) as { username?: string; token?: string };
+    
+    const loginJson = JSON.parse(loginResp.body) as { 
+      username?: string; 
+      token?: string;
+      userId?: string;
+      companyName?: string;
+    };
+    
     expect(loginJson.username).toBe("admin");
+    expect(loginJson.userId).toBeDefined();
+    expect(loginJson.companyName).toBe("Empresa Demo");
     // El token puede venir vacío en entorno local, solo verificamos que exista la clave
     expect(loginJson).toHaveProperty("token");
+  });
+
+  it("API: test de integridad completo de login con datos de prueba", async () => {
+    // Verificar primero que la API esté disponible
+    let healthResp: HttpResult;
+    try {
+      healthResp = await httpRequest(`${API_URL}/api/health`);
+    } catch (error) {
+      throw new Error(
+        `La API no está disponible en ${API_URL}. ` +
+        `Asegúrate de que la API esté ejecutándose antes de correr este test. ` +
+        `Error: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+
+    if (healthResp.status !== 200) {
+      throw new Error(
+        `La API no está respondiendo correctamente. ` +
+        `Health check devolvió status ${healthResp.status}. ` +
+        `Asegúrate de que la API esté ejecutándose y que la base de datos tenga los datos de prueba.`
+      );
+    }
+
+    // Datos de usuario de prueba
+    const testCredentials = {
+      empresa: "Empresa Demo",
+      usuario: "admin",
+      contraseña: "admin123",
+    };
+
+    // 1. Realizar login
+    let loginResp: HttpResult;
+    try {
+      const requestBody = JSON.stringify(testCredentials);
+      loginResp = await httpRequest(`${API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: requestBody,
+      });
+    } catch (error) {
+      throw new Error(
+        `Error al conectar con el endpoint de login: ${error instanceof Error ? error.message : String(error)}. ` +
+        `Verifica que la API esté ejecutándose en ${API_URL}`
+      );
+    }
+
+    // Verificar que el login fue exitoso
+    if (loginResp.status !== 200) {
+      let errorMessage = `Login falló con status ${loginResp.status}.`;
+      try {
+        const errorBody = JSON.parse(loginResp.body);
+        errorMessage += ` Mensaje: ${errorBody.message || loginResp.body}`;
+      } catch {
+        errorMessage += ` Respuesta: ${loginResp.body.substring(0, 200)}`;
+      }
+      errorMessage += `\n\nAsegúrate de que:\n`;
+      errorMessage += `1. La API esté ejecutándose en ${API_URL}\n`;
+      errorMessage += `2. La base de datos tenga los datos de prueba (ejecuta el script seed-data.sql)\n`;
+      errorMessage += `3. Las credenciales sean correctas: empresa="${testCredentials.empresa}", usuario="${testCredentials.usuario}"`;
+      throw new Error(errorMessage);
+    }
+    expect(loginResp.status).toBe(200);
+    expect(loginResp.body).toBeTruthy();
+
+    // 2. Parsear y validar la respuesta completa
+    const loginJson = JSON.parse(loginResp.body) as {
+      userId?: string;
+      username?: string;
+      firstName?: string;
+      lastName?: string;
+      companyId?: string;
+      companyName?: string;
+      permissions?: string[];
+      token?: string;
+    };
+
+    // Verificar que todos los campos requeridos están presentes
+    expect(loginJson.userId).toBeDefined();
+    expect(loginJson.userId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
+    
+    expect(loginJson.username).toBe("admin");
+    expect(loginJson.firstName).toBeDefined();
+    expect(loginJson.lastName).toBeDefined();
+    
+    expect(loginJson.companyId).toBeDefined();
+    expect(loginJson.companyId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
+    expect(loginJson.companyName).toBe("Empresa Demo");
+    
+    // Verificar que los permisos están presentes y es un array
+    expect(loginJson.permissions).toBeDefined();
+    expect(Array.isArray(loginJson.permissions)).toBe(true);
+    expect(loginJson.permissions!.length).toBeGreaterThan(0);
+    
+    // Verificar que el token existe (puede estar vacío en desarrollo)
+    expect(loginJson).toHaveProperty("token");
+    
+    // 3. Verificar que los permisos esperados están presentes
+    const expectedPermissions = ["users.read", "users.write", "articles.read", "articles.write", "purchases.read"];
+    const hasExpectedPermissions = expectedPermissions.some(perm => 
+      loginJson.permissions!.includes(perm)
+    );
+    expect(hasExpectedPermissions).toBe(true);
+
+    // 4. Intentar obtener permisos del usuario usando el endpoint de permisos
+    if (loginJson.userId) {
+      try {
+        const permissionsResp = await httpRequest(
+          `${API_URL}/api/auth/permissions/${loginJson.userId}`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        
+        // Si el endpoint existe y requiere autenticación, puede fallar sin token
+        // pero si funciona, verificamos que devuelva permisos
+        if (permissionsResp.status === 200) {
+          const permissionsJson = JSON.parse(permissionsResp.body) as string[];
+          expect(Array.isArray(permissionsJson)).toBe(true);
+        }
+      } catch (error) {
+        // Si el endpoint no está disponible o requiere autenticación, no fallar el test
+        console.warn("Endpoint de permisos no disponible o requiere autenticación");
+      }
+    }
+
+    // 5. Verificar que el login falla con credenciales incorrectas
+    const badLoginResp = await httpRequest(`${API_URL}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        empresa: "Empresa Demo",
+        usuario: "admin",
+        contraseña: "contraseña_incorrecta",
+      }),
+    });
+
+    expect(badLoginResp.status).toBe(401);
+    const badLoginJson = JSON.parse(badLoginResp.body) as { message?: string };
+    expect(badLoginJson.message).toBeDefined();
   });
 
   it("Cliente: la pantalla de login responde 200 y sirve HTML", async () => {

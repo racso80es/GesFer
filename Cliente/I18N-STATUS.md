@@ -107,3 +107,4 @@ format.dateTime(new Date(), { dateStyle: 'long' });
 4. Verificar que los textos se muestran en el idioma correcto
 5. Probar con usuarios sin idioma configurado (debe usar español)
 
+

@@ -28,3 +28,4 @@ public class LanguageConfiguration : IEntityTypeConfiguration<Language>
     }
 }
 
+

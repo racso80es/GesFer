@@ -8,7 +8,11 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
 {
     public void Configure(EntityTypeBuilder<Article> builder)
     {
-        builder.ToTable("Articles");
+        builder.ToTable("Articles", t =>
+        {
+            t.HasCheckConstraint("CK_Article_BuyPrice", "`BuyPrice` >= 0");
+            t.HasCheckConstraint("CK_Article_SellPrice", "`SellPrice` >= 0");
+        });
 
         builder.HasKey(a => a.Id);
 
@@ -35,10 +39,6 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
             .IsRequired()
             .HasPrecision(18, 4)
             .HasDefaultValue(0);
-
-        // Validaciones de negocio (sintaxis MySQL)
-        builder.HasCheckConstraint("CK_Article_BuyPrice", "`BuyPrice` >= 0");
-        builder.HasCheckConstraint("CK_Article_SellPrice", "`SellPrice` >= 0");
 
         // Relaciones
         builder.HasOne(a => a.Company)

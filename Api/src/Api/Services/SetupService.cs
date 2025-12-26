@@ -309,7 +309,7 @@ public class SetupService : ISetupService
                 "TariffItems", "Articles", "Suppliers", "Customers",
                 "UserGroups", "UserPermissions", "GroupPermissions", 
                 "Users", "Groups", "Permissions", "Families", "Tariffs", "Companies",
-                "PostalCodes", "Cities", "States", "Countries"
+                "PostalCodes", "Cities", "States", "Countries", "Languages"
             };
             foreach (var tableName in tablesToDrop)
             {
@@ -336,7 +336,7 @@ public class SetupService : ISetupService
             // Verificar que todas las tablas principales existan
             logger.LogInformation("Verificando que todas las tablas se crearon correctamente...");
             var tablesToCheck = new[] { 
-                "Countries", "States", "Cities", "PostalCodes",
+                "Languages", "Countries", "States", "Cities", "PostalCodes",
                 "Companies", "Users", "Groups", "Permissions", 
                 "UserGroups", "UserPermissions", "GroupPermissions",
                 "Families", "Articles", "Tariffs", "TariffItems",

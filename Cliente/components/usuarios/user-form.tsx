@@ -41,6 +41,7 @@ export function UserForm({
           cityId: user?.cityId,
           stateId: user?.stateId,
           countryId: user?.countryId,
+          languageId: user?.languageId || "",
           isActive: user.isActive,
         } as UpdateUser)
       : ({
@@ -52,8 +53,16 @@ export function UserForm({
           email: "",
           phone: "",
           address: "",
+          languageId: "",
         } as CreateUser)
   );
+
+  // Opciones de idioma disponibles
+  const languageOptions = [
+    { value: "es", label: "Español" },
+    { value: "en", label: "English" },
+    { value: "ca", label: "Català" },
+  ];
 
   // Asegurar que companyId siempre sea el del usuario logueado (solo para creación)
   useEffect(() => {
@@ -254,6 +263,29 @@ export function UserForm({
             }
             disabled={isLoading}
           />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="languageId">Idioma</Label>
+          <select
+            id="languageId"
+            value={formData.languageId || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, languageId: e.target.value || undefined })
+            }
+            disabled={isLoading}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="">Seleccionar idioma</option>
+            {languageOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {errors.languageId && (
+            <p className="text-sm text-destructive">{errors.languageId}</p>
+          )}
         </div>
 
         {isEditing && (

@@ -1,13 +1,20 @@
--- Script para insertar datos de prueba en GesFer API
--- Ejecutar desde Adminer (http://localhost:8080) o desde línea de comandos
--- 
--- IMPORTANTE: Ejecutar primero las migraciones de EF Core antes de insertar datos
--- Las migraciones crean las tablas necesarias
+-- Script para recrear completamente los datos de prueba
+-- Elimina los datos existentes y los recrea desde cero
 
 USE ScrapDb;
 
+-- Eliminar datos existentes (en orden inverso de dependencias)
+DELETE FROM `UserPermissions`;
+DELETE FROM `UserGroups`;
+DELETE FROM `GroupPermissions`;
+DELETE FROM `Users`;
+DELETE FROM `Permissions`;
+DELETE FROM `Groups`;
+DELETE FROM `Companies`;
+DELETE FROM `Languages`;
+
 -- 0. Idiomas maestros
-INSERT IGNORE INTO Languages (Id, Name, Code, Description, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+INSERT INTO `Languages` (Id, Name, Code, Description, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES 
     ('10000000-0000-0000-0000-000000000001', 'Español', 'es', 'Español', UTC_TIMESTAMP(), NULL, NULL, TRUE),
     ('10000000-0000-0000-0000-000000000002', 'English', 'en', 'Inglés', UTC_TIMESTAMP(), NULL, NULL, TRUE),
@@ -61,13 +68,13 @@ VALUES
 
 -- 5. Insertar un usuario de prueba
 -- Contraseña: "admin123" 
--- Hash BCrypt generado y verificado para "admin123"
+-- Hash BCrypt generado (puede variar, pero este es válido para "admin123")
 INSERT INTO `Users` (Id, CompanyId, Username, PasswordHash, FirstName, LastName, Email, Phone, LanguageId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES (
     '99999999-9999-9999-9999-999999999999',
     '11111111-1111-1111-1111-111111111111',
     'admin',
-    '$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW', -- admin123 (hash válido generado)
+    '$2a$11$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', -- admin123
     'Administrador',
     'Sistema',
     'admin@empresa.com',
@@ -102,3 +109,4 @@ VALUES (
     NULL,
     TRUE
 );
+

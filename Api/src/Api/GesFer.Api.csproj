@@ -24,6 +24,10 @@
     <InternalsVisibleTo Include="GesFer.IntegrationTests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="init-db.cs" />
+  </ItemGroup>
+
 </Project>
 
 

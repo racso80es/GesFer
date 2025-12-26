@@ -44,3 +44,4 @@ export function getLocaleFromUser(user: LoginResponse | null): Locale {
   return defaultLocale;
 }
 
+

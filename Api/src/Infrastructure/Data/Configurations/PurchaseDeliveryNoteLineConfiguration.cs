@@ -8,7 +8,11 @@ public class PurchaseDeliveryNoteLineConfiguration : IEntityTypeConfiguration<Pu
 {
     public void Configure(EntityTypeBuilder<PurchaseDeliveryNoteLine> builder)
     {
-        builder.ToTable("PurchaseDeliveryNoteLines");
+        builder.ToTable("PurchaseDeliveryNoteLines", t =>
+        {
+            t.HasCheckConstraint("CK_PurchaseDeliveryNoteLine_Quantity", "`Quantity` > 0");
+            t.HasCheckConstraint("CK_PurchaseDeliveryNoteLine_Price", "`Price` >= 0");
+        });
 
         builder.HasKey(pdnl => pdnl.Id);
 
@@ -31,9 +35,6 @@ public class PurchaseDeliveryNoteLineConfiguration : IEntityTypeConfiguration<Pu
         builder.Property(pdnl => pdnl.Total)
             .IsRequired()
             .HasPrecision(18, 4);
-
-        builder.HasCheckConstraint("CK_PurchaseDeliveryNoteLine_Quantity", "`Quantity` > 0");
-        builder.HasCheckConstraint("CK_PurchaseDeliveryNoteLine_Price", "`Price` >= 0");
 
         // Relaciones
         builder.HasOne(pdnl => pdnl.PurchaseDeliveryNote)

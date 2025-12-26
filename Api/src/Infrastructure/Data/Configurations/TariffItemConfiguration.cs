@@ -8,15 +8,16 @@ public class TariffItemConfiguration : IEntityTypeConfiguration<TariffItem>
 {
     public void Configure(EntityTypeBuilder<TariffItem> builder)
     {
-        builder.ToTable("TariffItems");
+        builder.ToTable("TariffItems", t =>
+        {
+            t.HasCheckConstraint("CK_TariffItem_Price", "`Price` >= 0");
+        });
 
         builder.HasKey(ti => ti.Id);
 
         builder.Property(ti => ti.Price)
             .IsRequired()
             .HasPrecision(18, 4);
-
-        builder.HasCheckConstraint("CK_TariffItem_Price", "`Price` >= 0");
 
         // Relaciones
         builder.HasOne(ti => ti.Tariff)

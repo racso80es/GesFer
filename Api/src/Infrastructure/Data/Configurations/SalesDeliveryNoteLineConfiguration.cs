@@ -8,7 +8,11 @@ public class SalesDeliveryNoteLineConfiguration : IEntityTypeConfiguration<Sales
 {
     public void Configure(EntityTypeBuilder<SalesDeliveryNoteLine> builder)
     {
-        builder.ToTable("SalesDeliveryNoteLines");
+        builder.ToTable("SalesDeliveryNoteLines", t =>
+        {
+            t.HasCheckConstraint("CK_SalesDeliveryNoteLine_Quantity", "`Quantity` > 0");
+            t.HasCheckConstraint("CK_SalesDeliveryNoteLine_Price", "`Price` >= 0");
+        });
 
         builder.HasKey(sdnl => sdnl.Id);
 
@@ -31,9 +35,6 @@ public class SalesDeliveryNoteLineConfiguration : IEntityTypeConfiguration<Sales
         builder.Property(sdnl => sdnl.Total)
             .IsRequired()
             .HasPrecision(18, 4);
-
-        builder.HasCheckConstraint("CK_SalesDeliveryNoteLine_Quantity", "`Quantity` > 0");
-        builder.HasCheckConstraint("CK_SalesDeliveryNoteLine_Price", "`Price` >= 0");
 
         // Relaciones
         builder.HasOne(sdnl => sdnl.SalesDeliveryNote)

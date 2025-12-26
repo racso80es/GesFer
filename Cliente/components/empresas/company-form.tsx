@@ -31,8 +31,16 @@ export function CompanyForm({
     cityId: company?.cityId,
     stateId: company?.stateId,
     countryId: company?.countryId,
+    languageId: company?.languageId || "",
     ...(isEditing && { isActive: company.isActive }),
   });
+
+  // Opciones de idioma disponibles
+  const languageOptions = [
+    { value: "es", label: "Español" },
+    { value: "en", label: "English" },
+    { value: "ca", label: "Català" },
+  ];
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -152,6 +160,29 @@ export function CompanyForm({
           />
           {errors.address && (
             <p className="text-sm text-destructive">{errors.address}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="languageId">Idioma</Label>
+          <select
+            id="languageId"
+            value={formData.languageId || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, languageId: e.target.value || undefined })
+            }
+            disabled={isLoading}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="">Seleccionar idioma</option>
+            {languageOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {errors.languageId && (
+            <p className="text-sm text-destructive">{errors.languageId}</p>
           )}
         </div>
 
