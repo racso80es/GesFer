@@ -108,3 +108,4 @@ format.dateTime(new Date(), { dateStyle: 'long' });
 5. Probar con usuarios sin idioma configurado (debe usar español)
 
 
+

@@ -1,0 +1,1279 @@
+======================================== 
+Ejecucion de Tests GesFer 
+Fecha: 27/12/2025 10:36:13,96 
+======================================== 
+ 
+[1/3] Verificando rutas... 
+   Rutas verificadas 
+ 
+[2/3] Ejecutando tests del Cliente... 
+======================================== 
+TESTS DEL CLIENTE 
+======================================== 
+ 
+   Ejecutando todos los tests (incluyendo integridad)... 
+ 
+
+> gesfer-cliente@0.1.0 test:all
+> jest --coverage --verbose
+
+PASS __tests__/lib/api/client.test.ts
+  ApiClient
+    GET requests
+      √ should make GET request successfully (22 ms)
+      √ should handle GET request with query parameters (4 ms)
+    POST requests
+      √ should make POST request with data (3 ms)
+    Error handling
+      √ should throw error on failed request (15 ms)
+      √ should handle network errors (5 ms)
+    Authentication
+      √ should include Authorization header when token exists (2 ms)
+
+PASS __tests__/lib/api/companies.test.ts
+  companiesApi
+    getAll
+      √ should fetch all companies (19 ms)
+    getById
+      √ should fetch company by id (2 ms)
+    create
+      √ should create a new company (2 ms)
+    update
+      √ should update an existing company (2 ms)
+    delete
+      √ should delete a company (1 ms)
+
+PASS __tests__/lib/utils/id-validation.test.ts
+  id-validation
+    isValidGuid
+      √ debe validar GUIDs correctos (17 ms)
+      √ debe rechazar GUIDs incorrectos (3 ms)
+    sanitizeId
+      √ debe sanitizar IDs válidos correctamente (1 ms)
+      √ debe retornar null para IDs inválidos (2 ms)
+    validateId
+      √ debe validar y retornar IDs válidos (2 ms)
+      √ debe lanzar error para IDs inválidos (33 ms)
+
+PASS __tests__/integration/api-contracts.test.ts
+  Contratos API - Verificación de Interfaces
+    Contrato: Usuarios API
+      √ debe cumplir contrato de CreateUser (18 ms)
+      √ debe cumplir contrato de UpdateUser (2 ms)
+      √ debe retornar array de User en getAll (1 ms)
+    Contrato: Empresas API
+      √ debe cumplir contrato de CreateCompany (3 ms)
+      √ debe cumplir contrato de UpdateCompany (1 ms)
+    Contrato: Autenticación API
+      √ debe cumplir contrato de LoginResponse (2 ms)
+    Validación de Tipos
+      √ debe validar que los IDs son strings (1 ms)
+      √ debe validar que las fechas son strings ISO (1 ms)
+      √ debe validar que los campos opcionales pueden ser undefined (1 ms)
+
+PASS __tests__/utils/cn.test.ts
+  cn utility
+    √ should merge class names correctly (22 ms)
+    √ should handle conditional classes (2 ms)
+    √ should handle undefined and null values (1 ms)
+    √ should override conflicting Tailwind classes (1 ms)
+
+  console.warn
+    No se pudo obtener token de autenticación. Algunos tests pueden fallar.
+
+       98 |       expect(authToken).toBeTruthy();
+       99 |     } catch (error) {
+    > 100 |       console.warn("No se pudo obtener token de autenticación. Algunos tests pueden fallar.");
+          |               ^
+      101 |       // Continuar de todas formas para que los tests que no requieren auth puedan ejecutarse
+      102 |     }
+      103 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:100:15)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      146 |     it("debe rechazar actualización con ID mal formateado (contiene caracteres inválidos)", async () => {
+      147 |       if (!authToken) {
+    > 148 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      149 |         return;
+      150 |       }
+      151 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:148:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      178 |     it("debe validar que el ID de empresa sea un GUID válido antes de actualizar", async () => {
+      179 |       if (!authToken) {
+    > 180 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      181 |         return;
+      182 |       }
+      183 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:180:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      210 |     it("debe rechazar actualización con ID que contiene caracteres especiales", async () => {
+      211 |       if (!authToken) {
+    > 212 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      213 |         return;
+      214 |       }
+      215 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:212:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      242 |     it("debe rechazar actualización con ID mal formateado (contiene caracteres inválidos)", async () => {
+      243 |       if (!authToken) {
+    > 244 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      245 |         return;
+      246 |       }
+      247 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:244:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      275 |     it("debe validar que el ID de usuario sea un GUID válido antes de actualizar", async () => {
+      276 |       if (!authToken) {
+    > 277 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      278 |         return;
+      279 |       }
+      280 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:277:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      308 |     it("debe rechazar actualización con ID que contiene caracteres especiales", async () => {
+      309 |       if (!authToken) {
+    > 310 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      311 |         return;
+      312 |       }
+      313 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:310:17)
+
+PASS __tests__/integration/integrity.test.tsx
+  Tests de Integridad - Auditoría Completa
+    1. Integridad de Autenticación
+      √ debe realizar login completo y guardar credenciales (16 ms)
+      √ debe manejar errores de autenticación correctamente (19 ms)
+      √ debe realizar logout y limpiar almacenamiento (2 ms)
+    2. Integridad CRUD de Usuarios
+      √ debe listar todos los usuarios correctamente (5 ms)
+      √ debe obtener un usuario por ID (3 ms)
+      √ debe crear un nuevo usuario (2 ms)
+      √ debe actualizar un usuario existente (2 ms)
+      √ debe eliminar un usuario (1 ms)
+      √ debe manejar errores en operaciones CRUD (2 ms)
+    3. Integridad CRUD de Empresas
+      √ debe listar todas las empresas (2 ms)
+      √ debe obtener una empresa por ID (1 ms)
+      √ debe crear una nueva empresa (1 ms)
+      √ debe actualizar una empresa existente (1 ms)
+      √ debe eliminar una empresa (1 ms)
+    4. Integridad del Cliente API
+      √ debe incluir token de autenticación en peticiones (1 ms)
+      √ debe manejar errores de red correctamente (1 ms)
+      √ debe manejar respuestas de error HTTP (9 ms)
+    5. Integridad de Flujos Completos
+      √ debe completar flujo completo de creación de usuario (1 ms)
+      √ debe completar flujo completo de edición de empresa (1 ms)
+      √ debe completar flujo completo de eliminación (2 ms)
+    6. Integridad de Validaciones
+      √ debe validar que companyId es requerido al crear usuario (2 ms)
+      √ debe validar formato de email (7 ms)
+    7. Integridad de Manejo de Errores
+      √ debe manejar errores 404 correctamente (1 ms)
+      √ debe manejar errores 500 del servidor (2 ms)
+      √ debe manejar errores de conexión (1 ms)
+    8. Integridad de Estado y Caché
+      √ debe invalidar caché después de crear usuario (6 ms)
+
+PASS __tests__/integration/id-validation.test.ts
+  Validación de IDs en peticiones API
+    Empresas - Validación de IDs
+      √ debe rechazar actualización con ID mal formateado (contiene caracteres inválidos) (21 ms)
+      √ debe validar que el ID de empresa sea un GUID válido antes de actualizar (4 ms)
+      √ debe rechazar actualización con ID que contiene caracteres especiales (4 ms)
+    Usuarios - Validación de IDs
+      √ debe rechazar actualización con ID mal formateado (contiene caracteres inválidos) (4 ms)
+      √ debe validar que el ID de usuario sea un GUID válido antes de actualizar (4 ms)
+      √ debe rechazar actualización con ID que contiene caracteres especiales (10 ms)
+
+PASS __tests__/lib/api/id-validation-api.test.ts
+  Validación de IDs en APIs
+    companiesApi
+      √ debe validar ID antes de getById (23 ms)
+      √ debe validar ID antes de update (3 ms)
+      √ debe validar ID antes de delete (2 ms)
+      √ debe permitir operaciones con IDs válidos (3 ms)
+    usersApi
+      √ debe validar ID antes de getById (4 ms)
+      √ debe validar ID antes de update (3 ms)
+      √ debe validar ID antes de delete (2 ms)
+      √ debe validar companyId en getAll (5 ms)
+      √ debe permitir operaciones con IDs válidos (2 ms)
+
+  console.warn
+    No se pudo obtener token de autenticación. Algunos tests pueden fallar.
+
+      107 |       expect(authToken).toBeTruthy();
+      108 |     } catch (error) {
+    > 109 |       console.warn("No se pudo obtener token de autenticación. Algunos tests pueden fallar.");
+          |               ^
+      110 |     }
+      111 |   });
+      112 |
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:109:15)
+
+PASS __tests__/integration/language-id-integrity.test.ts
+  Integridad: Manejo de languageId en formularios
+    Empresas - Manejo de languageId
+      √ debe crear una empresa con languageId específico (Guid) (40 ms)
+      √ debe actualizar una empresa estableciendo languageId a null (por defecto) (36 ms)
+      √ debe actualizar una empresa sin enviar languageId (undefined) (38 ms)
+      √ debe rechazar languageId inválido (código de idioma en lugar de Guid) (5 ms)
+      √ debe cambiar languageId de un idioma a otro (52 ms)
+    Usuarios - Manejo de languageId
+      √ debe crear un usuario con languageId específico (Guid) (219 ms)
+      √ debe actualizar un usuario estableciendo languageId a null (por defecto) (24 ms)
+      √ debe actualizar un usuario sin enviar languageId (undefined) (27 ms)
+      √ debe rechazar languageId inválido (código de idioma en lugar de Guid) (3 ms)
+      √ debe cambiar languageId de un idioma a otro (49 ms)
+
+PASS __tests__/integration/users-companies-integrity.test.ts
+  Integridad E2E: Usuarios y Empresas
+    Empresas - Flujo completo
+      √ debe listar todas las empresas (17 ms)
+      √ debe crear una empresa correctamente (20 ms)
+      √ debe obtener la empresa creada (10 ms)
+      √ debe editar una empresa correctamente (22 ms)
+      √ debe verificar que la empresa se editó correctamente (6 ms)
+      √ debe eliminar una empresa correctamente (26 ms)
+    Usuarios - Flujo completo
+      √ debe listar todos los usuarios (8 ms)
+      √ debe crear un usuario correctamente (217 ms)
+      √ debe obtener el usuario creado (9 ms)
+      √ debe editar un usuario correctamente (23 ms)
+      √ debe verificar que el usuario se editó correctamente (11 ms)
+      √ debe eliminar un usuario correctamente (24 ms)
+
+PASS __tests__/integration/e2e-flows.test.tsx
+  Flujos E2E - Interacciones Completas
+    Flujo E2E: Gestión Completa de Usuarios
+      √ debe completar flujo completo de operaciones CRUD de usuarios (24 ms)
+      √ debe manejar errores en operaciones de usuarios (12 ms)
+    Flujo E2E: Gestión Completa de Empresas
+      √ debe completar flujo completo de operaciones CRUD de empresas (2 ms)
+      √ debe manejar lista vacía de empresas
+    Flujo E2E: Autenticación y Navegación
+      √ debe mantener sesión después de login (1 ms)
+
+PASS __tests__/integration/system-integrity.test.ts
+  Auditoría de integridad API + Cliente
+    √ API: health responde healthy (58 ms)
+    √ API: login funciona correctamente con credenciales demo (260 ms)
+    √ API: test de integridad completo de login con datos de prueba (458 ms)
+    √ Cliente: la pantalla de login responde 200 y sirve HTML (130 ms)
+
+PASS __tests__/components/ui/button.test.tsx
+  Button Component
+    √ should render button with text (84 ms)
+    √ should handle click events (63 ms)
+    √ should be disabled when disabled prop is true (9 ms)
+    √ should apply variant classes (6 ms)
+    √ should apply size classes (6 ms)
+
+PASS __tests__/components/ui/input.test.tsx
+  Input Component
+    √ should render input element (43 ms)
+    √ should handle user input (239 ms)
+    √ should be disabled when disabled prop is true (6 ms)
+    √ should apply custom className (4 ms)
+    √ should handle different input types (3 ms)
+
+  console.error
+    Warning: An update to LoginPage inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at LoginPage (C:\Proyectos\GesFer\Cliente\app\[locale]\login\page.tsx:18:43)
+
+      51 |     e.preventDefault();
+      52 |     setError(null);
+    > 53 |     setIsLoading(true);
+         |     ^
+      54 |
+      55 |     try {
+      56 |       await login(formData);
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (app/[locale]/login/page.tsx:53:5)
+      at HTMLUnknownElement.callCallback (node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+      at HTMLUnknownElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+      at innerInvokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:350:25)
+      at invokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+      at HTMLUnknownElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+      at HTMLUnknownElementImpl.dispatchEvent (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+      at HTMLUnknownElement.dispatchEvent (node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+      at Object.invokeGuardedCallbackDev (node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+      at invokeGuardedCallback (node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+      at invokeGuardedCallbackAndCatchFirstError (node_modules/react-dom/cjs/react-dom.development.js:4291:25)
+      at executeDispatch (node_modules/react-dom/cjs/react-dom.development.js:9041:3)
+      at processDispatchQueueItemsInOrder (node_modules/react-dom/cjs/react-dom.development.js:9073:7)
+      at processDispatchQueue (node_modules/react-dom/cjs/react-dom.development.js:9086:5)
+      at dispatchEventsForPlugins (node_modules/react-dom/cjs/react-dom.development.js:9097:3)
+      at node_modules/react-dom/cjs/react-dom.development.js:9288:12
+      at batchedUpdates$1 (node_modules/react-dom/cjs/react-dom.development.js:26179:12)
+      at batchedUpdates (node_modules/react-dom/cjs/react-dom.development.js:3991:12)
+      at dispatchEventForPluginEventSystem (node_modules/react-dom/cjs/react-dom.development.js:9287:3)
+      at dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay (node_modules/react-dom/cjs/react-dom.development.js:6465:5)
+      at dispatchEvent (node_modules/react-dom/cjs/react-dom.development.js:6457:5)
+      at dispatchDiscreteEvent (node_modules/react-dom/cjs/react-dom.development.js:6430:5)
+      at HTMLDivElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+      at innerInvokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:350:25)
+      at invokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+      at HTMLFormElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+      at fireAnEvent (node_modules/jsdom/lib/jsdom/living/helpers/events.js:18:36)
+      at HTMLFormElementImpl.requestSubmit (node_modules/jsdom/lib/jsdom/living/nodes/HTMLFormElement-impl.js:109:10)
+      at HTMLFormElementImpl._doRequestSubmit (node_modules/jsdom/lib/jsdom/living/nodes/HTMLFormElement-impl.js:79:10)
+      at HTMLButtonElementImpl._activationBehavior (node_modules/jsdom/lib/jsdom/living/nodes/HTMLButtonElement-impl.js:23:14)
+      at HTMLButtonElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:252:26)
+      at HTMLButtonElementImpl.dispatchEvent (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+      at HTMLButtonElement.dispatchEvent (node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+      at node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:43
+      at Object.eventWrapper (node_modules/@testing-library/dom/dist/config.js:25:23)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.<anonymous> (__tests__/app/login/page.test.tsx:70:5)
+
+  console.error
+    Warning: An update to LoginPage inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at LoginPage (C:\Proyectos\GesFer\Cliente\app\[locale]\login\page.tsx:18:43)
+
+      63 |       );
+      64 |     } finally {
+    > 65 |       setIsLoading(false);
+         |       ^
+      66 |     }
+      67 |   };
+      68 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (app/[locale]/login/page.tsx:65:7)
+
+  console.error
+    Warning: An update to LoginPage inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at LoginPage (C:\Proyectos\GesFer\Cliente\app\[locale]\login\page.tsx:18:43)
+
+      51 |     e.preventDefault();
+      52 |     setError(null);
+    > 53 |     setIsLoading(true);
+         |     ^
+      54 |
+      55 |     try {
+      56 |       await login(formData);
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (app/[locale]/login/page.tsx:53:5)
+      at HTMLUnknownElement.callCallback (node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+      at HTMLUnknownElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+      at innerInvokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:350:25)
+      at invokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+      at HTMLUnknownElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+      at HTMLUnknownElementImpl.dispatchEvent (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+      at HTMLUnknownElement.dispatchEvent (node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+      at Object.invokeGuardedCallbackDev (node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+      at invokeGuardedCallback (node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+      at invokeGuardedCallbackAndCatchFirstError (node_modules/react-dom/cjs/react-dom.development.js:4291:25)
+      at executeDispatch (node_modules/react-dom/cjs/react-dom.development.js:9041:3)
+      at processDispatchQueueItemsInOrder (node_modules/react-dom/cjs/react-dom.development.js:9073:7)
+      at processDispatchQueue (node_modules/react-dom/cjs/react-dom.development.js:9086:5)
+      at dispatchEventsForPlugins (node_modules/react-dom/cjs/react-dom.development.js:9097:3)
+      at node_modules/react-dom/cjs/react-dom.development.js:9288:12
+      at batchedUpdates$1 (node_modules/react-dom/cjs/react-dom.development.js:26179:12)
+      at batchedUpdates (node_modules/react-dom/cjs/react-dom.development.js:3991:12)
+      at dispatchEventForPluginEventSystem (node_modules/react-dom/cjs/react-dom.development.js:9287:3)
+      at dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay (node_modules/react-dom/cjs/react-dom.development.js:6465:5)
+      at dispatchEvent (node_modules/react-dom/cjs/react-dom.development.js:6457:5)
+      at dispatchDiscreteEvent (node_modules/react-dom/cjs/react-dom.development.js:6430:5)
+      at HTMLDivElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+      at innerInvokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:350:25)
+      at invokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+      at HTMLFormElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+      at fireAnEvent (node_modules/jsdom/lib/jsdom/living/helpers/events.js:18:36)
+      at HTMLFormElementImpl.requestSubmit (node_modules/jsdom/lib/jsdom/living/nodes/HTMLFormElement-impl.js:109:10)
+      at HTMLFormElementImpl._doRequestSubmit (node_modules/jsdom/lib/jsdom/living/nodes/HTMLFormElement-impl.js:79:10)
+      at HTMLButtonElementImpl._activationBehavior (node_modules/jsdom/lib/jsdom/living/nodes/HTMLButtonElement-impl.js:23:14)
+      at HTMLButtonElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:252:26)
+      at HTMLButtonElementImpl.dispatchEvent (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+      at HTMLButtonElement.dispatchEvent (node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+      at node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:43
+      at Object.eventWrapper (node_modules/@testing-library/dom/dist/config.js:25:23)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.<anonymous> (__tests__/app/login/page.test.tsx:89:5)
+
+  console.error
+    Warning: An update to LoginPage inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at LoginPage (C:\Proyectos\GesFer\Cliente\app\[locale]\login\page.tsx:18:43)
+
+      57 |       router.push("/dashboard");
+      58 |     } catch (err) {
+    > 59 |       setError(
+         |       ^
+      60 |         err instanceof Error
+      61 |           ? err.message
+      62 |           : t('loginError')
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setError (app/[locale]/login/page.tsx:59:7)
+
+  console.error
+    Warning: An update to LoginPage inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at LoginPage (C:\Proyectos\GesFer\Cliente\app\[locale]\login\page.tsx:18:43)
+
+      63 |       );
+      64 |     } finally {
+    > 65 |       setIsLoading(false);
+         |       ^
+      66 |     }
+      67 |   };
+      68 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (app/[locale]/login/page.tsx:65:7)
+
+  console.error
+    Warning: An update to LoginPage inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at LoginPage (C:\Proyectos\GesFer\Cliente\app\[locale]\login\page.tsx:18:43)
+
+      51 |     e.preventDefault();
+      52 |     setError(null);
+    > 53 |     setIsLoading(true);
+         |     ^
+      54 |
+      55 |     try {
+      56 |       await login(formData);
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (app/[locale]/login/page.tsx:53:5)
+      at HTMLUnknownElement.callCallback (node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+      at HTMLUnknownElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+      at innerInvokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:350:25)
+      at invokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+      at HTMLUnknownElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+      at HTMLUnknownElementImpl.dispatchEvent (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+      at HTMLUnknownElement.dispatchEvent (node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+      at Object.invokeGuardedCallbackDev (node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+      at invokeGuardedCallback (node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+      at invokeGuardedCallbackAndCatchFirstError (node_modules/react-dom/cjs/react-dom.development.js:4291:25)
+      at executeDispatch (node_modules/react-dom/cjs/react-dom.development.js:9041:3)
+      at processDispatchQueueItemsInOrder (node_modules/react-dom/cjs/react-dom.development.js:9073:7)
+      at processDispatchQueue (node_modules/react-dom/cjs/react-dom.development.js:9086:5)
+      at dispatchEventsForPlugins (node_modules/react-dom/cjs/react-dom.development.js:9097:3)
+      at node_modules/react-dom/cjs/react-dom.development.js:9288:12
+      at batchedUpdates$1 (node_modules/react-dom/cjs/react-dom.development.js:26179:12)
+      at batchedUpdates (node_modules/react-dom/cjs/react-dom.development.js:3991:12)
+      at dispatchEventForPluginEventSystem (node_modules/react-dom/cjs/react-dom.development.js:9287:3)
+      at dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay (node_modules/react-dom/cjs/react-dom.development.js:6465:5)
+      at dispatchEvent (node_modules/react-dom/cjs/react-dom.development.js:6457:5)
+      at dispatchDiscreteEvent (node_modules/react-dom/cjs/react-dom.development.js:6430:5)
+      at HTMLDivElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+      at innerInvokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:350:25)
+      at invokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+      at HTMLFormElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+      at fireAnEvent (node_modules/jsdom/lib/jsdom/living/helpers/events.js:18:36)
+      at HTMLFormElementImpl.requestSubmit (node_modules/jsdom/lib/jsdom/living/nodes/HTMLFormElement-impl.js:109:10)
+      at HTMLFormElementImpl._doRequestSubmit (node_modules/jsdom/lib/jsdom/living/nodes/HTMLFormElement-impl.js:79:10)
+      at HTMLButtonElementImpl._activationBehavior (node_modules/jsdom/lib/jsdom/living/nodes/HTMLButtonElement-impl.js:23:14)
+      at HTMLButtonElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:252:26)
+      at HTMLButtonElementImpl.dispatchEvent (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+      at HTMLButtonElement.dispatchEvent (node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+      at node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:43
+      at Object.eventWrapper (node_modules/@testing-library/dom/dist/config.js:25:23)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.<anonymous> (__tests__/app/login/page.test.tsx:103:5)
+
+PASS __tests__/app/login/page.test.tsx
+  LoginPage
+    √ should render login form (144 ms)
+    √ should have default values in form (10 ms)
+    √ should handle form submission (123 ms)
+    √ should show error message on login failure (64 ms)
+    √ should disable submit button while loading (56 ms)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\[locale]\usuarios\page.tsx:40:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\[locale]\usuarios\page.tsx:40:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\[locale]\usuarios\page.tsx:40:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\[locale]\usuarios\page.tsx:40:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\[locale]\usuarios\page.tsx:40:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\[locale]\usuarios\page.tsx:40:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\[locale]\usuarios\page.tsx:40:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\[locale]\usuarios\page.tsx:40:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to UsuariosPage inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\[locale]\usuarios\page.tsx:40:61)
+
+      186 |               </p>
+      187 |             </div>
+    > 188 |             <Button onClick={() => setIsCreateModalOpen(true)}>
+          |                                    ^
+      189 |               <Plus className="h-4 w-4 mr-2" />
+      190 |               {t('newUser')}
+      191 |             </Button>
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsCreateModalOpen (app/[locale]/usuarios/page.tsx:188:36)
+      at HTMLUnknownElement.callCallback (node_modules/react-dom/cjs/react-dom.development.js:4164:14)
+      at HTMLUnknownElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+      at innerInvokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:350:25)
+      at invokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+      at HTMLUnknownElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+      at HTMLUnknownElementImpl.dispatchEvent (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+      at HTMLUnknownElement.dispatchEvent (node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+      at Object.invokeGuardedCallbackDev (node_modules/react-dom/cjs/react-dom.development.js:4213:16)
+      at invokeGuardedCallback (node_modules/react-dom/cjs/react-dom.development.js:4277:31)
+      at invokeGuardedCallbackAndCatchFirstError (node_modules/react-dom/cjs/react-dom.development.js:4291:25)
+      at executeDispatch (node_modules/react-dom/cjs/react-dom.development.js:9041:3)
+      at processDispatchQueueItemsInOrder (node_modules/react-dom/cjs/react-dom.development.js:9073:7)
+      at processDispatchQueue (node_modules/react-dom/cjs/react-dom.development.js:9086:5)
+      at dispatchEventsForPlugins (node_modules/react-dom/cjs/react-dom.development.js:9097:3)
+      at node_modules/react-dom/cjs/react-dom.development.js:9288:12
+      at batchedUpdates$1 (node_modules/react-dom/cjs/react-dom.development.js:26179:12)
+      at batchedUpdates (node_modules/react-dom/cjs/react-dom.development.js:3991:12)
+      at dispatchEventForPluginEventSystem (node_modules/react-dom/cjs/react-dom.development.js:9287:3)
+      at dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay (node_modules/react-dom/cjs/react-dom.development.js:6465:5)
+      at dispatchEvent (node_modules/react-dom/cjs/react-dom.development.js:6457:5)
+      at dispatchDiscreteEvent (node_modules/react-dom/cjs/react-dom.development.js:6430:5)
+      at HTMLDivElement.callTheUserObjectsOperation (node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+      at innerInvokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:350:25)
+      at invokeEventListeners (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3)
+      at HTMLButtonElementImpl._dispatch (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9)
+      at HTMLButtonElementImpl.dispatchEvent (node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17)
+      at HTMLButtonElement.dispatchEvent (node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34)
+      at node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:43
+      at Object.eventWrapper (node_modules/@testing-library/dom/dist/config.js:25:23)
+      at Object.wrapEvent (node_modules/@testing-library/user-event/dist/cjs/event/wrapEvent.js:6:28)
+      at Object.dispatchEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:45:22)
+      at Object.dispatchUIEvent (node_modules/@testing-library/user-event/dist/cjs/event/dispatchEvent.js:22:26)
+      at Mouse.up (node_modules/@testing-library/user-event/dist/cjs/system/pointer/mouse.js:100:30)
+      at PointerHost.release (node_modules/@testing-library/user-event/dist/cjs/system/pointer/index.js:87:24)
+      at pointerAction (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:54:47)
+      at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
+      at Object.<anonymous> (__tests__/app/usuarios/page.test.tsx:137:5)
+
+  console.error
+    Warning: An update to UserForm inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at user (C:\Proyectos\GesFer\Cliente\components\usuarios\user-form.tsx:20:3)
+        at div
+        at className (C:\Proyectos\GesFer\Cliente\components\ui\dialog.tsx:62:6)
+        at div
+        at div
+        at open (C:\Proyectos\GesFer\Cliente\components\ui\dialog.tsx:33:19)
+        at div
+        at main
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\[locale]\usuarios\page.tsx:40:61)
+
+       96 |   useEffect(() => {
+       97 |     if (!isEditing && loggedUser?.companyId) {
+    >  98 |       setFormData((prev) => ({ ...prev, companyId: loggedUser.companyId } as CreateUser));
+          |       ^
+       99 |     }
+      100 |   }, [loggedUser?.companyId, isEditing]);
+      101 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setFormData (components/usuarios/user-form.tsx:98:7)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom.development.js:23189:26)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom.development.js:24970:11)
+      at commitPassiveMountEffects_complete (node_modules/react-dom/cjs/react-dom.development.js:24930:9)
+      at commitPassiveMountEffects_begin (node_modules/react-dom/cjs/react-dom.development.js:24917:7)
+      at commitPassiveMountEffects (node_modules/react-dom/cjs/react-dom.development.js:24905:3)
+      at flushPassiveEffectsImpl (node_modules/react-dom/cjs/react-dom.development.js:27078:3)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom.development.js:27023:14)
+      at commitRootImpl (node_modules/react-dom/cjs/react-dom.development.js:26974:5)
+      at commitRoot (node_modules/react-dom/cjs/react-dom.development.js:26721:5)
+      at performSyncWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:26156:3)
+      at flushSyncCallbacks (node_modules/react-dom/cjs/react-dom.development.js:12042:22)
+      at node_modules/react-dom/cjs/react-dom.development.js:25690:13
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:554:9
+
+PASS __tests__/app/usuarios/page.test.tsx
+  UsuariosPage
+    √ should render usuarios list (106 ms)
+    √ should open create modal when clicking new user button (159 ms)
+
+----------------------------|---------|----------|---------|---------|-------------------------------------------------------------------
+File                        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                                 
+----------------------------|---------|----------|---------|---------|-------------------------------------------------------------------
+All files                   |   38.37 |    22.86 |   24.56 |   38.26 |                                                                   
+ app/[locale]               |       0 |        0 |       0 |       0 |                                                                   
+  layout.tsx                |       0 |        0 |       0 |       0 | 2-33                                                              
+  page.tsx                  |       0 |        0 |       0 |       0 | 3-19                                                              
+ app/[locale]/clientes      |       0 |        0 |       0 |       0 |                                                                   
+  page.tsx                  |       0 |        0 |       0 |       0 | 3-147                                                             
+ app/[locale]/dashboard     |       0 |        0 |       0 |       0 |                                                                   
+  page.tsx                  |       0 |        0 |       0 |       0 | 3-13                                                              
+ app/[locale]/empresas      |       0 |        0 |       0 |       0 |                                                                   
+  page.tsx                  |       0 |        0 |       0 |       0 | 3-284                                                             
+ app/[locale]/empresas/[id] |       0 |        0 |       0 |       0 |                                                                   
+  page.tsx                  |       0 |        0 |       0 |       0 | 3-102                                                             
+ app/[locale]/login         |   85.71 |       60 |      50 |   85.71 |                                                                   
+  page.tsx                  |   85.71 |       60 |      50 |   85.71 | 29,47,92-128                                                      
+ app/[locale]/usuarios      |   45.45 |    29.78 |   15.38 |   45.97 |                                                                   
+  page.tsx                  |   45.45 |    29.78 |   15.38 |   45.97 | 50,60-64,71-74,80-130,135-138,143,147-148,156-169,174,217,276-344 
+ app/[locale]/usuarios/[id] |       0 |        0 |       0 |       0 |                                                                   
+  page.tsx                  |       0 |        0 |       0 |       0 | 3-105                                                             
+ components/auth            |   86.66 |       40 |     100 |   86.66 |                                                                   
+  protected-route.tsx       |   86.66 |       40 |     100 |   86.66 | 16,29                                                             
+ components/empresas        |       0 |        0 |       0 |       0 |                                                                   
+  company-form.tsx          |       0 |        0 |       0 |       0 | 3-241                                                             
+ components/layout          |   81.81 |    81.81 |      50 |   81.81 |                                                                   
+  main-layout.tsx           |   81.81 |    81.81 |      50 |   81.81 | 40-81,117                                                         
+ components/ui              |   91.04 |       60 |      70 |   93.33 |                                                                   
+  button.tsx                |    87.5 |      100 |     100 |     100 |                                                                   
+  card.tsx                  |   92.85 |      100 |     100 |     100 |                                                                   
+  dialog.tsx                |   89.65 |      100 |   66.66 |   89.28 | 50-56,156                                                         
+  error-message.tsx         |     100 |      100 |     100 |     100 |                                                                   
+  input.tsx                 |     100 |      100 |     100 |     100 |                                                                   
+  label.tsx                 |     100 |      100 |     100 |     100 |                                                                   
+  loading.tsx               |      75 |        0 |       0 |      75 | 16                                                                
+ components/usuarios        |   36.36 |    35.41 |   23.52 |   36.98 |                                                                   
+  user-form.tsx             |   36.36 |    35.41 |   23.52 |   36.98 | 87-92,106-129,133-318,343                                         
+ contexts                   |   16.12 |        0 |       0 |   16.12 |                                                                   
+  auth-context.tsx          |   16.12 |        0 |       0 |   16.12 | 23-60,82-86                                                       
+ lib/api                    |   60.46 |    46.66 |   51.85 |   60.75 |                                                                   
+  auth.ts                   |      15 |        0 |       0 |   11.11 | 6-42                                                              
+  client.ts                 |   81.25 |    68.42 |    62.5 |   83.33 | 51,59,67,89-96                                                    
+  companies.ts              |     100 |      100 |     100 |     100 |                                                                   
+  customers.ts              |       0 |        0 |       0 |       0 | 1-23                                                              
+  users.ts                  |   84.61 |       50 |      80 |   83.33 | 8,17                                                              
+ lib/providers              |       0 |        0 |       0 |       0 |                                                                   
+  query-provider.tsx        |       0 |        0 |       0 |       0 | 3-10                                                              
+ lib/utils                  |   63.88 |       45 |      80 |   63.88 |                                                                   
+  cn.ts                     |     100 |      100 |     100 |     100 |                                                                   
+  id-validation.ts          |     100 |       90 |     100 |     100 | 50                                                                
+  locale.ts                 |       0 |        0 |       0 |       0 | 1-44                                                              
+----------------------------|---------|----------|---------|---------|-------------------------------------------------------------------
+Test Suites: 16 passed, 16 total
+Tests:       119 passed, 119 total
+Snapshots:   0 total
+Time:        7.01 s
+Ran all test suites.
+   Tests del Cliente: EXITOSOS 
+   Tests del Cliente: FALLIDOS (codigo: 0) 
+ 
+ 
+[3/3] Ejecutando tests de la API... 
+======================================== 
+TESTS DE LA API 
+======================================== 
+ 
+   Ejecutando tests de integracion... 
+ 
+Compilación iniciada a las 27/12/2025 10:36:22.
+     1>Proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" en el nodo 1 (Restore destinos).
+     1>_GetAllRestoreProjectPathItems:
+         Determinando los proyectos que se van a restaurar...
+       Restore:
+         La validación de la cadena de certificados X.509 utilizará el almacén de confianza predeterminado seleccionado por .NET para la firma de código.
+         La validación de la cadena de certificados X.509 utilizará el almacén de confianza predeterminado seleccionado por .NET para la marca de tiempo.
+         El archivo de recursos no ha cambiado, así que se omitirá su escritura. Ruta de acceso: C:\Proyectos\GesFer\Api\src\application\obj\project.assets.json
+         El archivo de recursos no ha cambiado, así que se omitirá su escritura. Ruta de acceso: C:\Proyectos\GesFer\Api\src\domain\obj\project.assets.json
+         El archivo de recursos no ha cambiado, así que se omitirá su escritura. Ruta de acceso: C:\Proyectos\GesFer\Api\src\Infrastructure\obj\project.assets.json
+         El archivo de recursos no ha cambiado, así que se omitirá su escritura. Ruta de acceso: C:\Proyectos\GesFer\Api\src\Api\obj\project.assets.json
+         El archivo de recursos no ha cambiado, así que se omitirá su escritura. Ruta de acceso: C:\Proyectos\GesFer\Api\src\IntegrationTests\obj\project.assets.json
+         Se ha restaurado C:\Proyectos\GesFer\Api\src\Infrastructure\GesFer.Infrastructure.csproj (en 55 ms).
+         Se ha restaurado C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj (en 56 ms).
+         Se ha restaurado C:\Proyectos\GesFer\Api\src\domain\GesFer.Domain.csproj (en 54 ms).
+         Se ha restaurado C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj (en 55 ms).
+         Se ha restaurado C:\Proyectos\GesFer\Api\src\application\GesFer.Application.csproj (en 54 ms).
+         
+         Archivos de NuGet Config usados:
+             C:\Users\Racso\AppData\Roaming\NuGet\NuGet.Config
+             C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config
+             C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
+         
+         Fuentes usadas:
+             https://api.nuget.org/v3/index.json
+             C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+         Todos los proyectos están actualizados para la restauración.
+     1>Compilación del proyecto terminada "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (Restore destinos).
+   1:7>Proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" en el nodo 2 (VSTest destinos).
+     1>BuildProject:
+         Compilación iniciada, espere...
+   1:7>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:7) está compilando "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) en el nodo 2 (destinos predeterminados).
+   1:8>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) está compilando "C:\Proyectos\GesFer\Api\src\domain\GesFer.Domain.csproj" (3:8) en el nodo 1 (destinos predeterminados).
+     3>GenerateTargetFrameworkMonikerAttribute:
+       Se omitirá el destino "GenerateTargetFrameworkMonikerAttribute" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       CoreGenerateAssemblyInfo:
+       Se omitirá el destino "CoreGenerateAssemblyInfo" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       _GenerateSourceLinkFile:
+         El archivo de Source Link 'obj\Debug\net8.0\GesFer.Domain.sourcelink.json' está actualizado.
+       CoreCompile:
+       Se omitirá el destino "CoreCompile" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       GenerateBuildDependencyFile:
+       Se omitirá el destino "GenerateBuildDependencyFile" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       CopyFilesToOutputDirectory:
+         GesFer.Domain -> C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll
+     3>Compilación del proyecto terminada "C:\Proyectos\GesFer\Api\src\domain\GesFer.Domain.csproj" (destinos predeterminados).
+   1:8>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) está compilando "C:\Proyectos\GesFer\Api\src\Infrastructure\GesFer.Infrastructure.csproj" (4:8) en el nodo 2 (destinos predeterminados).
+     4>GenerateTargetFrameworkMonikerAttribute:
+       Se omitirá el destino "GenerateTargetFrameworkMonikerAttribute" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       CoreGenerateAssemblyInfo:
+       Se omitirá el destino "CoreGenerateAssemblyInfo" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       _GenerateSourceLinkFile:
+         El archivo de Source Link 'obj\Debug\net8.0\GesFer.Infrastructure.sourcelink.json' está actualizado.
+       CoreCompile:
+       Se omitirá el destino "CoreCompile" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       GenerateBuildDependencyFile:
+       Se omitirá el destino "GenerateBuildDependencyFile" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       GenerateBuildRuntimeConfigurationFiles:
+       Se omitirá el destino "GenerateBuildRuntimeConfigurationFiles" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       CopyFilesToOutputDirectory:
+         GesFer.Infrastructure -> C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll
+     4>Compilación del proyecto terminada "C:\Proyectos\GesFer\Api\src\Infrastructure\GesFer.Infrastructure.csproj" (destinos predeterminados).
+   1:8>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) está compilando "C:\Proyectos\GesFer\Api\src\application\GesFer.Application.csproj" (5:7) en el nodo 3 (destinos predeterminados).
+     5>GenerateTargetFrameworkMonikerAttribute:
+       Se omitirá el destino "GenerateTargetFrameworkMonikerAttribute" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       CoreGenerateAssemblyInfo:
+       Se omitirá el destino "CoreGenerateAssemblyInfo" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       _GenerateSourceLinkFile:
+         El archivo de Source Link 'obj\Debug\net8.0\GesFer.Application.sourcelink.json' está actualizado.
+       CoreCompile:
+       Se omitirá el destino "CoreCompile" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       GenerateBuildDependencyFile:
+       Se omitirá el destino "GenerateBuildDependencyFile" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       CopyFilesToOutputDirectory:
+         GesFer.Application -> C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll
+     5>Compilación del proyecto terminada "C:\Proyectos\GesFer\Api\src\application\GesFer.Application.csproj" (destinos predeterminados).
+   1:8>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) está compilando "C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj" (2:6) en el nodo 4 (destinos predeterminados).
+     2>GenerateTargetFrameworkMonikerAttribute:
+       Se omitirá el destino "GenerateTargetFrameworkMonikerAttribute" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       CoreGenerateAssemblyInfo:
+       Se omitirá el destino "CoreGenerateAssemblyInfo" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       _DiscoverMvcApplicationParts:
+       Se omitirá el destino "_DiscoverMvcApplicationParts" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       _GenerateSourceLinkFile:
+         El archivo de Source Link 'obj\Debug\net8.0\GesFer.Api.sourcelink.json' está actualizado.
+       CoreCompile:
+       Se omitirá el destino "CoreCompile" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       _CreateAppHost:
+       Se omitirá el destino "_CreateAppHost" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
+       _ProcessScopedCssFiles:
+       Se omitirá el destino "_ProcessScopedCssFiles" porque no tiene salidas.
+       _ProcessScopedCssFiles:
+       Se omitirá el destino "_ProcessScopedCssFiles" porque no tiene salidas.
+       _BuildCopyStaticWebAssetsPreserveNewest:
+       Se omitirá el destino "_BuildCopyStaticWebAssetsPreserveNewest" porque no tiene salidas.
+       _CopyFilesMarkedCopyLocal:
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll".
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 1 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 1 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 1 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll".
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 2 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 2 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 2 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll".
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 3 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 3 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 3 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll".
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 4 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 4 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 4 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll".
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 5 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 5 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 5 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll".
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 6 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 6 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 6 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll".
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 7 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 7 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 7 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll".
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 8 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 8 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 8 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll".
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 9 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 9 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 9 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll".
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 10 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 10 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 10 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll".
+         Copiando el archivo de "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll".
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): error MSB3027: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se superó el número de 10 reintentos. Error. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): error MSB3027: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se superó el número de 10 reintentos. Error. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): error MSB3027: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se superó el número de 10 reintentos. Error. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): error MSB3021: No se puede copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): error MSB3021: No se puede copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): error MSB3021: No se puede copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+     2>Compilación del proyecto terminada "C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj" (destinos predeterminados) -- ERROR.
+     1>Compilación del proyecto terminada "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (destinos predeterminados) -- ERROR.
+     1>Compilación del proyecto terminada "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (VSTest destinos) -- ERROR.
+
+ERROR al compilar.
+
+       "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (VSTest destino) (1:7) ->
+       "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (destino predeterminado) (1:8) ->
+       "C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj" (destino predeterminado) (2:6) ->
+       (_CopyFilesMarkedCopyLocal destino) -> 
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 1 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 1 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 1 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 2 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 2 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 2 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 3 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 3 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 3 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 4 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 4 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 4 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 5 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 5 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 5 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 6 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 6 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 6 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 7 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 7 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 7 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 8 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 8 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 8 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 9 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 9 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 9 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se iniciará el reintento 10 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se iniciará el reintento 10 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): warning MSB3026: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se iniciará el reintento 10 dentro de 1000ms. The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+
+
+       "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (VSTest destino) (1:7) ->
+       "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (destino predeterminado) (1:8) ->
+       "C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj" (destino predeterminado) (2:6) ->
+       (_CopyFilesMarkedCopyLocal destino) -> 
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): error MSB3027: No se pudo copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". Se superó el número de 10 reintentos. Error. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): error MSB3027: No se pudo copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". Se superó el número de 10 reintentos. Error. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): error MSB3027: No se pudo copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". Se superó el número de 10 reintentos. Error. El archivo se ha bloqueado por: "GesFer.Api (1240)" [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): error MSB3021: No se puede copiar "C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll" en "bin\Debug\net8.0\GesFer.Application.dll". The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Application.dll' because it is being used by another process. [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): error MSB3021: No se puede copiar "C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll" en "bin\Debug\net8.0\GesFer.Infrastructure.dll". The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Infrastructure.dll' because it is being used by another process. [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+         C:\Program Files\dotnet\sdk\9.0.305\Microsoft.Common.CurrentVersion.targets(5093,5): error MSB3021: No se puede copiar "C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll" en "bin\Debug\net8.0\GesFer.Domain.dll". The process cannot access the file 'C:\Proyectos\GesFer\Api\src\Api\bin\Debug\net8.0\GesFer.Domain.dll' because it is being used by another process. [C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj]
+
+    30 Advertencia(s)
+    6 Errores
+
+Tiempo transcurrido 00:00:14.26
+   Tests de la API: FALLIDOS (codigo: 1) 
+ 
+ 
+======================================== 
+RESUMEN FINAL 
+======================================== 
+Fecha de finalizacion: 27/12/2025 10:36:37,06 
+ 
+Tests del Cliente: EXITOSOS 
+Tests de la API: FALLIDOS 
+Log completo guardado en: C:\Proyectos\GesFer\ejecutar-tests.log 

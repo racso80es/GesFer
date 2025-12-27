@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ErrorMessage } from "@/components/ui/error-message";
 import type { Company, CreateCompany, UpdateCompany } from "@/lib/types/api";
+import { useTranslations } from 'next-intl';
 
 interface CompanyFormProps {
   company?: Company;
@@ -20,6 +21,8 @@ export function CompanyForm({
   onCancel,
   isLoading = false,
 }: CompanyFormProps) {
+  const t = useTranslations('companies.form');
+  const tCommon = useTranslations('common');
   const isEditing = !!company;
   const [formData, setFormData] = useState<CreateCompany | UpdateCompany>({
     name: company?.name || "",
@@ -31,16 +34,41 @@ export function CompanyForm({
     cityId: company?.cityId,
     stateId: company?.stateId,
     countryId: company?.countryId,
-    languageId: company?.languageId || "",
+    languageId: company?.languageId || undefined,
     ...(isEditing && { isActive: company.isActive }),
   });
 
-  // Opciones de idioma disponibles
+  // Opciones de idioma disponibles (mapeo de códigos a Guids según seed-data.sql)
+  // Estos son los IDs fijos de los idiomas en la base de datos
   const languageOptions = [
-    { value: "es", label: "Español" },
-    { value: "en", label: "English" },
-    { value: "ca", label: "Català" },
+    { value: "10000000-0000-0000-0000-000000000001", label: "Español", code: "es" },
+    { value: "10000000-0000-0000-0000-000000000002", label: "English", code: "en" },
+    { value: "10000000-0000-0000-0000-000000000003", label: "Català", code: "ca" },
   ];
+  
+  // Función para obtener el Guid del idioma desde el código o mantener el Guid si ya lo es
+  const getLanguageId = (value: string | undefined): string | undefined => {
+    if (!value) return undefined;
+    // Si ya es un Guid (contiene guiones), devolverlo tal cual
+    if (value.includes("-")) return value;
+    // Si es un código, buscar el Guid correspondiente
+    const option = languageOptions.find(opt => opt.code === value);
+    return option?.value || undefined;
+  };
+  
+  // Obtener el locale actual para mostrar los nombres de idioma en el idioma correcto
+  const locale = typeof window !== 'undefined' 
+    ? window.location.pathname.split('/')[1] || 'es'
+    : 'es';
+  
+  // Mapeo de nombres de idioma según el locale
+  const languageNames: Record<string, Record<string, string>> = {
+    es: { es: "Español", en: "English", ca: "Català" },
+    en: { es: "Spanish", en: "English", ca: "Catalan" },
+    ca: { es: "Espanyol", en: "Anglès", ca: "Català" },
+  };
+  
+  const currentLanguageNames = languageNames[locale] || languageNames.es;
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -49,13 +77,13 @@ export function CompanyForm({
     const newErrors: Record<string, string> = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = "El nombre es requerido";
+      newErrors.name = t('nameRequired');
     }
     if (!formData.address.trim()) {
-      newErrors.address = "La dirección es requerida";
+      newErrors.address = t('addressRequired');
     }
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "El email no es válido";
+      newErrors.email = t('emailInvalid');
     }
 
     setErrors(newErrors);
@@ -71,12 +99,22 @@ export function CompanyForm({
     }
 
     try {
-      await onSubmit(formData);
+      // Preparar los datos para enviar
+      const dataToSubmit = { ...formData };
+      
+      // Asegurar que languageId sea undefined si está vacío o convertir código a Guid
+      if (dataToSubmit.languageId && dataToSubmit.languageId !== "") {
+        dataToSubmit.languageId = getLanguageId(dataToSubmit.languageId);
+      } else {
+        dataToSubmit.languageId = undefined;
+      }
+      
+      await onSubmit(dataToSubmit);
     } catch (error) {
       setSubmitError(
         error instanceof Error
           ? error.message
-          : "Error al guardar la empresa"
+          : t('saveError')
       );
     }
   };
@@ -88,7 +126,7 @@ export function CompanyForm({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="name">
-            Nombre <span className="text-destructive">*</span>
+            {t('name')} <span className="text-destructive">*</span>
           </Label>
           <Input
             id="name"
@@ -105,7 +143,7 @@ export function CompanyForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="taxId">CIF/NIF</Label>
+          <Label htmlFor="taxId">{t('taxId')}</Label>
           <Input
             id="taxId"
             value={formData.taxId || ""}
@@ -117,7 +155,7 @@ export function CompanyForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phone">Teléfono</Label>
+          <Label htmlFor="phone">{t('phone')}</Label>
           <Input
             id="phone"
             type="tel"
@@ -130,7 +168,7 @@ export function CompanyForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t('email')}</Label>
           <Input
             id="email"
             type="email"
@@ -147,7 +185,7 @@ export function CompanyForm({
 
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="address">
-            Dirección <span className="text-destructive">*</span>
+            {t('address')} <span className="text-destructive">*</span>
           </Label>
           <Input
             id="address"
@@ -164,20 +202,27 @@ export function CompanyForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="languageId">Idioma</Label>
+          <Label htmlFor="languageId">{t('language')}</Label>
           <select
             id="languageId"
             value={formData.languageId || ""}
-            onChange={(e) =>
-              setFormData({ ...formData, languageId: e.target.value || undefined })
-            }
+            onChange={(e) => {
+              const selectedValue = e.target.value;
+              // Si se selecciona la opción vacía, establecer undefined
+              if (!selectedValue || selectedValue === "") {
+                setFormData({ ...formData, languageId: undefined });
+              } else {
+                const languageId = getLanguageId(selectedValue);
+                setFormData({ ...formData, languageId });
+              }
+            }}
             disabled={isLoading}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <option value="">Seleccionar idioma</option>
+            <option value="">{t('defaultLanguage')}</option>
             {languageOptions.map((option) => (
               <option key={option.value} value={option.value}>
-                {option.label}
+                {currentLanguageNames[option.code] || option.label}
               </option>
             ))}
           </select>
@@ -202,7 +247,7 @@ export function CompanyForm({
               className="h-4 w-4 rounded border-gray-300"
             />
             <Label htmlFor="isActive" className="cursor-pointer">
-              Empresa activa
+              {t('isActive')}
             </Label>
           </div>
         )}
@@ -210,13 +255,13 @@ export function CompanyForm({
 
       <div className="flex justify-end gap-2 pt-4">
         <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
-          Cancelar
+          {tCommon('cancel')}
         </Button>
         <Button type="submit" disabled={isLoading}>
           {isLoading ? (
-            "Guardando..."
+            t('saving')
           ) : (
-            isEditing ? "Actualizar" : "Crear"
+            isEditing ? t('update') : t('create')
           )}
         </Button>
       </div>

@@ -9,14 +9,15 @@ import { useTranslations } from 'next-intl';
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const t = useTranslations('navigation');
+  const tNav = useTranslations('navigation');
+  const t = useTranslations('dashboard');
 
   return (
     <ProtectedRoute>
       <MainLayout>
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold">{t('dashboard')}</h1>
+            <h1 className="text-3xl font-bold">{t('title')}</h1>
             <p className="text-muted-foreground">
               {user?.firstName} {user?.lastName}
             </p>
@@ -26,14 +27,14 @@ export default function DashboardPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total {t('users')}
+                  {t('totalUsers')}
                 </CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">-</div>
                 <p className="text-xs text-muted-foreground">
-                  Usuarios activos
+                  {t('activeUsers')}
                 </p>
               </CardContent>
             </Card>
@@ -41,14 +42,14 @@ export default function DashboardPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total {t('customers')}
+                  {t('totalCustomers')}
                 </CardTitle>
                 <Building2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">-</div>
                 <p className="text-xs text-muted-foreground">
-                  Clientes registrados
+                  {t('registeredCustomers')}
                 </p>
               </CardContent>
             </Card>
@@ -56,14 +57,14 @@ export default function DashboardPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Productos
+                  {t('products')}
                 </CardTitle>
                 <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">-</div>
                 <p className="text-xs text-muted-foreground">
-                  Artículos disponibles
+                  {t('availableItems')}
                 </p>
               </CardContent>
             </Card>
@@ -71,14 +72,14 @@ export default function DashboardPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Ventas
+                  {t('sales')}
                 </CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">-</div>
                 <p className="text-xs text-muted-foreground">
-                  Este mes
+                  {t('thisMonth')}
                 </p>
               </CardContent>
             </Card>
@@ -86,29 +87,29 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Información de la Empresa</CardTitle>
+              <CardTitle>{t('companyInfo')}</CardTitle>
               <CardDescription>
-                Detalles de tu empresa actual
+                {t('companyDetails')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
                 <div>
-                  <span className="text-sm font-medium">Empresa: </span>
+                  <span className="text-sm font-medium">{t('company')}: </span>
                   <span className="text-sm text-muted-foreground">
                     {user?.companyName}
                   </span>
                 </div>
                 <div>
-                  <span className="text-sm font-medium">Usuario: </span>
+                  <span className="text-sm font-medium">{t('user')}: </span>
                   <span className="text-sm text-muted-foreground">
                     {user?.username}
                   </span>
                 </div>
                 <div>
-                  <span className="text-sm font-medium">Permisos: </span>
+                  <span className="text-sm font-medium">{t('permissions')}: </span>
                   <span className="text-sm text-muted-foreground">
-                    {user?.permissions.length || 0} permisos asignados
+                    {t('assignedPermissions', { count: user?.permissions.length || 0 })}
                   </span>
                 </div>
               </div>

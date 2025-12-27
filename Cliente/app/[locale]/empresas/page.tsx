@@ -20,11 +20,13 @@ import { companiesApi } from "@/lib/api/companies";
 import { Plus, Edit, Trash2, Building2, Eye } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from 'next-intl';
 import type { Company, CreateCompany, UpdateCompany } from "@/lib/types/api";
 
 export default function EmpresasPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const t = useTranslations('companies');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<Company | null>(null);
   const [deletingCompanyId, setDeletingCompanyId] = useState<string | null>(null);
@@ -93,7 +95,7 @@ export default function EmpresasPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("¿Estás seguro de que deseas eliminar esta empresa?")) {
+    if (!confirm(t('deleteConfirm'))) {
       return;
     }
     setDeletingCompanyId(id);
@@ -103,7 +105,7 @@ export default function EmpresasPage() {
       alert(
         error instanceof Error
           ? error.message
-          : "Error al eliminar la empresa"
+          : t('error')
       );
     } finally {
       setDeletingCompanyId(null);
@@ -120,20 +122,20 @@ export default function EmpresasPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold">Empresas</h1>
+              <h1 className="text-3xl font-bold">{t('title')}</h1>
               <p className="text-muted-foreground">
-                Gestiona las empresas del sistema
+                {t('subtitle')}
               </p>
             </div>
             <Button onClick={() => setIsCreateModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              Nueva Empresa
+              {t('newCompany')}
             </Button>
           </div>
 
           {isLoading && (
             <div className="flex justify-center py-12">
-              <Loading size="lg" text="Cargando empresas..." />
+              <Loading size="lg" text={t('loading')} />
             </div>
           )}
 
@@ -142,7 +144,7 @@ export default function EmpresasPage() {
               message={
                 error instanceof Error
                   ? error.message
-                  : "Error al cargar las empresas"
+                  : t('error')
               }
             />
           )}
@@ -152,11 +154,11 @@ export default function EmpresasPage() {
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Building2 className="h-12 w-12 text-muted-foreground mb-4" />
                 <p className="text-muted-foreground mb-4">
-                  No hay empresas registradas
+                  {t('noCompanies')}
                 </p>
                 <Button onClick={() => setIsCreateModalOpen(true)}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Crear Primera Empresa
+                  {t('createFirst')}
                 </Button>
               </CardContent>
             </Card>
@@ -165,9 +167,9 @@ export default function EmpresasPage() {
           {empresas && empresas.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>Lista de Empresas</CardTitle>
+                <CardTitle>{t('listTitle')}</CardTitle>
                 <CardDescription>
-                  {empresas.length} empresa(s) encontrada(s)
+                  {t('listDescription', { count: empresas.length })}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -175,13 +177,13 @@ export default function EmpresasPage() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-2">Nombre</th>
-                        <th className="text-left p-2">CIF/NIF</th>
-                        <th className="text-left p-2">Email</th>
-                        <th className="text-left p-2">Teléfono</th>
-                        <th className="text-left p-2">Dirección</th>
-                        <th className="text-left p-2">Estado</th>
-                        <th className="text-right p-2">Acciones</th>
+                        <th className="text-left p-2">{t('table.name')}</th>
+                        <th className="text-left p-2">{t('table.taxId')}</th>
+                        <th className="text-left p-2">{t('table.email')}</th>
+                        <th className="text-left p-2">{t('table.phone')}</th>
+                        <th className="text-left p-2">{t('table.address')}</th>
+                        <th className="text-left p-2">{t('table.status')}</th>
+                        <th className="text-right p-2">{t('table.actions')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -203,7 +205,7 @@ export default function EmpresasPage() {
                                   : "bg-red-100 text-red-800"
                               }`}
                             >
-                              {empresa.isActive ? "Activa" : "Inactiva"}
+                              {empresa.isActive ? t('table.active') : t('table.inactive')}
                             </span>
                           </td>
                           <td className="p-2">
@@ -212,7 +214,7 @@ export default function EmpresasPage() {
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => handleView(empresa.id)}
-                                title="Ver detalle"
+                                title={t('table.view')}
                               >
                                 <Eye className="h-4 w-4" />
                               </Button>
@@ -220,7 +222,7 @@ export default function EmpresasPage() {
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => setEditingCompany(empresa)}
-                                title="Editar"
+                                title={t('table.edit')}
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
@@ -229,7 +231,7 @@ export default function EmpresasPage() {
                                 size="icon"
                                 onClick={() => handleDelete(empresa.id)}
                                 disabled={deletingCompanyId === empresa.id}
-                                title="Eliminar"
+                                title={t('table.delete')}
                               >
                                 <Trash2 className="h-4 w-4 text-destructive" />
                               </Button>
@@ -249,9 +251,9 @@ export default function EmpresasPage() {
             <DialogContent>
               <DialogClose onClose={() => setIsCreateModalOpen(false)} />
               <DialogHeader>
-                <DialogTitle>Crear Nueva Empresa</DialogTitle>
+                <DialogTitle>{t('createCompany')}</DialogTitle>
                 <DialogDescription>
-                  Completa el formulario para crear una nueva empresa
+                  {t('createDescription')}
                 </DialogDescription>
               </DialogHeader>
               <CompanyForm
@@ -270,9 +272,9 @@ export default function EmpresasPage() {
             <DialogContent>
               <DialogClose onClose={() => setEditingCompany(null)} />
               <DialogHeader>
-                <DialogTitle>Editar Empresa</DialogTitle>
+                <DialogTitle>{t('editCompany')}</DialogTitle>
                 <DialogDescription>
-                  Modifica la información de la empresa
+                  {t('editDescription')}
                 </DialogDescription>
               </DialogHeader>
               {editingCompany && (

@@ -12,8 +12,9 @@ describe("companiesApi", () => {
 
   describe("getAll", () => {
     it("should fetch all companies", async () => {
+      const validGuid = "00000000-0000-0000-0000-000000000001";
       const mockCompanies = [
-        { id: "1", name: "Company 1", address: "Address 1", isActive: true, createdAt: "2024-01-01" },
+        { id: validGuid, name: "Company 1", address: "Address 1", isActive: true, createdAt: "2024-01-01" },
       ];
       mockApiClient.get.mockResolvedValue(mockCompanies);
 
@@ -26,8 +27,9 @@ describe("companiesApi", () => {
 
   describe("getById", () => {
     it("should fetch company by id", async () => {
+      const validGuid = "00000000-0000-0000-0000-000000000001";
       const mockCompany = {
-        id: "1",
+        id: validGuid,
         name: "Company 1",
         address: "Address 1",
         isActive: true,
@@ -35,21 +37,22 @@ describe("companiesApi", () => {
       };
       mockApiClient.get.mockResolvedValue(mockCompany);
 
-      const result = await companiesApi.getById("1");
+      const result = await companiesApi.getById(validGuid);
 
-      expect(mockApiClient.get).toHaveBeenCalledWith("/api/company/1");
+      expect(mockApiClient.get).toHaveBeenCalledWith(`/api/company/${validGuid}`);
       expect(result).toEqual(mockCompany);
     });
   });
 
   describe("create", () => {
     it("should create a new company", async () => {
+      const validGuid = "00000000-0000-0000-0000-000000000001";
       const newCompany = {
         name: "New Company",
         address: "New Address",
       };
       const createdCompany = {
-        id: "1",
+        id: validGuid,
         ...newCompany,
         isActive: true,
         createdAt: "2024-01-01",
@@ -65,32 +68,34 @@ describe("companiesApi", () => {
 
   describe("update", () => {
     it("should update an existing company", async () => {
+      const validGuid = "00000000-0000-0000-0000-000000000001";
       const updateData = {
         name: "Updated Company",
         address: "Updated Address",
         isActive: true,
       };
       const updatedCompany = {
-        id: "1",
+        id: validGuid,
         ...updateData,
         createdAt: "2024-01-01",
       };
       mockApiClient.put.mockResolvedValue(updatedCompany);
 
-      const result = await companiesApi.update("1", updateData);
+      const result = await companiesApi.update(validGuid, updateData);
 
-      expect(mockApiClient.put).toHaveBeenCalledWith("/api/company/1", updateData);
+      expect(mockApiClient.put).toHaveBeenCalledWith(`/api/company/${validGuid}`, updateData);
       expect(result).toEqual(updatedCompany);
     });
   });
 
   describe("delete", () => {
     it("should delete a company", async () => {
+      const validGuid = "00000000-0000-0000-0000-000000000001";
       mockApiClient.delete.mockResolvedValue(undefined);
 
-      await companiesApi.delete("1");
+      await companiesApi.delete(validGuid);
 
-      expect(mockApiClient.delete).toHaveBeenCalledWith("/api/company/1");
+      expect(mockApiClient.delete).toHaveBeenCalledWith(`/api/company/${validGuid}`);
     });
   });
 });

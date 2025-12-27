@@ -17,14 +17,46 @@ jest.mock("next/navigation", () => ({
   usePathname: () => "/es/usuarios",
 }));
 jest.mock('next-intl', () => ({
-  useTranslations: () => (key: string) => {
+  useTranslations: (namespace?: string) => {
     const translations: Record<string, string> = {
+      'common.loading': 'Cargando...',
       'navigation.dashboard': 'Panel de control',
       'navigation.users': 'Usuarios',
       'navigation.companies': 'Empresas',
       'navigation.customers': 'Clientes',
+      'auth.logout': 'Cerrar sesión',
+      'users.title': 'Usuarios',
+      'users.subtitle': 'Gestiona los usuarios del sistema',
+      'users.newUser': 'Nuevo Usuario',
+      'users.createUser': 'Crear Nuevo Usuario',
+      'users.createDescription': 'Completa el formulario para crear un nuevo usuario',
+      'users.editUser': 'Editar Usuario',
+      'users.editDescription': 'Modifica la información del usuario',
+      'users.listTitle': 'Lista de Usuarios',
+      'users.listDescription': '{count} usuario(s) encontrado(s)',
+      'users.noUsers': 'No hay usuarios registrados',
+      'users.createFirst': 'Crear Primer Usuario',
+      'users.loading': 'Cargando usuarios...',
+      'users.error': 'Error al cargar los usuarios',
+      'users.deleteConfirm': '¿Estás seguro de que deseas eliminar este usuario?',
+      'users.table.username': 'Usuario',
+      'users.table.name': 'Nombre',
+      'users.table.email': 'Email',
+      'users.table.phone': 'Teléfono',
+      'users.table.company': 'Empresa',
+      'users.table.status': 'Estado',
+      'users.table.actions': 'Acciones',
+      'users.table.view': 'Ver detalle',
+      'users.table.edit': 'Editar',
+      'users.table.delete': 'Eliminar',
+      'users.table.active': 'Activo',
+      'users.table.inactive': 'Inactivo',
     };
-    return translations[key] || key;
+    return (key: string) => {
+      // Si hay namespace, buscar con prefijo
+      const fullKey = namespace ? `${namespace}.${key}` : key;
+      return translations[fullKey] || translations[key] || key;
+    };
   },
   useLocale: () => 'es',
 }))
@@ -68,6 +100,7 @@ describe("UsuariosPage", () => {
       isLoading: false,
       login: jest.fn(),
       logout: jest.fn(),
+      updateUser: jest.fn(),
       isAuthenticated: true,
     });
 

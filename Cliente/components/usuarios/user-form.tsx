@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { ErrorMessage } from "@/components/ui/error-message";
 import type { User, CreateUser, UpdateUser } from "@/lib/types/api";
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslations } from 'next-intl';
 
 interface UserFormProps {
   user?: User;
@@ -22,6 +23,8 @@ export function UserForm({
   isLoading = false,
 }: UserFormProps) {
   const { user: loggedUser } = useAuth();
+  const t = useTranslations('users.form');
+  const tCommon = useTranslations('common');
   const isEditing = !!user;
   
   // La empresa siempre es la del usuario logueado
@@ -65,6 +68,20 @@ export function UserForm({
     { value: "10000000-0000-0000-0000-000000000003", label: "Català", code: "ca" },
   ];
   
+  // Obtener el locale actual para mostrar los nombres de idioma en el idioma correcto
+  const locale = typeof window !== 'undefined' 
+    ? window.location.pathname.split('/')[1] || 'es'
+    : 'es';
+  
+  // Mapeo de nombres de idioma según el locale
+  const languageNames: Record<string, Record<string, string>> = {
+    es: { es: "Español", en: "English", ca: "Català" },
+    en: { es: "Spanish", en: "English", ca: "Catalan" },
+    ca: { es: "Espanyol", en: "Anglès", ca: "Català" },
+  };
+  
+  const currentLanguageNames = languageNames[locale] || languageNames.es;
+  
   // Función para obtener el Guid del idioma desde el código o mantener el Guid si ya lo es
   const getLanguageId = (value: string | undefined): string | undefined => {
     if (!value) return undefined;
@@ -90,22 +107,22 @@ export function UserForm({
 
     // Solo validar companyId si es creación (CreateUser)
     if (!isEditing && !(formData as CreateUser).companyId) {
-      newErrors.companyId = "La empresa es requerida";
+      newErrors.companyId = t('companyRequired');
     }
     if (!formData.username.trim()) {
-      newErrors.username = "El nombre de usuario es requerido";
+      newErrors.username = t('usernameRequired');
     }
     if (!isEditing && !formData.password) {
-      newErrors.password = "La contraseña es requerida";
+      newErrors.password = t('passwordRequired');
     }
     if (!formData.firstName.trim()) {
-      newErrors.firstName = "El nombre es requerido";
+      newErrors.firstName = t('firstNameRequired');
     }
     if (!formData.lastName.trim()) {
-      newErrors.lastName = "El apellido es requerido";
+      newErrors.lastName = t('lastNameRequired');
     }
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "El email no es válido";
+      newErrors.email = t('emailInvalid');
     }
 
     setErrors(newErrors);
@@ -124,8 +141,10 @@ export function UserForm({
       // Preparar los datos para enviar
       const dataToSubmit = { ...formData };
       
-      // Asegurar que languageId sea undefined si está vacío
-      if (!dataToSubmit.languageId || dataToSubmit.languageId === "") {
+      // Asegurar que languageId sea undefined si está vacío o convertir código a Guid
+      if (dataToSubmit.languageId && dataToSubmit.languageId !== "") {
+        dataToSubmit.languageId = getLanguageId(dataToSubmit.languageId);
+      } else {
         dataToSubmit.languageId = undefined;
       }
       
@@ -140,7 +159,7 @@ export function UserForm({
       setSubmitError(
         error instanceof Error
           ? error.message
-          : "Error al guardar el usuario"
+          : t('saveError')
       );
     }
   };
@@ -152,11 +171,11 @@ export function UserForm({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="companyId">
-            Empresa <span className="text-destructive">*</span>
+            {t('company')} <span className="text-destructive">*</span>
           </Label>
           <Input
             id="companyId"
-            value={loggedUser?.companyName || user?.companyName || "Empresa del usuario logueado"}
+            value={loggedUser?.companyName || user?.companyName || t('companyPlaceholder')}
             disabled
             className="bg-muted cursor-not-allowed"
             readOnly
@@ -165,13 +184,13 @@ export function UserForm({
             <p className="text-sm text-destructive">{errors.companyId}</p>
           )}
           <p className="text-xs text-muted-foreground">
-            La empresa corresponde a la del usuario logueado y no puede ser modificada.
+            {t('companyDescription')}
           </p>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="username">
-            Nombre de Usuario <span className="text-destructive">*</span>
+            {t('username')} <span className="text-destructive">*</span>
           </Label>
           <Input
             id="username"
@@ -189,7 +208,7 @@ export function UserForm({
 
         <div className="space-y-2">
           <Label htmlFor="password">
-            Contraseña {!isEditing && <span className="text-destructive">*</span>}
+            {t('password')} {!isEditing && <span className="text-destructive">*</span>}
           </Label>
           <Input
             id="password"
@@ -199,7 +218,7 @@ export function UserForm({
               setFormData({ ...formData, password: e.target.value })
             }
             disabled={isLoading}
-            placeholder={isEditing ? "Dejar vacío para no cambiar" : ""}
+            placeholder={isEditing ? t('passwordPlaceholder') : ""}
             required={!isEditing}
           />
           {errors.password && (
@@ -209,7 +228,7 @@ export function UserForm({
 
         <div className="space-y-2">
           <Label htmlFor="firstName">
-            Nombre <span className="text-destructive">*</span>
+            {t('firstName')} <span className="text-destructive">*</span>
           </Label>
           <Input
             id="firstName"
@@ -227,7 +246,7 @@ export function UserForm({
 
         <div className="space-y-2">
           <Label htmlFor="lastName">
-            Apellido <span className="text-destructive">*</span>
+            {t('lastName')} <span className="text-destructive">*</span>
           </Label>
           <Input
             id="lastName"
@@ -244,7 +263,7 @@ export function UserForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t('email')}</Label>
           <Input
             id="email"
             type="email"
@@ -260,7 +279,7 @@ export function UserForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phone">Teléfono</Label>
+          <Label htmlFor="phone">{t('phone')}</Label>
           <Input
             id="phone"
             type="tel"
@@ -273,7 +292,7 @@ export function UserForm({
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="address">Dirección</Label>
+          <Label htmlFor="address">{t('address')}</Label>
           <Input
             id="address"
             value={formData.address || ""}
@@ -285,22 +304,27 @@ export function UserForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="languageId">Idioma</Label>
+          <Label htmlFor="languageId">{t('language')}</Label>
           <select
             id="languageId"
             value={formData.languageId || ""}
             onChange={(e) => {
               const selectedValue = e.target.value;
-              const languageId = getLanguageId(selectedValue);
-              setFormData({ ...formData, languageId });
+              // Si se selecciona la opción vacía, establecer undefined
+              if (!selectedValue || selectedValue === "") {
+                setFormData({ ...formData, languageId: undefined });
+              } else {
+                const languageId = getLanguageId(selectedValue);
+                setFormData({ ...formData, languageId });
+              }
             }}
             disabled={isLoading}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <option value="">Seleccionar idioma</option>
+            <option value="">{t('defaultLanguage')}</option>
             {languageOptions.map((option) => (
               <option key={option.value} value={option.value}>
-                {option.label}
+                {currentLanguageNames[option.code] || option.label}
               </option>
             ))}
           </select>
@@ -325,7 +349,7 @@ export function UserForm({
               className="h-4 w-4 rounded border-gray-300"
             />
             <Label htmlFor="isActive" className="cursor-pointer">
-              Usuario activo
+              {t('isActive')}
             </Label>
           </div>
         )}
@@ -333,13 +357,13 @@ export function UserForm({
 
       <div className="flex justify-end gap-2 pt-4">
         <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
-          Cancelar
+          {tCommon('cancel')}
         </Button>
         <Button type="submit" disabled={isLoading}>
           {isLoading ? (
-            "Guardando..."
+            t('saving')
           ) : (
-            isEditing ? "Actualizar" : "Crear"
+            isEditing ? t('update') : t('create')
           )}
         </Button>
       </div>

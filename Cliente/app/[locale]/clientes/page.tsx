@@ -11,9 +11,12 @@ import { customersApi } from "@/lib/api/customers";
 import { useAuth } from "@/contexts/auth-context";
 import { Plus, Edit, Trash2, Building2 } from "lucide-react";
 import { useState } from "react";
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function ClientesPage() {
   const { user } = useAuth();
+  const locale = useLocale();
+  const t = useTranslations('customers');
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
 
   const {
@@ -28,7 +31,7 @@ export default function ClientesPage() {
   });
 
   const handleDelete = async (id: string) => {
-    if (!confirm("¿Estás seguro de que deseas eliminar este cliente?")) {
+    if (!confirm(t('deleteConfirm'))) {
       return;
     }
 
@@ -39,7 +42,7 @@ export default function ClientesPage() {
       alert(
         error instanceof Error
           ? error.message
-          : "Error al eliminar el cliente"
+          : t('deleteError')
       );
     }
   };
@@ -50,20 +53,20 @@ export default function ClientesPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold">Clientes</h1>
+              <h1 className="text-3xl font-bold">{t('title')}</h1>
               <p className="text-muted-foreground">
-                Gestiona los clientes del sistema
+                {t('subtitle')}
               </p>
             </div>
             <Button>
               <Plus className="h-4 w-4 mr-2" />
-              Nuevo Cliente
+              {t('newCustomer')}
             </Button>
           </div>
 
           {isLoading && (
             <div className="flex justify-center py-12">
-              <Loading size="lg" text="Cargando clientes..." />
+              <Loading size="lg" text={t('loading')} />
             </div>
           )}
 
@@ -72,7 +75,7 @@ export default function ClientesPage() {
               message={
                 error instanceof Error
                   ? error.message
-                  : "Error al cargar los clientes"
+                  : t('error')
               }
             />
           )}
@@ -82,7 +85,7 @@ export default function ClientesPage() {
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Building2 className="h-12 w-12 text-muted-foreground mb-4" />
                 <p className="text-muted-foreground">
-                  No hay clientes registrados
+                  {t('noCustomers')}
                 </p>
               </CardContent>
             </Card>
@@ -91,9 +94,9 @@ export default function ClientesPage() {
           {clientes && clientes.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>Lista de Clientes</CardTitle>
+                <CardTitle>{t('listTitle')}</CardTitle>
                 <CardDescription>
-                  {clientes.length} cliente(s) encontrado(s)
+                  {t('listDescription', { count: clientes.length })}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -101,13 +104,13 @@ export default function ClientesPage() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-2">Nombre</th>
-                        <th className="text-left p-2">CIF/NIF</th>
-                        <th className="text-left p-2">Email</th>
-                        <th className="text-left p-2">Teléfono</th>
-                        <th className="text-left p-2">Dirección</th>
-                        <th className="text-left p-2">Estado</th>
-                        <th className="text-right p-2">Acciones</th>
+                        <th className="text-left p-2">{t('table.name')}</th>
+                        <th className="text-left p-2">{t('table.taxId')}</th>
+                        <th className="text-left p-2">{t('table.email')}</th>
+                        <th className="text-left p-2">{t('table.phone')}</th>
+                        <th className="text-left p-2">{t('table.address')}</th>
+                        <th className="text-left p-2">{t('table.status')}</th>
+                        <th className="text-right p-2">{t('table.actions')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -126,7 +129,7 @@ export default function ClientesPage() {
                                   : "bg-red-100 text-red-800"
                               }`}
                             >
-                              {cliente.isActive ? "Activo" : "Inactivo"}
+                              {cliente.isActive ? t('table.active') : t('table.inactive')}
                             </span>
                           </td>
                           <td className="p-2">
