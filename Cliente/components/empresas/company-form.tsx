@@ -102,11 +102,14 @@ export function CompanyForm({
       // Preparar los datos para enviar
       const dataToSubmit = { ...formData };
       
-      // Asegurar que languageId sea undefined si está vacío o convertir código a Guid
+      // Asegurar que languageId sea null explícitamente si está vacío (para establecer "por defecto")
+      // o convertir código a Guid si tiene un valor
       if (dataToSubmit.languageId && dataToSubmit.languageId !== "") {
         dataToSubmit.languageId = getLanguageId(dataToSubmit.languageId);
       } else {
-        dataToSubmit.languageId = undefined;
+        // Enviar null explícitamente para que el backend lo establezca como null
+        // null se serializa en JSON, undefined no, así que usamos null para indicar "por defecto"
+        (dataToSubmit as any).languageId = null;
       }
       
       await onSubmit(dataToSubmit);

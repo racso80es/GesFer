@@ -80,7 +80,9 @@ public class UpdateCompanyCommandHandler : ICommandHandler<UpdateCompanyCommand,
         company.CityId = command.Dto.CityId;
         company.StateId = command.Dto.StateId;
         company.CountryId = command.Dto.CountryId;
-        company.LanguageId = command.Dto.LanguageId ?? company.LanguageId;
+        // LanguageId: si viene en el DTO, usarlo (puede ser null explícitamente). Si no viene, mantener el actual.
+        // Como el DTO siempre incluye LanguageId (puede ser null), lo asignamos directamente.
+        company.LanguageId = command.Dto.LanguageId;
         company.IsActive = command.Dto.IsActive;
         company.UpdatedAt = DateTime.UtcNow;
 

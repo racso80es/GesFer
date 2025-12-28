@@ -269,5 +269,118 @@ public class UserControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
+
+    [Fact]
+    public async Task Test2P2_CreateUser_WithAllProperties_ShouldValidateAllFields()
+    {
+        // Arrange - Crear usuario con todas las propiedades
+        var languageId = Guid.Parse("10000000-0000-0000-0000-000000000001");
+        var createDto = new CreateUserDto
+        {
+            CompanyId = _testCompanyId,
+            Username = "usuario_test2p2",
+            Password = "password123",
+            FirstName = "Usuario",
+            LastName = "Test 2P2",
+            Email = "usuario2p2@empresa.com",
+            Phone = "912345678",
+            Address = "Calle Usuario 123",
+            PostalCodeId = null,
+            CityId = null,
+            StateId = null,
+            CountryId = null,
+            LanguageId = languageId
+        };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/user", createDto);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        var user = await response.Content.ReadFromJsonAsync<UserDto>();
+        user.Should().NotBeNull();
+        
+        // Validar todas las propiedades
+        user!.CompanyId.Should().Be(createDto.CompanyId);
+        user.Username.Should().Be(createDto.Username);
+        user.FirstName.Should().Be(createDto.FirstName);
+        user.LastName.Should().Be(createDto.LastName);
+        user.Email.Should().Be(createDto.Email);
+        user.Phone.Should().Be(createDto.Phone);
+        user.Address.Should().Be(createDto.Address);
+        user.PostalCodeId.Should().Be(createDto.PostalCodeId);
+        user.CityId.Should().Be(createDto.CityId);
+        user.StateId.Should().Be(createDto.StateId);
+        user.CountryId.Should().Be(createDto.CountryId);
+        user.LanguageId.Should().Be(createDto.LanguageId);
+        user.IsActive.Should().BeTrue(); // Por defecto debe ser activo
+        user.Id.Should().NotBeEmpty();
+        user.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+        user.CompanyName.Should().NotBeNullOrEmpty();
+    }
+
+    [Fact]
+    public async Task Test2P2_UpdateUser_WithAllProperties_ShouldValidateAllFields()
+    {
+        // Arrange - Primero crear un usuario
+        var createDto = new CreateUserDto
+        {
+            CompanyId = _testCompanyId,
+            Username = "usuario_original2p2",
+            Password = "password123",
+            FirstName = "Usuario",
+            LastName = "Original",
+            Email = "original2p2@empresa.com",
+            Phone = "911111111"
+        };
+        var createResponse = await _client.PostAsJsonAsync("/api/user", createDto);
+        var createdUser = await createResponse.Content.ReadFromJsonAsync<UserDto>();
+        var userId = createdUser!.Id;
+
+        // Actualizar con todas las propiedades
+        var languageId = Guid.Parse("10000000-0000-0000-0000-000000000002");
+        var updateDto = new UpdateUserDto
+        {
+            Username = "usuario_actualizado2p2",
+            Password = "nueva_password_123",
+            FirstName = "Usuario",
+            LastName = "Actualizado 2P2",
+            Email = "actualizado2p2@empresa.com",
+            Phone = "922222222",
+            Address = "Calle Actualizada 456",
+            PostalCodeId = null,
+            CityId = null,
+            StateId = null,
+            CountryId = null,
+            LanguageId = languageId,
+            IsActive = false
+        };
+
+        // Act
+        var response = await _client.PutAsJsonAsync($"/api/user/{userId}", updateDto);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var user = await response.Content.ReadFromJsonAsync<UserDto>();
+        user.Should().NotBeNull();
+        
+        // Validar todas las propiedades
+        user!.Id.Should().Be(userId);
+        user.Username.Should().Be(updateDto.Username);
+        user.FirstName.Should().Be(updateDto.FirstName);
+        user.LastName.Should().Be(updateDto.LastName);
+        user.Email.Should().Be(updateDto.Email);
+        user.Phone.Should().Be(updateDto.Phone);
+        user.Address.Should().Be(updateDto.Address);
+        user.PostalCodeId.Should().Be(updateDto.PostalCodeId);
+        user.CityId.Should().Be(updateDto.CityId);
+        user.StateId.Should().Be(updateDto.StateId);
+        user.CountryId.Should().Be(updateDto.CountryId);
+        user.LanguageId.Should().Be(updateDto.LanguageId);
+        user.IsActive.Should().Be(updateDto.IsActive);
+        user.UpdatedAt.Should().NotBeNull();
+        user.UpdatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+        user.CompanyId.Should().Be(_testCompanyId); // No debe cambiar
+    }
 }
 

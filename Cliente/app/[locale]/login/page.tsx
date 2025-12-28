@@ -23,12 +23,24 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirigir si ya está autenticado
+  // Redirigir si ya está autenticado al cargar la página (solo una vez, no durante el login)
   useEffect(() => {
-    if (!authLoading && isAuthenticated) {
-      router.push("/dashboard");
+    // Solo redirigir si:
+    // 1. Ya terminó de cargar el estado de autenticación inicial
+    // 2. Está autenticado
+    // 3. NO estamos en proceso de hacer login (isLoading es false)
+    // 4. NO estamos ya en dashboard (para evitar bucles)
+    if (!authLoading && isAuthenticated && !isLoading) {
+      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+      if (!currentPath.includes('dashboard')) {
+        // Verificar también localStorage para asegurarnos
+        const storedUser = typeof window !== 'undefined' ? localStorage.getItem('auth_user') : null;
+        if (storedUser) {
+          router.replace("/dashboard");
+        }
+      }
     }
-  }, [isAuthenticated, authLoading, router]);
+  }, [authLoading]); // Solo ejecutar cuando cambie authLoading (carga inicial)
 
   // Mostrar loading mientras se verifica la autenticación
   if (authLoading) {
@@ -54,14 +66,16 @@ export default function LoginPage() {
 
     try {
       await login(formData);
-      router.push("/dashboard");
+      // Esperar un momento para que el estado se actualice y localStorage se guarde
+      await new Promise(resolve => setTimeout(resolve, 100));
+      // Redirigir después del login exitoso
+      router.replace("/dashboard");
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
           : t('loginError')
       );
-    } finally {
       setIsLoading(false);
     }
   };
@@ -78,7 +92,7 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" data-testid="login-form">
             <div className="space-y-2">
               <Label htmlFor="empresa">{t('company')}</Label>
               <div className="relative">
@@ -93,6 +107,7 @@ export default function LoginPage() {
                   }
                   className="pl-10"
                   required
+                  data-testid="login-empresa-input"
                 />
               </div>
             </div>
@@ -111,6 +126,7 @@ export default function LoginPage() {
                   }
                   className="pl-10"
                   required
+                  data-testid="login-usuario-input"
                 />
               </div>
             </div>
@@ -129,16 +145,18 @@ export default function LoginPage() {
                   }
                   className="pl-10"
                   required
+                  data-testid="login-password-input"
                 />
               </div>
             </div>
 
-            {error && <ErrorMessage message={error} />}
+            {error && <ErrorMessage message={error} data-testid="login-error-message" />}
 
             <Button
               type="submit"
               className="w-full"
               disabled={isLoading}
+              data-testid="login-submit-button"
             >
               {isLoading ? (
                 <>

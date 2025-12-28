@@ -58,7 +58,7 @@ public class CreateCompanyCommandHandler : ICommandHandler<CreateCompanyCommand,
                 throw new InvalidOperationException($"No se encontró el país con ID {command.Dto.CountryId.Value}");
         }
 
-        // Idioma: si no se especifica, tomar el del país si existe; si no, usar español por defecto
+        // Idioma: si se proporciona, validarlo. Si no, persistir null (la resolución jerárquica se hace en lectura)
         Guid? languageId = command.Dto.LanguageId;
         if (languageId.HasValue)
         {
@@ -66,20 +66,7 @@ public class CreateCompanyCommandHandler : ICommandHandler<CreateCompanyCommand,
             if (!languageExists)
                 throw new InvalidOperationException($"No se encontró el idioma con ID {languageId.Value}");
         }
-        else if (command.Dto.CountryId.HasValue)
-        {
-            languageId = await _context.Countries
-                .Where(c => c.Id == command.Dto.CountryId.Value && c.DeletedAt == null)
-                .Select(c => (Guid?)c.LanguageId)
-                .FirstOrDefaultAsync(cancellationToken);
-        }
-        else
-        {
-            languageId = await _context.Languages
-                .Where(l => l.Code == "es" && l.DeletedAt == null)
-                .Select(l => (Guid?)l.Id)
-                .FirstOrDefaultAsync(cancellationToken);
-        }
+        // Si languageId es null, se persiste null (indica que debe usar el idioma del país)
 
         var company = new GesFer.Domain.Entities.Company
         {

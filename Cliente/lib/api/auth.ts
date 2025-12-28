@@ -8,14 +8,17 @@ export const authApi = {
       credentials
     );
     
-    // Guardar token en localStorage y cookies
-    if (typeof window !== "undefined" && response.token) {
-      localStorage.setItem("auth_token", response.token);
+    // Guardar usuario en localStorage y cookies (siempre, incluso sin token)
+    if (typeof window !== "undefined") {
+      // Guardar usuario siempre
       localStorage.setItem("auth_user", JSON.stringify(response));
-      
-      // Guardar también en cookies para que el middleware pueda acceder
-      document.cookie = `auth_token=${response.token}; path=/; max-age=86400`; // 24 horas
       document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(response))}; path=/; max-age=86400`;
+      
+      // Guardar token solo si existe
+      if (response.token) {
+        localStorage.setItem("auth_token", response.token);
+        document.cookie = `auth_token=${response.token}; path=/; max-age=86400`; // 24 horas
+      }
     }
     
     return response;

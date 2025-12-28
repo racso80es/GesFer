@@ -73,6 +73,16 @@ export default function UsuariosPage() {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       setIsCreateModalOpen(false);
     },
+    onError: (error) => {
+      console.error('Error al crear usuario:', error);
+      // El error se propagará al componente UserForm a través de onSubmit
+      // Asegurar que el error tenga un mensaje
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error('Error al crear el usuario. Por favor, intente nuevamente.');
+      }
+    },
   });
 
   const updateMutation = useMutation({
@@ -140,7 +150,19 @@ export default function UsuariosPage() {
   });
 
   const handleCreate = async (data: CreateUser | UpdateUser) => {
-    await createMutation.mutateAsync(data as CreateUser);
+    try {
+      await createMutation.mutateAsync(data as CreateUser);
+    } catch (error) {
+      // Propagar el error para que el formulario lo maneje
+      // El error debe tener un mensaje claro
+      if (error instanceof Error) {
+        throw error;
+      } else if (typeof error === 'string') {
+        throw new Error(error);
+      } else {
+        throw new Error('Error al crear el usuario. Por favor, intente nuevamente.');
+      }
+    }
   };
 
   const handleUpdate = async (data: CreateUser | UpdateUser) => {
@@ -180,12 +202,12 @@ export default function UsuariosPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold">{t('title')}</h1>
+              <h1 className="text-3xl font-bold" data-testid="usuarios-title">{t('title')}</h1>
               <p className="text-muted-foreground">
                 {t('subtitle')}
               </p>
             </div>
-            <Button onClick={() => setIsCreateModalOpen(true)}>
+            <Button onClick={() => setIsCreateModalOpen(true)} data-testid="usuarios-new-user-button">
               <Plus className="h-4 w-4 mr-2" />
               {t('newUser')}
             </Button>
@@ -231,8 +253,8 @@ export default function UsuariosPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
+                <div className="overflow-x-auto" data-testid="usuarios-list">
+                  <table className="w-full" data-testid="usuarios-table">
                     <thead>
                       <tr className="border-b">
                         <th className="text-left p-2">{t('table.username')}</th>
@@ -308,7 +330,7 @@ export default function UsuariosPage() {
 
           {/* Modal Crear Usuario */}
           <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-            <DialogContent>
+            <DialogContent data-testid="usuarios-create-modal">
               <DialogClose onClose={() => setIsCreateModalOpen(false)} />
               <DialogHeader>
                 <DialogTitle>{t('createUser')}</DialogTitle>
@@ -329,7 +351,7 @@ export default function UsuariosPage() {
             open={!!editingUser}
             onOpenChange={(open) => !open && setEditingUser(null)}
           >
-            <DialogContent>
+            <DialogContent data-testid="usuarios-edit-modal">
               <DialogClose onClose={() => setEditingUser(null)} />
               <DialogHeader>
                 <DialogTitle>{t('editUser')}</DialogTitle>

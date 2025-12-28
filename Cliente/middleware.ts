@@ -58,12 +58,25 @@ const intlMiddleware = createMiddleware({
 });
 
 export default function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  
+  // Evitar procesar rutas de API y recursos estáticos
+  if (pathname.startsWith('/api/') || pathname.startsWith('/_next/')) {
+    return intlMiddleware(request);
+  }
+  
+  // Excluir rutas críticas de las redirecciones de locale para evitar bucles
+  // Estas rutas se manejarán por el middleware de next-intl sin redirecciones adicionales
+  const criticalRoutes = ['/login', '/dashboard', '/usuarios', '/clientes', '/empresas'];
+  if (criticalRoutes.some(route => pathname.includes(route))) {
+    return intlMiddleware(request);
+  }
+  
   // Intentar obtener el locale del usuario
   const userLocale = getLocaleFromUser(request);
   
   // Si tenemos un locale del usuario, usarlo como preferencia
   if (userLocale) {
-    const pathname = request.nextUrl.pathname;
     const pathnameHasLocale = locales.some(
       (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
     );
@@ -79,18 +92,26 @@ export default function middleware(request: NextRequest) {
         return intlMiddleware(request);
       }
       
-      return NextResponse.redirect(new URL(newPath, request.url));
-    }
-    
-    // Si el pathname tiene un locale diferente al del usuario, cambiarlo
-    const currentLocale = pathname.split('/')[1];
-    if (locales.includes(currentLocale as Locale) && currentLocale !== userLocale) {
-      const pathWithoutLocale = pathname.replace(`/${currentLocale}`, '') || '/';
-      const newPath = userLocale === defaultLocale 
-        ? pathWithoutLocale 
-        : `/${userLocale}${pathWithoutLocale}`;
-      
-      return NextResponse.redirect(new URL(newPath, request.url));
+      // Solo redirigir si la nueva ruta es diferente a la actual
+      const newUrl = new URL(newPath, request.url);
+      if (newUrl.pathname !== pathname && newUrl.pathname !== request.nextUrl.pathname) {
+        return NextResponse.redirect(newUrl);
+      }
+    } else {
+      // Si el pathname tiene un locale diferente al del usuario, cambiarlo
+      const currentLocale = pathname.split('/')[1];
+      if (locales.includes(currentLocale as Locale) && currentLocale !== userLocale) {
+        const pathWithoutLocale = pathname.replace(`/${currentLocale}`, '') || '/';
+        const newPath = userLocale === defaultLocale 
+          ? pathWithoutLocale 
+          : `/${userLocale}${pathWithoutLocale}`;
+        
+        // Solo redirigir si la nueva ruta es diferente a la actual
+        const newUrl = new URL(newPath, request.url);
+        if (newUrl.pathname !== pathname && newUrl.pathname !== request.nextUrl.pathname) {
+          return NextResponse.redirect(newUrl);
+        }
+      }
     }
   }
   

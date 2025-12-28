@@ -134,6 +134,15 @@ function SidebarContent({
         {navigation.map((item) => {
           const Icon = item.icon;
           const isActive = normalizedPathname === item.href;
+          // Mapear hrefs a test-ids
+          const testIdMap: Record<string, string> = {
+            '/dashboard': 'dashboard-dashboard-link',
+            '/empresas': 'dashboard-empresas-link',
+            '/usuarios': 'dashboard-usuarios-link',
+            '/clientes': 'dashboard-clientes-link',
+          };
+          const testId = testIdMap[item.href] || `dashboard-${item.href.replace('/', '')}-link`;
+          
           return (
             <Link
               key={item.href}
@@ -146,6 +155,7 @@ function SidebarContent({
                   ? "bg-accent text-accent-foreground"
                   : "text-muted-foreground"
               )}
+              data-testid={testId}
             >
               <Icon className="h-5 w-5" />
               {item.name}
@@ -165,6 +175,7 @@ function SidebarContent({
           variant="ghost"
           className="w-full justify-start"
           onClick={onLogout}
+          data-testid="dashboard-logout-button"
         >
           <LogOut className="h-4 w-4 mr-2" />
           {tAuth('logout')}

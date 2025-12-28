@@ -67,7 +67,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
                 throw new InvalidOperationException($"No se encontró el país con ID {command.Dto.CountryId.Value}");
         }
 
-        // Idioma: user > company > country > español
+        // Idioma: si se proporciona, validarlo. Si no, persistir null (la resolución jerárquica se hace en lectura)
         Guid? languageId = command.Dto.LanguageId;
         if (languageId.HasValue)
         {
@@ -75,26 +75,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
             if (!languageExists)
                 throw new InvalidOperationException($"No se encontró el idioma con ID {languageId.Value}");
         }
-        else
-        {
-            languageId = company.LanguageId;
-
-            if (!languageId.HasValue && command.Dto.CountryId.HasValue)
-            {
-                languageId = await _context.Countries
-                    .Where(c => c.Id == command.Dto.CountryId.Value && c.DeletedAt == null)
-                    .Select(c => (Guid?)c.LanguageId)
-                    .FirstOrDefaultAsync(cancellationToken);
-            }
-
-            if (!languageId.HasValue)
-            {
-                languageId = await _context.Languages
-                    .Where(l => l.Code == "es" && l.DeletedAt == null)
-                    .Select(l => (Guid?)l.Id)
-                    .FirstOrDefaultAsync(cancellationToken);
-            }
-        }
+        // Si languageId es null, se persiste null (indica que debe usar el idioma del nivel jerárquico superior)
 
         // Hash de la contraseña
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(command.Dto.Password, BCrypt.Net.BCrypt.GenerateSalt(11));

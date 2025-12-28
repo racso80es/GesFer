@@ -84,7 +84,9 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserD
         user.CityId = command.Dto.CityId;
         user.StateId = command.Dto.StateId;
         user.CountryId = command.Dto.CountryId;
-        user.LanguageId = command.Dto.LanguageId ?? user.LanguageId;
+        // LanguageId: si viene en el DTO, usarlo (puede ser null explícitamente). Si no viene, mantener el actual.
+        // Como el DTO siempre incluye LanguageId (puede ser null), lo asignamos directamente.
+        user.LanguageId = command.Dto.LanguageId;
         user.IsActive = command.Dto.IsActive;
         user.UpdatedAt = DateTime.UtcNow;
 

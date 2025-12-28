@@ -1,0 +1,260 @@
+{
+  "config": {
+    "configFile": "C:\\Proyectos\\GesFer\\Cliente\\playwright.config.ts",
+    "rootDir": "C:/Proyectos/GesFer/Cliente/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Proyectos/GesFer/Cliente/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Proyectos/GesFer/Cliente/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Proyectos/GesFer/Cliente/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "C:/Proyectos/GesFer/Cliente/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Proyectos/GesFer/Cliente/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "C:/Proyectos/GesFer/Cliente/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Proyectos/GesFer/Cliente/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "C:/Proyectos/GesFer/Cliente/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Proyectos/GesFer/Cliente/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "C:/Proyectos/GesFer/Cliente/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.57.0",
+    "workers": 8,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "e2e\\empresa-completo.spec.ts",
+      "file": "e2e/empresa-completo.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Flujo Integral - Creación de Empresa",
+          "file": "e2e/empresa-completo.spec.ts",
+          "line": 17,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debe persistir languageId como null/undefined cuando se selecciona \"por defecto\"",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3479,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "languageId recibido en empresa: \u001b[1mnull\u001b[22m tipo: object\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-28T19:15:19.883Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "de0cdf0022f7bfe4e70f-8a68947861e37e35479b",
+              "file": "e2e/empresa-completo.spec.ts",
+              "line": 354,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e\\usuario-completo.spec.ts",
+      "file": "e2e/usuario-completo.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Flujo Integral - Creación de Usuario",
+          "file": "e2e/usuario-completo.spec.ts",
+          "line": 17,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debe persistir languageId como null/undefined cuando se selecciona \"por defecto\"",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 9828,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Request body enviado: {\n  \"companyId\": \"11111111-1111-1111-1111-111111111111\",\n  \"username\": \"testuser_1766949323218_a4t3ra\",\n  \"password\": \"TestPassword123!\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"email\": \"test_1766949323218_a4t3ra@example.com\",\n  \"phone\": \"123456789\",\n  \"address\": \"Calle Test 123\",\n  \"languageId\": null\n}\n"
+                        },
+                        {
+                          "text": "languageId en request: \u001b[1mnull\u001b[22m tipo: object\n"
+                        },
+                        {
+                          "text": "languageId recibido en usuario: \u001b[1mnull\u001b[22m tipo: object\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-28T19:15:19.890Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "29cd8d1e62b99441843a-bc7d4dba2fa2331d04bf",
+              "file": "e2e/usuario-completo.spec.ts",
+              "line": 461,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-12-28T19:15:18.934Z",
+    "duration": 10997.696,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

@@ -17,7 +17,7 @@ export interface LoginResponse {
    countryLanguageId?: string;
    effectiveLanguageId?: string;
   permissions: string[];
-  token: string;
+  token?: string; // Opcional porque la API actual no devuelve token
 }
 
 // Tipos para User
