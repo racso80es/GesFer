@@ -1,16 +1,15 @@
 /**
  * Test de integridad extremo a extremo para API y Cliente.
- * Requiere que ambos servicios estén ejecutándose:
- * - API en http://localhost:5000
- * - Cliente en http://localhost:3000
+ * Requiere que ambos servicios estén ejecutándose.
+ * URLs configuradas desde lib/config.test.ts
  */
 import http from "node:http";
 import https from "node:https";
 import { URL } from "node:url";
-import config from "../../config.json";
+import { TEST_CLIENT_URL, TEST_API_URL } from "../../lib/config.test";
 
-const API_URL = config.apiUrl.replace(/\/$/, "");
-const CLIENT_URL = "http://localhost:3000";
+const CLIENT_URL = TEST_CLIENT_URL;
+const API_URL = TEST_API_URL.replace(/\/$/, "");
 
 // Ampliar timeout porque son llamadas reales a servicios locales
 jest.setTimeout(20000);
@@ -242,7 +241,7 @@ describe("Auditoría de integridad API + Cliente", () => {
       resp = await httpRequest(`${CLIENT_URL}/login`);
     } catch (error) {
       // Si el servidor no está disponible, saltar el test
-      console.warn('Cliente no está disponible en localhost:3000. Saltando test de integridad del cliente.');
+      console.warn(`Cliente no está disponible en ${CLIENT_URL}. Saltando test de integridad del cliente.`);
       return;
     }
     
@@ -258,14 +257,14 @@ describe("Auditoría de integridad API + Cliente", () => {
         // Intentar con la ruta raíz que debería redirigir
         resp = await httpRequest(`${CLIENT_URL}/`);
       } catch (error) {
-        console.warn('Cliente no está disponible en localhost:3000. Saltando test de integridad del cliente.');
+        console.warn(`Cliente no está disponible en ${CLIENT_URL}. Saltando test de integridad del cliente.`);
         return;
       }
     }
     
     // Si el servidor no está disponible (404 o error de conexión), saltar el test
     if (resp.status === 0 || resp.status === 404) {
-      console.warn('Cliente no está disponible en localhost:3000. Saltando test de integridad del cliente.');
+      console.warn(`Cliente no está disponible en ${CLIENT_URL}. Saltando test de integridad del cliente.`);
       return;
     }
     

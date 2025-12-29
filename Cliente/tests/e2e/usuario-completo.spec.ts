@@ -2,12 +2,13 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../page-objects/LoginPage';
 import { UsuariosPage } from '../page-objects/UsuariosPage';
 import { TestDataCleanup } from '../helpers/test-data-cleanup';
+import { appConfig } from '../../lib/config';
 
 test.describe('Usuario Completo E2E Tests', () => {
   let cleanup: TestDataCleanup;
 
   test.beforeEach(async ({ request }) => {
-    cleanup = new TestDataCleanup(request, process.env.API_URL || 'http://127.0.0.1:5000');
+    cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
     await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
   });
 

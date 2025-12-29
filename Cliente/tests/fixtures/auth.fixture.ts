@@ -1,6 +1,7 @@
 import { test as base } from '@playwright/test';
 import { LoginPage } from '../page-objects/LoginPage';
 import { ApiClient } from '../api/api-client';
+import { appConfig } from '../../lib/config';
 
 /**
  * Fixture para autenticación
@@ -13,7 +14,7 @@ export const test = base.extend<{
   // Fixture para página autenticada
   authenticatedPage: async ({ page, request }, use) => {
     const loginPage = new LoginPage(page);
-    const apiClient = new ApiClient(request);
+    const apiClient = new ApiClient(request, appConfig.api.url);
 
     // Realizar login vía API para obtener token
     const token = await apiClient.login('Empresa Demo', 'admin', 'admin123');
@@ -28,7 +29,7 @@ export const test = base.extend<{
 
   // Fixture para cliente API
   apiClient: async ({ request }, use) => {
-    const apiClient = new ApiClient(request, process.env.API_URL || 'http://127.0.0.1:5000');
+    const apiClient = new ApiClient(request, process.env.API_URL || appConfig.api.url);
     await use(apiClient);
   },
 });

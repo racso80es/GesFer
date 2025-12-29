@@ -1,5 +1,6 @@
 import { APIRequestContext } from '@playwright/test';
 import { ApiClient } from '../api/api-client';
+import { appConfig } from '../../lib/config';
 
 /**
  * Helper para limpiar datos de prueba de la API
@@ -11,7 +12,7 @@ export class TestDataCleanup {
   private createdCustomerIds: string[] = [];
   private authToken: string | null = null;
 
-  constructor(request: APIRequestContext, baseURL: string = 'http://127.0.0.1:5000') {
+  constructor(request: APIRequestContext, baseURL: string = appConfig.api.url) {
     this.apiClient = new ApiClient(request, baseURL);
   }
 

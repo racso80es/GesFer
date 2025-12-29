@@ -1,16 +1,15 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
+import { appConfig } from '../../lib/config';
 
 /**
  * Cliente API para tests de Playwright
- * Configurado para apuntar a 127.0.0.1:5000 (usar IPv4 explícitamente para evitar problemas en Windows)
- * 
- * URL de la API: http://127.0.0.1:5000
+ * Usa la configuración centralizada desde lib/config.ts
  */
 export class ApiClient {
   private request: APIRequestContext;
   private baseURL: string;
 
-  constructor(request: APIRequestContext, baseURL: string = 'http://127.0.0.1:5000') {
+  constructor(request: APIRequestContext, baseURL: string = appConfig.api.url) {
     this.request = request;
     this.baseURL = baseURL;
   }

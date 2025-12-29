@@ -2,7 +2,7 @@ import type { ApiError, ApiResponse } from "@/lib/types/api";
 
 // La API puede estar en HTTP (5000) o HTTPS (5001)
 // Por defecto usamos HTTPS en 5001, pero puedes cambiarlo en .env.local
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { API_URL } from "@/lib/config";
 
 class ApiClient {
   private baseUrl: string;

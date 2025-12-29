@@ -1,5 +1,5 @@
 {
-  "apiUrl": "http://localhost:5000",
-  "description": "Configuración de la URL de la API. Puedes cambiar esta URL según tu entorno."
+  "description": "Este archivo está obsoleto. Usa los archivos en la carpeta config/ (local.json, development.json, production.json, test.json) o importa desde lib/config.ts",
+  "note": "Para compatibilidad con código antiguo, apiUrl se mantiene pero se recomienda usar lib/config.ts"
 }
 

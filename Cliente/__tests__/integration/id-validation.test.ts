@@ -5,9 +5,9 @@
 
 import http from "node:http";
 import { URL } from "node:url";
-import config from "../../config.json";
+import { TEST_API_URL } from "../../lib/config.test";
 
-const API_URL = config.apiUrl.replace(/\/$/, "");
+const API_URL = TEST_API_URL.replace(/\/$/, "");
 
 jest.setTimeout(30000);
 

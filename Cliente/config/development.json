@@ -1,0 +1,23 @@
+{
+  "api": {
+    "url": "http://localhost:5000"
+  },
+  "client": {
+    "url": "http://localhost:3000"
+  },
+  "database": {
+    "server": "localhost",
+    "port": 3306,
+    "database": "ScrapDb",
+    "user": "scrapuser",
+    "password": "scrappassword",
+    "connectionString": "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;"
+  },
+  "cache": {
+    "server": "localhost",
+    "port": 11211,
+    "enabled": true
+  },
+  "environment": "development"
+}
+

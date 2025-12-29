@@ -1,6 +1,6 @@
 ======================================== 
 Ejecucion de Tests GesFer 
-Fecha: 29/12/2025  9:11:00,02 
+Fecha: 29/12/2025  9:54:20,65 
 ======================================== 
  
 [1/3] Verificando rutas... 
@@ -17,32 +17,45 @@ TESTS DEL CLIENTE
 > gesfer-cliente@0.1.0 test:all
 > jest --coverage --verbose
 
-PASS __tests__/lib/api/client.test.ts
-  ApiClient
-    GET requests
-      √ should make GET request successfully (29 ms)
-      √ should handle GET request with query parameters (18 ms)
-    POST requests
-      √ should make POST request with data (3 ms)
-    Error handling
-      √ should throw error on failed request (28 ms)
-      √ should handle network errors (6 ms)
-    Authentication
-      √ should include Authorization header when token exists (3 ms)
-
 PASS __tests__/utils/cn.test.ts
   cn utility
-    √ should merge class names correctly (60 ms)
-    √ should handle conditional classes (2 ms)
+    √ should merge class names correctly (54 ms)
+    √ should handle conditional classes (3 ms)
     √ should handle undefined and null values (2 ms)
-    √ should override conflicting Tailwind classes (1 ms)
+    √ should override conflicting Tailwind classes (2 ms)
+
+PASS __tests__/lib/utils/id-validation.test.ts
+  id-validation
+    isValidGuid
+      √ debe validar GUIDs correctos (16 ms)
+      √ debe rechazar GUIDs incorrectos (4 ms)
+    sanitizeId
+      √ debe sanitizar IDs válidos correctamente (1 ms)
+      √ debe retornar null para IDs inválidos (2 ms)
+    validateId
+      √ debe validar y retornar IDs válidos (1 ms)
+      √ debe lanzar error para IDs inválidos (65 ms)
+
+PASS __tests__/lib/api/id-validation-api.test.ts
+  Validación de IDs en APIs
+    companiesApi
+      √ debe validar ID antes de getById (41 ms)
+      √ debe validar ID antes de update (5 ms)
+      √ debe validar ID antes de delete (4 ms)
+      √ debe permitir operaciones con IDs válidos (5 ms)
+    usersApi
+      √ debe validar ID antes de getById (6 ms)
+      √ debe validar ID antes de update (2 ms)
+      √ debe validar ID antes de delete (3 ms)
+      √ debe validar companyId en getAll (2 ms)
+      √ debe permitir operaciones con IDs válidos (4 ms)
 
 PASS __tests__/lib/api/companies.test.ts
   companiesApi
     getAll
-      √ should fetch all companies (30 ms)
+      √ should fetch all companies (29 ms)
     getById
-      √ should fetch company by id (3 ms)
+      √ should fetch company by id (2 ms)
     create
       √ should create a new company (2 ms)
     update
@@ -53,108 +66,403 @@ PASS __tests__/lib/api/companies.test.ts
 PASS __tests__/integration/api-contracts.test.ts
   Contratos API - Verificación de Interfaces
     Contrato: Usuarios API
-      √ debe cumplir contrato de CreateUser (42 ms)
+      √ debe cumplir contrato de CreateUser (15 ms)
       √ debe cumplir contrato de UpdateUser (1 ms)
       √ debe retornar array de User en getAll (1 ms)
     Contrato: Empresas API
       √ debe cumplir contrato de CreateCompany (2 ms)
-      √ debe cumplir contrato de UpdateCompany (2 ms)
+      √ debe cumplir contrato de UpdateCompany (1 ms)
     Contrato: Autenticación API
-      √ debe cumplir contrato de LoginResponse (2 ms)
+      √ debe cumplir contrato de LoginResponse (1 ms)
     Validación de Tipos
       √ debe validar que los IDs son strings (1 ms)
-      √ debe validar que las fechas son strings ISO (1 ms)
-      √ debe validar que los campos opcionales pueden ser undefined (1 ms)
+      √ debe validar que las fechas son strings ISO
+      √ debe validar que los campos opcionales pueden ser undefined
 
-PASS __tests__/lib/utils/id-validation.test.ts
-  id-validation
-    isValidGuid
-      √ debe validar GUIDs correctos (25 ms)
-      √ debe rechazar GUIDs incorrectos (4 ms)
-    sanitizeId
-      √ debe sanitizar IDs válidos correctamente (3 ms)
-      √ debe retornar null para IDs inválidos (2 ms)
-    validateId
-      √ debe validar y retornar IDs válidos (7 ms)
-      √ debe lanzar error para IDs inválidos (57 ms)
+  console.warn
+    No se pudo obtener token de autenticación. Algunos tests pueden fallar.
+
+      109 |       }
+      110 |     } catch (error) {
+    > 111 |       console.warn("No se pudo obtener token de autenticación. Algunos tests pueden fallar.");
+          |               ^
+      112 |       // No lanzar error aquí, permitir que los tests individuales manejen la falta de token
+      113 |       authToken = "";
+      114 |     }
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:111:15)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      118 |     it("debe listar todas las empresas", async () => {
+      119 |       if (!authToken) {
+    > 120 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      121 |         return;
+      122 |       }
+      123 |
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:120:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      137 |     it("debe crear una empresa correctamente", async () => {
+      138 |       if (!authToken) {
+    > 139 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      140 |         return;
+      141 |       }
+      142 |
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:139:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      176 |     it("debe obtener la empresa creada", async () => {
+      177 |       if (!authToken) {
+    > 178 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      179 |         return;
+      180 |       }
+      181 |       expect(testCompanyId).toBeTruthy();
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:178:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      195 |     it("debe editar una empresa correctamente", async () => {
+      196 |       if (!authToken) {
+    > 197 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      198 |         return;
+      199 |       }
+      200 |       expect(testCompanyId).toBeTruthy();
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:197:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      232 |     it("debe verificar que la empresa se editó correctamente", async () => {
+      233 |       if (!authToken) {
+    > 234 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      235 |         return;
+      236 |       }
+      237 |       expect(testCompanyId).toBeTruthy();
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:234:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      252 |     it("debe eliminar una empresa correctamente", async () => {
+      253 |       if (!authToken) {
+    > 254 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      255 |         return;
+      256 |       }
+      257 |       expect(testCompanyId).toBeTruthy();
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:254:17)
+
+  console.warn
+    Saltando setup de usuarios: no hay token de autenticación
+
+      285 |     beforeAll(async () => {
+      286 |       if (!authToken) {
+    > 287 |         console.warn("Saltando setup de usuarios: no hay token de autenticación");
+          |                 ^
+      288 |         return;
+      289 |       }
+      290 |       // Asegurar que tenemos una empresa para los tests de usuarios
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:287:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      337 |     it("debe listar todos los usuarios", async () => {
+      338 |       if (!authToken) {
+    > 339 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      340 |         return;
+      341 |       }
+      342 |       const resp = await httpRequest(`${API_URL}/api/user`, {
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:339:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      355 |     it("debe crear un usuario correctamente", async () => {
+      356 |       if (!authToken) {
+    > 357 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      358 |         return;
+      359 |       }
+      360 |       expect(userTestCompanyId).toBeTruthy();
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:357:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      398 |     it("debe obtener el usuario creado", async () => {
+      399 |       if (!authToken) {
+    > 400 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      401 |         return;
+      402 |       }
+      403 |       expect(testUserId).toBeTruthy();
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:400:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      417 |     it("debe editar un usuario correctamente", async () => {
+      418 |       if (!authToken) {
+    > 419 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      420 |         return;
+      421 |       }
+      422 |       expect(testUserId).toBeTruthy();
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:419:17)
+
+PASS __tests__/lib/api/client.test.ts
+  ApiClient
+    GET requests
+      √ should make GET request successfully (26 ms)
+      √ should handle GET request with query parameters (9 ms)
+    POST requests
+      √ should make POST request with data (8 ms)
+    Error handling
+      √ should throw error on failed request (17 ms)
+      √ should handle network errors (5 ms)
+    Authentication
+      √ should include Authorization header when token exists (3 ms)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      454 |     it("debe verificar que el usuario se editó correctamente", async () => {
+      455 |       if (!authToken) {
+    > 456 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      457 |         return;
+      458 |       }
+      459 |       expect(testUserId).toBeTruthy();
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:456:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      475 |     it("debe eliminar un usuario correctamente", async () => {
+      476 |       if (!authToken) {
+    > 477 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      478 |         return;
+      479 |       }
+      480 |       expect(testUserId).toBeTruthy();
+
+      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:477:17)
+
+PASS __tests__/integration/users-companies-integrity.test.ts
+  Integridad E2E: Usuarios y Empresas
+    Empresas - Flujo completo
+      √ debe listar todas las empresas (18 ms)
+      √ debe crear una empresa correctamente (4 ms)
+      √ debe obtener la empresa creada (4 ms)
+      √ debe editar una empresa correctamente (5 ms)
+      √ debe verificar que la empresa se editó correctamente (3 ms)
+      √ debe eliminar una empresa correctamente (2 ms)
+    Usuarios - Flujo completo
+      √ debe listar todos los usuarios (4 ms)
+      √ debe crear un usuario correctamente (6 ms)
+      √ debe obtener el usuario creado (4 ms)
+      √ debe editar un usuario correctamente (3 ms)
+      √ debe verificar que el usuario se editó correctamente (7 ms)
+      √ debe eliminar un usuario correctamente (3 ms)
+
+  console.warn
+    No se pudo obtener token de autenticación. Algunos tests pueden fallar.
+
+       98 |       expect(authToken).toBeTruthy();
+       99 |     } catch (error) {
+    > 100 |       console.warn("No se pudo obtener token de autenticación. Algunos tests pueden fallar.");
+          |               ^
+      101 |       // Continuar de todas formas para que los tests que no requieren auth puedan ejecutarse
+      102 |     }
+      103 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:100:15)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      146 |     it("debe rechazar actualización con ID mal formateado (contiene caracteres inválidos)", async () => {
+      147 |       if (!authToken) {
+    > 148 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      149 |         return;
+      150 |       }
+      151 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:148:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      178 |     it("debe validar que el ID de empresa sea un GUID válido antes de actualizar", async () => {
+      179 |       if (!authToken) {
+    > 180 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      181 |         return;
+      182 |       }
+      183 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:180:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      210 |     it("debe rechazar actualización con ID que contiene caracteres especiales", async () => {
+      211 |       if (!authToken) {
+    > 212 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      213 |         return;
+      214 |       }
+      215 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:212:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      242 |     it("debe rechazar actualización con ID mal formateado (contiene caracteres inválidos)", async () => {
+      243 |       if (!authToken) {
+    > 244 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      245 |         return;
+      246 |       }
+      247 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:244:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      275 |     it("debe validar que el ID de usuario sea un GUID válido antes de actualizar", async () => {
+      276 |       if (!authToken) {
+    > 277 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      278 |         return;
+      279 |       }
+      280 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:277:17)
+
+  console.warn
+    Saltando test: no hay token de autenticación
+
+      308 |     it("debe rechazar actualización con ID que contiene caracteres especiales", async () => {
+      309 |       if (!authToken) {
+    > 310 |         console.warn("Saltando test: no hay token de autenticación");
+          |                 ^
+      311 |         return;
+      312 |       }
+      313 |
+
+      at Object.warn (__tests__/integration/id-validation.test.ts:310:17)
+
+PASS __tests__/integration/id-validation.test.ts
+  Validación de IDs en peticiones API
+    Empresas - Validación de IDs
+      √ debe rechazar actualización con ID mal formateado (contiene caracteres inválidos) (17 ms)
+      √ debe validar que el ID de empresa sea un GUID válido antes de actualizar (3 ms)
+      √ debe rechazar actualización con ID que contiene caracteres especiales (2 ms)
+    Usuarios - Validación de IDs
+      √ debe rechazar actualización con ID mal formateado (contiene caracteres inválidos) (3 ms)
+      √ debe validar que el ID de usuario sea un GUID válido antes de actualizar (2 ms)
+      √ debe rechazar actualización con ID que contiene caracteres especiales (3 ms)
 
 PASS __tests__/integration/integrity.test.tsx
   Tests de Integridad - Auditoría Completa
     1. Integridad de Autenticación
-      √ debe realizar login completo y guardar credenciales (22 ms)
-      √ debe manejar errores de autenticación correctamente (24 ms)
+      √ debe realizar login completo y guardar credenciales (13 ms)
+      √ debe manejar errores de autenticación correctamente (16 ms)
       √ debe realizar logout y limpiar almacenamiento (2 ms)
     2. Integridad CRUD de Usuarios
-      √ debe listar todos los usuarios correctamente (3 ms)
+      √ debe listar todos los usuarios correctamente (2 ms)
       √ debe obtener un usuario por ID (1 ms)
-      √ debe crear un nuevo usuario (3 ms)
-      √ debe actualizar un usuario existente (2 ms)
-      √ debe eliminar un usuario (1 ms)
-      √ debe manejar errores en operaciones CRUD (8 ms)
+      √ debe crear un nuevo usuario (1 ms)
+      √ debe actualizar un usuario existente
+      √ debe eliminar un usuario
+      √ debe manejar errores en operaciones CRUD (1 ms)
     3. Integridad CRUD de Empresas
-      √ debe listar todas las empresas (2 ms)
+      √ debe listar todas las empresas (1 ms)
       √ debe obtener una empresa por ID (1 ms)
-      √ debe crear una nueva empresa (2 ms)
-      √ debe actualizar una empresa existente (3 ms)
-      √ debe eliminar una empresa (1 ms)
+      √ debe crear una nueva empresa
+      √ debe actualizar una empresa existente (1 ms)
+      √ debe eliminar una empresa
     4. Integridad del Cliente API
       √ debe incluir token de autenticación en peticiones (1 ms)
-      √ debe manejar errores de red correctamente (2 ms)
-      √ debe manejar respuestas de error HTTP (2 ms)
+      √ debe manejar errores de red correctamente
+      √ debe manejar respuestas de error HTTP (1 ms)
     5. Integridad de Flujos Completos
-      √ debe completar flujo completo de creación de usuario (2 ms)
+      √ debe completar flujo completo de creación de usuario (1 ms)
       √ debe completar flujo completo de edición de empresa (1 ms)
-      √ debe completar flujo completo de eliminación (1 ms)
+      √ debe completar flujo completo de eliminación
     6. Integridad de Validaciones
       √ debe validar que companyId es requerido al crear usuario (1 ms)
-      √ debe validar formato de email (2 ms)
+      √ debe validar formato de email (1 ms)
     7. Integridad de Manejo de Errores
       √ debe manejar errores 404 correctamente (1 ms)
-      √ debe manejar errores 500 del servidor (2 ms)
-      √ debe manejar errores de conexión (3 ms)
+      √ debe manejar errores 500 del servidor (1 ms)
+      √ debe manejar errores de conexión (1 ms)
     8. Integridad de Estado y Caché
-      √ debe invalidar caché después de crear usuario (6 ms)
-
-PASS __tests__/lib/api/id-validation-api.test.ts
-  Validación de IDs en APIs
-    companiesApi
-      √ debe validar ID antes de getById (47 ms)
-      √ debe validar ID antes de update (6 ms)
-      √ debe validar ID antes de delete (2 ms)
-      √ debe permitir operaciones con IDs válidos (7 ms)
-    usersApi
-      √ debe validar ID antes de getById (6 ms)
-      √ debe validar ID antes de update (2 ms)
-      √ debe validar ID antes de delete (2 ms)
-      √ debe validar companyId en getAll (2 ms)
-      √ debe permitir operaciones con IDs válidos (2 ms)
+      √ debe invalidar caché después de crear usuario (4 ms)
 
 PASS __tests__/integration/e2e-flows.test.tsx
   Flujos E2E - Interacciones Completas
     Flujo E2E: Gestión Completa de Usuarios
-      √ debe completar flujo completo de operaciones CRUD de usuarios (25 ms)
-      √ debe manejar errores en operaciones de usuarios (29 ms)
+      √ debe completar flujo completo de operaciones CRUD de usuarios (15 ms)
+      √ debe manejar errores en operaciones de usuarios (18 ms)
     Flujo E2E: Gestión Completa de Empresas
-      √ debe completar flujo completo de operaciones CRUD de empresas (3 ms)
-      √ debe manejar lista vacía de empresas (1 ms)
+      √ debe completar flujo completo de operaciones CRUD de empresas (2 ms)
+      √ debe manejar lista vacía de empresas
     Flujo E2E: Autenticación y Navegación
-      √ debe mantener sesión después de login (2 ms)
+      √ debe mantener sesión después de login (1 ms)
+
+PASS __tests__/integration/system-integrity.test.ts
+  Auditoría de integridad API + Cliente
+    √ API: health responde healthy (55 ms)
+    √ API: login funciona correctamente con credenciales demo (291 ms)
+    √ API: test de integridad completo de login con datos de prueba (496 ms)
+    √ Cliente: la pantalla de login responde 200 y sirve HTML (69 ms)
 
 PASS __tests__/components/ui/button.test.tsx
   Button Component
-    √ should render button with text (123 ms)
-    √ should handle click events (48 ms)
-    √ should be disabled when disabled prop is true (12 ms)
-    √ should apply variant classes (8 ms)
-    √ should apply size classes (6 ms)
+    √ should render button with text (110 ms)
+    √ should handle click events (57 ms)
+    √ should be disabled when disabled prop is true (8 ms)
+    √ should apply variant classes (5 ms)
+    √ should apply size classes (3 ms)
 
 PASS __tests__/components/ui/input.test.tsx
   Input Component
-    √ should render input element (60 ms)
-    √ should handle user input (187 ms)
-    √ should be disabled when disabled prop is true (7 ms)
-    √ should apply custom className (6 ms)
-    √ should handle different input types (5 ms)
+    √ should render input element (38 ms)
+    √ should handle user input (224 ms)
+    √ should be disabled when disabled prop is true (4 ms)
+    √ should apply custom className (4 ms)
+    √ should handle different input types (4 ms)
 
   console.error
     Warning: An update to LoginPage inside a test was not wrapped in act(...).
@@ -352,31 +660,245 @@ PASS __tests__/components/ui/input.test.tsx
       at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
       at setIsLoading (app/login/page.tsx:79:7)
 
-  console.warn
-    No se pudo obtener token de autenticación. Algunos tests pueden fallar.
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
 
-      109 |       }
-      110 |     } catch (error) {
-    > 111 |       console.warn("No se pudo obtener token de autenticación. Algunos tests pueden fallar.");
-          |               ^
-      112 |       // No lanzar error aquí, permitir que los tests individuales manejen la falta de token
-      113 |       authToken = "";
-      114 |     }
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
 
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:111:15)
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
 
-  console.warn
-    No se pudo obtener token de autenticación. Algunos tests pueden fallar.
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
 
-       98 |       expect(authToken).toBeTruthy();
-       99 |     } catch (error) {
-    > 100 |       console.warn("No se pudo obtener token de autenticación. Algunos tests pueden fallar.");
-          |               ^
-      101 |       // Continuar de todas formas para que los tests que no requieren auth puedan ejecutarse
-      102 |     }
-      103 |
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
 
-      at Object.warn (__tests__/integration/id-validation.test.ts:100:15)
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+
+  console.error
+    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
+        at nav
+        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
+        at div
+        at div
+        at div
+        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
+        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
+        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
+      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
+      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
 
   console.error
     Warning: An update to LoginPage inside a test was not wrapped in act(...).
@@ -448,529 +970,6 @@ PASS __tests__/components/ui/input.test.tsx
       at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
       at Object.<anonymous> (__tests__/app/login/page.test.tsx:103:5)
 
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      146 |     it("debe rechazar actualización con ID mal formateado (contiene caracteres inválidos)", async () => {
-      147 |       if (!authToken) {
-    > 148 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      149 |         return;
-      150 |       }
-      151 |
-
-      at Object.warn (__tests__/integration/id-validation.test.ts:148:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      118 |     it("debe listar todas las empresas", async () => {
-      119 |       if (!authToken) {
-    > 120 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      121 |         return;
-      122 |       }
-      123 |
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:120:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      178 |     it("debe validar que el ID de empresa sea un GUID válido antes de actualizar", async () => {
-      179 |       if (!authToken) {
-    > 180 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      181 |         return;
-      182 |       }
-      183 |
-
-      at Object.warn (__tests__/integration/id-validation.test.ts:180:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      137 |     it("debe crear una empresa correctamente", async () => {
-      138 |       if (!authToken) {
-    > 139 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      140 |         return;
-      141 |       }
-      142 |
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:139:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      176 |     it("debe obtener la empresa creada", async () => {
-      177 |       if (!authToken) {
-    > 178 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      179 |         return;
-      180 |       }
-      181 |       expect(testCompanyId).toBeTruthy();
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:178:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      210 |     it("debe rechazar actualización con ID que contiene caracteres especiales", async () => {
-      211 |       if (!authToken) {
-    > 212 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      213 |         return;
-      214 |       }
-      215 |
-
-      at Object.warn (__tests__/integration/id-validation.test.ts:212:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      242 |     it("debe rechazar actualización con ID mal formateado (contiene caracteres inválidos)", async () => {
-      243 |       if (!authToken) {
-    > 244 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      245 |         return;
-      246 |       }
-      247 |
-
-      at Object.warn (__tests__/integration/id-validation.test.ts:244:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      195 |     it("debe editar una empresa correctamente", async () => {
-      196 |       if (!authToken) {
-    > 197 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      198 |         return;
-      199 |       }
-      200 |       expect(testCompanyId).toBeTruthy();
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:197:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      275 |     it("debe validar que el ID de usuario sea un GUID válido antes de actualizar", async () => {
-      276 |       if (!authToken) {
-    > 277 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      278 |         return;
-      279 |       }
-      280 |
-
-      at Object.warn (__tests__/integration/id-validation.test.ts:277:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      232 |     it("debe verificar que la empresa se editó correctamente", async () => {
-      233 |       if (!authToken) {
-    > 234 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      235 |         return;
-      236 |       }
-      237 |       expect(testCompanyId).toBeTruthy();
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:234:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      308 |     it("debe rechazar actualización con ID que contiene caracteres especiales", async () => {
-      309 |       if (!authToken) {
-    > 310 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      311 |         return;
-      312 |       }
-      313 |
-
-      at Object.warn (__tests__/integration/id-validation.test.ts:310:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      252 |     it("debe eliminar una empresa correctamente", async () => {
-      253 |       if (!authToken) {
-    > 254 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      255 |         return;
-      256 |       }
-      257 |       expect(testCompanyId).toBeTruthy();
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:254:17)
-
-  console.warn
-    Saltando setup de usuarios: no hay token de autenticación
-
-      285 |     beforeAll(async () => {
-      286 |       if (!authToken) {
-    > 287 |         console.warn("Saltando setup de usuarios: no hay token de autenticación");
-          |                 ^
-      288 |         return;
-      289 |       }
-      290 |       // Asegurar que tenemos una empresa para los tests de usuarios
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:287:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      337 |     it("debe listar todos los usuarios", async () => {
-      338 |       if (!authToken) {
-    > 339 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      340 |         return;
-      341 |       }
-      342 |       const resp = await httpRequest(`${API_URL}/api/user`, {
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:339:17)
-
-PASS __tests__/integration/id-validation.test.ts
-  Validación de IDs en peticiones API
-    Empresas - Validación de IDs
-      √ debe rechazar actualización con ID mal formateado (contiene caracteres inválidos) (13 ms)
-      √ debe validar que el ID de empresa sea un GUID válido antes de actualizar (4 ms)
-      √ debe rechazar actualización con ID que contiene caracteres especiales (3 ms)
-    Usuarios - Validación de IDs
-      √ debe rechazar actualización con ID mal formateado (contiene caracteres inválidos) (3 ms)
-      √ debe validar que el ID de usuario sea un GUID válido antes de actualizar (2 ms)
-      √ debe rechazar actualización con ID que contiene caracteres especiales (2 ms)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      355 |     it("debe crear un usuario correctamente", async () => {
-      356 |       if (!authToken) {
-    > 357 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      358 |         return;
-      359 |       }
-      360 |       expect(userTestCompanyId).toBeTruthy();
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:357:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      398 |     it("debe obtener el usuario creado", async () => {
-      399 |       if (!authToken) {
-    > 400 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      401 |         return;
-      402 |       }
-      403 |       expect(testUserId).toBeTruthy();
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:400:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      417 |     it("debe editar un usuario correctamente", async () => {
-      418 |       if (!authToken) {
-    > 419 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      420 |         return;
-      421 |       }
-      422 |       expect(testUserId).toBeTruthy();
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:419:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      454 |     it("debe verificar que el usuario se editó correctamente", async () => {
-      455 |       if (!authToken) {
-    > 456 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      457 |         return;
-      458 |       }
-      459 |       expect(testUserId).toBeTruthy();
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:456:17)
-
-  console.warn
-    Saltando test: no hay token de autenticación
-
-      475 |     it("debe eliminar un usuario correctamente", async () => {
-      476 |       if (!authToken) {
-    > 477 |         console.warn("Saltando test: no hay token de autenticación");
-          |                 ^
-      478 |         return;
-      479 |       }
-      480 |       expect(testUserId).toBeTruthy();
-
-      at Object.warn (__tests__/integration/users-companies-integrity.test.ts:477:17)
-
-PASS __tests__/integration/users-companies-integrity.test.ts
-  Integridad E2E: Usuarios y Empresas
-    Empresas - Flujo completo
-      √ debe listar todas las empresas (15 ms)
-      √ debe crear una empresa correctamente (3 ms)
-      √ debe obtener la empresa creada (3 ms)
-      √ debe editar una empresa correctamente (4 ms)
-      √ debe verificar que la empresa se editó correctamente (2 ms)
-      √ debe eliminar una empresa correctamente (2 ms)
-    Usuarios - Flujo completo
-      √ debe listar todos los usuarios (2 ms)
-      √ debe crear un usuario correctamente (4 ms)
-      √ debe obtener el usuario creado (4 ms)
-      √ debe editar un usuario correctamente (3 ms)
-      √ debe verificar que el usuario se editó correctamente (3 ms)
-      √ debe eliminar un usuario correctamente (2 ms)
-
-PASS __tests__/app/login/page.test.tsx
-  LoginPage
-    √ should render login form (165 ms)
-    √ should have default values in form (15 ms)
-    √ should handle form submission (230 ms)
-    √ should show error message on login failure (76 ms)
-    √ should disable submit button while loading (91 ms)
-
-  console.error
-    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
-    
-    When testing, code that causes React state updates should be wrapped into act(...):
-    
-    act(() => {
-      /* fire events that update state */
-    });
-    /* assert on the output */
-    
-    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
-        at nav
-        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
-        at div
-        at div
-        at div
-        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
-        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
-        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
-
-      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
-      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
-      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
-      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
-      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
-      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
-      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
-      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
-
-  console.error
-    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
-    
-    When testing, code that causes React state updates should be wrapped into act(...):
-    
-    act(() => {
-      /* fire events that update state */
-    });
-    /* assert on the output */
-    
-    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
-        at nav
-        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
-        at div
-        at div
-        at div
-        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
-        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
-        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
-
-      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
-      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
-      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
-      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
-      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
-      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
-      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
-      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
-
-  console.error
-    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
-    
-    When testing, code that causes React state updates should be wrapped into act(...):
-    
-    act(() => {
-      /* fire events that update state */
-    });
-    /* assert on the output */
-    
-    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
-        at nav
-        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
-        at div
-        at div
-        at div
-        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
-        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
-        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
-
-      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
-      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
-      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
-      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
-      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
-      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
-      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
-      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
-
-  console.error
-    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
-    
-    When testing, code that causes React state updates should be wrapped into act(...):
-    
-    act(() => {
-      /* fire events that update state */
-    });
-    /* assert on the output */
-    
-    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
-        at nav
-        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
-        at div
-        at div
-        at div
-        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
-        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
-        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
-
-      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
-      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
-      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
-      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
-      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
-      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
-      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
-      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
-
-  console.error
-    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
-    
-    When testing, code that causes React state updates should be wrapped into act(...):
-    
-    act(() => {
-      /* fire events that update state */
-    });
-    /* assert on the output */
-    
-    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
-        at nav
-        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
-        at div
-        at div
-        at div
-        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
-        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
-        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
-
-      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
-      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
-      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
-      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
-      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
-      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
-      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
-      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
-
-  console.error
-    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
-    
-    When testing, code that causes React state updates should be wrapped into act(...):
-    
-    act(() => {
-      /* fire events that update state */
-    });
-    /* assert on the output */
-    
-    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
-        at nav
-        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
-        at div
-        at div
-        at div
-        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
-        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
-        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
-
-      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
-      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
-      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
-      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
-      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
-      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
-      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
-      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
-
-  console.error
-    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
-    
-    When testing, code that causes React state updates should be wrapped into act(...):
-    
-    act(() => {
-      /* fire events that update state */
-    });
-    /* assert on the output */
-    
-    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
-        at nav
-        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
-        at div
-        at div
-        at div
-        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
-        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
-        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
-
-      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
-      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
-      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
-      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
-      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
-      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
-      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
-      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
-
-  console.error
-    Warning: An update to ForwardRef(LinkComponent) inside a test was not wrapped in act(...).
-    
-    When testing, code that causes React state updates should be wrapped into act(...):
-    
-    act(() => {
-      /* fire events that update state */
-    });
-    /* assert on the output */
-    
-    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
-        at childrenProp (C:\Proyectos\GesFer\Cliente\node_modules\next\src\client\link.tsx:300:16)
-        at nav
-        at user (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:97:3)
-        at div
-        at div
-        at div
-        at children (C:\Proyectos\GesFer\Cliente\components\layout\main-layout.tsx:24:30)
-        at children (C:\Proyectos\GesFer\Cliente\components\auth\protected-route.tsx:9:34)
-        at UsuariosPage (C:\Proyectos\GesFer\Cliente\app\usuarios\page.tsx:32:61)
-
-      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
-      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
-      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
-      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
-      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
-      at setVisible (node_modules/next/src/client/use-intersection.tsx:125:56)
-      at cb (node_modules/next/src/client/request-idle-callback.ts:8:7)
-      at Timeout.task [as _onTimeout] (node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
-
   console.error
     Warning: An update to UsuariosPage inside a test was not wrapped in act(...).
     
@@ -1036,6 +1035,14 @@ PASS __tests__/app/login/page.test.tsx
       at Object.pointer (node_modules/@testing-library/user-event/dist/cjs/pointer/index.js:27:9)
       at Object.<anonymous> (__tests__/app/usuarios/page.test.tsx:137:5)
 
+PASS __tests__/app/login/page.test.tsx
+  LoginPage
+    √ should render login form (135 ms)
+    √ should have default values in form (11 ms)
+    √ should handle form submission (166 ms)
+    √ should show error message on login failure (53 ms)
+    √ should disable submit button while loading (62 ms)
+
   console.error
     Warning: An update to UserForm inside a test was not wrapped in act(...).
     
@@ -1092,20 +1099,13 @@ PASS __tests__/app/login/page.test.tsx
 
 PASS __tests__/app/usuarios/page.test.tsx
   UsuariosPage
-    √ should render usuarios list (201 ms)
-    √ should open create modal when clicking new user button (314 ms)
-
-PASS __tests__/integration/system-integrity.test.ts (5.89 s)
-  Auditoría de integridad API + Cliente
-    √ API: health responde healthy (204 ms)
-    √ API: login funciona correctamente con credenciales demo (1606 ms)
-    √ API: test de integridad completo de login con datos de prueba (1201 ms)
-    √ Cliente: la pantalla de login responde 200 y sirve HTML (604 ms)
+    √ should render usuarios list (152 ms)
+    √ should open create modal when clicking new user button (204 ms)
 
 ----------------------------|---------|----------|---------|---------|-----------------------------------------------------------------------
 File                        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                                     
 ----------------------------|---------|----------|---------|---------|-----------------------------------------------------------------------
-All files                   |    26.6 |    16.95 |   17.05 |   26.29 |                                                                       
+All files                   |   27.81 |    28.46 |      18 |   27.68 |                                                                       
  app                        |       0 |        0 |       0 |       0 |                                                                       
   layout.tsx                |       0 |      100 |       0 |       0 | 2-23                                                                  
   page.tsx                  |       0 |        0 |       0 |       0 | 3-19                                                                  
@@ -1158,9 +1158,12 @@ All files                   |    26.6 |    16.95 |   17.05 |   26.29 |
   user-form.tsx             |   37.83 |    37.36 |   23.52 |   38.57 | 87-92,106-129,133-312,336                                             
  contexts                   |   16.12 |        0 |       0 |   16.12 |                                                                       
   auth-context.tsx          |   16.12 |        0 |       0 |   16.12 | 23-60,82-86                                                           
- lib/api                    |   59.77 |    48.27 |   51.85 |      60 |                                                                       
+ lib                        |   48.43 |    87.17 |     100 |   58.33 |                                                                       
+  config.test.ts            |   64.28 |    96.87 |     100 |     100 | 37                                                                    
+  config.ts                 |      44 |    83.52 |     100 |   51.21 | 42-52,57,60,75-89,96-97                                               
+ lib/api                    |   59.77 |    44.44 |   51.85 |      60 |                                                                       
   auth.ts                   |   14.28 |        0 |       0 |   10.52 | 6-45                                                                  
-  client.ts                 |   81.25 |    68.42 |    62.5 |   83.33 | 51,59,67,89-96                                                        
+  client.ts                 |   81.25 |     64.7 |    62.5 |   83.33 | 51,59,67,89-96                                                        
   companies.ts              |     100 |      100 |     100 |     100 |                                                                       
   customers.ts              |       0 |        0 |       0 |       0 | 1-23                                                                  
   users.ts                  |   84.61 |       50 |      80 |   83.33 | 8,17                                                                  
@@ -1176,7 +1179,7 @@ All files                   |    26.6 |    16.95 |   17.05 |   26.29 |
 Test Suites: 1 skipped, 15 passed, 15 of 16 total
 Tests:       1 skipped, 109 passed, 110 total
 Snapshots:   0 total
-Time:        9.882 s
+Time:        8.64 s
 Ran all test suites.
    Tests del Cliente: EXITOSOS 
    Tests del Cliente: FALLIDOS (codigo: 0) 
@@ -1189,7 +1192,7 @@ TESTS DE LA API
  
    Ejecutando tests de integracion... 
  
-Compilación iniciada a las 29/12/2025 9:11:11.
+Compilación iniciada a las 29/12/2025 9:54:31.
      1>Proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" en el nodo 1 (Restore destinos).
      1>_GetAllRestoreProjectPathItems:
          Determinando los proyectos que se van a restaurar...
@@ -1201,11 +1204,11 @@ Compilación iniciada a las 29/12/2025 9:11:11.
          El archivo de recursos no ha cambiado, así que se omitirá su escritura. Ruta de acceso: C:\Proyectos\GesFer\Api\src\Infrastructure\obj\project.assets.json
          El archivo de recursos no ha cambiado, así que se omitirá su escritura. Ruta de acceso: C:\Proyectos\GesFer\Api\src\Api\obj\project.assets.json
          El archivo de recursos no ha cambiado, así que se omitirá su escritura. Ruta de acceso: C:\Proyectos\GesFer\Api\src\IntegrationTests\obj\project.assets.json
-         Se ha restaurado C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj (en 70 ms).
-         Se ha restaurado C:\Proyectos\GesFer\Api\src\domain\GesFer.Domain.csproj (en 67 ms).
-         Se ha restaurado C:\Proyectos\GesFer\Api\src\Infrastructure\GesFer.Infrastructure.csproj (en 68 ms).
-         Se ha restaurado C:\Proyectos\GesFer\Api\src\application\GesFer.Application.csproj (en 67 ms).
-         Se ha restaurado C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj (en 68 ms).
+         Se ha restaurado C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj (en 69 ms).
+         Se ha restaurado C:\Proyectos\GesFer\Api\src\domain\GesFer.Domain.csproj (en 63 ms).
+         Se ha restaurado C:\Proyectos\GesFer\Api\src\Infrastructure\GesFer.Infrastructure.csproj (en 69 ms).
+         Se ha restaurado C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj (en 69 ms).
+         Se ha restaurado C:\Proyectos\GesFer\Api\src\application\GesFer.Application.csproj (en 63 ms).
          
          Archivos de NuGet Config usados:
              C:\Users\Racso\AppData\Roaming\NuGet\NuGet.Config
@@ -1217,10 +1220,10 @@ Compilación iniciada a las 29/12/2025 9:11:11.
              C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
          Todos los proyectos están actualizados para la restauración.
      1>Compilación del proyecto terminada "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (Restore destinos).
-   1:7>Proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" en el nodo 3 (VSTest destinos).
+   1:7>Proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" en el nodo 2 (VSTest destinos).
      1>BuildProject:
          Compilación iniciada, espere...
-   1:7>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:7) está compilando "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) en el nodo 3 (destinos predeterminados).
+   1:7>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:7) está compilando "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) en el nodo 2 (destinos predeterminados).
    1:8>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) está compilando "C:\Proyectos\GesFer\Api\src\domain\GesFer.Domain.csproj" (3:8) en el nodo 1 (destinos predeterminados).
      3>GenerateTargetFrameworkMonikerAttribute:
        Se omitirá el destino "GenerateTargetFrameworkMonikerAttribute" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
@@ -1235,7 +1238,7 @@ Compilación iniciada a las 29/12/2025 9:11:11.
        CopyFilesToOutputDirectory:
          GesFer.Domain -> C:\Proyectos\GesFer\Api\src\domain\bin\Debug\net8.0\GesFer.Domain.dll
      3>Compilación del proyecto terminada "C:\Proyectos\GesFer\Api\src\domain\GesFer.Domain.csproj" (destinos predeterminados).
-   1:8>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) está compilando "C:\Proyectos\GesFer\Api\src\Infrastructure\GesFer.Infrastructure.csproj" (4:8) en el nodo 3 (destinos predeterminados).
+   1:8>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) está compilando "C:\Proyectos\GesFer\Api\src\Infrastructure\GesFer.Infrastructure.csproj" (4:8) en el nodo 2 (destinos predeterminados).
      4>GenerateTargetFrameworkMonikerAttribute:
        Se omitirá el destino "GenerateTargetFrameworkMonikerAttribute" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
        CoreGenerateAssemblyInfo:
@@ -1251,7 +1254,7 @@ Compilación iniciada a las 29/12/2025 9:11:11.
        CopyFilesToOutputDirectory:
          GesFer.Infrastructure -> C:\Proyectos\GesFer\Api\src\Infrastructure\bin\Debug\net8.0\GesFer.Infrastructure.dll
      4>Compilación del proyecto terminada "C:\Proyectos\GesFer\Api\src\Infrastructure\GesFer.Infrastructure.csproj" (destinos predeterminados).
-   1:8>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) está compilando "C:\Proyectos\GesFer\Api\src\application\GesFer.Application.csproj" (5:7) en el nodo 2 (destinos predeterminados).
+   1:8>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) está compilando "C:\Proyectos\GesFer\Api\src\application\GesFer.Application.csproj" (5:7) en el nodo 4 (destinos predeterminados).
      5>GenerateTargetFrameworkMonikerAttribute:
        Se omitirá el destino "GenerateTargetFrameworkMonikerAttribute" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
        CoreGenerateAssemblyInfo:
@@ -1265,7 +1268,7 @@ Compilación iniciada a las 29/12/2025 9:11:11.
        CopyFilesToOutputDirectory:
          GesFer.Application -> C:\Proyectos\GesFer\Api\src\application\bin\Debug\net8.0\GesFer.Application.dll
      5>Compilación del proyecto terminada "C:\Proyectos\GesFer\Api\src\application\GesFer.Application.csproj" (destinos predeterminados).
-   1:8>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) está compilando "C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj" (2:6) en el nodo 4 (destinos predeterminados).
+   1:8>El proyecto "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (1:8) está compilando "C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj" (2:6) en el nodo 3 (destinos predeterminados).
      2>GenerateTargetFrameworkMonikerAttribute:
        Se omitirá el destino "GenerateTargetFrameworkMonikerAttribute" porque todos los archivos de salida están actualizados respecto a los archivos de entrada.
        CoreGenerateAssemblyInfo:
@@ -1326,207 +1329,9 @@ Iniciando la ejecución de pruebas, espere...
 1 archivos de prueba en total coincidieron con el patrón especificado.
 C:\Proyectos\GesFer\Api\src\IntegrationTests\bin\Debug\net8.0\GesFer.IntegrationTests.dll
 [xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.4.5+1caef2f33e (64-bit .NET 8.0.20)
-[xUnit.net 00:00:00.94]   Discovering: GesFer.IntegrationTests
-[xUnit.net 00:00:00.97]   Discovered:  GesFer.IntegrationTests
-[xUnit.net 00:00:00.98]   Starting:    GesFer.IntegrationTests
-info: Program[0]
-      Verificando conexi�n a la base de datos...
-info: Program[0]
-      Verificando si la base de datos necesita migraciones...
-info: Program[0]
-      Base de datos no relacional detectada. Omitiendo migraciones.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
-      Failed to determine the https port for redirect.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Create_WithInvalidCompanyId_ShouldReturnBadRequest [721 ms]
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Create_WithDuplicateUsername_ShouldReturnBadRequest [26 ms]
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Update_WithValidData_ShouldReturnOk [115 ms]
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Delete_WithInvalidId_ShouldReturnNotFound [13 ms]
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.GetAll_WithCompanyIdFilter_ShouldReturnFilteredUsers [39 ms]
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [20 ms]
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Update_WithInvalidId_ShouldReturnNotFound [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Test2P2_UpdateUser_WithAllProperties_ShouldValidateAllFields [251 ms]
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Update_WithPassword_ShouldUpdatePassword [121 ms]
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.GetById_WithValidId_ShouldReturnUser [4 ms]
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Test2P2_CreateUser_WithAllProperties_ShouldValidateAllFields [118 ms]
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Program[0]
-      Verificando conexi�n a la base de datos...
-info: Program[0]
-      Verificando si la base de datos necesita migraciones...
-info: Program[0]
-      Base de datos no relacional detectada. Omitiendo migraciones.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
-      Failed to determine the https port for redirect.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Delete_WithValidId_ShouldReturnNoContent [122 ms]
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.GetAll_ShouldReturnListOfUsers [15 ms]
-  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Create_WithValidData_ShouldReturnCreated [127 ms]
-  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.GetById_WithValidId_ShouldReturnGroup [48 ms]
-  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.Delete_WithValidId_ShouldReturnNoContent [29 ms]
-  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.Create_WithDuplicateName_ShouldReturnBadRequest [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.GetAll_ShouldReturnListOfGroups [11 ms]
-  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.Create_WithValidData_ShouldReturnCreated [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.Update_WithValidData_ShouldReturnOk [16 ms]
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
+[xUnit.net 00:00:00.95]   Discovering: GesFer.IntegrationTests
+[xUnit.net 00:00:01.00]   Discovered:  GesFer.IntegrationTests
+[xUnit.net 00:00:01.00]   Starting:    GesFer.IntegrationTests
 info: Program[0]
       Verificando conexi�n a la base de datos...
 info: Program[0]
@@ -1544,11 +1349,10 @@ warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 0 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 3 entities to in-memory store.
+  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.GetAll_ShouldReturnListOfStates [831 ms]
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 14 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
@@ -1561,56 +1365,6 @@ info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 3 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.Update_WithInvalidId_ShouldReturnNotFound [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.Delete_WithInvalidId_ShouldReturnNotFound [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.Create_WithInvalidStateId_ShouldReturnBadRequest [43 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.GetAll_WithStateIdFilter_ShouldReturnFilteredCities [59 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.GetById_WithValidId_ShouldReturnCity [68 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.Update_WithValidData_ShouldReturnOk [57 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.GetAll_WithCountryIdFilter_ShouldReturnFilteredCities [28 ms]
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
@@ -1636,66 +1390,15 @@ info: Microsoft.EntityFrameworkCore.Update[30100]
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Program[0]
-      Verificando conexi�n a la base de datos...
-info: Program[0]
-      Verificando si la base de datos necesita migraciones...
-info: Program[0]
-      Base de datos no relacional detectada. Omitiendo migraciones.
-warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
-      Failed to determine the https port for redirect.
-info: Program[0]
-      Verificando conexi�n a la base de datos...
-info: Program[0]
-      Verificando si la base de datos necesita migraciones...
-info: Program[0]
-      Base de datos no relacional detectada. Omitiendo migraciones.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
-      Failed to determine the https port for redirect.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 0 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.Delete_WithValidId_ShouldReturnNoContent [14 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.Create_WithValidData_ShouldReturnCreated [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.GetAll_ShouldReturnListOfCities [27 ms]
-  Correctas GesFer.IntegrationTests.Controllers.HealthControllerTests.GetHealth_ShouldReturnOk_WithHealthStatus [24 ms]
-  Correctas GesFer.IntegrationTests.Controllers.HealthControllerTests.GetHealth_ShouldReturnJsonContent [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [36 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.GetAll_WithCompanyIdFilter_ShouldReturnFilteredCustomers [60 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Create_WithDuplicateName_ShouldReturnBadRequest [5 ms]
+  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.GetById_WithValidId_ShouldReturnState [74 ms]
+  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [4 ms]
+  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.Delete_WithValidId_ShouldReturnNoContent [19 ms]
+  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.Update_WithValidData_ShouldReturnOk [35 ms]
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 14 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
@@ -1716,148 +1419,6 @@ info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 14 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Program[0]
-      Verificando conexi�n a la base de datos...
-info: Program[0]
-      Verificando si la base de datos necesita migraciones...
-info: Program[0]
-      Base de datos no relacional detectada. Omitiendo migraciones.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
-      Failed to determine the https port for redirect.
-  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.GetById_WithValidId_ShouldReturnCustomer [6 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Create_WithValidData_ShouldReturnCreated [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Update_WithValidData_ShouldReturnOk [25 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Delete_WithValidId_ShouldReturnNoContent [8 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Delete_WithInvalidId_ShouldReturnNotFound [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Create_WithInvalidCompanyId_ShouldReturnBadRequest [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Update_WithInvalidId_ShouldReturnNotFound [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.GetAll_ShouldReturnListOfCustomers [8 ms]
-  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [33 ms]
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Delete_WithInvalidId_ShouldReturnNotFound [12 ms]
-  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Delete_WithValidId_ShouldReturnNoContent [28 ms]
-  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.GetAll_WithCompanyIdFilter_ShouldReturnFilteredSuppliers [22 ms]
-  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Create_WithInvalidCompanyId_ShouldReturnBadRequest [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Update_WithValidData_ShouldReturnOk [34 ms]
-  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Create_WithValidData_ShouldReturnCreated [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Create_WithDuplicateName_ShouldReturnBadRequest [9 ms]
-  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.GetAll_ShouldReturnListOfSuppliers [12 ms]
-  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Update_WithInvalidId_ShouldReturnNotFound [4 ms]
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 info: Program[0]
@@ -1904,171 +1465,14 @@ info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 3 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.GetById_WithValidId_ShouldReturnSupplier [4 ms]
-  Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.Login_WithValidCredentials_ShouldNotReturn500Error [256 ms]
-  Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.GetUserPermissions_WithInvalidUserId_ShouldReturnEmptyList [7 ms]
-  Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.GetUserPermissions_WithValidUserId_ShouldReturnPermissions [4 ms]
+  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.Create_WithInvalidCountryId_ShouldReturnBadRequest [2 ms]
+  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.GetAll_WithCountryIdFilter_ShouldReturnFilteredStates [15 ms]
+  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.Create_WithValidData_ShouldReturnCreated [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.Login_WithValidCredentials_ShouldNotReturn500Error [333 ms]
+  Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.GetUserPermissions_WithInvalidUserId_ShouldReturnEmptyList [9 ms]
+  Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.GetUserPermissions_WithValidUserId_ShouldReturnPermissions [6 ms]
   Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.Login_WithInvalidUsername_ShouldReturnUnauthorized [3 ms]
   Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.Login_WithEmptyFields_ShouldReturnUnauthorized [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.Login_WithValidCredentials_ShouldReturnOk_WithUserData [167 ms]
-  Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.Login_WithInvalidCompany_ShouldReturnUnauthorized [2 ms]
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Program[0]
-      Verificando conexi�n a la base de datos...
-info: Program[0]
-      Verificando si la base de datos necesita migraciones...
-info: Program[0]
-      Base de datos no relacional detectada. Omitiendo migraciones.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
-      Failed to determine the https port for redirect.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-  Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.Login_WithInvalidPassword_ShouldReturnUnauthorized [152 ms]
-  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.GetAll_ShouldReturnListOfStates [32 ms]
-  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.GetById_WithValidId_ShouldReturnState [22 ms]
-  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.Delete_WithValidId_ShouldReturnNoContent [19 ms]
-  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.Update_WithValidData_ShouldReturnOk [30 ms]
-  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.Create_WithInvalidCountryId_ShouldReturnBadRequest [1 ms]
-  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.GetAll_WithCountryIdFilter_ShouldReturnFilteredStates [10 ms]
-  Correctas GesFer.IntegrationTests.Controllers.StateControllerTests.Create_WithValidData_ShouldReturnCreated [2 ms]
-info: Program[0]
-      Verificando conexi�n a la base de datos...
-info: Program[0]
-      Verificando si la base de datos necesita migraciones...
-info: Program[0]
-      Base de datos no relacional detectada. Omitiendo migraciones.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
-      Failed to determine the https port for redirect.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 0 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
@@ -2081,106 +1485,6 @@ info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 3 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.Delete_WithValidId_ShouldReturnNoContent [43 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.Update_WithValidData_ShouldReturnOk [18 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.Create_WithValidData_ShouldReturnCreated [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.GetById_WithValidId_ShouldReturnCountry [4 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.Create_WithDuplicateCode_ShouldReturnBadRequest [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.Delete_WithInvalidId_ShouldReturnNotFound [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.Update_WithInvalidId_ShouldReturnNotFound [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.GetAll_ShouldReturnListOfCountries [10 ms]
-info: Program[0]
-      Verificando conexi�n a la base de datos...
-info: Program[0]
-      Verificando si la base de datos necesita migraciones...
-info: Program[0]
-      Base de datos no relacional detectada. Omitiendo migraciones.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
-      Failed to determine the https port for redirect.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 0 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 3 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 14 entities to in-memory store.
-  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.Delete_WithValidId_ShouldReturnNoContent [59 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [11 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.Update_WithValidData_ShouldReturnOk [19 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.Delete_WithInvalidId_ShouldReturnNotFound [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.Update_WithInvalidId_ShouldReturnNotFound [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.Create_WithValidData_ShouldReturnCreated [3 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.GetById_WithValidId_ShouldReturnCompany [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.Create_WithDuplicateName_ShouldReturnBadRequest [2 ms]
-  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.GetAll_ShouldReturnListOfCompanies [13 ms]
 info: Program[0]
       Verificando conexi�n a la base de datos...
 info: Program[0]
@@ -2193,7 +1497,10 @@ warn: GesFer.Api.Controllers.SetupController[0]
       Iniciando inicializaci�n completa del entorno...
 info: GesFer.Api.Services.SetupService[0]
       Deteniendo contenedores Docker...
-  Correctas GesFer.IntegrationTests.Controllers.SetupControllerTests.GetStatus_ShouldReturnOk [20 ms]
+  Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.Login_WithValidCredentials_ShouldReturnOk_WithUserData [123 ms]
+  Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.Login_WithInvalidCompany_ShouldReturnUnauthorized [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.AuthControllerTests.Login_WithInvalidPassword_ShouldReturnUnauthorized [138 ms]
+  Correctas GesFer.IntegrationTests.Controllers.SetupControllerTests.GetStatus_ShouldReturnOk [30 ms]
 info: GesFer.Api.Services.SetupService[0]
       Limpiando vol�menes...
 info: GesFer.Api.Services.SetupService[0]
@@ -2397,18 +1704,714 @@ info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 3 entities to in-memory store.
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 14 entities to in-memory store.
-[xUnit.net 00:00:28.17]   Finished:    GesFer.IntegrationTests
-  Correctas GesFer.IntegrationTests.Controllers.SetupControllerTests.SeedData_ShouldInsertUsersCorrectly [125 ms]
+info: Program[0]
+      Verificando conexi�n a la base de datos...
+info: Program[0]
+      Verificando si la base de datos necesita migraciones...
+info: Program[0]
+      Base de datos no relacional detectada. Omitiendo migraciones.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+  Correctas GesFer.IntegrationTests.Controllers.SetupControllerTests.SeedData_ShouldInsertUsersCorrectly [131 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.Create_WithInvalidStateId_ShouldReturnBadRequest [35 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.GetAll_WithStateIdFilter_ShouldReturnFilteredCities [38 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.GetById_WithValidId_ShouldReturnCity [49 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.Update_WithValidData_ShouldReturnOk [46 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.GetAll_WithCountryIdFilter_ShouldReturnFilteredCities [23 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.Delete_WithValidId_ShouldReturnNoContent [13 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.Create_WithValidData_ShouldReturnCreated [4 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [2 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Program[0]
+      Verificando conexi�n a la base de datos...
+info: Program[0]
+      Verificando si la base de datos necesita migraciones...
+info: Program[0]
+      Base de datos no relacional detectada. Omitiendo migraciones.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+  Correctas GesFer.IntegrationTests.Controllers.CityControllerTests.GetAll_ShouldReturnListOfCities [35 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.Delete_WithValidId_ShouldReturnNoContent [82 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.Update_WithValidData_ShouldReturnOk [27 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.Delete_WithInvalidId_ShouldReturnNotFound [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.Update_WithInvalidId_ShouldReturnNotFound [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.Create_WithValidData_ShouldReturnCreated [4 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.GetById_WithValidId_ShouldReturnCompany [2 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.Create_WithDuplicateName_ShouldReturnBadRequest [2 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Program[0]
+      Verificando conexi�n a la base de datos...
+info: Program[0]
+      Verificando si la base de datos necesita migraciones...
+info: Program[0]
+      Base de datos no relacional detectada. Omitiendo migraciones.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+  Correctas GesFer.IntegrationTests.Controllers.CompanyControllerTests.GetAll_ShouldReturnListOfCompanies [16 ms]
+  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [33 ms]
+  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Delete_WithInvalidId_ShouldReturnNotFound [13 ms]
+  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Delete_WithValidId_ShouldReturnNoContent [35 ms]
+  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.GetAll_WithCompanyIdFilter_ShouldReturnFilteredSuppliers [17 ms]
+  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Create_WithInvalidCompanyId_ShouldReturnBadRequest [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Update_WithValidData_ShouldReturnOk [27 ms]
+  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Create_WithValidData_ShouldReturnCreated [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Create_WithDuplicateName_ShouldReturnBadRequest [3 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Program[0]
+      Verificando conexi�n a la base de datos...
+info: Program[0]
+      Verificando si la base de datos necesita migraciones...
+info: Program[0]
+      Base de datos no relacional detectada. Omitiendo migraciones.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.GetAll_ShouldReturnListOfSuppliers [9 ms]
+  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.Update_WithInvalidId_ShouldReturnNotFound [2 ms]
+  Correctas GesFer.IntegrationTests.Controllers.SupplierControllerTests.GetById_WithValidId_ShouldReturnSupplier [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Create_WithInvalidCompanyId_ShouldReturnBadRequest [33 ms]
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Create_WithDuplicateUsername_ShouldReturnBadRequest [10 ms]
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Update_WithValidData_ShouldReturnOk [57 ms]
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Delete_WithInvalidId_ShouldReturnNotFound [22 ms]
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.GetAll_WithCompanyIdFilter_ShouldReturnFilteredUsers [23 ms]
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [18 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Update_WithInvalidId_ShouldReturnNotFound [4 ms]
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Test2P2_UpdateUser_WithAllProperties_ShouldValidateAllFields [273 ms]
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Update_WithPassword_ShouldUpdatePassword [145 ms]
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.GetById_WithValidId_ShouldReturnUser [2 ms]
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Test2P2_CreateUser_WithAllProperties_ShouldValidateAllFields [125 ms]
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Delete_WithValidId_ShouldReturnNoContent [124 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Program[0]
+      Verificando conexi�n a la base de datos...
+info: Program[0]
+      Verificando si la base de datos necesita migraciones...
+info: Program[0]
+      Base de datos no relacional detectada. Omitiendo migraciones.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.GetAll_ShouldReturnListOfUsers [14 ms]
+  Correctas GesFer.IntegrationTests.Controllers.UserControllerTests.Create_WithValidData_ShouldReturnCreated [118 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.Delete_WithValidId_ShouldReturnNoContent [53 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.Update_WithValidData_ShouldReturnOk [19 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.Create_WithValidData_ShouldReturnCreated [2 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.GetById_WithValidId_ShouldReturnCountry [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.Create_WithDuplicateCode_ShouldReturnBadRequest [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.Delete_WithInvalidId_ShouldReturnNotFound [2 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.Update_WithInvalidId_ShouldReturnNotFound [2 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Program[0]
+      Verificando conexi�n a la base de datos...
+info: Program[0]
+      Verificando si la base de datos necesita migraciones...
+info: Program[0]
+      Base de datos no relacional detectada. Omitiendo migraciones.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [2 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CountryControllerTests.GetAll_ShouldReturnListOfCountries [13 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [38 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.GetAll_WithCompanyIdFilter_ShouldReturnFilteredCustomers [41 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Create_WithDuplicateName_ShouldReturnBadRequest [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.GetById_WithValidId_ShouldReturnCustomer [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Create_WithValidData_ShouldReturnCreated [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Update_WithValidData_ShouldReturnOk [40 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Delete_WithValidId_ShouldReturnNoContent [8 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Program[0]
+      Verificando conexi�n a la base de datos...
+info: Program[0]
+      Verificando si la base de datos necesita migraciones...
+info: Program[0]
+      Base de datos no relacional detectada. Omitiendo migraciones.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Delete_WithInvalidId_ShouldReturnNotFound [2 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Create_WithInvalidCompanyId_ShouldReturnBadRequest [2 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.Update_WithInvalidId_ShouldReturnNotFound [3 ms]
+  Correctas GesFer.IntegrationTests.Controllers.CustomerControllerTests.GetAll_ShouldReturnListOfCustomers [22 ms]
+  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.GetById_WithValidId_ShouldReturnGroup [41 ms]
+  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.Delete_WithValidId_ShouldReturnNoContent [30 ms]
+  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.Create_WithDuplicateName_ShouldReturnBadRequest [2 ms]
+  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.GetAll_ShouldReturnListOfGroups [9 ms]
+  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.Create_WithValidData_ShouldReturnCreated [2 ms]
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 1 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 0 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 3 entities to in-memory store.
+info: Microsoft.EntityFrameworkCore.Update[30100]
+      Saved 14 entities to in-memory store.
+info: Program[0]
+      Verificando conexi�n a la base de datos...
+info: Program[0]
+      Verificando si la base de datos necesita migraciones...
+info: Program[0]
+      Base de datos no relacional detectada. Omitiendo migraciones.
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+[xUnit.net 00:00:29.01]   Finished:    GesFer.IntegrationTests
+  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.Update_WithValidData_ShouldReturnOk [14 ms]
+  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.GetById_WithInvalidId_ShouldReturnNotFound [2 ms]
+  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.Update_WithInvalidId_ShouldReturnNotFound [2 ms]
+  Correctas GesFer.IntegrationTests.Controllers.GroupControllerTests.Delete_WithInvalidId_ShouldReturnNotFound [6 ms]
+  Correctas GesFer.IntegrationTests.Controllers.HealthControllerTests.GetHealth_ShouldReturnOk_WithHealthStatus [20 ms]
+  Correctas GesFer.IntegrationTests.Controllers.HealthControllerTests.GetHealth_ShouldReturnJsonContent [2 ms]
 
 La serie de pruebas se ejecutó correctamente.
 Pruebas totales: 93
      Correcto: 93
- Tiempo total: 28,7556 Segundos
+ Tiempo total: 29,5849 Segundos
      1>Compilación del proyecto terminada "C:\Proyectos\GesFer\Api\src\IntegrationTests\GesFer.IntegrationTests.csproj" (VSTest destinos).
 
 Compilación correcta.
     0 Advertencia(s)
     0 Errores
 
-Tiempo transcurrido 00:00:33.06
+Tiempo transcurrido 00:00:33.58
 Todos los tests se ejecutaron correctamente. 

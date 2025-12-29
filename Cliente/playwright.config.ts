@@ -1,11 +1,12 @@
 import { defineConfig, devices } from '@playwright/test';
+import { TEST_CLIENT_URL } from './lib/config.test';
 
 /**
  * Configuración de Playwright para GesFer
  * 
- * URLs configuradas:
- * - Web: http://localhost:3000
- * - API: http://localhost:5000
+ * URLs configuradas desde lib/config.test.ts:
+ * - Web: desde TEST_CLIENT_URL
+ * - API: desde TEST_API_URL
  */
 export default defineConfig({
   testDir: './tests',
@@ -40,7 +41,7 @@ export default defineConfig({
   /* Configuración compartida para todos los proyectos */
   use: {
     /* URL base para usar en navegación, por ejemplo, await page.goto('/') */
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.CLIENT_URL || TEST_CLIENT_URL,
     
     /* Recopilar trace cuando se reintenta el test fallido */
     trace: 'on-first-retry',
@@ -89,7 +90,7 @@ export default defineConfig({
   /* Servidor de desarrollo local - Deshabilitado porque se ejecuta manualmente */
   // webServer: {
   //   command: 'npm run dev',
-  //   url: 'http://localhost:3000',
+  //   url: TEST_CLIENT_URL,
   //   reuseExistingServer: true,
   //   timeout: 120 * 1000,
   // },

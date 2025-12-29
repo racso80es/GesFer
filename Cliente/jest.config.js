@@ -29,6 +29,7 @@ const customJestConfig = {
     '/node_modules/',
     '/.next/',
     '/tests/', // Excluir tests de Playwright
+    '/lib/config.test.ts', // Excluir archivo de configuración de tests
   ],
 }
 
