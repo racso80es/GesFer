@@ -16,6 +16,7 @@ public class LoginResponseDto
     public Guid? CountryLanguageId { get; set; }
     public Guid? EffectiveLanguageId { get; set; }
     public List<string> Permissions { get; set; } = new();
-    public string Token { get; set; } = string.Empty; // Para futura implementación de JWT
+    public string Token { get; set; } = string.Empty; // JWT Token
+    public string CursorId { get; set; } = string.Empty; // Cursor ID del usuario (UserId como string)
 }
 

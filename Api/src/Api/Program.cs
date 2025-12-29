@@ -1,6 +1,9 @@
 using GesFer.Api;
 using GesFer.Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +37,36 @@ builder.Services.AddCors(options =>
 
 // Configurar inyección de dependencias
 builder.Services.AddApplicationServices(builder.Configuration, builder.Environment);
+
+// Configurar autenticación JWT
+var jwtSecretKey = builder.Configuration["JwtSettings:SecretKey"] 
+    ?? throw new InvalidOperationException("JwtSettings:SecretKey no está configurado");
+var jwtIssuer = builder.Configuration["JwtSettings:Issuer"] 
+    ?? throw new InvalidOperationException("JwtSettings:Issuer no está configurado");
+var jwtAudience = builder.Configuration["JwtSettings:Audience"] 
+    ?? throw new InvalidOperationException("JwtSettings:Audience no está configurado");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
+        ClockSkew = TimeSpan.Zero // Eliminar el tiempo de gracia por defecto
+    };
+});
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -198,7 +231,11 @@ if (app.Environment.IsDevelopment())
 // CORS debe ir ANTES de UseHttpsRedirection para que las peticiones preflight funcionen
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();
+
+// Autenticación y autorización deben ir en este orden
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

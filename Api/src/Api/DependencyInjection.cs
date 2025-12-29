@@ -55,6 +55,7 @@ public static class DependencyInjection
 
         // Servicios de infraestructura
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IStockService, StockService>();
 
         // Command Handlers - Registro automático de todos los handlers

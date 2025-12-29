@@ -29,10 +29,18 @@ public class AuthService : IAuthService
     /// </summary>
     public async Task<User?> AuthenticateAsync(string companyName, string username, string password)
     {
+        // Normalizar los parámetros de búsqueda (trim)
+        var normalizedCompanyName = companyName?.Trim() ?? string.Empty;
+        var normalizedUsername = username?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(normalizedCompanyName) || string.IsNullOrWhiteSpace(normalizedUsername))
+            return null;
+
         // Buscar el usuario con la empresa incluida
         // Verificar primero que la empresa exista y esté activa
+        // MySQL con collation utf8mb4_unicode_ci hace comparaciones case-insensitive por defecto
         var company = await _context.Companies
-            .Where(c => c.Name == companyName && c.IsActive && c.DeletedAt == null)
+            .Where(c => c.Name == normalizedCompanyName && c.IsActive && c.DeletedAt == null)
             .FirstOrDefaultAsync();
 
         if (company == null)
@@ -48,7 +56,7 @@ public class AuthService : IAuthService
             .Include(u => u.Country)
                 .ThenInclude(c => c!.Language)
             .Include(u => u.Language)
-            .Where(u => u.Username == username
+            .Where(u => u.Username == normalizedUsername
                 && u.CompanyId == company.Id
                 && u.IsActive
                 && u.DeletedAt == null)
@@ -58,7 +66,7 @@ public class AuthService : IAuthService
             return null;
 
         // Verificar contraseña
-        if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+        if (string.IsNullOrWhiteSpace(password) || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             return null;
 
         return user;
@@ -86,17 +94,20 @@ public class AuthService : IAuthService
         // Permisos de los grupos a los que pertenece el usuario
         var groupPermissions = await _context.UserGroups
             .Include(ug => ug.Group)
-                .ThenInclude(g => g.GroupPermissions)
-                    .ThenInclude(gp => gp.Permission)
-            .Where(ug => ug.UserId == userId && ug.DeletedAt == null)
-            .SelectMany(ug => ug.Group.GroupPermissions
-                .Where(gp => gp.DeletedAt == null)
-                .Select(gp => gp.Permission.Key))
+                .ThenInclude(g => g!.GroupPermissions)
+                    .ThenInclude(gp => gp!.Permission)
+            .Where(ug => ug.UserId == userId && ug.DeletedAt == null && ug.Group != null)
+            .SelectMany(ug => ug.Group!.GroupPermissions
+                .Where(gp => gp != null && gp.DeletedAt == null && gp.Permission != null)
+                .Select(gp => gp!.Permission!.Key))
             .ToListAsync();
 
         foreach (var perm in groupPermissions)
         {
-            permissions.Add(perm);
+            if (!string.IsNullOrEmpty(perm))
+            {
+                permissions.Add(perm);
+            }
         }
 
         return permissions;

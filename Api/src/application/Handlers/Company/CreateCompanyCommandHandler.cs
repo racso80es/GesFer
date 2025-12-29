@@ -58,6 +58,14 @@ public class CreateCompanyCommandHandler : ICommandHandler<CreateCompanyCommand,
                 throw new InvalidOperationException($"No se encontró el país con ID {command.Dto.CountryId.Value}");
         }
 
+        if (command.Dto.LanguageId.HasValue)
+        {
+            var languageExists = await _context.Languages
+                .AnyAsync(l => l.Id == command.Dto.LanguageId.Value && l.DeletedAt == null, cancellationToken);
+            if (!languageExists)
+                throw new InvalidOperationException($"No se encontró el idioma con ID {command.Dto.LanguageId.Value}");
+        }
+
         var company = new GesFer.Domain.Entities.Company
         {
             Name = command.Dto.Name,
@@ -69,6 +77,7 @@ public class CreateCompanyCommandHandler : ICommandHandler<CreateCompanyCommand,
             CityId = command.Dto.CityId,
             StateId = command.Dto.StateId,
             CountryId = command.Dto.CountryId,
+            LanguageId = command.Dto.LanguageId,
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         };
@@ -88,6 +97,7 @@ public class CreateCompanyCommandHandler : ICommandHandler<CreateCompanyCommand,
             CityId = company.CityId,
             StateId = company.StateId,
             CountryId = company.CountryId,
+            LanguageId = company.LanguageId,
             IsActive = company.IsActive,
             CreatedAt = company.CreatedAt,
             UpdatedAt = company.UpdatedAt

@@ -19,10 +19,7 @@ test.describe('Usuarios E2E Tests', () => {
     await loginPage.verifyLoginSuccess();
     
     // Esperar a que la navegación al dashboard se complete
-    await page.waitForURL(/\/dashboard/, { timeout: 10000 });
-    
-    // Esperar un poco más para asegurar que la autenticación se haya establecido
-    await page.waitForTimeout(500);
+    await page.waitForURL(/\/dashboard/, { timeout: 5000 });
   });
 
   test.afterEach(async () => {

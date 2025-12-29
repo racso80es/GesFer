@@ -68,13 +68,14 @@ VALUES
 
 -- 5. Insertar un usuario de prueba
 -- Contraseña: "admin123" 
--- Hash BCrypt generado (puede variar, pero este es válido para "admin123")
+-- Hash BCrypt generado y verificado para "admin123"
+-- Usa INSERT ... ON DUPLICATE KEY UPDATE para actualizar el hash si el usuario ya existe
 INSERT INTO `Users` (Id, CompanyId, Username, PasswordHash, FirstName, LastName, Email, Phone, LanguageId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES (
     '99999999-9999-9999-9999-999999999999',
     '11111111-1111-1111-1111-111111111111',
     'admin',
-    '$2a$11$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', -- admin123
+    '$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW', -- admin123 (hash válido generado)
     'Administrador',
     'Sistema',
     'admin@empresa.com',
@@ -84,7 +85,12 @@ VALUES (
     NULL,
     NULL,
     TRUE
-);
+)
+ON DUPLICATE KEY UPDATE
+    PasswordHash = '$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW',
+    IsActive = TRUE,
+    DeletedAt = NULL,
+    UpdatedAt = UTC_TIMESTAMP();
 
 -- 6. Asignar usuario al grupo
 INSERT INTO `UserGroups` (Id, UserId, GroupId, CreatedAt, UpdatedAt, DeletedAt, IsActive)

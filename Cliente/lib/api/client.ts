@@ -4,11 +4,31 @@ import type { ApiError, ApiResponse } from "@/lib/types/api";
 // Por defecto usamos HTTPS en 5001, pero puedes cambiarlo en .env.local
 import { API_URL } from "@/lib/config";
 
+/**
+ * Opciones para el cliente API
+ */
+export interface ApiClientOptions {
+  /**
+   * Token de acceso JWT para autenticación
+   * Si no se proporciona, intentará obtenerlo de la sesión de Auth.js
+   */
+  accessToken?: string;
+}
+
 class ApiClient {
   private baseUrl: string;
+  private accessToken?: string;
 
-  constructor(baseUrl: string = API_URL) {
+  constructor(baseUrl: string = API_URL, options?: ApiClientOptions) {
     this.baseUrl = baseUrl;
+    this.accessToken = options?.accessToken;
+  }
+
+  /**
+   * Establece el token de acceso para las siguientes peticiones
+   */
+  setAccessToken(token: string | undefined) {
+    this.accessToken = token;
   }
 
   private async request<T>(
@@ -26,14 +46,21 @@ class ApiClient {
     };
 
     // Agregar token de autenticación si existe
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("auth_token");
-      if (token) {
-        config.headers = {
-          ...config.headers,
-          Authorization: `Bearer ${token}`,
-        };
-      }
+    // Prioridad: token pasado como parámetro > token de la instancia > localStorage (legacy)
+    let token = this.accessToken;
+    
+    if (!token && typeof window !== "undefined") {
+      // Intentar obtener el token de la sesión de NextAuth desde localStorage
+      // NextAuth almacena la sesión en una cookie, pero para compatibilidad
+      // también intentamos localStorage (legacy)
+      token = localStorage.getItem("auth_token") || undefined;
+    }
+
+    if (token) {
+      config.headers = {
+        ...config.headers,
+        Authorization: `Bearer ${token}`,
+      };
     }
 
     try {

@@ -14,7 +14,8 @@ VALUES
     ('10000000-0000-0000-0000-000000000003', 'Català', 'ca', 'Catalán', UTC_TIMESTAMP(), NULL, NULL, TRUE);
 
 -- 1. Insertar una empresa (Company)
-INSERT INTO `Companies` (Id, Name, TaxId, Address, Phone, Email, LanguageId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+-- Usa INSERT IGNORE para evitar errores si ya existe
+INSERT IGNORE INTO `Companies` (Id, Name, TaxId, Address, Phone, Email, LanguageId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES (
     '11111111-1111-1111-1111-111111111111',
     'Empresa Demo',
@@ -30,7 +31,8 @@ VALUES (
 );
 
 -- 2. Insertar un grupo de usuarios
-INSERT INTO `Groups` (Id, Name, Description, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+-- Usa INSERT IGNORE para evitar errores si ya existe
+INSERT IGNORE INTO `Groups` (Id, Name, Description, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES (
     '22222222-2222-2222-2222-222222222222',
     'Administradores',
@@ -42,7 +44,8 @@ VALUES (
 );
 
 -- 3. Insertar permisos de ejemplo
-INSERT INTO `Permissions` (Id, `Key`, Description, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+-- Usa INSERT IGNORE para evitar errores si ya existen
+INSERT IGNORE INTO `Permissions` (Id, `Key`, Description, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES 
     ('33333333-3333-3333-3333-333333333333', 'users.read', 'Ver usuarios', UTC_TIMESTAMP(), NULL, NULL, TRUE),
     ('44444444-4444-4444-4444-444444444444', 'users.write', 'Crear/editar usuarios', UTC_TIMESTAMP(), NULL, NULL, TRUE),
@@ -52,7 +55,8 @@ VALUES
     ('88888888-8888-8888-8888-888888888888', 'purchases.write', 'Crear/editar compras', UTC_TIMESTAMP(), NULL, NULL, TRUE);
 
 -- 4. Asignar permisos al grupo
-INSERT INTO `GroupPermissions` (Id, GroupId, PermissionId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+-- Usa INSERT IGNORE para evitar errores si ya existen
+INSERT IGNORE INTO `GroupPermissions` (Id, GroupId, PermissionId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES 
     ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '22222222-2222-2222-2222-222222222222', '33333333-3333-3333-3333-333333333333', UTC_TIMESTAMP(), NULL, NULL, TRUE),
     ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '22222222-2222-2222-2222-222222222222', '44444444-4444-4444-4444-444444444444', UTC_TIMESTAMP(), NULL, NULL, TRUE),
@@ -62,6 +66,7 @@ VALUES
 -- 5. Insertar un usuario de prueba
 -- Contraseña: "admin123" 
 -- Hash BCrypt generado y verificado para "admin123"
+-- Usa INSERT ... ON DUPLICATE KEY UPDATE para actualizar el hash si el usuario ya existe
 INSERT INTO `Users` (Id, CompanyId, Username, PasswordHash, FirstName, LastName, Email, Phone, LanguageId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES (
     '99999999-9999-9999-9999-999999999999',
@@ -77,10 +82,16 @@ VALUES (
     NULL,
     NULL,
     TRUE
-);
+)
+ON DUPLICATE KEY UPDATE
+    PasswordHash = '$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW',
+    IsActive = TRUE,
+    DeletedAt = NULL,
+    UpdatedAt = UTC_TIMESTAMP();
 
 -- 6. Asignar usuario al grupo
-INSERT INTO `UserGroups` (Id, UserId, GroupId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+-- Usa INSERT IGNORE para evitar errores si ya existe
+INSERT IGNORE INTO `UserGroups` (Id, UserId, GroupId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES (
     'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee',
     '99999999-9999-9999-9999-999999999999',
@@ -92,7 +103,8 @@ VALUES (
 );
 
 -- 7. Asignar un permiso directo al usuario (opcional)
-INSERT INTO `UserPermissions` (Id, UserId, PermissionId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+-- Usa INSERT IGNORE para evitar errores si ya existe
+INSERT IGNORE INTO `UserPermissions` (Id, UserId, PermissionId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES (
     'ffffffff-ffff-ffff-ffff-ffffffffffff',
     '99999999-9999-9999-9999-999999999999',

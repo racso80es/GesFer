@@ -12,12 +12,13 @@ export interface LoginResponse {
   lastName: string;
   companyId: string;
   companyName: string;
-   userLanguageId?: string;
-   companyLanguageId?: string;
-   countryLanguageId?: string;
-   effectiveLanguageId?: string;
+  userLanguageId?: string;
+  companyLanguageId?: string;
+  countryLanguageId?: string;
+  effectiveLanguageId?: string;
   permissions: string[];
-  token?: string; // Opcional porque la API actual no devuelve token
+  token: string; // JWT Token
+  cursorId: string; // Cursor ID del usuario
 }
 
 // Tipos para User

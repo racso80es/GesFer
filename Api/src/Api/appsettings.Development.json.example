@@ -1,0 +1,24 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "Microsoft.AspNetCore": "Information",
+      "Microsoft.EntityFrameworkCore": "Information"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;"
+  },
+  "Cache": {
+    "Server": "localhost",
+    "Port": 11211,
+    "Enabled": true
+  },
+  "JwtSettings": {
+    "SecretKey": "YourSuperSecretKeyThatShouldBeAtLeast32CharactersLong!",
+    "Issuer": "GesFerApi",
+    "Audience": "GesFerClient",
+    "ExpirationMinutes": 60
+  }
+}
+

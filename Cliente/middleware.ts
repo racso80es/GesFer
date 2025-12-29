@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from './auth';
 import { defaultLocale, locales, type Locale } from './i18n';
 
 // Mapeo de languageId (Guids) a locale
@@ -49,7 +50,13 @@ function getLocaleFromUser(request: NextRequest): Locale {
   return defaultLocale;
 }
 
-export default function middleware(request: NextRequest) {
+// Rutas públicas que no requieren autenticación
+const publicRoutes = ['/login', '/api/auth'];
+
+// Rutas que requieren autenticación
+const protectedRoutes = ['/dashboard', '/usuarios', '/clientes', '/empresas'];
+
+export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   
   // Eliminar cualquier locale de la URL si existe (redirigir a la ruta sin locale)
@@ -62,11 +69,69 @@ export default function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(pathWithoutLocale, request.url));
   }
   
-  // Continuar con la request normalmente (sin redirecciones de locale)
+  // Verificar si la ruta es pública
+  const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
+  
+  // Verificar si la ruta está protegida
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+  
+  // Función helper para verificar autenticación (NextAuth o cookies)
+  const isAuthenticated = async (): Promise<boolean> => {
+    // Primero verificar NextAuth
+    const session = await auth();
+    if (session) {
+      return true;
+    }
+    
+    // Fallback: verificar cookie auth_user (para compatibilidad con AuthContext)
+    const authUserCookie = request.cookies.get('auth_user');
+    if (authUserCookie?.value) {
+      try {
+        const user = JSON.parse(decodeURIComponent(authUserCookie.value));
+        return !!user && !!user.userId;
+      } catch {
+        return false;
+      }
+    }
+    
+    return false;
+  };
+
+  // Si es una ruta protegida, verificar autenticación
+  if (isProtectedRoute) {
+    const authenticated = await isAuthenticated();
+    
+    if (!authenticated) {
+      // Redirigir a login si no está autenticado
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+  
+  // Si está autenticado y trata de acceder a login, redirigir a dashboard
+  if (pathname === '/login') {
+    const authenticated = await isAuthenticated();
+    if (authenticated) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+  }
+  
+  // Continuar con la request normalmente
   return NextResponse.next();
 }
 
 export const config = {
-  // Matcher para todas las rutas excepto archivos estáticos y API
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
+  // Matcher para todas las rutas excepto archivos estáticos, API de NextAuth y archivos estáticos
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api/auth (NextAuth routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public files (images, etc.)
+     */
+    '/((?!api/auth|_next/static|_next/image|favicon.ico|.*\\..*).*)',
+  ],
 };

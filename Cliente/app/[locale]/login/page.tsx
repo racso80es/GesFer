@@ -23,24 +23,22 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirigir si ya está autenticado al cargar la página (solo una vez, no durante el login)
+  // Redirigir si ya está autenticado al cargar la página o después del login
   useEffect(() => {
     // Solo redirigir si:
     // 1. Ya terminó de cargar el estado de autenticación inicial
     // 2. Está autenticado
     // 3. NO estamos en proceso de hacer login (isLoading es false)
-    // 4. NO estamos ya en dashboard (para evitar bucles)
+    // 4. NO estamos ya en la página de login (evitar bucles)
     if (!authLoading && isAuthenticated && !isLoading) {
       const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-      if (!currentPath.includes('dashboard')) {
-        // Verificar también localStorage para asegurarnos
-        const storedUser = typeof window !== 'undefined' ? localStorage.getItem('auth_user') : null;
-        if (storedUser) {
-          router.replace("/dashboard");
-        }
+      // Solo redirigir si no estamos en login y no estamos ya en dashboard
+      if (!currentPath.includes('dashboard') && !currentPath.includes('login')) {
+        // Usar push en lugar de replace para asegurar la navegación
+        router.push("/dashboard");
       }
     }
-  }, [authLoading]); // Solo ejecutar cuando cambie authLoading (carga inicial)
+  }, [authLoading, isAuthenticated, isLoading, router]);
 
   // Mostrar loading mientras se verifica la autenticación
   if (authLoading) {
@@ -54,9 +52,23 @@ export default function LoginPage() {
     );
   }
 
-  // No mostrar nada si está autenticado (se redirigirá)
-  if (isAuthenticated) {
-    return null;
+  // Si está autenticado y no estamos en proceso de login, redirigir
+  // Pero solo si realmente estamos en la página de login (no en una redirección)
+  if (isAuthenticated && !isLoading) {
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+    // Solo mostrar "Redirigiendo" si estamos realmente en /login
+    if (currentPath.includes('login')) {
+      // Redirigir inmediatamente sin mostrar mensaje
+      router.push("/dashboard");
+      return (
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Redirigiendo...</p>
+          </div>
+        </div>
+      );
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -66,10 +78,9 @@ export default function LoginPage() {
 
     try {
       await login(formData);
-      // Esperar un momento para que el estado se actualice y localStorage se guarde
-      await new Promise(resolve => setTimeout(resolve, 100));
-      // Redirigir después del login exitoso
-      router.replace("/dashboard");
+      // El login actualiza el estado, lo que activará el useEffect para redirigir
+      // No necesitamos redirigir manualmente aquí, el useEffect lo hará
+      setIsLoading(false);
     } catch (err) {
       setError(
         err instanceof Error

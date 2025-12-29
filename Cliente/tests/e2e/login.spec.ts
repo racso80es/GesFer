@@ -7,7 +7,16 @@ import { appConfig } from '../../lib/config';
 test.describe('Login E2E Tests', () => {
   let cleanup: TestDataCleanup;
 
-  test.beforeEach(async ({ request }) => {
+  test.beforeEach(async ({ request, page }) => {
+    // Limpiar localStorage y cookies antes de cada test para evitar sesiones anteriores
+    await page.goto('/login');
+    await page.evaluate(() => {
+      localStorage.clear();
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+      });
+    });
+    
     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
     await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
   });
@@ -72,7 +81,7 @@ test.describe('Login E2E Tests', () => {
     await expect(loginPage.passwordInput).toBeVisible();
     
     // Verificar que estamos todavía en la página de login
-    await expect(page).toHaveURL(/\/login/);
+    await expect(page).toHaveURL(/\/login/, { timeout: 3000 });
   });
 });
 

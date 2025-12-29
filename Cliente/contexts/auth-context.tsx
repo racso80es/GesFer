@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import type { LoginResponse } from "@/lib/types/api";
 import { authApi } from "@/lib/api/auth";
+import { signIn as nextAuthSignIn } from "next-auth/react";
 
 interface AuthContextType {
   user: LoginResponse | null;
@@ -38,8 +39,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     contraseña: string;
   }) => {
     try {
+      // Primero hacer login con la API para obtener los datos
       const response = await authApi.login(credentials);
+      
+      // Actualizar el estado del usuario primero
       setUser(response);
+      
+      // Luego intentar actualizar la sesión de NextAuth para que el middleware la reconozca
+      // Usar signIn de next-auth/react (versión cliente)
+      // Hacer esto de forma no bloqueante para no afectar el flujo principal
+      try {
+        const result = await nextAuthSignIn("credentials", {
+          empresa: credentials.empresa,
+          usuario: credentials.usuario,
+          contraseña: credentials.contraseña,
+          redirect: false, // No redirigir automáticamente, lo haremos manualmente
+        });
+        
+        // Si NextAuth falla pero la API funcionó, continuar de todas formas
+        // (el usuario ya está guardado en localStorage)
+        if (result?.error) {
+          console.warn("NextAuth signIn falló pero el login de API fue exitoso:", result.error);
+        }
+      } catch (nextAuthError) {
+        // Si NextAuth falla completamente, no afectar el flujo principal
+        // El usuario ya está autenticado en AuthContext y localStorage
+        console.warn("Error al actualizar sesión NextAuth (no crítico):", nextAuthError);
+      }
     } catch (error) {
       throw error;
     }

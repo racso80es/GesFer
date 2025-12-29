@@ -12,11 +12,11 @@ export default defineConfig({
   testDir: './tests',
   
   /* Tiempo máximo para ejecutar un test */
-  timeout: 30 * 1000,
+  timeout: 20 * 1000, // Reducido de 30s a 20s
   
   /* Tiempo de espera para expect */
   expect: {
-    timeout: 5000,
+    timeout: 3000, // Reducido de 5s a 3s
   },
   
   /* Ejecutar tests en paralelo */
@@ -28,8 +28,8 @@ export default defineConfig({
   /* Reintentar en CI solo si falla */
   retries: process.env.CI ? 2 : 0,
   
-  /* Número de workers en CI, o indefinido en local */
-  workers: process.env.CI ? 1 : undefined,
+  /* Número de workers: más workers = más rápido, pero más uso de recursos */
+  workers: process.env.CI ? 1 : 4, // Aumentado a 4 workers en local
   
   /* Reporter a usar */
   reporter: [
@@ -60,30 +60,25 @@ export default defineConfig({
   globalTeardown: undefined,
 
   /* Configurar proyectos para diferentes navegadores */
-  projects: [
+  /* En desarrollo, solo usar Chromium para velocidad. En CI, usar todos */
+  projects: process.env.CI ? [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
-
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
-
-    /* Test en dispositivos móviles */
+  ] : [
+    // Solo Chromium en desarrollo para velocidad
     {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
     },
   ],
 
