@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import LoginPage from '@/app/[locale]/login/page'
+import LoginPage from '@/app/login/page'
 import { useAuth } from '@/contexts/auth-context'
 
 // Mock the auth context

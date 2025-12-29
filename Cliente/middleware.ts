@@ -1,4 +1,3 @@
-import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { defaultLocale, locales, type Locale } from './i18n';
 
@@ -14,7 +13,7 @@ const languageIdToLocale: Record<string, Locale> = {
   'ca': 'ca',
 };
 
-function getLocaleFromUser(request: NextRequest): Locale | null {
+function getLocaleFromUser(request: NextRequest): Locale {
   // Intentar obtener el idioma del usuario desde cookies
   const userData = request.cookies.get('auth_user');
   
@@ -42,84 +41,32 @@ function getLocaleFromUser(request: NextRequest): Locale | null {
         }
       }
     } catch (error) {
-      // Si hay error parseando, continuar con el flujo normal
+      // Si hay error parseando, continuar con el default
       console.error('Error parsing user data:', error);
     }
   }
   
-  return null;
+  return defaultLocale;
 }
-
-const intlMiddleware = createMiddleware({
-  locales,
-  defaultLocale,
-  localePrefix: 'as-needed', // No mostrar /es en la URL si es el idioma por defecto
-  localeDetection: true, // Detectar idioma del navegador
-});
 
 export default function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   
-  // Evitar procesar rutas de API y recursos estáticos
-  if (pathname.startsWith('/api/') || pathname.startsWith('/_next/')) {
-    return intlMiddleware(request);
+  // Eliminar cualquier locale de la URL si existe (redirigir a la ruta sin locale)
+  const pathnameParts = pathname.split('/').filter(Boolean);
+  const firstPart = pathnameParts[0];
+  
+  // Si el primer segmento es un locale válido, redirigir a la ruta sin locale
+  if (firstPart && locales.includes(firstPart as Locale)) {
+    const pathWithoutLocale = '/' + pathnameParts.slice(1).join('/') || '/';
+    return NextResponse.redirect(new URL(pathWithoutLocale, request.url));
   }
   
-  // Excluir rutas críticas de las redirecciones de locale para evitar bucles
-  // Estas rutas se manejarán por el middleware de next-intl sin redirecciones adicionales
-  const criticalRoutes = ['/login', '/dashboard', '/usuarios', '/clientes', '/empresas'];
-  if (criticalRoutes.some(route => pathname.includes(route))) {
-    return intlMiddleware(request);
-  }
-  
-  // Intentar obtener el locale del usuario
-  const userLocale = getLocaleFromUser(request);
-  
-  // Si tenemos un locale del usuario, usarlo como preferencia
-  if (userLocale) {
-    const pathnameHasLocale = locales.some(
-      (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-    );
-    
-    // Si el pathname no tiene locale, redirigir al locale del usuario
-    if (!pathnameHasLocale) {
-      const newPath = userLocale === defaultLocale 
-        ? pathname 
-        : `/${userLocale}${pathname === '/' ? '' : pathname}`;
-      
-      // Si el path ya es correcto, continuar con el middleware de next-intl
-      if (newPath === pathname) {
-        return intlMiddleware(request);
-      }
-      
-      // Solo redirigir si la nueva ruta es diferente a la actual
-      const newUrl = new URL(newPath, request.url);
-      if (newUrl.pathname !== pathname && newUrl.pathname !== request.nextUrl.pathname) {
-        return NextResponse.redirect(newUrl);
-      }
-    } else {
-      // Si el pathname tiene un locale diferente al del usuario, cambiarlo
-      const currentLocale = pathname.split('/')[1];
-      if (locales.includes(currentLocale as Locale) && currentLocale !== userLocale) {
-        const pathWithoutLocale = pathname.replace(`/${currentLocale}`, '') || '/';
-        const newPath = userLocale === defaultLocale 
-          ? pathWithoutLocale 
-          : `/${userLocale}${pathWithoutLocale}`;
-        
-        // Solo redirigir si la nueva ruta es diferente a la actual
-        const newUrl = new URL(newPath, request.url);
-        if (newUrl.pathname !== pathname && newUrl.pathname !== request.nextUrl.pathname) {
-          return NextResponse.redirect(newUrl);
-        }
-      }
-    }
-  }
-  
-  // Usar el middleware de next-intl que maneja automáticamente la redirección
-  return intlMiddleware(request);
+  // Continuar con la request normalmente (sin redirecciones de locale)
+  return NextResponse.next();
 }
 
 export const config = {
-  // Matcher para rutas que necesitan internacionalización
+  // Matcher para todas las rutas excepto archivos estáticos y API
   matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
 };

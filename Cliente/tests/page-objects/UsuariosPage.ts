@@ -16,13 +16,13 @@ export class UsuariosPage extends BasePage {
   constructor(page: Page) {
     super(page);
     
-    // Preferir getByTestId, con fallback a getByRole
-    this.title = page.getByTestId('usuarios-title').or(page.getByRole('heading', { name: /usuarios/i }));
-    this.newUserButton = page.getByTestId('usuarios-new-user-button').or(page.getByRole('button', { name: /nuevo usuario|new user/i }));
-    this.usersTable = page.getByTestId('usuarios-table').or(page.locator('table'));
+    // Preferir getByTestId, con fallback a getByRole, usando .first() para evitar múltiples elementos
+    this.title = page.getByTestId('usuarios-title').or(page.getByRole('heading', { name: /usuarios/i })).first();
+    this.newUserButton = page.getByTestId('usuarios-new-user-button').or(page.getByRole('button', { name: /nuevo usuario|new user/i })).first();
+    this.usersTable = page.getByTestId('usuarios-table').or(page.locator('table')).first();
     this.usersList = page.getByTestId('usuarios-list');
-    this.createModal = page.getByTestId('usuarios-create-modal').or(page.locator('[role="dialog"]').filter({ hasText: /crear nuevo usuario|create new user/i }));
-    this.editModal = page.getByTestId('usuarios-edit-modal').or(page.locator('[role="dialog"]').filter({ hasText: /editar usuario|edit user/i }));
+    this.createModal = page.getByTestId('usuarios-create-modal').or(page.locator('[role="dialog"]').filter({ hasText: /crear nuevo usuario|create new user/i })).first();
+    this.editModal = page.getByTestId('usuarios-edit-modal').or(page.locator('[role="dialog"]').filter({ hasText: /editar usuario|edit user/i })).first();
   }
 
   /**

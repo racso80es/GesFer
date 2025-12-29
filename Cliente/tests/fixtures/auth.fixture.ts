@@ -28,7 +28,7 @@ export const test = base.extend<{
 
   // Fixture para cliente API
   apiClient: async ({ request }, use) => {
-    const apiClient = new ApiClient(request, process.env.API_URL || 'http://localhost:5000');
+    const apiClient = new ApiClient(request, process.env.API_URL || 'http://127.0.0.1:5000');
     await use(apiClient);
   },
 });

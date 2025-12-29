@@ -141,14 +141,9 @@ export function UserForm({
       // Preparar los datos para enviar
       const dataToSubmit = { ...formData };
       
-      // Asegurar que languageId sea null explícitamente si está vacío (para establecer "por defecto")
-      // o convertir código a Guid si tiene un valor
-      if (dataToSubmit.languageId && dataToSubmit.languageId !== "") {
-        dataToSubmit.languageId = getLanguageId(dataToSubmit.languageId);
-      } else {
-        // Enviar null explícitamente para que el backend lo establezca como null
-        // null se serializa en JSON, undefined no, así que usamos null para indicar "por defecto"
-        (dataToSubmit as any).languageId = null;
+      // Asegurar que languageId sea undefined si está vacío
+      if (!dataToSubmit.languageId || dataToSubmit.languageId === "") {
+        dataToSubmit.languageId = undefined;
       }
       
       // Si es edición y no hay password, no lo incluimos
@@ -159,22 +154,17 @@ export function UserForm({
         await onSubmit(dataToSubmit);
       }
     } catch (error) {
-      let errorMessage = t('saveError');
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'string') {
-        errorMessage = error;
-      } else if (error && typeof error === 'object' && 'message' in error) {
-        errorMessage = String((error as any).message);
-      }
-      setSubmitError(errorMessage);
-      console.error('Error al guardar usuario:', error);
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : t('saveError')
+      );
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" data-testid={isEditing ? "user-form-edit" : "user-form-create"}>
-      {submitError && <ErrorMessage message={submitError} data-testid="user-form-error" />}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {submitError && <ErrorMessage message={submitError} />}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -208,7 +198,6 @@ export function UserForm({
             }
             disabled={isLoading}
             required
-            data-testid="user-form-username-input"
           />
           {errors.username && (
             <p className="text-sm text-destructive">{errors.username}</p>
@@ -229,7 +218,6 @@ export function UserForm({
             disabled={isLoading}
             placeholder={isEditing ? t('passwordPlaceholder') : ""}
             required={!isEditing}
-            data-testid="user-form-password-input"
           />
           {errors.password && (
             <p className="text-sm text-destructive">{errors.password}</p>
@@ -248,7 +236,6 @@ export function UserForm({
             }
             disabled={isLoading}
             required
-            data-testid="user-form-firstname-input"
           />
           {errors.firstName && (
             <p className="text-sm text-destructive">{errors.firstName}</p>
@@ -267,7 +254,6 @@ export function UserForm({
             }
             disabled={isLoading}
             required
-            data-testid="user-form-lastname-input"
           />
           {errors.lastName && (
             <p className="text-sm text-destructive">{errors.lastName}</p>
@@ -284,7 +270,6 @@ export function UserForm({
               setFormData({ ...formData, email: e.target.value || undefined })
             }
             disabled={isLoading}
-            data-testid="user-form-email-input"
           />
           {errors.email && (
             <p className="text-sm text-destructive">{errors.email}</p>
@@ -323,18 +308,13 @@ export function UserForm({
             value={formData.languageId || ""}
             onChange={(e) => {
               const selectedValue = e.target.value;
-              // Si se selecciona la opción vacía, establecer undefined
-              if (!selectedValue || selectedValue === "") {
-                setFormData({ ...formData, languageId: undefined });
-              } else {
-                const languageId = getLanguageId(selectedValue);
-                setFormData({ ...formData, languageId });
-              }
+              const languageId = getLanguageId(selectedValue);
+              setFormData({ ...formData, languageId });
             }}
             disabled={isLoading}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <option value="">{t('defaultLanguage')}</option>
+            <option value="">{t('selectLanguage')}</option>
             {languageOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {currentLanguageNames[option.code] || option.label}
@@ -369,10 +349,10 @@ export function UserForm({
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading} data-testid="user-form-cancel-button">
+        <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
           {tCommon('cancel')}
         </Button>
-        <Button type="submit" disabled={isLoading} data-testid="user-form-submit-button">
+        <Button type="submit" disabled={isLoading}>
           {isLoading ? (
             t('saving')
           ) : (

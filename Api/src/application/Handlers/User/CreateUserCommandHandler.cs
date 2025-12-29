@@ -67,15 +67,14 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
                 throw new InvalidOperationException($"No se encontró el país con ID {command.Dto.CountryId.Value}");
         }
 
-        // Idioma: si se proporciona, validarlo. Si no, persistir null (la resolución jerárquica se hace en lectura)
-        Guid? languageId = command.Dto.LanguageId;
-        if (languageId.HasValue)
+        // Validar LanguageId si se proporciona
+        if (command.Dto.LanguageId.HasValue)
         {
-            var languageExists = await _context.Languages.AnyAsync(l => l.Id == languageId.Value && l.DeletedAt == null, cancellationToken);
+            var languageExists = await _context.Languages
+                .AnyAsync(l => l.Id == command.Dto.LanguageId.Value && l.DeletedAt == null, cancellationToken);
             if (!languageExists)
-                throw new InvalidOperationException($"No se encontró el idioma con ID {languageId.Value}");
+                throw new InvalidOperationException($"No se encontró el idioma con ID {command.Dto.LanguageId.Value}");
         }
-        // Si languageId es null, se persiste null (indica que debe usar el idioma del nivel jerárquico superior)
 
         // Hash de la contraseña
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(command.Dto.Password, BCrypt.Net.BCrypt.GenerateSalt(11));
@@ -94,7 +93,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
             CityId = command.Dto.CityId,
             StateId = command.Dto.StateId,
             CountryId = command.Dto.CountryId,
-            LanguageId = languageId,
+            LanguageId = command.Dto.LanguageId,
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         };

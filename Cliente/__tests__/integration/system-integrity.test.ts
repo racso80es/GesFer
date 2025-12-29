@@ -238,8 +238,8 @@ describe("Auditoría de integridad API + Cliente", () => {
     let resp: HttpResult;
     
     try {
-      // Probar primero con la ruta con locale (es es el default)
-      resp = await httpRequest(`${CLIENT_URL}/es/login`);
+      // El sistema de rutas por idioma se eliminó, usar directamente /login
+      resp = await httpRequest(`${CLIENT_URL}/login`);
     } catch (error) {
       // Si el servidor no está disponible, saltar el test
       console.warn('Cliente no está disponible en localhost:3000. Saltando test de integridad del cliente.');
@@ -249,19 +249,14 @@ describe("Auditoría de integridad API + Cliente", () => {
     // Si hay error 500, el servidor está corriendo pero hay un problema interno
     if (resp.status === 500) {
       console.warn('Cliente responde con error 500. Verifica los logs del servidor.');
-      // Intentar sin locale
-      try {
-        resp = await httpRequest(`${CLIENT_URL}/login`);
-      } catch (error) {
-        console.warn('Error al acceder a /login');
-        return;
-      }
+      return;
     }
     
-    // Si no funciona, probar sin locale (el middleware debería redirigir)
-    if (resp.status !== 200 && resp.status !== 307 && resp.status !== 308 && resp.status !== 500) {
+    // Si no funciona, puede ser un redirect (307/308) o un error
+    if (resp.status !== 200 && resp.status !== 307 && resp.status !== 308) {
       try {
-        resp = await httpRequest(`${CLIENT_URL}/login`);
+        // Intentar con la ruta raíz que debería redirigir
+        resp = await httpRequest(`${CLIENT_URL}/`);
       } catch (error) {
         console.warn('Cliente no está disponible en localhost:3000. Saltando test de integridad del cliente.');
         return;

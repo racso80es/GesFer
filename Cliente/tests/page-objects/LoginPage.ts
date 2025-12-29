@@ -17,13 +17,13 @@ export class LoginPage extends BasePage {
   constructor(page: Page) {
     super(page);
     
-    // Preferir getByTestId, con fallback a getByLabel
-    this.empresaInput = page.getByTestId('login-empresa-input').or(page.getByLabel(/empresa|company/i));
-    this.usuarioInput = page.getByTestId('login-usuario-input').or(page.getByLabel(/usuario|username/i));
-    this.passwordInput = page.getByTestId('login-password-input').or(page.getByLabel(/contraseña|password/i));
-    this.loginButton = page.getByTestId('login-submit-button').or(page.getByRole('button', { name: /iniciar sesión|login/i }));
-    this.errorMessage = page.getByTestId('login-error-message').or(page.locator('[role="alert"], .error-message'));
-    this.loginForm = page.getByTestId('login-form').or(page.locator('form'));
+    // Preferir getByTestId, con fallback a getByLabel, usando .first() para evitar múltiples elementos
+    this.empresaInput = page.getByTestId('login-empresa-input').or(page.getByLabel(/empresa|company/i)).first();
+    this.usuarioInput = page.getByTestId('login-usuario-input').or(page.getByLabel(/usuario|username/i)).first();
+    this.passwordInput = page.getByTestId('login-password-input').or(page.getByLabel(/contraseña|password/i)).first();
+    this.loginButton = page.getByTestId('login-submit-button').or(page.getByRole('button', { name: /iniciar sesión|login/i })).first();
+    this.errorMessage = page.getByTestId('login-error-message').or(page.locator('[role="alert"], .error-message')).first();
+    this.loginForm = page.getByTestId('login-form').or(page.locator('form')).first();
   }
 
   /**

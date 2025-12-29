@@ -86,12 +86,12 @@ export default defineConfig({
     },
   ],
 
-  /* Servidor de desarrollo local */
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-  },
+  /* Servidor de desarrollo local - Deshabilitado porque se ejecuta manualmente */
+  // webServer: {
+  //   command: 'npm run dev',
+  //   url: 'http://localhost:3000',
+  //   reuseExistingServer: true,
+  //   timeout: 120 * 1000,
+  // },
 });
 

@@ -7,7 +7,7 @@ test.describe('Login E2E Tests', () => {
   let cleanup: TestDataCleanup;
 
   test.beforeEach(async ({ request }) => {
-    cleanup = new TestDataCleanup(request, process.env.API_URL || 'http://localhost:5000');
+    cleanup = new TestDataCleanup(request, process.env.API_URL || 'http://127.0.0.1:5000');
     await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
   });
 

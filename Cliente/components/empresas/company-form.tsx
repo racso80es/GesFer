@@ -102,14 +102,11 @@ export function CompanyForm({
       // Preparar los datos para enviar
       const dataToSubmit = { ...formData };
       
-      // Asegurar que languageId sea null explícitamente si está vacío (para establecer "por defecto")
-      // o convertir código a Guid si tiene un valor
-      if (dataToSubmit.languageId && dataToSubmit.languageId !== "") {
+      // Asegurar que languageId sea undefined si está vacío o convertir código a Guid
+      if (dataToSubmit.languageId) {
         dataToSubmit.languageId = getLanguageId(dataToSubmit.languageId);
       } else {
-        // Enviar null explícitamente para que el backend lo establezca como null
-        // null se serializa en JSON, undefined no, así que usamos null para indicar "por defecto"
-        (dataToSubmit as any).languageId = null;
+        dataToSubmit.languageId = undefined;
       }
       
       await onSubmit(dataToSubmit);
@@ -211,18 +208,13 @@ export function CompanyForm({
             value={formData.languageId || ""}
             onChange={(e) => {
               const selectedValue = e.target.value;
-              // Si se selecciona la opción vacía, establecer undefined
-              if (!selectedValue || selectedValue === "") {
-                setFormData({ ...formData, languageId: undefined });
-              } else {
-                const languageId = getLanguageId(selectedValue);
-                setFormData({ ...formData, languageId });
-              }
+              const languageId = getLanguageId(selectedValue);
+              setFormData({ ...formData, languageId });
             }}
             disabled={isLoading}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <option value="">{t('defaultLanguage')}</option>
+            <option value="">{t('selectLanguage')}</option>
             {languageOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {currentLanguageNames[option.code] || option.label}

@@ -63,14 +63,6 @@ public class UpdateCompanyCommandHandler : ICommandHandler<UpdateCompanyCommand,
                 throw new InvalidOperationException($"No se encontró el país con ID {command.Dto.CountryId.Value}");
         }
 
-        // Validar idioma si se envía
-        if (command.Dto.LanguageId.HasValue)
-        {
-            var languageExists = await _context.Languages.AnyAsync(l => l.Id == command.Dto.LanguageId && l.DeletedAt == null, cancellationToken);
-            if (!languageExists)
-                throw new InvalidOperationException($"No se encontró el idioma con ID {command.Dto.LanguageId}");
-        }
-
         company.Name = command.Dto.Name;
         company.TaxId = command.Dto.TaxId;
         company.Address = command.Dto.Address;
@@ -80,9 +72,6 @@ public class UpdateCompanyCommandHandler : ICommandHandler<UpdateCompanyCommand,
         company.CityId = command.Dto.CityId;
         company.StateId = command.Dto.StateId;
         company.CountryId = command.Dto.CountryId;
-        // LanguageId: si viene en el DTO, usarlo (puede ser null explícitamente). Si no viene, mantener el actual.
-        // Como el DTO siempre incluye LanguageId (puede ser null), lo asignamos directamente.
-        company.LanguageId = command.Dto.LanguageId;
         company.IsActive = command.Dto.IsActive;
         company.UpdatedAt = DateTime.UtcNow;
 
@@ -100,7 +89,6 @@ public class UpdateCompanyCommandHandler : ICommandHandler<UpdateCompanyCommand,
             CityId = company.CityId,
             StateId = company.StateId,
             CountryId = company.CountryId,
-            LanguageId = company.LanguageId,
             IsActive = company.IsActive,
             CreatedAt = company.CreatedAt,
             UpdatedAt = company.UpdatedAt

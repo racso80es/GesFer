@@ -2,15 +2,15 @@ import { APIRequestContext, APIResponse } from '@playwright/test';
 
 /**
  * Cliente API para tests de Playwright
- * Configurado para apuntar a localhost:5000
+ * Configurado para apuntar a 127.0.0.1:5000 (usar IPv4 explícitamente para evitar problemas en Windows)
  * 
- * URL de la API: http://localhost:5000
+ * URL de la API: http://127.0.0.1:5000
  */
 export class ApiClient {
   private request: APIRequestContext;
   private baseURL: string;
 
-  constructor(request: APIRequestContext, baseURL: string = 'http://localhost:5000') {
+  constructor(request: APIRequestContext, baseURL: string = 'http://127.0.0.1:5000') {
     this.request = request;
     this.baseURL = baseURL;
   }

@@ -58,16 +58,6 @@ public class CreateCompanyCommandHandler : ICommandHandler<CreateCompanyCommand,
                 throw new InvalidOperationException($"No se encontró el país con ID {command.Dto.CountryId.Value}");
         }
 
-        // Idioma: si se proporciona, validarlo. Si no, persistir null (la resolución jerárquica se hace en lectura)
-        Guid? languageId = command.Dto.LanguageId;
-        if (languageId.HasValue)
-        {
-            var languageExists = await _context.Languages.AnyAsync(l => l.Id == languageId.Value && l.DeletedAt == null, cancellationToken);
-            if (!languageExists)
-                throw new InvalidOperationException($"No se encontró el idioma con ID {languageId.Value}");
-        }
-        // Si languageId es null, se persiste null (indica que debe usar el idioma del país)
-
         var company = new GesFer.Domain.Entities.Company
         {
             Name = command.Dto.Name,
@@ -79,7 +69,6 @@ public class CreateCompanyCommandHandler : ICommandHandler<CreateCompanyCommand,
             CityId = command.Dto.CityId,
             StateId = command.Dto.StateId,
             CountryId = command.Dto.CountryId,
-            LanguageId = languageId,
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         };
@@ -99,7 +88,6 @@ public class CreateCompanyCommandHandler : ICommandHandler<CreateCompanyCommand,
             CityId = company.CityId,
             StateId = company.StateId,
             CountryId = company.CountryId,
-            LanguageId = company.LanguageId,
             IsActive = company.IsActive,
             CreatedAt = company.CreatedAt,
             UpdatedAt = company.UpdatedAt

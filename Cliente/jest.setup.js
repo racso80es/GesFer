@@ -46,3 +46,24 @@ const localStorageMock = {
 }
 global.localStorage = localStorageMock
 
+// Polyfill para TransformStream (requerido por Playwright en Node.js < 18)
+if (typeof global.TransformStream === 'undefined') {
+  global.TransformStream = class TransformStream {
+    constructor() {
+      this.readable = {
+        getReader: () => ({
+          read: () => Promise.resolve({ done: true, value: undefined }),
+          releaseLock: () => {},
+        }),
+      };
+      this.writable = {
+        getWriter: () => ({
+          write: () => Promise.resolve(),
+          close: () => Promise.resolve(),
+          releaseLock: () => {},
+        }),
+      };
+    }
+  };
+}
+

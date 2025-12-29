@@ -16,7 +16,7 @@ import { useState, useEffect } from "react";
 export default function UserDetailPage({
   params,
 }: {
-  params: Promise<{ id: string; locale: string }> | { id: string; locale: string };
+  params: Promise<{ id: string }> | { id: string };
 }) {
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
@@ -201,7 +201,4 @@ export default function UserDetailPage({
     </ProtectedRoute>
   );
 }
-
-
-
 

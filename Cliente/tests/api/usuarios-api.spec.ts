@@ -9,8 +9,8 @@ test.describe('API - Usuarios', () => {
   const createdUserIds: string[] = [];
 
   test.beforeEach(async ({ request }) => {
-    apiClient = new ApiClient(request, process.env.API_URL || 'http://localhost:5000');
-    cleanup = new TestDataCleanup(request, process.env.API_URL || 'http://localhost:5000');
+    apiClient = new ApiClient(request, process.env.API_URL || 'http://127.0.0.1:5000');
+    cleanup = new TestDataCleanup(request, process.env.API_URL || 'http://127.0.0.1:5000');
     
     // Login antes de cada test
     authToken = await apiClient.login('Empresa Demo', 'admin', 'admin123');

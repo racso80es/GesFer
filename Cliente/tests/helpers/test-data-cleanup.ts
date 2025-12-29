@@ -11,7 +11,7 @@ export class TestDataCleanup {
   private createdCustomerIds: string[] = [];
   private authToken: string | null = null;
 
-  constructor(request: APIRequestContext, baseURL: string = 'http://localhost:5000') {
+  constructor(request: APIRequestContext, baseURL: string = 'http://127.0.0.1:5000') {
     this.apiClient = new ApiClient(request, baseURL);
   }
 
@@ -123,4 +123,5 @@ export class TestDataCleanup {
     }
   }
 }
+
 

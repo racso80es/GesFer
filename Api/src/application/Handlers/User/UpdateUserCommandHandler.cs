@@ -67,11 +67,13 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserD
                 throw new InvalidOperationException($"No se encontró el país con ID {command.Dto.CountryId.Value}");
         }
 
+        // Validar LanguageId si se proporciona
         if (command.Dto.LanguageId.HasValue)
         {
-            var languageExists = await _context.Languages.AnyAsync(l => l.Id == command.Dto.LanguageId && l.DeletedAt == null, cancellationToken);
+            var languageExists = await _context.Languages
+                .AnyAsync(l => l.Id == command.Dto.LanguageId.Value && l.DeletedAt == null, cancellationToken);
             if (!languageExists)
-                throw new InvalidOperationException($"No se encontró el idioma con ID {command.Dto.LanguageId}");
+                throw new InvalidOperationException($"No se encontró el idioma con ID {command.Dto.LanguageId.Value}");
         }
 
         user.Username = command.Dto.Username;
@@ -84,8 +86,6 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserD
         user.CityId = command.Dto.CityId;
         user.StateId = command.Dto.StateId;
         user.CountryId = command.Dto.CountryId;
-        // LanguageId: si viene en el DTO, usarlo (puede ser null explícitamente). Si no viene, mantener el actual.
-        // Como el DTO siempre incluye LanguageId (puede ser null), lo asignamos directamente.
         user.LanguageId = command.Dto.LanguageId;
         user.IsActive = command.Dto.IsActive;
         user.UpdatedAt = DateTime.UtcNow;
