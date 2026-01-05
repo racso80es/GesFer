@@ -43,29 +43,42 @@ if (-not $hasTables) {
 
 Write-Host "   ✓ Las tablas existen" -ForegroundColor Green
 
-# Insertar datos de prueba
-Write-Host "4. Insertando datos de prueba..." -ForegroundColor Yellow
-$sqlFile = Join-Path $PSScriptRoot "seed-data.sql"
+# Insertar datos de prueba (usando la nueva estructura organizada)
+Write-Host "4. Insertando datos iniciales..." -ForegroundColor Yellow
 
-if (Test-Path $sqlFile) {
-    $result = Get-Content $sqlFile | docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb 2>&1
+# Función para ejecutar un script SQL
+function Execute-SqlScript {
+    param(
+        [string]$ScriptName,
+        [string]$Description
+    )
+    
+    $scriptPath = Join-Path $PSScriptRoot $ScriptName
+    if (-not (Test-Path $scriptPath)) {
+        Write-Host "   ⚠ ADVERTENCIA: No se encontró el archivo $ScriptName" -ForegroundColor Yellow
+        return $false
+    }
+    
+    Write-Host "   Ejecutando $Description..." -ForegroundColor Yellow
+    $result = Get-Content $scriptPath | docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb 2>&1
     
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "   ✓ Datos de prueba insertados correctamente" -ForegroundColor Green
-    }
-    else {
+        Write-Host "     ✓ Script ejecutado correctamente" -ForegroundColor Green
+        return $true
+    } else {
         if ($result -match "Duplicate entry") {
-            Write-Host "   ⚠ Algunos datos ya existen (esto es normal si ejecutas el script varias veces)" -ForegroundColor Yellow
-        }
-        else {
-            Write-Host "   ⚠ Error al insertar datos. Verifica los logs arriba." -ForegroundColor Yellow
+            Write-Host "     ⚠ Algunos datos ya existen (esto es normal si ejecutas el script varias veces)" -ForegroundColor Yellow
+            return $true
+        } else {
+            Write-Host "     ⚠ Advertencia: Puede haber errores. Verifica los logs arriba." -ForegroundColor Yellow
+            return $false
         }
     }
 }
-else {
-    Write-Host "   ERROR: No se encontró el archivo seed-data.sql" -ForegroundColor Red
-    exit 1
-}
+
+# Ejecutar scripts en orden
+Execute-SqlScript "master-data.sql" "Datos maestros" | Out-Null
+Execute-SqlScript "sample-data.sql" "Datos de muestra" | Out-Null
 
 Write-Host ""
 Write-Host "=== Configuración completada ===" -ForegroundColor Green

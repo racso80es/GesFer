@@ -7,14 +7,14 @@ echo Inicialización Completa GesFer
 echo ========================================
 echo.
 
-REM Cambiar al directorio raíz del proyecto
-cd /d "%~dp0"
+REM Guardar la ruta raíz del proyecto antes de cambiar de directorio
+set "ROOT_DIR=%~dp0"
 
 REM Cambiar al directorio de la API para ejecutar docker-compose
-cd /d "%~dp0Api"
+cd /d "%ROOT_DIR%Api"
 
 REM 1. Verificar Docker
-echo [1/6] Verificando Docker...
+echo [1/8] Verificando Docker...
 docker info >nul 2>&1
 if errorlevel 1 (
     echo ERROR: Docker no está corriendo. Por favor, inicia Docker Desktop.
@@ -25,7 +25,7 @@ echo    ✓ Docker está corriendo
 echo.
 
 REM 2. Detener y eliminar contenedores existentes
-echo [2/6] Limpiando contenedores existentes...
+echo [2/8] Limpiando contenedores existentes...
 docker-compose down -v >nul 2>&1
 if errorlevel 1 (
     echo    ⚠ No se pudieron detener contenedores (puede que no existan)
@@ -35,7 +35,7 @@ if errorlevel 1 (
 echo.
 
 REM 3. Crear contenedores
-echo [3/6] Creando contenedores Docker...
+echo [3/8] Creando contenedores Docker...
 docker-compose up -d
 if errorlevel 1 (
     echo ERROR: No se pudieron crear los contenedores
@@ -46,7 +46,7 @@ echo    ✓ Contenedores creados
 echo.
 
 REM 4. Esperar a que MySQL esté listo
-echo [4/6] Esperando a que MySQL esté listo...
+echo [4/8] Esperando a que MySQL esté listo...
 set maxAttempts=30
 set attempt=0
 set mysqlReady=0
@@ -76,10 +76,10 @@ if !mysqlReady! equ 1 (
 )
 
 REM 5. Crear las tablas
-echo [5/6] Creando base de datos y tablas...
-set "scriptsPath=%~dp0Api\scripts"
-set "infrastructurePath=%~dp0Api\src\Infrastructure"
-set "apiPath=%~dp0Api\src\Api"
+echo [5/8] Creando base de datos y tablas...
+set "scriptsPath=%ROOT_DIR%Api\scripts"
+set "infrastructurePath=%ROOT_DIR%Api\src\Infrastructure"
+set "apiPath=%ROOT_DIR%Api\src\Api"
 
 REM Intentar usar el proyecto InitDatabase para crear las tablas
 if exist "!scriptsPath!\InitDatabase.csproj" (
@@ -131,22 +131,59 @@ if exist "!scriptsPath!\InitDatabase.csproj" (
     )
 )
 
-REM 6. Insertar datos de prueba
+REM 6. Insertar datos iniciales (maestros, muestra y prueba)
 echo.
-echo [6/6] Insertando datos de prueba...
-set "seedFile=%~dp0Api\scripts\seed-data.sql"
+echo [6/8] Insertando datos maestros...
+set "masterFile=%ROOT_DIR%Api\scripts\master-data.sql"
 
-if exist "!seedFile!" (
-    echo    Ejecutando seed-data.sql...
-    type "!seedFile!" | docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb
+if exist "!masterFile!" (
+    echo    Ejecutando master-data.sql...
+    type "!masterFile!" | docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb >nul 2>&1
     
     if errorlevel 1 (
-        echo    ⚠ Error al insertar datos (puede que algunos ya existan)
+        echo    ⚠ Error al insertar datos maestros (puede que algunos ya existan)
+    ) else (
+        echo    ✓ Datos maestros insertados correctamente
+    )
+) else (
+    echo    ⚠ No se encontró el archivo master-data.sql
+    echo       Buscado en: !masterFile!
+)
+
+echo.
+echo [7/8] Insertando datos de muestra...
+set "sampleFile=%ROOT_DIR%Api\scripts\sample-data.sql"
+
+if exist "!sampleFile!" (
+    echo    Ejecutando sample-data.sql...
+    type "!sampleFile!" | docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb >nul 2>&1
+    
+    if errorlevel 1 (
+        echo    ⚠ Error al insertar datos de muestra (puede que algunos ya existan)
+    ) else (
+        echo    ✓ Datos de muestra insertados correctamente
+    )
+) else (
+    echo    ⚠ No se encontró el archivo sample-data.sql
+    echo       Buscado en: !sampleFile!
+)
+
+echo.
+echo [8/8] Insertando datos de prueba...
+set "testFile=%ROOT_DIR%Api\scripts\test-data.sql"
+
+if exist "!testFile!" (
+    echo    Ejecutando test-data.sql...
+    type "!testFile!" | docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb >nul 2>&1
+    
+    if errorlevel 1 (
+        echo    ⚠ Error al insertar datos de prueba (puede que algunos ya existan)
     ) else (
         echo    ✓ Datos de prueba insertados correctamente
     )
 ) else (
-    echo    ⚠ No se encontró el archivo seed-data.sql en scripts\
+    echo    ⚠ No se encontró el archivo test-data.sql
+    echo       Buscado en: !testFile!
 )
 
 echo.
@@ -154,7 +191,12 @@ echo ========================================
 echo Inicialización completada
 echo ========================================
 echo.
-echo Datos de prueba creados:
+echo Datos iniciales insertados:
+echo   ✓ Datos maestros (idiomas, permisos, grupos)
+echo   ✓ Datos de muestra (empresa, usuarios, clientes, proveedores)
+echo   ✓ Datos de prueba (para tests de integración)
+echo.
+echo Credenciales de acceso:
 echo   Empresa: Empresa Demo
 echo   Usuario: admin
 echo   Contraseña: admin123
@@ -163,6 +205,10 @@ echo Servicios disponibles:
 echo   - MySQL: localhost:3306
 echo   - Memcached: localhost:11211
 echo   - Adminer: http://localhost:8080
+echo.
+echo Puedes probar el login en:
+echo   - API: http://localhost:5000/api/auth/login
+echo   - Cliente: http://localhost:3000/login
 echo.
 pause
 
