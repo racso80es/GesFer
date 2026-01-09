@@ -46,12 +46,52 @@ Siempre que realices cambios en el código de la solución debes:
    - Al finalizar, propón el comando de terminal para ejecutar los tests (`dotnet test`) y confirma que el seeding no produce errores de validación.
    - No consideres la tarea de modificación de la entidad como terminada hasta que los Seeds y los Tests estén alineados.
 
+## Regla Global: Validación Automática de Integridad (Modo Omnisciente)
+
+**Cualquier modificación en la carpeta `/Cliente` (Next.js) o `/Api` (C#) dispara el mismo protocolo de seguridad:**
+
+1. **Detección Automática de Cambios**:
+   - Si cambias el Cliente (Next.js): Cursor debe ejecutar la consola de validación para asegurar que los cambios no rompieron la comunicación con la API.
+   - Si cambias la API (C#): Cursor debe ejecutar la consola de validación para asegurar que el Cliente sigue pudiendo autenticarse y consumir los datos.
+
+2. **Protocolo de Validación**:
+   - Ejecutar automáticamente: `dotnet run --project GesFer.Console/GesFer.Console.csproj` y seleccionar la opción "2. Validación de integridad completa"
+   - O ejecutar directamente: `GesFer.Console\bin\Debug\net8.0\GesFer.Console.exe` con argumento de validación (si se implementa)
+   - La consola validará:
+     - **Docker**: Contenedores (DB, API, Adminer) están Running
+     - **Backend**: API responde en puerto 5000/5001 y Sequential GUIDs funcionan
+     - **Cliente**: Next.js responde en puerto 3000 y no hay errores de compilación visibles
+
+3. **Gestión de Errores Cruzada**:
+   - Si la consola detecta un error en el cliente (ej. un 404 en una ruta de Next.js o un error de tipos en el fetch):
+     - Cursor debe leer ese error del log de la consola
+     - Buscar el componente de React/Next.js afectado
+     - Proponer la solución automáticamente
+   - Si la consola detecta un error en la API (ej. endpoint no responde o Sequential GUIDs fallan):
+     - Cursor debe leer ese error del log
+     - Buscar el controlador/servicio afectado en C#
+     - Proponer la solución automáticamente
+
+4. **Instrucción de Cierre**:
+   - **NO des por cerrada ninguna tarea de UI o de Lógica de Negocio hasta que:**
+     - La consola de integridad marque 'TODO VERDE'
+     - Las ventanas del navegador se desplieguen sin errores
+     - Todos los checks (Docker, Backend, Cliente, Sequential GUIDs) estén en verde
+
+5. **Ejecución Automática**:
+   - Después de cualquier cambio significativo en `/Cliente` o `/Api`, Cursor debe:
+     - Compilar el proyecto de consola si es necesario
+     - Ejecutar la validación de integridad
+     - Reportar el resultado
+     - Si hay errores, detener y corregir antes de continuar
+
 ## Flujo de trabajo recomendado
 
 1. Realizar los cambios de código solicitados.
 2. **Si se modificó una entidad**: Aplicar la Regla de Oro (sincronizar Seeds y Tests).
-3. Verificar errores de sintaxis con linters.
-4. Ejecutar los tests apropiados (`npm test` o `dotnet test`).
-5. Revisar y reportar los resultados de los tests.
-6. Si hay fallos relacionados con los cambios, corregirlos y repetir desde el paso 3.
-7. Solo después de completar los pasos anteriores, informar que la tarea está finalizada.
+3. **Si se modificó `/Cliente` o `/Api`**: Ejecutar validación de integridad automática.
+4. Verificar errores de sintaxis con linters.
+5. Ejecutar los tests apropiados (`npm test` o `dotnet test`).
+6. Revisar y reportar los resultados de los tests.
+7. Si hay fallos relacionados con los cambios, corregirlos y repetir desde el paso 3.
+8. **Solo después de que la consola marque 'TODO VERDE' y las ventanas del navegador se desplieguen sin errores**, informar que la tarea está finalizada.

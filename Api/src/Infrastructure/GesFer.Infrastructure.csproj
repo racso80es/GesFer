@@ -28,6 +28,9 @@
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="obj\**" />
     <None Remove="obj\**" />
+    <Compile Remove="SeedRunner\**" />
+    <EmbeddedResource Remove="SeedRunner\**" />
+    <None Remove="SeedRunner\**" />
   </ItemGroup>
 
 </Project>

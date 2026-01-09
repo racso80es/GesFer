@@ -53,24 +53,38 @@ public static class SequentialGuidGenerator
         }
 
         // Estrategia COMB: Insertar timestamp en los primeros bytes que SQL Server compara
-        // SQL Server ordena GUIDs comparando byte por byte en el orden: 
-        // int (4 bytes) + short (2 bytes) + short (2 bytes) + byte[8] (8 bytes)
-        // Usamos los primeros 6 bytes para el timestamp (int + short)
+        // SQL Server ordena GUIDs comparando byte por byte
+        // Usamos los primeros 6 bytes para el timestamp (48 bits para milisegundos Unix)
+        // Los últimos 10 bytes son aleatorios, manteniendo la unicidad
         
         // Convertir milisegundos a bytes (little-endian por defecto en .NET)
         var timestampBytes = BitConverter.GetBytes(milliseconds);
         
-        // Construir el GUID usando el constructor Guid(int, short, short, byte[])
-        // Esto nos da control directo sobre el orden de bytes que SQL Server compara
-        int timestampHigh = BitConverter.ToInt32(timestampBytes, 4); // Bytes 4-7 (más significativos)
-        short timestampMid = BitConverter.ToInt16(timestampBytes, 2); // Bytes 2-3
-        short versionAndLow = (short)((BitConverter.ToInt16(timestampBytes, 0) & 0x0FFF) | 0x4000); // Bytes 0-1 + versión 4
+        // Construir un array de 16 bytes completo para el GUID
+        byte[] guidBytes = new byte[16];
+        
+        // Copiar los primeros 6 bytes del timestamp (los más significativos)
+        // timestampBytes tiene 8 bytes (long = 64 bits), usamos bytes 2-7 (6 bytes más significativos)
+        // Estos van en las posiciones 0-5 del GUID (time_low y time_mid según RFC 4122)
+        Array.Copy(timestampBytes, 2, guidBytes, 0, 6);
+        
+        // Copiar los 10 bytes aleatorios en los últimos 10 bytes del GUID
+        // Posiciones 6-15 del GUID
+        Array.Copy(randomBytes, 0, guidBytes, 6, 10);
+        
+        // Aplicar la versión 4 (0100xxxx) al byte 7
+        // En RFC 4122, el byte 7 contiene time_hi_and_version, donde los bits 12-15 son la versión
+        // Versión 4 = 0100 en los 4 bits más significativos del byte 7
+        guidBytes[7] = (byte)((guidBytes[7] & 0x0F) | 0x40);
+        
+        // Aplicar la variante RFC 4122 (10xxxxxx) al byte 8
+        // En RFC 4122, el byte 8 contiene clock_seq_hi_and_reserved, donde los bits 6-7 son la variante
+        // Variante RFC 4122 = 10 en los 2 bits más significativos del byte 8
+        guidBytes[8] = (byte)((guidBytes[8] & 0x3F) | 0x80);
 
-        // Aplicar la variante RFC 4122 (10xxxxxx) al primer byte de randomBytes
-        randomBytes[0] = (byte)((randomBytes[0] & 0x3F) | 0x80);
-
-        // Construir el GUID: los primeros 6 bytes son del timestamp, los últimos 10 son aleatorios
-        return new Guid(timestampHigh, timestampMid, versionAndLow, randomBytes);
+        // Construir el GUID usando el constructor Guid(byte[])
+        // Los primeros 6 bytes son del timestamp, los últimos 10 son aleatorios
+        return new Guid(guidBytes);
     }
 
     /// <summary>

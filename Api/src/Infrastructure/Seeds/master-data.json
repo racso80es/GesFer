@@ -1,0 +1,123 @@
+{
+  "languages": [
+    {
+      "id": "10000000-0000-0000-0000-000000000001",
+      "name": "Español",
+      "code": "es",
+      "description": "Español"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000002",
+      "name": "English",
+      "code": "en",
+      "description": "Inglés"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000003",
+      "name": "Català",
+      "code": "ca",
+      "description": "Catalán"
+    }
+  ],
+  "permissions": [
+    {
+      "id": "33333333-3333-3333-3333-333333333333",
+      "key": "users.read",
+      "description": "Ver usuarios"
+    },
+    {
+      "id": "44444444-4444-4444-4444-444444444444",
+      "key": "users.write",
+      "description": "Crear/editar usuarios"
+    },
+    {
+      "id": "55555555-5555-5555-5555-555555555555",
+      "key": "articles.read",
+      "description": "Ver artículos"
+    },
+    {
+      "id": "66666666-6666-6666-6666-666666666666",
+      "key": "articles.write",
+      "description": "Crear/editar artículos"
+    },
+    {
+      "id": "77777777-7777-7777-7777-777777777777",
+      "key": "purchases.read",
+      "description": "Ver compras"
+    },
+    {
+      "id": "88888888-8888-8888-8888-888888888888",
+      "key": "purchases.write",
+      "description": "Crear/editar compras"
+    },
+    {
+      "id": "99999999-9999-9999-9999-999999999999",
+      "key": "sales.read",
+      "description": "Ver ventas"
+    },
+    {
+      "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "key": "sales.write",
+      "description": "Crear/editar ventas"
+    },
+    {
+      "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      "key": "companies.read",
+      "description": "Ver empresas"
+    },
+    {
+      "id": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+      "key": "companies.write",
+      "description": "Crear/editar empresas"
+    }
+  ],
+  "groups": [
+    {
+      "id": "22222222-2222-2222-2222-222222222222",
+      "name": "Administradores",
+      "description": "Grupo de administradores del sistema"
+    },
+    {
+      "id": "33333333-3333-3333-3333-333333333333",
+      "name": "Managers",
+      "description": "Grupo de managers"
+    },
+    {
+      "id": "44444444-4444-4444-4444-444444444444",
+      "name": "Usuarios",
+      "description": "Grupo de usuarios normales"
+    }
+  ],
+  "groupPermissions": [
+    {
+      "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "groupId": "22222222-2222-2222-2222-222222222222",
+      "permissionId": "33333333-3333-3333-3333-333333333333"
+    },
+    {
+      "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      "groupId": "22222222-2222-2222-2222-222222222222",
+      "permissionId": "44444444-4444-4444-4444-444444444444"
+    },
+    {
+      "id": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+      "groupId": "22222222-2222-2222-2222-222222222222",
+      "permissionId": "55555555-5555-5555-5555-555555555555"
+    },
+    {
+      "id": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+      "groupId": "22222222-2222-2222-2222-222222222222",
+      "permissionId": "66666666-6666-6666-6666-666666666666"
+    },
+    {
+      "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee",
+      "groupId": "22222222-2222-2222-2222-222222222222",
+      "permissionId": "77777777-7777-7777-7777-777777777777"
+    },
+    {
+      "id": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+      "groupId": "22222222-2222-2222-2222-222222222222",
+      "permissionId": "88888888-8888-8888-8888-888888888888"
+    }
+  ]
+}

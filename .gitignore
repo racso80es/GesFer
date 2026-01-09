@@ -1,0 +1,19 @@
+# Archivos de estado de cumplimiento de reglas de oro
+.golden-rules-state.json
+.validation-state.json
+
+# Logs
+logs/
+*.log
+!logFile!
+
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+*.backup
+temp_*.txt
+
+# Carpetas temporales de compilación .NET (Console)
+GesFer.Console/bin/
+GesFer.Console/obj/

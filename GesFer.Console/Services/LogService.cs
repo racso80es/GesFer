@@ -9,13 +9,14 @@ namespace GesFer.ConsoleApp.Services;
 public class LogService
 {
     private readonly string _logFilePath;
+    private readonly string _rootPath;
     private readonly object _lockObject = new object();
 
     public LogService()
     {
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
-        var logDir = Path.Combine(rootPath, "logs");
+        _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
+        var logDir = Path.Combine(_rootPath, "logs");
         
         if (!Directory.Exists(logDir))
         {
@@ -92,5 +93,13 @@ public class LogService
     public string GetLogFilePath()
     {
         return _logFilePath;
+    }
+
+    /// <summary>
+    /// Obtiene la ruta raíz del proyecto
+    /// </summary>
+    public string GetRootPath()
+    {
+        return _rootPath;
     }
 }

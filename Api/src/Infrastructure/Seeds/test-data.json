@@ -1,0 +1,54 @@
+{
+  "companies": [
+    {
+      "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "name": "Empresa Test",
+      "taxId": "B99999999",
+      "address": "Calle Test 999",
+      "phone": "999999999",
+      "email": "test@empresa.com",
+      "languageId": "10000000-0000-0000-0000-000000000001"
+    }
+  ],
+  "users": [
+    {
+      "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      "companyId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "username": "testuser",
+      "password": "test123",
+      "firstName": "Test",
+      "lastName": "User",
+      "email": "test@test.com",
+      "phone": "999999998",
+      "languageId": "10000000-0000-0000-0000-000000000001"
+    }
+  ],
+  "groups": [
+    {
+      "id": "55555555-5555-5555-5555-555555555555",
+      "name": "Test Group",
+      "description": "Grupo para tests"
+    }
+  ],
+  "permissions": [
+    {
+      "id": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+      "key": "test.permission",
+      "description": "Permiso de prueba"
+    }
+  ],
+  "userGroups": [
+    {
+      "id": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+      "userId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      "groupId": "55555555-5555-5555-5555-555555555555"
+    }
+  ],
+  "groupPermissions": [
+    {
+      "id": "11111111-1111-1111-1111-111111111111",
+      "groupId": "55555555-5555-5555-5555-555555555555",
+      "permissionId": "dddddddd-dddd-dddd-dddd-dddddddddddd"
+    }
+  ]
+}
