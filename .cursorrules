@@ -1,0 +1,33 @@
+# Reglas de comportamiento automatizado para Cursor
+
+## Verificación de sintaxis y tests
+
+Siempre que realices cambios en el código de la solución debes:
+
+1. **Verificar errores de sintaxis**: Antes de finalizar cualquier tarea, verifica que no haya errores de sintaxis en los archivos modificados usando las herramientas de linting apropiadas.
+
+2. **Ejecutar tests automáticamente**: 
+   - Para proyectos TypeScript/JavaScript (directorio `Cliente/`): Ejecuta automáticamente `npm test` en el directorio `Cliente/`.
+   - Para proyectos .NET/C# (directorios `Api/`, `GesFer.Console/`, `TempHash/`): Ejecuta automáticamente `dotnet test` en el directorio correspondiente.
+
+3. **Informar resultados de tests**: Antes de dar por finalizada cualquier tarea que implique cambios en el código, DEBES:
+   - Ejecutar los tests correspondientes según el tipo de proyecto modificado.
+   - Informar explícitamente del resultado de los tests (éxito o fallos).
+   - Si hay fallos en los tests, investigar y corregir los problemas antes de considerar la tarea como completada.
+   - Solo después de confirmar que los tests pasan (o que los fallos existentes no están relacionados con los cambios), puedes dar por finalizada la tarea.
+
+4. **Convenciones de nombres**:
+   - **C# (.cs)**: Usar PascalCase para clases, métodos, propiedades, namespaces, interfaces y otros identificadores públicos.
+     - Ejemplo: `MiClase`, `MetodoEjemplo()`, `PropiedadPublica`
+   - **TypeScript/JavaScript (.ts, .tsx, .js, .jsx)**: Usar camelCase para variables, funciones, métodos y propiedades.
+     - Ejemplo: `miVariable`, `miFuncion()`, `miPropiedad`
+   - Respetar estas convenciones en todo el código nuevo y al refactorizar código existente.
+
+## Flujo de trabajo recomendado
+
+1. Realizar los cambios de código solicitados.
+2. Verificar errores de sintaxis con linters.
+3. Ejecutar los tests apropiados (`npm test` o `dotnet test`).
+4. Revisar y reportar los resultados de los tests.
+5. Si hay fallos relacionados con los cambios, corregirlos y repetir desde el paso 2.
+6. Solo después de completar los pasos anteriores, informar que la tarea está finalizada.
