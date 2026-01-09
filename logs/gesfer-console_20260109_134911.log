@@ -1,0 +1,69 @@
+[2026-01-09 13:49:11] ========================================
+[2026-01-09 13:49:11] GesFer Console - Inicio de sesión
+[2026-01-09 13:49:11] Fecha: 2026-01-09 13:49:11
+[2026-01-09 13:49:11] ========================================
+[2026-01-09 13:49:11] 
+[2026-01-09 13:49:54] ========================================
+[2026-01-09 13:49:54] Inicio de inicialización completa
+[2026-01-09 13:49:54] ========================================
+[2026-01-09 13:49:54] Limpiando contenedores existentes...
+[2026-01-09 13:49:54] Comando: docker-compose down -v
+[2026-01-09 13:49:54] Directorio de trabajo: C:\Proyectos\GesFer\GesFer.Console\bin\Release\net8.0\..\..\..\..\Api
+[2026-01-09 13:49:57] [docker-compose down] STDOUT:
+[2026-01-09 13:49:57]   (vacío)
+[2026-01-09 13:49:57] [docker-compose down] STDERR:
+[2026-01-09 13:49:57]    Container gesfer_api_adminer  Stopping
+[2026-01-09 13:49:57]    Container gesfer_api_cache  Stopping
+[2026-01-09 13:49:57]    Container gesfer_api_adminer  Stopped
+[2026-01-09 13:49:57]    Container gesfer_api_adminer  Removing
+[2026-01-09 13:49:57]    Container gesfer_api_adminer  Removed
+[2026-01-09 13:49:57]    Container gesfer_api_db  Stopping
+[2026-01-09 13:49:57]    Container gesfer_api_cache  Stopped
+[2026-01-09 13:49:57]    Container gesfer_api_cache  Removing
+[2026-01-09 13:49:57]    Container gesfer_api_cache  Removed
+[2026-01-09 13:49:57]    Container gesfer_api_db  Stopped
+[2026-01-09 13:49:57]    Container gesfer_api_db  Removing
+[2026-01-09 13:49:57]    Container gesfer_api_db  Removed
+[2026-01-09 13:49:57]    Network api_gesfer_network  Removing
+[2026-01-09 13:49:57]    Network api_gesfer_network  Removed
+[2026-01-09 13:49:57]   
+[2026-01-09 13:49:57] Código de salida: 0
+[2026-01-09 13:49:57] Contenedores eliminados correctamente
+[2026-01-09 13:49:57] Creando contenedores Docker...
+[2026-01-09 13:49:57] Comando: docker-compose up -d
+[2026-01-09 13:49:57] Directorio de trabajo: C:\Proyectos\GesFer\GesFer.Console\bin\Release\net8.0\..\..\..\..\Api
+[2026-01-09 13:50:03] [docker-compose up] STDOUT:
+[2026-01-09 13:50:03]   (vacío)
+[2026-01-09 13:50:03] [docker-compose up] STDERR:
+[2026-01-09 13:50:03]    Network api_gesfer_network  Creating
+[2026-01-09 13:50:03]    Network api_gesfer_network  Created
+[2026-01-09 13:50:03]    Container gesfer_api_cache  Creating
+[2026-01-09 13:50:03]    Container gesfer_api_db  Creating
+[2026-01-09 13:50:03]    Container gesfer_api_db  Created
+[2026-01-09 13:50:03]    Container gesfer_api_adminer  Creating
+[2026-01-09 13:50:03]    Container gesfer_api_cache  Created
+[2026-01-09 13:50:03]    Container gesfer_api_adminer  Created
+[2026-01-09 13:50:03]    Container gesfer_api_cache  Starting
+[2026-01-09 13:50:03]    Container gesfer_api_db  Starting
+[2026-01-09 13:50:03]    Container gesfer_api_cache  Started
+[2026-01-09 13:50:03]    Container gesfer_api_db  Started
+[2026-01-09 13:50:03]    Container gesfer_api_db  Waiting
+[2026-01-09 13:50:03]    Container gesfer_api_db  Healthy
+[2026-01-09 13:50:03]    Container gesfer_api_adminer  Starting
+[2026-01-09 13:50:03]    Container gesfer_api_adminer  Started
+[2026-01-09 13:50:03]   
+[2026-01-09 13:50:03] Código de salida: 0
+[2026-01-09 13:50:03] Contenedores creados correctamente
+[2026-01-09 13:50:03] Esperando a que MySQL esté listo (máximo 30 intentos)...
+[2026-01-09 13:50:04] MySQL está listo después de 1 intentos
+[2026-01-09 13:50:09] Verificando migraciones en: C:\Proyectos\GesFer\GesFer.Console\bin\Release\net8.0\..\..\..\..\Api\src\Infrastructure\Migrations
+[2026-01-09 13:50:09] Migraciones existentes encontradas: 3 archivos
+[2026-01-09 13:50:09] Aplicando migraciones a la base de datos...
+[2026-01-09 13:50:09] Comando: dotnet ef database update --project "C:\Proyectos\GesFer\GesFer.Console\bin\Release\net8.0\..\..\..\..\Api\src\Infrastructure\GesFer.Infrastructure.csproj" --startup-project "C:\Proyectos\GesFer\GesFer.Console\bin\Release\net8.0\..\..\..\..\Api\src\Api\GesFer.Api.csproj"
+[2026-01-09 13:50:09] Directorio de trabajo: C:\Proyectos\GesFer\GesFer.Console\bin\Release\net8.0\..\..\..\..\Api\src\Api
+[2026-01-09 13:50:12] [dotnet ef database update] STDOUT:
+[2026-01-09 13:50:12]   Build started...
+[2026-01-09 13:50:12]   Build failed. Use dotnet build to see the errors.
+[2026-01-09 13:50:12]   
+[2026-01-09 13:50:12] Código de salida: 1
+[2026-01-09 13:50:12] ERROR: No se pudieron aplicar las migraciones

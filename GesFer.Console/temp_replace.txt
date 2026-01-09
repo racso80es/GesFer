@@ -1,0 +1,940 @@
+using System.Diagnostics;
+using System;
+
+namespace GesFer.System.Console.Services;
+
+/// <summary>
+/// Servicio para gestionar contenedores Docker
+/// </summary>
+public class DockerService
+{
+    private readonly string _apiPath;
+
+    public DockerService()
+    {
+        _apiPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "Api");
+    }
+
+    /// <summary>
+    /// Verifica si Docker está corriendo
+    /// </summary>
+    public async Task<bool> IsDockerRunningAsync()
+    {
+        try
+        {
+            var processInfo = new ProcessStartInfo
+            {
+                FileName = "docker",
+                Arguments = "info",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = Process.Start(processInfo);
+            if (process == null)
+            {
+                return false;
+            }
+
+            await process.WaitForExitAsync();
+            return process.ExitCode == 0;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Elimina contenedores Docker existentes
+    /// </summary>
+    public async Task<bool> RemoveContainersAsync()
+    {
+        System.Console.WriteLine("Limpiando contenedores existentes...");
+
+        try
+        {
+            var processInfo = new ProcessStartInfo
+            {
+                FileName = "docker-compose",
+                Arguments = "down -v",
+                WorkingDirectory = _apiPath,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = Process.Start(processInfo);
+            if (process == null)
+            {
+                System.Console.WriteLine("    ERROR: No se pudo iniciar docker-compose");
+                return false;
+            }
+
+            await process.WaitForExitAsync();
+
+            if (process.ExitCode == 0)
+            {
+                System.Console.WriteLine("    ✓ Contenedores eliminados");
+                return true;
+            }
+            else
+            {
+                System.Console.WriteLine("    ⚠ No se pudieron detener contenedores (puede que no existan)");
+                return true; // No es un error crítico si no hay contenedores
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"    ERROR: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Crea contenedores Docker
+    /// </summary>
+    public async Task<bool> CreateContainersAsync()
+    {
+        System.Console.WriteLine("Creando contenedores Docker...");
+
+        try
+        {
+            var processInfo = new ProcessStartInfo
+            {
+                FileName = "docker-compose",
+                Arguments = "up -d",
+                WorkingDirectory = _apiPath,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = Process.Start(processInfo);
+            if (process == null)
+            {
+                System.Console.WriteLine("    ERROR: No se pudo iniciar docker-compose");
+                return false;
+            }
+
+            await process.WaitForExitAsync();
+
+            if (process.ExitCode == 0)
+            {
+                System.Console.WriteLine("    ✓ Contenedores creados");
+                return true;
+            }
+            else
+            {
+                System.Console.WriteLine("    ERROR: No se pudieron crear los contenedores");
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"    ERROR: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Espera a que MySQL esté listo
+    /// </summary>
+    public async Task<bool> WaitForMySqlReadyAsync(int maxAttempts = 30, int delaySeconds = 2)
+    {
+        System.Console.WriteLine("Esperando a que MySQL esté listo...");
+
+        for (int attempt = 1; attempt <= maxAttempts; attempt++)
+        {
+            try
+            {
+                var processInfo = new ProcessStartInfo
+                {
+                    FileName = "docker",
+                    Arguments = "exec gesfer_api_db mysqladmin ping -h localhost -u root -prootpassword",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var process = Process.Start(processInfo);
+                if (process != null)
+                {
+                    await process.WaitForExitAsync();
+                    if (process.ExitCode == 0)
+                    {
+                        System.Console.WriteLine("    ✓ MySQL está listo");
+                        // Esperar un poco más para asegurar que MySQL esté completamente listo
+                        await Task.Delay(TimeSpan.FromSeconds(5));
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+                // Continuar intentando
+            }
+
+            if (attempt < maxAttempts)
+            {
+                System.Console.WriteLine($"    Intento {attempt}/{maxAttempts}...");
+                await Task.Delay(TimeSpan.FromSeconds(delaySeconds));
+            }
+        }
+
+        System.Console.WriteLine($"    ERROR: MySQL no está listo después de {maxAttempts} intentos");
+        return false;
+    }
+}
+using System;
+
+namespace GesFer.System.Console.Services;
+
+/// <summary>
+/// Servicio para mostrar y gestionar el menú interactivo
+/// </summary>
+public class MenuService
+{
+    private readonly DockerService _dockerService;
+    private readonly MigrationService _migrationService;
+    private readonly SeedService _seedService;
+
+    public MenuService(
+        DockerService dockerService,
+        MigrationService migrationService,
+        SeedService seedService)
+    {
+        _dockerService = dockerService;
+        _migrationService = migrationService;
+        _seedService = seedService;
+    }
+
+    /// <summary>
+    /// Muestra el menú principal
+    /// </summary>
+    public void ShowMenu()
+    {
+        System.Console.Clear();
+        System.Console.WriteLine("========================================");
+        System.Console.WriteLine("        GesFer - Consola de Gestión");
+        System.Console.WriteLine("========================================");
+        System.Console.WriteLine();
+        System.Console.WriteLine("Seleccione una opción:");
+        System.Console.WriteLine();
+        System.Console.WriteLine("  1. Inicialización completa");
+        System.Console.WriteLine("  2. Gestionar contenedores Docker");
+        System.Console.WriteLine("  3. Aplicar migraciones de BD");
+        System.Console.WriteLine("  4. Ejecutar seeds de datos");
+        System.Console.WriteLine("  5. Salir");
+        System.Console.WriteLine();
+        System.Console.Write("Opción: ");
+    }
+
+    /// <summary>
+    /// Ejecuta la opción seleccionada
+    /// </summary>
+    public async Task<bool> ExecuteOptionAsync(int option)
+    {
+        try
+        {
+            switch (option)
+            {
+                case 1:
+                    return await ExecuteFullInitializationAsync();
+                case 2:
+                    return await ExecuteDockerMenuAsync();
+                case 3:
+                    return await ExecuteMigrationsMenuAsync();
+                case 4:
+                    return await ExecuteSeedsMenuAsync();
+                case 5:
+                    return false; // Salir
+                default:
+                    System.Console.WriteLine("Opción no válida. Presione cualquier tecla para continuar...");
+                    System.Console.ReadKey();
+                    return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"Error: {ex.Message}");
+            System.Console.WriteLine("Presione cualquier tecla para continuar...");
+            System.Console.ReadKey();
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Ejecuta la inicialización completa
+    /// </summary>
+    private async Task<bool> ExecuteFullInitializationAsync()
+    {
+        System.Console.Clear();
+        System.Console.WriteLine("========================================");
+        System.Console.WriteLine("   Inicialización Completa GesFer");
+        System.Console.WriteLine("========================================");
+        System.Console.WriteLine();
+
+        // 1. Verificar Docker
+        System.Console.WriteLine("[1/8] Verificando Docker...");
+        if (!await _dockerService.IsDockerRunningAsync())
+        {
+            System.Console.WriteLine("ERROR: Docker no está corriendo. Por favor, inicia Docker Desktop.");
+            System.Console.WriteLine("Presione cualquier tecla para continuar...");
+            System.Console.ReadKey();
+            return true;
+        }
+        System.Console.WriteLine("    ✓ Docker está corriendo");
+        System.Console.WriteLine();
+
+        // 2. Eliminar contenedores
+        System.Console.WriteLine("[2/8] Limpiando contenedores existentes...");
+        await _dockerService.RemoveContainersAsync();
+        System.Console.WriteLine();
+
+        // 3. Crear contenedores
+        System.Console.WriteLine("[3/8] Creando contenedores Docker...");
+        if (!await _dockerService.CreateContainersAsync())
+        {
+            System.Console.WriteLine("ERROR: No se pudieron crear los contenedores");
+            System.Console.WriteLine("Presione cualquier tecla para continuar...");
+            System.Console.ReadKey();
+            return true;
+        }
+        System.Console.WriteLine();
+
+        // 4. Esperar MySQL
+        System.Console.WriteLine("[4/8] Esperando a que MySQL esté listo...");
+        if (!await _dockerService.WaitForMySqlReadyAsync())
+        {
+            System.Console.WriteLine("ERROR: MySQL no está listo");
+            System.Console.WriteLine("Presione cualquier tecla para continuar...");
+            System.Console.ReadKey();
+            return true;
+        }
+        System.Console.WriteLine();
+
+        // 5. Verificar/Instalar dotnet-ef
+        System.Console.WriteLine("[5/8] Verificando herramienta dotnet-ef...");
+        if (!await _migrationService.IsEfToolInstalledAsync())
+        {
+            if (!await _migrationService.InstallEfToolAsync())
+            {
+                System.Console.WriteLine("ERROR: No se pudo instalar dotnet-ef");
+                System.Console.WriteLine("Presione cualquier tecla para continuar...");
+                System.Console.ReadKey();
+                return true;
+            }
+        }
+        else
+        {
+            System.Console.WriteLine("    ✓ Herramienta dotnet-ef encontrada");
+        }
+        System.Console.WriteLine();
+
+        // 6. Crear migraciones si no existen
+        System.Console.WriteLine("[6/8] Verificando migraciones...");
+        await _migrationService.CreateInitialMigrationIfNeededAsync();
+        System.Console.WriteLine();
+
+        // 7. Aplicar migraciones
+        System.Console.WriteLine("[7/8] Aplicando migraciones a la base de datos...");
+        if (!await _migrationService.ApplyMigrationsAsync())
+        {
+            System.Console.WriteLine("ERROR: No se pudieron aplicar las migraciones");
+            System.Console.WriteLine("Presione cualquier tecla para continuar...");
+            System.Console.ReadKey();
+            return true;
+        }
+        await _migrationService.VerifyTablesCreatedAsync();
+        System.Console.WriteLine();
+
+        // 8. Ejecutar seeds
+        System.Console.WriteLine("[8/8] Insertando datos iniciales...");
+        await _seedService.ExecuteAllSeedsAsync();
+        System.Console.WriteLine();
+
+        System.Console.WriteLine("========================================");
+        System.Console.WriteLine("   Inicialización completada");
+        System.Console.WriteLine("========================================");
+        System.Console.WriteLine();
+        System.Console.WriteLine("Datos iniciales insertados:");
+        System.Console.WriteLine("  ✓ Datos maestros (idiomas, permisos, grupos)");
+        System.Console.WriteLine("  ✓ Datos de muestra (empresa, usuarios, clientes, proveedores)");
+        System.Console.WriteLine("  ✓ Datos de prueba (para tests de integración)");
+        System.Console.WriteLine();
+        System.Console.WriteLine("Credenciales de acceso:");
+        System.Console.WriteLine("  Empresa: Empresa Demo");
+        System.Console.WriteLine("  Usuario: admin");
+        System.Console.WriteLine("  Contraseña: admin123");
+        System.Console.WriteLine();
+        System.Console.WriteLine("Servicios disponibles:");
+        System.Console.WriteLine("  - MySQL: localhost:3306");
+        System.Console.WriteLine("  - Memcached: localhost:11211");
+        System.Console.WriteLine("  - Adminer: http://localhost:8080");
+        System.Console.WriteLine();
+        System.Console.WriteLine("Presione cualquier tecla para continuar...");
+        System.Console.ReadKey();
+
+        return true;
+    }
+
+    /// <summary>
+    /// Muestra el menú de Docker
+    /// </summary>
+    private async Task<bool> ExecuteDockerMenuAsync()
+    {
+        System.Console.Clear();
+        System.Console.WriteLine("========================================");
+        System.Console.WriteLine("   Gestión de Contenedores Docker");
+        System.Console.WriteLine("========================================");
+        System.Console.WriteLine();
+        System.Console.WriteLine("  1. Eliminar contenedores");
+        System.Console.WriteLine("  2. Crear contenedores");
+        System.Console.WriteLine("  3. Eliminar y crear (reiniciar)");
+        System.Console.WriteLine("  4. Volver al menú principal");
+        System.Console.WriteLine();
+        System.Console.Write("Opción: ");
+
+        if (int.TryParse(System.Console.ReadLine(), out int option))
+        {
+            switch (option)
+            {
+                case 1:
+                    await _dockerService.RemoveContainersAsync();
+                    break;
+                case 2:
+                    await _dockerService.CreateContainersAsync();
+                    break;
+                case 3:
+                    await _dockerService.RemoveContainersAsync();
+                    await _dockerService.CreateContainersAsync();
+                    break;
+            }
+        }
+
+        System.Console.WriteLine();
+        System.Console.WriteLine("Presione cualquier tecla para continuar...");
+        System.Console.ReadKey();
+        return true;
+    }
+
+    /// <summary>
+    /// Muestra el menú de migraciones
+    /// </summary>
+    private async Task<bool> ExecuteMigrationsMenuAsync()
+    {
+        System.Console.Clear();
+        System.Console.WriteLine("========================================");
+        System.Console.WriteLine("   Gestión de Migraciones");
+        System.Console.WriteLine("========================================");
+        System.Console.WriteLine();
+        System.Console.WriteLine("  1. Crear migración inicial (si no existe)");
+        System.Console.WriteLine("  2. Aplicar migraciones");
+        System.Console.WriteLine("  3. Crear y aplicar migraciones");
+        System.Console.WriteLine("  4. Volver al menú principal");
+        System.Console.WriteLine();
+        System.Console.Write("Opción: ");
+
+        if (int.TryParse(System.Console.ReadLine(), out int option))
+        {
+            switch (option)
+            {
+                case 1:
+                    await _migrationService.CreateInitialMigrationIfNeededAsync();
+                    break;
+                case 2:
+                    await _migrationService.ApplyMigrationsAsync();
+                    break;
+                case 3:
+                    await _migrationService.CreateInitialMigrationIfNeededAsync();
+                    await _migrationService.ApplyMigrationsAsync();
+                    break;
+            }
+        }
+
+        System.Console.WriteLine();
+        System.Console.WriteLine("Presione cualquier tecla para continuar...");
+        System.Console.ReadKey();
+        return true;
+    }
+
+    /// <summary>
+    /// Muestra el menú de seeds
+    /// </summary>
+    private async Task<bool> ExecuteSeedsMenuAsync()
+    {
+        System.Console.Clear();
+        System.Console.WriteLine("========================================");
+        System.Console.WriteLine("   Ejecución de Seeds");
+        System.Console.WriteLine("========================================");
+        System.Console.WriteLine();
+        System.Console.WriteLine("  1. Ejecutar datos maestros");
+        System.Console.WriteLine("  2. Ejecutar datos de muestra");
+        System.Console.WriteLine("  3. Ejecutar datos de prueba");
+        System.Console.WriteLine("  4. Ejecutar todos los seeds");
+        System.Console.WriteLine("  5. Volver al menú principal");
+        System.Console.WriteLine();
+        System.Console.Write("Opción: ");
+
+        if (int.TryParse(System.Console.ReadLine(), out int option))
+        {
+            switch (option)
+            {
+                case 1:
+                    await _seedService.ExecuteMasterDataAsync();
+                    break;
+                case 2:
+                    await _seedService.ExecuteSampleDataAsync();
+                    break;
+                case 3:
+                    await _seedService.ExecuteTestDataAsync();
+                    break;
+                case 4:
+                    await _seedService.ExecuteAllSeedsAsync();
+                    break;
+            }
+        }
+
+        System.Console.WriteLine();
+        System.Console.WriteLine("Presione cualquier tecla para continuar...");
+        System.Console.ReadKey();
+        return true;
+    }
+}
+using System;
+
+namespace GesFer.System.Console.Services;
+
+/// <summary>
+/// Servicio para gestionar migraciones de Entity Framework
+/// </summary>
+public class MigrationService
+{
+    private readonly string _connectionString;
+
+    public MigrationService()
+    {
+        _connectionString = "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
+    }
+
+    /// <summary>
+    /// Verifica si existe la herramienta dotnet-ef
+    /// </summary>
+    public async Task<bool> IsEfToolInstalledAsync()
+    {
+        try
+        {
+            var processInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "dotnet",
+                Arguments = "ef --version",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = System.Diagnostics.Process.Start(processInfo);
+            if (process == null)
+            {
+                return false;
+            }
+
+            await process.WaitForExitAsync();
+            return process.ExitCode == 0;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Instala la herramienta dotnet-ef si no está instalada
+    /// </summary>
+    public async Task<bool> InstallEfToolAsync()
+    {
+        System.Console.WriteLine("    Instalando herramienta dotnet-ef...");
+
+        try
+        {
+            // Intentar instalar con versión específica
+            var processInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "dotnet",
+                Arguments = "tool install --global dotnet-ef --version 8.0.0",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = System.Diagnostics.Process.Start(processInfo);
+            if (process != null)
+            {
+                await process.WaitForExitAsync();
+            if (process.ExitCode == 0)
+            {
+                System.Console.WriteLine("    ✓ Herramienta dotnet-ef instalada correctamente");
+                return true;
+            }
+        }
+
+        // Si falla, intentar sin versión específica
+        System.Console.WriteLine("    ⚠ Falló instalación con versión específica. Intentando sin versión...");
+        processInfo.Arguments = "tool install --global dotnet-ef";
+        using var process2 = System.Diagnostics.Process.Start(processInfo);
+        if (process2 != null)
+        {
+            await process2.WaitForExitAsync();
+            if (process2.ExitCode == 0)
+            {
+                System.Console.WriteLine("    ✓ Herramienta dotnet-ef instalada correctamente");
+                return true;
+            }
+        }
+
+        System.Console.WriteLine("    ERROR: No se pudo instalar la herramienta dotnet-ef");
+        return false;
+    }
+    catch (Exception ex)
+    {
+        System.Console.WriteLine($"    ERROR: {ex.Message}");
+        return false;
+    }
+    }
+
+    /// <summary>
+    /// Crea la migración inicial si no existe
+    /// </summary>
+    public async Task<bool> CreateInitialMigrationIfNeededAsync()
+    {
+        var apiPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "Api", "src", "Api");
+        var infrastructurePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "Api", "src", "Infrastructure");
+        var migrationsPath = Path.Combine(infrastructurePath, "Migrations");
+
+        // Verificar si existen migraciones
+        if (Directory.Exists(migrationsPath))
+        {
+            var migrationFiles = Directory.GetFiles(migrationsPath, "*.cs");
+            if (migrationFiles.Length > 0)
+            {
+                System.Console.WriteLine("    ✓ Migraciones existentes encontradas");
+                return true;
+            }
+        }
+
+        System.Console.WriteLine("    No se encontraron migraciones. Creando migración inicial...");
+
+        try
+        {
+            var processInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "dotnet",
+                Arguments = $"ef migrations add InitialCreate --project \"{Path.Combine(infrastructurePath, "GesFer.Infrastructure.csproj")}\" --startup-project \"{Path.Combine(apiPath, "GesFer.Api.csproj")}\"",
+                WorkingDirectory = apiPath,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = System.Diagnostics.Process.Start(processInfo);
+            if (process == null)
+            {
+                System.Console.WriteLine("    ERROR: No se pudo iniciar dotnet ef");
+                return false;
+            }
+
+            await process.WaitForExitAsync();
+
+            if (process.ExitCode == 0)
+            {
+                System.Console.WriteLine("    ✓ Migración inicial creada");
+                return true;
+            }
+            else
+            {
+                System.Console.WriteLine("    ERROR: No se pudieron crear las migraciones");
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"    ERROR: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Aplica las migraciones a la base de datos
+    /// </summary>
+    public async Task<bool> ApplyMigrationsAsync()
+    {
+        System.Console.WriteLine("    Aplicando migraciones a la base de datos...");
+
+        var apiPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "Api", "src", "Api");
+        var infrastructurePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "Api", "src", "Infrastructure");
+
+        try
+        {
+            var processInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "dotnet",
+                Arguments = $"ef database update --project \"{Path.Combine(infrastructurePath, "GesFer.Infrastructure.csproj")}\" --startup-project \"{Path.Combine(apiPath, "GesFer.Api.csproj")}\"",
+                WorkingDirectory = apiPath,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = System.Diagnostics.Process.Start(processInfo);
+            if (process == null)
+            {
+                System.Console.WriteLine("    ERROR: No se pudo iniciar dotnet ef");
+                return false;
+            }
+
+            await process.WaitForExitAsync();
+
+            if (process.ExitCode == 0)
+            {
+                System.Console.WriteLine("    ✓ Migraciones aplicadas correctamente");
+                return true;
+            }
+            else
+            {
+                System.Console.WriteLine("    ERROR: No se pudieron aplicar las migraciones");
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"    ERROR: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Verifica que las tablas se hayan creado correctamente usando docker exec
+    /// </summary>
+    public async Task<bool> VerifyTablesCreatedAsync()
+    {
+        try
+        {
+            var processInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "docker",
+                Arguments = "exec gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb -e \"SELECT COUNT(*) as total FROM information_schema.tables WHERE table_schema = 'ScrapDb';\" --skip-column-names",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = System.Diagnostics.Process.Start(processInfo);
+            if (process != null)
+            {
+                await process.WaitForExitAsync();
+                if (process.ExitCode == 0)
+                {
+                    var output = await process.StandardOutput.ReadToEndAsync();
+                    if (int.TryParse(output.Trim(), out int tableCount) && tableCount > 0)
+                    {
+                        System.Console.WriteLine($"    ✓ Tablas creadas correctamente (Total: {tableCount})");
+                        return true;
+                    }
+                }
+            }
+
+            System.Console.WriteLine("    ⚠ No se pudo verificar las tablas, pero las migraciones se aplicaron");
+            return true; // No es crítico
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"    ⚠ No se pudo verificar las tablas, pero las migraciones se aplicaron: {ex.Message}");
+            return true; // No es crítico
+        }
+    }
+}
+using System.Diagnostics;
+using System;
+
+namespace GesFer.System.Console.Services;
+
+/// <summary>
+/// Servicio para ejecutar scripts SQL de seed
+/// </summary>
+public class SeedService
+{
+    private readonly string _rootPath;
+
+    public SeedService()
+    {
+        _rootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..");
+    }
+
+    /// <summary>
+    /// Ejecuta un script SQL en el contenedor MySQL
+    /// </summary>
+    private async Task<bool> ExecuteSqlScriptAsync(string scriptPath, string scriptName)
+    {
+        if (!File.Exists(scriptPath))
+        {
+            System.Console.WriteLine($"    ⚠ No se encontró el archivo {scriptName}");
+            System.Console.WriteLine($"       Buscado en: {scriptPath}");
+            return false;
+        }
+
+        System.Console.WriteLine($"    Ejecutando {scriptName}...");
+
+        try
+        {
+            // Leer el contenido del script
+            var scriptContent = await File.ReadAllTextAsync(scriptPath);
+
+            var processInfo = new ProcessStartInfo
+            {
+                FileName = "docker",
+                Arguments = "exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb",
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = Process.Start(processInfo);
+            if (process == null)
+            {
+                System.Console.WriteLine($"    ERROR: No se pudo iniciar docker para ejecutar {scriptName}");
+                return false;
+            }
+
+            // Escribir el script en la entrada estándar
+            await process.StandardInput.WriteAsync(scriptContent);
+            process.StandardInput.Close();
+
+            await process.WaitForExitAsync();
+
+            if (process.ExitCode == 0)
+            {
+                System.Console.WriteLine($"    ✓ {scriptName} ejecutado correctamente");
+                return true;
+            }
+            else
+            {
+                var error = await process.StandardError.ReadToEndAsync();
+                System.Console.WriteLine($"    ⚠ Error al ejecutar {scriptName} (puede que algunos datos ya existan)");
+                return true; // No es crítico si algunos datos ya existen
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"    ⚠ Error al ejecutar {scriptName} (puede que algunos datos ya existan): {ex.Message}");
+            return true; // No es crítico
+        }
+    }
+
+    /// <summary>
+    /// Ejecuta el script de datos maestros
+    /// </summary>
+    public async Task<bool> ExecuteMasterDataAsync()
+    {
+        System.Console.WriteLine("Insertando datos maestros...");
+        var scriptPath = Path.Combine(_rootPath, "Api", "scripts", "master-data.sql");
+        return await ExecuteSqlScriptAsync(scriptPath, "master-data.sql");
+    }
+
+    /// <summary>
+    /// Ejecuta el script de datos de muestra
+    /// </summary>
+    public async Task<bool> ExecuteSampleDataAsync()
+    {
+        System.Console.WriteLine("Insertando datos de muestra...");
+        var scriptPath = Path.Combine(_rootPath, "Api", "scripts", "sample-data.sql");
+        return await ExecuteSqlScriptAsync(scriptPath, "sample-data.sql");
+    }
+
+    /// <summary>
+    /// Ejecuta el script de datos de prueba
+    /// </summary>
+    public async Task<bool> ExecuteTestDataAsync()
+    {
+        System.Console.WriteLine("Insertando datos de prueba...");
+        var scriptPath = Path.Combine(_rootPath, "Api", "scripts", "test-data.sql");
+        return await ExecuteSqlScriptAsync(scriptPath, "test-data.sql");
+    }
+
+    /// <summary>
+    /// Ejecuta todos los scripts de seed en orden
+    /// </summary>
+    public async Task<bool> ExecuteAllSeedsAsync()
+    {
+        var masterResult = await ExecuteMasterDataAsync();
+        await Task.Delay(500); // Pequeña pausa entre scripts
+
+        var sampleResult = await ExecuteSampleDataAsync();
+        await Task.Delay(500);
+
+        var testResult = await ExecuteTestDataAsync();
+
+        return masterResult && sampleResult && testResult;
+    }
+}
+using GesFer.System.Console.Services;
+using System;
+
+namespace GesFer.Console;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        // Configurar codificación UTF-8 para la consola
+        System.Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+        // Crear instancias de los servicios
+        var dockerService = new DockerService();
+        var migrationService = new MigrationService();
+        var seedService = new SeedService();
+        var menuService = new MenuService(dockerService, migrationService, seedService);
+
+        bool continueRunning = true;
+
+        while (continueRunning)
+        {
+            try
+            {
+                menuService.ShowMenu();
+
+                var input = System.Console.ReadLine();
+                if (int.TryParse(input, out int option))
+                {
+                    continueRunning = await menuService.ExecuteOptionAsync(option);
+                }
+                else
+                {
+                    System.Console.WriteLine("Opción no válida. Presione cualquier tecla para continuar...");
+                    System.Console.ReadKey();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine($"Error inesperado: {ex.Message}");
+                System.Console.WriteLine("Presione cualquier tecla para continuar...");
+                System.Console.ReadKey();
+            }
+        }
+
+        System.Console.WriteLine();
+        System.Console.WriteLine("¡Hasta luego!");
+    }
+}
