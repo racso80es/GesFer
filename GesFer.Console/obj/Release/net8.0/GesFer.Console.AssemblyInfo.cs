@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GesFer.Console")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+165243514eb83049e63ae311d3413f90981d4f07")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4fb97956fe35917eb169bc0bf619ba76257a69a5")]
 [assembly: System.Reflection.AssemblyProductAttribute("GesFer.Console")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GesFer.Console")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

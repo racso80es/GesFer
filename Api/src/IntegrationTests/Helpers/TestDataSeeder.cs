@@ -54,6 +54,7 @@ public static class TestDataSeeder
         await context.SaveChangesAsync();
 
         // Crear empresa
+        // Nota: En tests, las direcciones completas son opcionales, pero se incluyen para mantener consistencia con SetupService
         var company = new Company
         {
             Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
@@ -63,6 +64,11 @@ public static class TestDataSeeder
             Phone = "912345678",
             Email = "demo@empresa.com",
             LanguageId = Guid.Parse("10000000-0000-0000-0000-000000000001"),
+            // Campos de dirección (opcionales en tests)
+            PostalCodeId = null,
+            CityId = null,
+            StateId = null,
+            CountryId = null,
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         };
@@ -132,6 +138,7 @@ public static class TestDataSeeder
         context.GroupPermissions.AddRange(groupPermissions);
 
         // Crear usuario
+        // Nota: En tests, las direcciones completas son opcionales, pero se incluyen para mantener consistencia con SetupService
         var user = new User
         {
             Id = Guid.Parse("99999999-9999-9999-9999-999999999999"),
@@ -143,6 +150,12 @@ public static class TestDataSeeder
             Email = "admin@empresa.com",
             Phone = "912345678",
             LanguageId = Guid.Parse("10000000-0000-0000-0000-000000000001"),
+            // Campos de dirección (opcionales en tests)
+            Address = null,
+            PostalCodeId = null,
+            CityId = null,
+            StateId = null,
+            CountryId = null,
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         };
@@ -171,6 +184,7 @@ public static class TestDataSeeder
         context.UserPermissions.Add(userPermission);
 
         // Crear proveedores de prueba
+        // Nota: En tests, las direcciones completas y tarifas son opcionales, pero se incluyen para mantener consistencia con SetupService
         var suppliers = new List<Supplier>
         {
             new Supplier
@@ -182,6 +196,12 @@ public static class TestDataSeeder
                 Address = "Calle Proveedor 1",
                 Phone = "911111111",
                 Email = "proveedor1@test.com",
+                // Campos de dirección y tarifa (opcionales en tests)
+                BuyTariffId = null,
+                PostalCodeId = null,
+                CityId = null,
+                StateId = null,
+                CountryId = null,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
             },
@@ -194,6 +214,12 @@ public static class TestDataSeeder
                 Address = "Calle Proveedor 2",
                 Phone = "922222222",
                 Email = "proveedor2@test.com",
+                // Campos de dirección y tarifa (opcionales en tests)
+                BuyTariffId = null,
+                PostalCodeId = null,
+                CityId = null,
+                StateId = null,
+                CountryId = null,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
             }
@@ -201,6 +227,7 @@ public static class TestDataSeeder
         context.Suppliers.AddRange(suppliers);
 
         // Crear clientes de prueba
+        // Nota: En tests, las direcciones completas y tarifas son opcionales, pero se incluyen para mantener consistencia con SetupService
         var customers = new List<Customer>
         {
             new Customer
@@ -212,6 +239,12 @@ public static class TestDataSeeder
                 Address = "Calle Cliente 1",
                 Phone = "933333333",
                 Email = "cliente1@test.com",
+                // Campos de dirección y tarifa (opcionales en tests)
+                SellTariffId = null,
+                PostalCodeId = null,
+                CityId = null,
+                StateId = null,
+                CountryId = null,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
             },
@@ -224,6 +257,12 @@ public static class TestDataSeeder
                 Address = "Calle Cliente 2",
                 Phone = "944444444",
                 Email = "cliente2@test.com",
+                // Campos de dirección y tarifa (opcionales en tests)
+                SellTariffId = null,
+                PostalCodeId = null,
+                CityId = null,
+                StateId = null,
+                CountryId = null,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
             }

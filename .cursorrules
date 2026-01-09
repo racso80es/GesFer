@@ -23,11 +23,35 @@ Siempre que realices cambios en el código de la solución debes:
      - Ejemplo: `miVariable`, `miFuncion()`, `miPropiedad`
    - Respetar estas convenciones en todo el código nuevo y al refactorizar código existente.
 
+## Regla de Oro: Sincronización de Entidades, Seeds y Tests
+
+**Siempre que se cree, modifique o elimine una propiedad en cualquier entidad del proyecto (C#), debes realizar de forma atómica las siguientes acciones:**
+
+1. **Sincronización de Seeds**: 
+   - Actualiza la lógica de `SetupService.SeedInitialDataAsync()` para incluir valores coherentes para las nuevas propiedades.
+   - Actualiza `MasterDataSeeder.cs` si la propiedad afecta a datos maestros.
+   - Actualiza `seed-data.sql` si se usa para seeding.
+   - Si la propiedad es requerida, asegúrate de que el dato de ejemplo sea válido.
+
+2. **Sincronización de Tests**:
+   - Localiza los Data Builders o Object Factories en el proyecto de Testing y actualízalos para reflejar el cambio en la entidad.
+   - Actualiza `TestDataSeeder.cs` en `IntegrationTests/Helpers/` para incluir la nueva propiedad con valores válidos.
+   - Si hay tests unitarios o de integración que fallen debido al cambio de firma o estructura, corrígelos inmediatamente.
+
+3. **Integridad Referencial**: 
+   - Si el cambio implica una nueva relación (Foreign Key), asegúrate de que el seeding respete el orden de inserción.
+   - Asegúrate de que los tests usen los Sequential GUIDs generados por nuestro sistema cuando sea necesario.
+
+4. **Verificación**: 
+   - Al finalizar, propón el comando de terminal para ejecutar los tests (`dotnet test`) y confirma que el seeding no produce errores de validación.
+   - No consideres la tarea de modificación de la entidad como terminada hasta que los Seeds y los Tests estén alineados.
+
 ## Flujo de trabajo recomendado
 
 1. Realizar los cambios de código solicitados.
-2. Verificar errores de sintaxis con linters.
-3. Ejecutar los tests apropiados (`npm test` o `dotnet test`).
-4. Revisar y reportar los resultados de los tests.
-5. Si hay fallos relacionados con los cambios, corregirlos y repetir desde el paso 2.
-6. Solo después de completar los pasos anteriores, informar que la tarea está finalizada.
+2. **Si se modificó una entidad**: Aplicar la Regla de Oro (sincronizar Seeds y Tests).
+3. Verificar errores de sintaxis con linters.
+4. Ejecutar los tests apropiados (`npm test` o `dotnet test`).
+5. Revisar y reportar los resultados de los tests.
+6. Si hay fallos relacionados con los cambios, corregirlos y repetir desde el paso 3.
+7. Solo después de completar los pasos anteriores, informar que la tarea está finalizada.

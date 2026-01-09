@@ -1,0 +1,118 @@
+[2026-01-09 18:16:35] ========================================
+[2026-01-09 18:16:35] GesFer Console - Inicio de sesión
+[2026-01-09 18:16:35] Fecha: 2026-01-09 18:16:35
+[2026-01-09 18:16:35] ========================================
+[2026-01-09 18:16:35] 
+[2026-01-09 18:16:40] ========================================
+[2026-01-09 18:16:40] Inicio de inicialización completa
+[2026-01-09 18:16:40] ========================================
+[2026-01-09 18:16:40] Limpiando contenedores existentes...
+[2026-01-09 18:16:40] Comando: docker-compose down -v
+[2026-01-09 18:16:40] Directorio de trabajo: C:\Proyectos\GesFer\Api
+[2026-01-09 18:16:42] [docker-compose down] STDOUT:
+[2026-01-09 18:16:42]   (vacío)
+[2026-01-09 18:16:42] [docker-compose down] STDERR:
+[2026-01-09 18:16:42]    Container gesfer_api_adminer  Stopping
+[2026-01-09 18:16:42]    Container gesfer_api_cache  Stopping
+[2026-01-09 18:16:42]    Container gesfer_api_adminer  Stopped
+[2026-01-09 18:16:42]    Container gesfer_api_adminer  Removing
+[2026-01-09 18:16:42]    Container gesfer_api_adminer  Removed
+[2026-01-09 18:16:42]    Container gesfer_api_db  Stopping
+[2026-01-09 18:16:42]    Container gesfer_api_cache  Stopped
+[2026-01-09 18:16:42]    Container gesfer_api_cache  Removing
+[2026-01-09 18:16:42]    Container gesfer_api_cache  Removed
+[2026-01-09 18:16:42]    Container gesfer_api_db  Stopped
+[2026-01-09 18:16:42]    Container gesfer_api_db  Removing
+[2026-01-09 18:16:42]    Container gesfer_api_db  Removed
+[2026-01-09 18:16:42]    Network api_gesfer_network  Removing
+[2026-01-09 18:16:42]    Network api_gesfer_network  Removed
+[2026-01-09 18:16:42]   
+[2026-01-09 18:16:42] Código de salida: 0
+[2026-01-09 18:16:42] Contenedores eliminados correctamente
+[2026-01-09 18:16:42] Creando contenedores Docker...
+[2026-01-09 18:16:42] Comando: docker-compose up -d
+[2026-01-09 18:16:42] Directorio de trabajo: C:\Proyectos\GesFer\Api
+[2026-01-09 18:16:48] [docker-compose up] STDOUT:
+[2026-01-09 18:16:48]   (vacío)
+[2026-01-09 18:16:48] [docker-compose up] STDERR:
+[2026-01-09 18:16:48]    Network api_gesfer_network  Creating
+[2026-01-09 18:16:48]    Network api_gesfer_network  Created
+[2026-01-09 18:16:48]    Container gesfer_api_cache  Creating
+[2026-01-09 18:16:48]    Container gesfer_api_db  Creating
+[2026-01-09 18:16:48]    Container gesfer_api_cache  Created
+[2026-01-09 18:16:48]    Container gesfer_api_db  Created
+[2026-01-09 18:16:48]    Container gesfer_api_adminer  Creating
+[2026-01-09 18:16:48]    Container gesfer_api_adminer  Created
+[2026-01-09 18:16:48]    Container gesfer_api_cache  Starting
+[2026-01-09 18:16:48]    Container gesfer_api_db  Starting
+[2026-01-09 18:16:48]    Container gesfer_api_cache  Started
+[2026-01-09 18:16:48]    Container gesfer_api_db  Started
+[2026-01-09 18:16:48]    Container gesfer_api_db  Waiting
+[2026-01-09 18:16:48]    Container gesfer_api_db  Healthy
+[2026-01-09 18:16:48]    Container gesfer_api_adminer  Starting
+[2026-01-09 18:16:48]    Container gesfer_api_adminer  Started
+[2026-01-09 18:16:48]   
+[2026-01-09 18:16:48] Código de salida: 0
+[2026-01-09 18:16:48] Contenedores creados correctamente
+[2026-01-09 18:16:48] Esperando a que MySQL esté listo (máximo 30 intentos)...
+[2026-01-09 18:16:49] MySQL está listo después de 1 intentos
+[2026-01-09 18:16:54] Verificando migraciones en: C:\Proyectos\GesFer\Api\src\Infrastructure\Migrations
+[2026-01-09 18:16:54] Migraciones existentes encontradas: 3 archivos
+[2026-01-09 18:16:54] Aplicando migraciones a la base de datos...
+[2026-01-09 18:16:54] Comando: dotnet ef database update --project "C:\Proyectos\GesFer\Api\src\Infrastructure\GesFer.Infrastructure.csproj" --startup-project "C:\Proyectos\GesFer\Api\src\Api\GesFer.Api.csproj"
+[2026-01-09 18:16:54] Directorio de trabajo: C:\Proyectos\GesFer\Api\src\Api
+[2026-01-09 18:17:04] [dotnet ef database update] STDOUT:
+[2026-01-09 18:17:04]   Build started...
+[2026-01-09 18:17:04]   Build succeeded.
+[2026-01-09 18:17:04]   warn: Microsoft.EntityFrameworkCore.Model.Validation[10400]
+[2026-01-09 18:17:04]         Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+[2026-01-09 18:17:04]   info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+[2026-01-09 18:17:04]         Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+[2026-01-09 18:17:04]         SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='ScrapDb' AND TABLE_NAME='__EFMigrationsHistory';
+[2026-01-09 18:17:04]   info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+[2026-01-09 18:17:04]         Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+[2026-01-09 18:17:04]         SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='ScrapDb' AND TABLE_NAME='__EFMigrationsHistory';
+[2026-01-09 18:17:04]   info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+[2026-01-09 18:17:04]         Executed DbCommand (15ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+[2026-01-09 18:17:04]         SELECT `MigrationId`, `ProductVersion`
+[2026-01-09 18:17:04]         FROM `__EFMigrationsHistory`
+[2026-01-09 18:17:04]         ORDER BY `MigrationId`;
+[2026-01-09 18:17:04]   info: Microsoft.EntityFrameworkCore.Migrations[20405]
+[2026-01-09 18:17:04]         No migrations were applied. The database is already up to date.
+[2026-01-09 18:17:04]   No migrations were applied. The database is already up to date.
+[2026-01-09 18:17:04]   Done.
+[2026-01-09 18:17:04]   
+[2026-01-09 18:17:04] Código de salida: 0
+[2026-01-09 18:17:04] Migraciones aplicadas correctamente
+[2026-01-09 18:17:04] Ejecutando script SQL: master-data.sql
+[2026-01-09 18:17:04] Tamaño del script: 7893 caracteres
+[2026-01-09 18:17:04] Comando: docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb
+[2026-01-09 18:17:04] [mysql exec master-data.sql] STDOUT:
+[2026-01-09 18:17:04]   (vacío)
+[2026-01-09 18:17:04] [mysql exec master-data.sql] STDERR:
+[2026-01-09 18:17:04]   mysql: [Warning] Using a password on the command line interface can be insecure.
+[2026-01-09 18:17:04]   ERROR 1064 (42000) at line 75: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Groups (Id, Name, Description, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+[2026-01-09 18:17:04]   VALUES' at line 1
+[2026-01-09 18:17:04]   
+[2026-01-09 18:17:04] Código de salida: 1
+[2026-01-09 18:17:04] ⚠ Error al ejecutar master-data.sql (código: 1)
+[2026-01-09 18:17:05] Ejecutando script SQL: sample-data.sql
+[2026-01-09 18:17:05] Tamaño del script: 9371 caracteres
+[2026-01-09 18:17:05] Comando: docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb
+[2026-01-09 18:17:05] [mysql exec sample-data.sql] STDOUT:
+[2026-01-09 18:17:05]   (vacío)
+[2026-01-09 18:17:05] [mysql exec sample-data.sql] STDERR:
+[2026-01-09 18:17:05]   mysql: [Warning] Using a password on the command line interface can be insecure.
+[2026-01-09 18:17:05]   
+[2026-01-09 18:17:05] Código de salida: 0
+[2026-01-09 18:17:05] sample-data.sql ejecutado correctamente
+[2026-01-09 18:17:05] Ejecutando script SQL: test-data.sql
+[2026-01-09 18:17:05] Tamaño del script: 6025 caracteres
+[2026-01-09 18:17:05] Comando: docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb
+[2026-01-09 18:17:06] [mysql exec test-data.sql] STDOUT:
+[2026-01-09 18:17:06]   (vacío)
+[2026-01-09 18:17:06] [mysql exec test-data.sql] STDERR:
+[2026-01-09 18:17:06]   mysql: [Warning] Using a password on the command line interface can be insecure.
+[2026-01-09 18:17:06]   
+[2026-01-09 18:17:06] Código de salida: 0
+[2026-01-09 18:17:06] test-data.sql ejecutado correctamente

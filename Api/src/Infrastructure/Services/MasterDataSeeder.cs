@@ -169,7 +169,7 @@ public class MasterDataSeeder
                 // Crear nueva provincia
                 existingState = new State
                 {
-                    Id = Guid.NewGuid(),
+                    Id = SequentialGuidGenerator.NewSequentialGuid(),
                     CountryId = countryId,
                     Name = name,
                     Code = code,
@@ -243,7 +243,7 @@ public class MasterDataSeeder
                     {
                         city = new City
                         {
-                            Id = Guid.NewGuid(),
+                            Id = SequentialGuidGenerator.NewSequentialGuid(),
                             StateId = state.Id,
                             Name = capitalName,
                             CreatedAt = DateTime.UtcNow,
@@ -277,7 +277,7 @@ public class MasterDataSeeder
                     {
                         city = new City
                         {
-                            Id = Guid.NewGuid(),
+                            Id = SequentialGuidGenerator.NewSequentialGuid(),
                             StateId = state.Id,
                             Name = cityName,
                             CreatedAt = DateTime.UtcNow,
@@ -308,7 +308,7 @@ public class MasterDataSeeder
                         {
                             var newPostalCode = new PostalCode
                             {
-                                Id = Guid.NewGuid(),
+                                Id = SequentialGuidGenerator.NewSequentialGuid(),
                                 CityId = city.Id,
                                 Code = postalCode,
                                 CreatedAt = DateTime.UtcNow,

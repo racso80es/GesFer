@@ -15,7 +15,8 @@ VALUES
 
 -- 1. Insertar una empresa (Company)
 -- Usa INSERT IGNORE para evitar errores si ya existe
-INSERT IGNORE INTO `Companies` (Id, Name, TaxId, Address, Phone, Email, LanguageId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+-- Nota: Los campos de dirección (PostalCodeId, CityId, StateId, CountryId) son opcionales
+INSERT IGNORE INTO `Companies` (Id, Name, TaxId, Address, Phone, Email, LanguageId, PostalCodeId, CityId, StateId, CountryId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES (
     '11111111-1111-1111-1111-111111111111',
     'Empresa Demo',
@@ -24,6 +25,10 @@ VALUES (
     '912345678',
     'demo@empresa.com',
     '10000000-0000-0000-0000-000000000001',
+    NULL, -- PostalCodeId (opcional)
+    NULL, -- CityId (opcional)
+    NULL, -- StateId (opcional)
+    NULL, -- CountryId (opcional)
     UTC_TIMESTAMP(),
     NULL,
     NULL,
@@ -67,7 +72,8 @@ VALUES
 -- Contraseña: "admin123" 
 -- Hash BCrypt generado y verificado para "admin123"
 -- Usa INSERT ... ON DUPLICATE KEY UPDATE para actualizar el hash si el usuario ya existe
-INSERT INTO `Users` (Id, CompanyId, Username, PasswordHash, FirstName, LastName, Email, Phone, LanguageId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+-- Nota: Los campos de dirección (Address, PostalCodeId, CityId, StateId, CountryId) son opcionales
+INSERT INTO `Users` (Id, CompanyId, Username, PasswordHash, FirstName, LastName, Email, Phone, LanguageId, Address, PostalCodeId, CityId, StateId, CountryId, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES (
     '99999999-9999-9999-9999-999999999999',
     '11111111-1111-1111-1111-111111111111',
@@ -78,6 +84,11 @@ VALUES (
     'admin@empresa.com',
     '912345678',
     '10000000-0000-0000-0000-000000000001',
+    NULL, -- Address (opcional)
+    NULL, -- PostalCodeId (opcional)
+    NULL, -- CityId (opcional)
+    NULL, -- StateId (opcional)
+    NULL, -- CountryId (opcional)
     UTC_TIMESTAMP(),
     NULL,
     NULL,

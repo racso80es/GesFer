@@ -46,11 +46,41 @@ public class ApplicationDbContext : DbContext
         // Aplicar configuraciones de entidades
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
+        // Configurar Sequential GUIDs para todas las entidades que heredan de BaseEntity
+        ConfigureSequentialGuids(modelBuilder);
+
         // Configurar Soft Delete global para todas las entidades que heredan de BaseEntity
         ConfigureSoftDelete(modelBuilder);
 
         // Configurar UTF8 para MySQL
         ConfigureUtf8(modelBuilder);
+    }
+
+    /// <summary>
+    /// Configura el generador de GUIDs secuenciales para todas las propiedades Id de tipo Guid
+    /// en entidades que heredan de BaseEntity.
+    /// 
+    /// Esto mejora el rendimiento de los índices agrupados al reducir la fragmentación
+    /// y permitir un mejor ordenamiento natural por fecha de creación.
+    /// </summary>
+    private void ConfigureSequentialGuids(ModelBuilder modelBuilder)
+    {
+        var entityTypes = modelBuilder.Model.GetEntityTypes()
+            .Where(e => typeof(Domain.Common.BaseEntity).IsAssignableFrom(e.ClrType));
+
+        foreach (var entityType in entityTypes)
+        {
+            // Buscar la propiedad Id de tipo Guid
+            var idProperty = entityType.FindProperty(nameof(Domain.Common.BaseEntity.Id));
+            
+            if (idProperty != null && idProperty.ClrType == typeof(Guid))
+            {
+                // Configurar el ValueGenerator secuencial solo si no tiene un valor asignado
+                // Esto permite que el seeding con IDs específicos siga funcionando
+                idProperty.SetValueGeneratorFactory((p, e) => new SequentialGuidValueGenerator());
+                idProperty.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAdd;
+            }
+        }
     }
 
     /// <summary>
