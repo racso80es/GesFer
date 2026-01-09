@@ -75,61 +75,145 @@ if !mysqlReady! equ 1 (
     timeout /t 5 /nobreak >nul
 )
 
-REM 5. Crear las tablas
-echo [5/8] Creando base de datos y tablas...
-set "scriptsPath=%ROOT_DIR%Api\scripts"
+REM 5. Crear las tablas usando migraciones de Entity Framework
+echo [5/8] Creando base de datos y tablas con migraciones de Entity Framework...
 set "infrastructurePath=%ROOT_DIR%Api\src\Infrastructure"
 set "apiPath=%ROOT_DIR%Api\src\Api"
+set "migrationsPath=%ROOT_DIR%Api\src\Infrastructure\Migrations"
 
-REM Intentar usar el proyecto InitDatabase para crear las tablas
-if exist "!scriptsPath!\InitDatabase.csproj" (
-    echo    Ejecutando InitDatabase para crear tablas...
-    pushd "!scriptsPath!"
-    dotnet run --project InitDatabase.csproj
-    if errorlevel 1 (
-        popd
-        echo    ⚠ Error al ejecutar InitDatabase
-        echo    Intentando con migraciones de Entity Framework...
-        
-        if exist "!infrastructurePath!\GesFer.Infrastructure.csproj" (
-            pushd "!apiPath!"
-            dotnet ef database update --project "!infrastructurePath!\GesFer.Infrastructure.csproj" >nul 2>&1
-            
-            if errorlevel 1 (
-                echo    ⚠ No se pudieron crear las tablas automáticamente
-                echo    Por favor, inicia la API y ejecuta el endpoint /api/setup/initialize
-            ) else (
-                echo    ✓ Tablas creadas con migraciones
-            )
-            popd
-        ) else (
-            echo    ⚠ No se encontró el proyecto de Infrastructure
-            echo    Por favor, inicia la API y ejecuta el endpoint /api/setup/initialize
-        )
-    ) else (
-        popd
-        echo    ✓ Tablas creadas correctamente
-    )
-) else (
-    echo    ⚠ No se encontró InitDatabase.csproj
-    echo    Intentando con migraciones de Entity Framework...
+REM Verificar que existan los proyectos necesarios
+if not exist "!infrastructurePath!\GesFer.Infrastructure.csproj" (
+    echo    ERROR: No se encontró el proyecto de Infrastructure
+    echo    Ruta esperada: !infrastructurePath!\GesFer.Infrastructure.csproj
+    pause
+    exit /b 1
+)
+
+if not exist "!apiPath!\GesFer.Api.csproj" (
+    echo    ERROR: No se encontró el proyecto de API
+    echo    Ruta esperada: !apiPath!\GesFer.Api.csproj
+    pause
+    exit /b 1
+)
+
+REM Verificar que .NET SDK esté instalado
+echo    Verificando .NET SDK...
+dotnet --version >nul 2>&1
+if errorlevel 1 (
+    echo    ERROR: .NET SDK no está instalado o no está en el PATH
+    echo    Por favor, instala .NET 8.0 SDK desde https://dotnet.microsoft.com/download
+    pause
+    exit /b 1
+)
+echo    ✓ .NET SDK encontrado
+
+REM Verificar e instalar dotnet-ef si es necesario
+echo    Verificando herramienta dotnet-ef...
+dotnet ef --version >nul 2>&1
+if errorlevel 1 (
+    echo    La herramienta dotnet-ef no está instalada. Instalándola...
     
-    if exist "!infrastructurePath!\GesFer.Infrastructure.csproj" (
-        pushd "!apiPath!"
-        dotnet ef database update --project "!infrastructurePath!\GesFer.Infrastructure.csproj" >nul 2>&1
-        
+    REM Intentar desinstalar primero si existe una versión corrupta
+    dotnet tool uninstall --global dotnet-ef >nul 2>&1
+    
+    REM Limpiar caché de NuGet antes de instalar
+    echo    Limpiando caché de NuGet...
+    dotnet nuget locals all --clear >nul 2>&1
+    
+    REM Intentar instalar con versión específica
+    echo    Instalando dotnet-ef versión 8.0.0...
+    dotnet tool install --global dotnet-ef --version 8.0.0
+    if errorlevel 1 (
+        echo    ⚠ Falló instalación con versión específica. Intentando sin versión...
+        dotnet tool install --global dotnet-ef
         if errorlevel 1 (
-            echo    ⚠ No se pudieron crear las tablas automáticamente
-            echo    Por favor, inicia la API y ejecuta el endpoint /api/setup/initialize
-        ) else (
-            echo    ✓ Tablas creadas con migraciones
+            echo    ERROR: No se pudo instalar la herramienta dotnet-ef
+            echo    Esto puede deberse a un problema con la caché de NuGet o permisos.
+            echo    Intenta ejecutar manualmente:
+            echo       dotnet nuget locals all --clear
+            echo       dotnet tool install --global dotnet-ef --version 8.0.0
+            echo    O instala sin versión específica:
+            echo       dotnet tool install --global dotnet-ef
+            pause
+            exit /b 1
         )
-        popd
-    ) else (
-        echo    ⚠ No se encontró el proyecto de Infrastructure
-        echo    Por favor, inicia la API y ejecuta el endpoint /api/setup/initialize
+    )
+    
+    REM Verificar que se instaló correctamente
+    dotnet ef --version >nul 2>&1
+    if errorlevel 1 (
+        echo    ERROR: La herramienta se instaló pero no se puede ejecutar
+        echo    Verifica que dotnet esté en el PATH y reinicia el terminal
+        pause
+        exit /b 1
+    )
+    echo    ✓ Herramienta dotnet-ef instalada correctamente
+) else (
+    echo    ✓ Herramienta dotnet-ef encontrada
+)
+
+REM Cambiar al directorio de la API para ejecutar comandos de EF
+pushd "!apiPath!"
+
+REM Verificar si existen migraciones (usando ruta relativa desde el directorio de la API)
+set hasMigrations=0
+if exist "..\Infrastructure\Migrations" (
+    dir /b "..\Infrastructure\Migrations\*.cs" >nul 2>&1
+    if not errorlevel 1 (
+        set hasMigrations=1
     )
 )
+
+REM Si no hay migraciones, crearlas
+if !hasMigrations! equ 0 (
+    echo    No se encontraron migraciones. Creando migración inicial...
+    dotnet ef migrations add InitialCreate --project "..\Infrastructure\GesFer.Infrastructure.csproj" --startup-project "GesFer.Api.csproj"
+    if errorlevel 1 (
+        echo    ERROR: No se pudieron crear las migraciones
+        echo    Verifica que Entity Framework esté correctamente configurado
+        echo    Asegúrate de que los proyectos se compilen correctamente
+        popd
+        pause
+        exit /b 1
+    )
+    echo    ✓ Migración inicial creada
+) else (
+    echo    ✓ Migraciones existentes encontradas
+)
+
+REM Aplicar migraciones a la base de datos
+echo    Aplicando migraciones a la base de datos...
+dotnet ef database update --project "..\Infrastructure\GesFer.Infrastructure.csproj" --startup-project "GesFer.Api.csproj"
+if errorlevel 1 (
+    echo    ERROR: No se pudieron aplicar las migraciones
+    echo    Verifica la conexión a la base de datos y los logs anteriores
+    popd
+    pause
+    exit /b 1
+)
+echo    ✓ Migraciones aplicadas correctamente
+
+REM Verificar que las tablas se hayan creado correctamente
+echo    Verificando que las tablas se hayan creado...
+docker exec gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb -e "SELECT COUNT(*) as total FROM information_schema.tables WHERE table_schema = 'ScrapDb';" --skip-column-names > "%TEMP%\gesfer_tablecount.txt" 2>&1
+if errorlevel 1 (
+    echo    ⚠ No se pudo verificar las tablas, pero las migraciones se aplicaron
+) else (
+    set /p tableCount=<"%TEMP%\gesfer_tablecount.txt"
+    if defined tableCount (
+        if !tableCount! gtr 0 (
+            echo    ✓ Tablas creadas correctamente con migraciones de Entity Framework
+            echo    ✓ Total de tablas en la base de datos: !tableCount!
+        ) else (
+            echo    ⚠ No se encontraron tablas, pero las migraciones se aplicaron
+        )
+    ) else (
+        echo    ✓ Migraciones aplicadas correctamente
+    )
+    del "%TEMP%\gesfer_tablecount.txt" >nul 2>&1
+)
+
+popd
 
 REM 6. Insertar datos iniciales (maestros, muestra y prueba)
 echo.
