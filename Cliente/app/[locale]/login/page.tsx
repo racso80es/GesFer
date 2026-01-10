@@ -22,6 +22,20 @@ export default function LoginPage() {
   });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [forceShowForm, setForceShowForm] = useState(false);
+
+  // Timeout de seguridad: si authLoading nunca se resuelve, mostrar formulario después de 3 segundos
+  useEffect(() => {
+    if (authLoading) {
+      const timeoutId = setTimeout(() => {
+        console.warn("Login: authLoading no se resolvió después de 3 segundos, mostrando formulario de todas formas");
+        setForceShowForm(true);
+      }, 3000);
+      return () => clearTimeout(timeoutId);
+    } else {
+      setForceShowForm(false);
+    }
+  }, [authLoading]);
 
   // Redirigir si ya está autenticado al cargar la página o después del login
   useEffect(() => {
@@ -29,19 +43,19 @@ export default function LoginPage() {
     // 1. Ya terminó de cargar el estado de autenticación inicial
     // 2. Está autenticado
     // 3. NO estamos en proceso de hacer login (isLoading es false)
-    // 4. NO estamos ya en la página de login (evitar bucles)
+    // 4. Estamos realmente en la página de login
     if (!authLoading && isAuthenticated && !isLoading) {
       const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-      // Solo redirigir si no estamos en login y no estamos ya en dashboard
-      if (!currentPath.includes('dashboard') && !currentPath.includes('login')) {
-        // Usar push en lugar de replace para asegurar la navegación
-        router.push("/dashboard");
+      // Solo redirigir si estamos en login y no en dashboard
+      if (currentPath.includes('login') && !currentPath.includes('dashboard')) {
+        // Usar replace para evitar que el usuario pueda volver atrás
+        router.replace("/dashboard");
       }
     }
   }, [authLoading, isAuthenticated, isLoading, router]);
 
-  // Mostrar loading mientras se verifica la autenticación
-  if (authLoading) {
+  // Mostrar loading mientras se verifica la autenticación (con timeout de seguridad)
+  if (authLoading && !forceShowForm) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
@@ -52,14 +66,11 @@ export default function LoginPage() {
     );
   }
 
-  // Si está autenticado y no estamos en proceso de login, redirigir
-  // Pero solo si realmente estamos en la página de login (no en una redirección)
-  if (isAuthenticated && !isLoading) {
+  // Si está autenticado y ya terminó de cargar, redirigir
+  if (!authLoading && isAuthenticated && !isLoading) {
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-    // Solo mostrar "Redirigiendo" si estamos realmente en /login
     if (currentPath.includes('login')) {
-      // Redirigir inmediatamente sin mostrar mensaje
-      router.push("/dashboard");
+      router.replace("/dashboard");
       return (
         <div className="flex min-h-screen items-center justify-center">
           <div className="text-center">

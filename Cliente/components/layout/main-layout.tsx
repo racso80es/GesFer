@@ -12,7 +12,7 @@ import {
   X,
   Briefcase,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
 import { useTranslations, useLocale } from 'next-intl';
@@ -41,28 +41,47 @@ export function MainLayout({ children }: MainLayoutProps) {
     router.push("/login");
   };
 
+  // Cerrar sidebar cuando cambia la ruta (en móvil)
+  const pathname = usePathname();
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
+
+  // Protección adicional: timeout de seguridad para cerrar sidebar automáticamente
+  // Esto previene overlays bloqueantes si el sidebar queda abierto por error
+  useEffect(() => {
+    if (sidebarOpen) {
+      const safetyTimeout = setTimeout(() => {
+        console.warn("MainLayout: Timeout de seguridad activado, cerrando sidebar automáticamente");
+        setSidebarOpen(false);
+      }, 60000); // 1 minuto como máximo (tiempo razonable para usar el sidebar)
+
+      return () => {
+        clearTimeout(safetyTimeout);
+      };
+    }
+  }, [sidebarOpen]);
+
   return (
     <div className="flex h-screen bg-background">
-      {/* Sidebar móvil */}
-      <div
-        className={cn(
-          "fixed inset-0 z-50 lg:hidden",
-          sidebarOpen ? "block" : "hidden"
-        )}
-      >
-        <div
-          className="fixed inset-0 bg-black/50"
-          onClick={() => setSidebarOpen(false)}
-        />
-        <div className="fixed inset-y-0 left-0 w-64 bg-card border-r">
-          <SidebarContent
-            user={user}
-            onLogout={handleLogout}
-            onClose={() => setSidebarOpen(false)}
-            navigation={navigation}
+      {/* Sidebar móvil - Solo mostrar si sidebarOpen es true */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div
+            className="fixed inset-0 bg-black/50 transition-opacity"
+            onClick={() => setSidebarOpen(false)}
+            aria-hidden="true"
           />
+          <div className="fixed inset-y-0 left-0 w-64 bg-card border-r z-50">
+            <SidebarContent
+              user={user}
+              onLogout={handleLogout}
+              onClose={() => setSidebarOpen(false)}
+              navigation={navigation}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Sidebar desktop */}
       <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">

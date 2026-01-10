@@ -15,7 +15,10 @@ const sizeClasses = {
 
 export function Loading({ className, size = "md", text }: LoadingProps) {
   return (
-    <div className={cn("flex flex-col items-center justify-center gap-2", className)}>
+    <div 
+      className={cn("flex flex-col items-center justify-center gap-2", className)}
+      style={{ pointerEvents: 'none' }} // Permitir que los clicks pasen a través si es necesario
+    >
       <Loader2 className={cn("animate-spin text-primary", sizeClasses[size])} />
       {text && <p className="text-sm text-muted-foreground">{text}</p>}
     </div>

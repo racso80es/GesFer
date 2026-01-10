@@ -12,6 +12,10 @@ public class AdminUserConfiguration : IEntityTypeConfiguration<AdminUser>
 
         builder.HasKey(u => u.Id);
 
+        // Nota: Pomelo.EntityFrameworkCore.MySql mapea automáticamente Guid a CHAR(36) en MySQL
+        // No es necesario especificar HasColumnType("char(36)") explícitamente.
+        // El tipo Guid en C# se almacena como CHAR(36) en MySQL, optimizado para ordenación lexicográfica.
+
         builder.Property(u => u.Username)
             .IsRequired()
             .HasMaxLength(100);

@@ -125,3 +125,31 @@ VALUES (
     NULL,
     TRUE
 );
+
+-- 8. Insertar usuario administrativo (AdminUser)
+-- Contraseña: "admin123"
+-- Hash BCrypt: $2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW
+-- Usa INSERT ... ON DUPLICATE KEY UPDATE para actualizar el hash si el usuario ya existe
+-- Nota: LastLoginAt y LastLoginIp son opcionales y se actualizan después del primer login
+INSERT INTO `AdminUsers` (Id, Username, PasswordHash, FirstName, LastName, Email, Role, LastLoginAt, LastLoginIp, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+VALUES (
+    'aaaaaaaa-0000-0000-0000-000000000000',
+    'admin',
+    '$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW', -- admin123 (hash válido generado)
+    'Administrador',
+    'Sistema',
+    'admin@gesfer.local',
+    'Admin',
+    NULL, -- LastLoginAt (se actualiza después del primer login)
+    NULL, -- LastLoginIp (se actualiza después del primer login)
+    UTC_TIMESTAMP(),
+    NULL,
+    NULL,
+    TRUE
+)
+ON DUPLICATE KEY UPDATE
+    PasswordHash = '$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW',
+    Role = 'Admin',
+    IsActive = TRUE,
+    DeletedAt = NULL,
+    UpdatedAt = UTC_TIMESTAMP();

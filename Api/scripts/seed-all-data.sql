@@ -38,7 +38,7 @@ ON DUPLICATE KEY UPDATE
 -- ============================================
 -- 2. DATOS BASE: Grupo de Administradores
 -- ============================================
-INSERT IGNORE INTO Groups (Id, Name, Description, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+INSERT IGNORE INTO `Groups` (Id, Name, Description, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES (
     '22222222-2222-2222-2222-222222222222',
     'Administradores',

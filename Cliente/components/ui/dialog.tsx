@@ -31,29 +31,73 @@ interface DialogFooterProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Dialog = ({ open, onOpenChange, children }: DialogProps) => {
+  // Efecto para manejar el overflow del body
   React.useEffect(() => {
     if (open) {
+      const originalOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
+      
+      return () => {
+        // Siempre restaurar el overflow al desmontar o cerrar
+        document.body.style.overflow = originalOverflow || "unset";
+      };
     } else {
+      // Si se cierra, restaurar inmediatamente
       document.body.style.overflow = "unset";
     }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
   }, [open]);
 
+  // Protección adicional: timeout de seguridad para cerrar automáticamente si está abierto demasiado tiempo
+  // Esto previene overlays bloqueantes que no se cierran correctamente
+  React.useEffect(() => {
+    if (open) {
+      const safetyTimeout = setTimeout(() => {
+        console.warn("Dialog: Timeout de seguridad activado, cerrando Dialog automáticamente");
+        onOpenChange(false);
+        // Asegurar que el body se restaure incluso si onOpenChange falla
+        document.body.style.overflow = "unset";
+      }, 300000); // 5 minutos como máximo (muy generoso, pero seguro)
+
+      return () => {
+        clearTimeout(safetyTimeout);
+      };
+    } else {
+      // Si se cierra, asegurar que el body siempre se restaure
+      document.body.style.overflow = "unset";
+    }
+  }, [open, onOpenChange]);
+
+  // Efecto adicional: asegurar que cuando open es false, el body siempre esté liberado
+  React.useEffect(() => {
+    if (!open && document.body.style.overflow === "hidden") {
+      // Si el Dialog está cerrado pero el body sigue bloqueado, restaurarlo
+      console.warn("Dialog: Dialog cerrado pero body.overflow='hidden' detectado, restaurando...");
+      document.body.style.overflow = "unset";
+    }
+  }, [open]);
+
+  // Si no está abierto, no renderizar nada
   if (!open) return null;
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
-      onClick={() => onOpenChange(false)}
+      onClick={() => {
+        onOpenChange(false);
+        // Asegurar que el body se restaure al cerrar
+        document.body.style.overflow = "unset";
+      }}
+      role="dialog"
+      aria-modal="true"
     >
       <div
         className="fixed inset-0 bg-black/50"
         aria-hidden="true"
+        style={{ pointerEvents: 'auto' }}
       />
-      <div onClick={(e) => e.stopPropagation()}>{children}</div>
+      <div onClick={(e) => e.stopPropagation()} style={{ pointerEvents: 'auto' }}>
+        {children}
+      </div>
     </div>
   );
 };

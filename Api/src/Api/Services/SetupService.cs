@@ -117,7 +117,8 @@ public class SetupService : ISetupService
                 {
                     var masterDataSeeder = new GesFer.Infrastructure.Services.MasterDataSeeder(
                         scope.ServiceProvider.GetRequiredService<ApplicationDbContext>(),
-                        scope.ServiceProvider.GetRequiredService<ILogger<GesFer.Infrastructure.Services.MasterDataSeeder>>());
+                        scope.ServiceProvider.GetRequiredService<ILogger<GesFer.Infrastructure.Services.MasterDataSeeder>>(),
+                        scope.ServiceProvider.GetRequiredService<ISequentialGuidGenerator>());
                     await masterDataSeeder.SeedLanguagesAsync();
                     result.Steps.Add("   ✓ Idiomas maestros insertados");
 

@@ -64,6 +64,8 @@ public class ApplicationDbContext : DbContext
     /// 
     /// Esto mejora el rendimiento de los índices agrupados al reducir la fragmentación
     /// y permitir un mejor ordenamiento natural por fecha de creación.
+    /// 
+    /// Usa inversión de dependencias para soportar múltiples proveedores de BD (MySQL, SQL Server, PostgreSQL).
     /// </summary>
     private void ConfigureSequentialGuids(ModelBuilder modelBuilder)
     {
@@ -77,9 +79,9 @@ public class ApplicationDbContext : DbContext
             
             if (idProperty != null && idProperty.ClrType == typeof(Guid))
             {
-                // Configurar el ValueGenerator secuencial solo si no tiene un valor asignado
-                // Esto permite que el seeding con IDs específicos siga funcionando
-                idProperty.SetValueGeneratorFactory((p, e) => new SequentialGuidValueGenerator());
+                // Configurar el ValueGenerator secuencial
+                // El ServiceProvider se resolverá en el método Next() del ValueGenerator desde el EntityEntry
+                idProperty.SetValueGeneratorFactory((property, entityType) => new SequentialGuidValueGenerator());
                 idProperty.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAdd;
             }
         }

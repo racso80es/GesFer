@@ -72,7 +72,7 @@ VALUES
 -- 3. GRUPOS BASE DEL SISTEMA
 -- ============================================
 -- Grupos de usuarios predefinidos
-INSERT IGNORE INTO Groups (Id, Name, Description, CreatedAt, UpdatedAt, DeletedAt, IsActive)
+INSERT IGNORE INTO `Groups` (Id, Name, Description, CreatedAt, UpdatedAt, DeletedAt, IsActive)
 VALUES 
     ('22222222-2222-2222-2222-222222222222', 'Administradores', 'Grupo de administradores del sistema con todos los permisos', UTC_TIMESTAMP(), NULL, NULL, TRUE),
     ('22222222-2222-2222-2222-222222222223', 'Gestores', 'Grupo de gestores con permisos de lectura y escritura', UTC_TIMESTAMP(), NULL, NULL, TRUE),

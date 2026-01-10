@@ -29,7 +29,7 @@ public static class DependencyInjection
 
         var isDevelopment = environment?.IsDevelopment() ?? false;
 
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
         {
             options.UseMySql(
                 connectionString,
@@ -52,6 +52,10 @@ public static class DependencyInjection
 
         // Repositorios genéricos (si se necesitan)
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+        // Generador de GUIDs secuenciales (MySQL optimizado)
+        // Preparado para futuros proveedores (SQL Server, PostgreSQL) mediante inversión de dependencias
+        services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
 
         // Servicios de infraestructura
         services.AddScoped<IAuthService, AuthService>();

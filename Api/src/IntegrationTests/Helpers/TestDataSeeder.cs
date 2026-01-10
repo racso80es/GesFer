@@ -25,6 +25,8 @@ public static class TestDataSeeder
         var existingGroupPermissions = await context.GroupPermissions.IgnoreQueryFilters().ToListAsync();
         var existingSuppliers = await context.Suppliers.IgnoreQueryFilters().ToListAsync();
         var existingCustomers = await context.Customers.IgnoreQueryFilters().ToListAsync();
+        var existingAdminUsers = await context.AdminUsers.IgnoreQueryFilters().ToListAsync();
+        var existingAuditLogs = await context.AuditLogs.IgnoreQueryFilters().ToListAsync();
         
         context.Companies.RemoveRange(existingCompanies);
         context.Users.RemoveRange(existingUsers);
@@ -35,6 +37,8 @@ public static class TestDataSeeder
         context.GroupPermissions.RemoveRange(existingGroupPermissions);
         context.Suppliers.RemoveRange(existingSuppliers);
         context.Customers.RemoveRange(existingCustomers);
+        context.AdminUsers.RemoveRange(existingAdminUsers);
+        context.AuditLogs.RemoveRange(existingAuditLogs);
         await context.SaveChangesAsync();
 
         // Idiomas maestros
@@ -268,6 +272,28 @@ public static class TestDataSeeder
             }
         };
         context.Customers.AddRange(customers);
+
+        // Crear usuario administrativo para tests
+        // Nota: Este AdminUser se usa en los tests de AdminAuthController y DashboardController
+        var adminUser = new AdminUser
+        {
+            Id = Guid.Parse("aaaaaaaa-0000-0000-0000-000000000000"),
+            Username = "admin",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123", BCrypt.Net.BCrypt.GenerateSalt(11)),
+            FirstName = "Administrador",
+            LastName = "Sistema",
+            Email = "admin@gesfer.local",
+            Role = "Admin",
+            LastLoginAt = null, // Se actualiza después del primer login
+            LastLoginIp = null, // Se actualiza después del primer login
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        };
+        context.AdminUsers.Add(adminUser);
+
+        // Nota: AuditLogs no se crean aquí porque son generados automáticamente
+        // por el sistema cuando se realizan acciones administrativas.
+        // Los tests verifican que se crean correctamente cuando se llama a DashboardController.
 
         await context.SaveChangesAsync();
     }

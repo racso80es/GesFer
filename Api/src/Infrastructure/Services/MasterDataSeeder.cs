@@ -12,11 +12,16 @@ public class MasterDataSeeder
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<MasterDataSeeder> _logger;
+    private readonly ISequentialGuidGenerator _guidGenerator;
 
-    public MasterDataSeeder(ApplicationDbContext context, ILogger<MasterDataSeeder> logger)
+    public MasterDataSeeder(
+        ApplicationDbContext context, 
+        ILogger<MasterDataSeeder> logger,
+        ISequentialGuidGenerator guidGenerator)
     {
-        _context = context;
-        _logger = logger;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _guidGenerator = guidGenerator ?? throw new ArgumentNullException(nameof(guidGenerator));
     }
 
     /// <summary>
@@ -169,7 +174,7 @@ public class MasterDataSeeder
                 // Crear nueva provincia
                 existingState = new State
                 {
-                    Id = SequentialGuidGenerator.NewSequentialGuid(),
+                    Id = _guidGenerator.NewSequentialGuid(),
                     CountryId = countryId,
                     Name = name,
                     Code = code,
@@ -243,7 +248,7 @@ public class MasterDataSeeder
                     {
                         city = new City
                         {
-                            Id = SequentialGuidGenerator.NewSequentialGuid(),
+                            Id = _guidGenerator.NewSequentialGuid(),
                             StateId = state.Id,
                             Name = capitalName,
                             CreatedAt = DateTime.UtcNow,
@@ -277,7 +282,7 @@ public class MasterDataSeeder
                     {
                         city = new City
                         {
-                            Id = SequentialGuidGenerator.NewSequentialGuid(),
+                            Id = _guidGenerator.NewSequentialGuid(),
                             StateId = state.Id,
                             Name = cityName,
                             CreatedAt = DateTime.UtcNow,
@@ -308,7 +313,7 @@ public class MasterDataSeeder
                         {
                             var newPostalCode = new PostalCode
                             {
-                                Id = SequentialGuidGenerator.NewSequentialGuid(),
+                                Id = _guidGenerator.NewSequentialGuid(),
                                 CityId = city.Id,
                                 Code = postalCode,
                                 CreatedAt = DateTime.UtcNow,

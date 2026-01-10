@@ -25,12 +25,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    
     // Cargar usuario desde localStorage al iniciar
-    const storedUser = authApi.getStoredUser();
-    if (storedUser) {
-      setUser(storedUser);
-    }
-    setIsLoading(false);
+    const loadUser = async () => {
+      try {
+        const storedUser = authApi.getStoredUser();
+        if (storedUser && isMounted) {
+          setUser(storedUser);
+        }
+      } catch (error) {
+        console.error("Error al cargar usuario desde localStorage:", error);
+        // Si hay error, limpiar datos corruptos
+        if (typeof window !== 'undefined' && isMounted) {
+          try {
+            localStorage.removeItem("auth_user");
+            localStorage.removeItem("auth_token");
+          } catch (e) {
+            console.error("Error al limpiar localStorage:", e);
+          }
+        }
+      } finally {
+        // Siempre establecer isLoading en false, incluso si hay error
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    // Timeout de seguridad: asegurar que isLoading se establezca en false después de máximo 2 segundos
+    const timeoutId = setTimeout(() => {
+      if (isMounted) {
+        console.warn("AuthContext: Timeout de seguridad activado, forzando isLoading a false");
+        setIsLoading(false);
+      }
+    }, 2000);
+
+    // Cargar usuario inmediatamente
+    loadUser();
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const login = async (credentials: {

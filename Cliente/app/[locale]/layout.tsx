@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import "../globals.css";
 import { QueryProvider } from "@/lib/providers/query-provider";
 import { AuthProvider } from "@/contexts/auth-context";
+import { OverlayFix } from "@/components/ui/overlay-fix";
 import { locales } from "@/i18n";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -35,6 +36,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body className={inter.className}>
+        <OverlayFix />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <QueryProvider>
             <AuthProvider>{children}</AuthProvider>
