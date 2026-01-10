@@ -16,6 +16,7 @@ public class ApplicationDbContext : DbContext
     // DbSets
     public DbSet<Company> Companies => Set<Company>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<AdminUser> AdminUsers => Set<AdminUser>();
     public DbSet<Group> Groups => Set<Group>();
     public DbSet<Permission> Permissions => Set<Permission>();
     public DbSet<UserGroup> UserGroups => Set<UserGroup>();
@@ -38,6 +39,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<State> States => Set<State>();
     public DbSet<City> Cities => Set<City>();
     public DbSet<PostalCode> PostalCodes => Set<PostalCode>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

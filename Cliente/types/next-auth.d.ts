@@ -10,9 +10,11 @@ declare module "next-auth" {
       username: string;
       firstName: string;
       lastName: string;
-      companyId: string;
-      companyName: string;
-      permissions: string[];
+      email?: string;
+      role: string; // "User" para usuarios regulares, "Admin" para administrativos
+      companyId?: string; // Solo para usuarios regulares (multi-tenant)
+      companyName?: string; // Solo para usuarios regulares (multi-tenant)
+      permissions?: string[]; // Solo para usuarios regulares
     };
     accessToken?: string;
   }
@@ -24,9 +26,11 @@ declare module "next-auth" {
     username: string;
     firstName: string;
     lastName: string;
-    companyId: string;
-    companyName: string;
-    permissions: string;
+    email?: string;
+    role: string; // "User" para usuarios regulares, "Admin" para administrativos
+    companyId?: string; // Solo para usuarios regulares (multi-tenant)
+    companyName?: string; // Solo para usuarios regulares (multi-tenant)
+    permissions?: string; // Solo para usuarios regulares (como string separado por comas)
     accessToken: string;
   }
 }
@@ -38,9 +42,11 @@ declare module "next-auth/jwt" {
     username?: string;
     firstName?: string;
     lastName?: string;
-    companyId?: string;
-    companyName?: string;
-    permissions?: string;
+    email?: string;
+    role?: string; // "User" para usuarios regulares, "Admin" para administrativos
+    companyId?: string; // Solo para usuarios regulares (multi-tenant)
+    companyName?: string; // Solo para usuarios regulares (multi-tenant)
+    permissions?: string; // Solo para usuarios regulares (como string separado por comas)
     accessToken?: string;
   }
 }

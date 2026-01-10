@@ -122,7 +122,7 @@ public class IntegrityValidationService
         Console.WriteLine();
 
         // 4. Validar Sequential GUIDs en seeding
-        Console.WriteLine("[4/4] Validando Sequential GUIDs en seeding...");
+        Console.WriteLine("[4/5] Validando Sequential GUIDs en seeding...");
         var guidsResult = await ValidateSequentialGuidsAsync();
         result.Checks["SequentialGUIDs"] = guidsResult;
         if (!guidsResult)
@@ -133,6 +133,21 @@ public class IntegrityValidationService
         else
         {
             Console.WriteLine("    ✓ Sequential GUIDs: OK");
+        }
+        Console.WriteLine();
+
+        // 5. Validar tabla AdminUsers y usuario de prueba
+        Console.WriteLine("[5/5] Validando tabla AdminUsers y usuario de prueba...");
+        var adminUsersResult = await ValidateAdminUsersAsync();
+        result.Checks["AdminUsers"] = adminUsersResult;
+        if (!adminUsersResult)
+        {
+            result.Errors.Add("AdminUsers: La tabla no existe o no tiene al menos un usuario de prueba");
+            Console.WriteLine("    ✗ AdminUsers: ERROR");
+        }
+        else
+        {
+            Console.WriteLine("    ✓ AdminUsers: OK");
         }
         Console.WriteLine();
 
@@ -520,6 +535,115 @@ public class IntegrityValidationService
         catch (Exception ex)
         {
             _logService.WriteError("Error al validar Sequential GUIDs", ex);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Valida que la tabla AdminUsers existe y tiene al menos un usuario de prueba
+    /// </summary>
+    private async Task<bool> ValidateAdminUsersAsync()
+    {
+        try
+        {
+            _logService.WriteLog("Validando tabla AdminUsers y usuario de prueba...");
+
+            // Verificar que la tabla AdminUsers existe y tiene al menos un usuario activo
+            var processInfo = new ProcessStartInfo
+            {
+                FileName = "docker",
+                Arguments = "exec gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb -e \"SELECT COUNT(*) as total FROM AdminUsers WHERE IsActive = 1 AND DeletedAt IS NULL;\" --skip-column-names",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = Process.Start(processInfo);
+            if (process == null)
+            {
+                _logService.WriteLog("No se pudo ejecutar consulta para validar AdminUsers");
+                Console.WriteLine("      ✗ No se pudo ejecutar consulta");
+                return false;
+            }
+
+            var output = await process.StandardOutput.ReadToEndAsync();
+            var error = await process.StandardError.ReadToEndAsync();
+            await process.WaitForExitAsync();
+
+            if (process.ExitCode != 0)
+            {
+                _logService.WriteLog($"Error al consultar AdminUsers: {error}");
+                Console.WriteLine($"      ✗ Error al consultar tabla: {error.Trim()}");
+                
+                // Si la tabla no existe, intentar verificarlo específicamente
+                if (error.Contains("doesn't exist", StringComparison.OrdinalIgnoreCase) ||
+                    error.Contains("Table", StringComparison.OrdinalIgnoreCase) && error.Contains("doesn't exist", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine("      ✗ La tabla AdminUsers no existe en la base de datos");
+                    _logService.WriteLog("La tabla AdminUsers no existe - se requiere aplicar la migración");
+                    return false;
+                }
+                
+                return false;
+            }
+
+            if (int.TryParse(output.Trim(), out int count))
+            {
+                if (count > 0)
+                {
+                    _logService.WriteLog($"AdminUsers validado: {count} usuario(s) administrativo(s) activo(s) encontrado(s)");
+                    Console.WriteLine($"      ✓ {count} usuario(s) administrativo(s) activo(s) encontrado(s)");
+                    
+                    // Verificar que existe el usuario "admin"
+                    var adminUserInfo = new ProcessStartInfo
+                    {
+                        FileName = "docker",
+                        Arguments = "exec gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb -e \"SELECT Username FROM AdminUsers WHERE Username = 'admin' AND IsActive = 1 AND DeletedAt IS NULL LIMIT 1;\" --skip-column-names",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+
+                    using var adminProcess = Process.Start(adminUserInfo);
+                    if (adminProcess != null)
+                    {
+                        var adminOutput = await adminProcess.StandardOutput.ReadToEndAsync();
+                        await adminProcess.WaitForExitAsync();
+                        
+                        if (adminOutput.Trim().Equals("admin", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Console.WriteLine("      ✓ Usuario 'admin' encontrado");
+                            _logService.WriteLog("Usuario administrativo 'admin' encontrado correctamente");
+                        }
+                        else
+                        {
+                            Console.WriteLine("      ⚠ Usuario 'admin' no encontrado (pero hay otros usuarios)");
+                            _logService.WriteLog("Advertencia: Usuario 'admin' no encontrado, pero hay otros usuarios administrativos");
+                        }
+                    }
+                    
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("      ✗ No hay usuarios administrativos activos en la tabla");
+                    _logService.WriteLog("AdminUsers: La tabla existe pero no tiene usuarios activos");
+                    return false;
+                }
+            }
+            else
+            {
+                _logService.WriteLog("No se pudo parsear el resultado de la consulta AdminUsers");
+                Console.WriteLine("      ✗ Error al interpretar resultado");
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logService.WriteError("Error al validar AdminUsers", ex);
+            Console.WriteLine($"      ✗ Error: {ex.Message}");
             return false;
         }
     }

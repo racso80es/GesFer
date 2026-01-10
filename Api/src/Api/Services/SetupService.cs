@@ -709,6 +709,40 @@ public class SetupService : ISetupService
             await context.SaveChangesAsync();
             logger.LogInformation("Relaciones de usuario guardadas");
 
+            // Crear usuario administrativo (AdminUser) para acceso administrativo
+            // Verificar si ya existe un AdminUser con el mismo username
+            var existingAdminUser = await context.AdminUsers
+                .FirstOrDefaultAsync(u => u.Username == "admin");
+            
+            if (existingAdminUser == null)
+            {
+                var adminUser = new Domain.Entities.AdminUser
+                {
+                    Id = Guid.Parse("aaaaaaaa-0000-0000-0000-000000000000"),
+                    Username = "admin",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123", BCrypt.Net.BCrypt.GenerateSalt(11)),
+                    FirstName = "Administrador",
+                    LastName = "Sistema",
+                    Email = "admin@gesfer.local",
+                    Role = "Admin",
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = true
+                };
+                context.AdminUsers.Add(adminUser);
+                await context.SaveChangesAsync();
+                logger.LogInformation("Usuario administrativo creado: {Username}", adminUser.Username);
+            }
+            else
+            {
+                // Actualizar el hash de contraseña si el usuario ya existe (por si cambió la implementación)
+                existingAdminUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123", BCrypt.Net.BCrypt.GenerateSalt(11));
+                existingAdminUser.IsActive = true;
+                existingAdminUser.Role = "Admin";
+                existingAdminUser.UpdatedAt = DateTime.UtcNow;
+                await context.SaveChangesAsync();
+                logger.LogInformation("Usuario administrativo actualizado: {Username}", existingAdminUser.Username);
+            }
+
             // Crear proveedores de prueba con direcciones completas
             await SeedTestSuppliersAsync(context, company.Id, spain, logger);
 
