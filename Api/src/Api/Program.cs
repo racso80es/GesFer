@@ -41,6 +41,15 @@ builder.Services.AddApplicationServices(builder.Configuration, builder.Environme
 // Configurar autenticación JWT
 var jwtSecretKey = builder.Configuration["JwtSettings:SecretKey"] 
     ?? throw new InvalidOperationException("JwtSettings:SecretKey no está configurado");
+
+// Validar que la clave tenga al menos 32 caracteres (256 bits) para SHA-256 (HS256)
+if (jwtSecretKey.Length < 32)
+{
+    throw new InvalidOperationException(
+        $"JwtSettings:SecretKey debe tener al menos 32 caracteres (256 bits) para cumplir con el algoritmo SHA-256 (HS256). " +
+        $"Longitud actual: {jwtSecretKey.Length} caracteres.");
+}
+
 var jwtIssuer = builder.Configuration["JwtSettings:Issuer"] 
     ?? throw new InvalidOperationException("JwtSettings:Issuer no está configurado");
 var jwtAudience = builder.Configuration["JwtSettings:Audience"] 

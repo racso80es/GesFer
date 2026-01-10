@@ -14,6 +14,75 @@ logs/
 *.backup
 temp_*.txt
 
-# Carpetas temporales de compilación .NET (Console)
-GesFer.Console/bin/
-GesFer.Console/obj/
+# Carpetas temporales de compilación .NET (todos los proyectos)
+**/bin/
+**/obj/
+**/[Bb]in/
+**/[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+**/Debug/
+**/Release/
+
+# Archivos de compilación .NET
+*.dll
+*.exe
+*.pdb
+*.cache
+*.deps.json
+*.runtimeconfig.json
+*.staticwebassets.endpoints.json
+*.deps
+*.runtimeconfig
+
+# Archivos de configuración de producción y sensibles
+# API
+Api/src/Api/appsettings.Production.json
+Api/src/Api/appsettings.Development.json
+!Api/src/Api/appsettings.Development.json.example
+Api/src/Api/**/appsettings.Production.json
+Api/src/Api/**/appsettings.Development.json
+
+# Cliente
+Cliente/config/production.json
+Cliente/config/local.json
+Cliente/.env
+Cliente/.env.local
+Cliente/.env.production
+Cliente/.env.production.local
+
+# Archivos de secretos y variables de entorno
+*.secrets.json
+*.secrets
+.env
+.env.local
+.env.production
+.env.production.local
+.env.development
+.env.development.local
+
+# Archivos de configuración personalizados con datos sensibles
+*config.local.*
+*config.production.*
+!.env.example
+!*.env.example
+
+# Datos de Docker y MySQL
+Api/docker_data/
+**/docker_data/
+docker_data/
+
+# Archivos de base de datos temporales
+*.ibd
+*.dblwr
+**/#ib_*
+**/#innodb_redo/**
+**/#innodb_temp/**
+*.binlog*
+*.binlog.index
+
+# Archivos de MySQL
+ibdata1
+ibtmp1
+undo_001
+undo_002
