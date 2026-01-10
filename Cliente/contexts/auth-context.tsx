@@ -27,23 +27,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let isMounted = true;
     
-    // Cargar usuario desde localStorage al iniciar
+    // Cargar y validar usuario usando la función de inicialización del cliente
     const loadUser = async () => {
       try {
+        // La función getStoredUser ahora usa validateAndCleanStoredUser internamente
+        // que valida y limpia datos corruptos automáticamente
         const storedUser = authApi.getStoredUser();
         if (storedUser && isMounted) {
           setUser(storedUser);
         }
       } catch (error) {
         console.error("Error al cargar usuario desde localStorage:", error);
-        // Si hay error, limpiar datos corruptos
-        if (typeof window !== 'undefined' && isMounted) {
-          try {
-            localStorage.removeItem("auth_user");
-            localStorage.removeItem("auth_token");
-          } catch (e) {
-            console.error("Error al limpiar localStorage:", e);
-          }
+        // La función de validación ya limpia los datos corruptos automáticamente,
+        // pero por si acaso, asegurar que el estado esté limpio
+        if (isMounted) {
+          setUser(null);
         }
       } finally {
         // Siempre establecer isLoading en false, incluso si hay error

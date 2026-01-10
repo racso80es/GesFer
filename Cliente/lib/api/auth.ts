@@ -1,5 +1,6 @@
 import { apiClient } from "./client";
 import type { LoginRequest, LoginResponse } from "@/lib/types/api";
+import { validateAndCleanStoredUser, clearAuthData } from "@/lib/utils/client-init";
 
 export const authApi = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
@@ -10,14 +11,21 @@ export const authApi = {
     
     // Guardar usuario en localStorage y cookies (siempre, incluso sin token)
     if (typeof window !== "undefined") {
-      // Guardar usuario siempre
-      localStorage.setItem("auth_user", JSON.stringify(response));
-      document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(response))}; path=/; max-age=86400`;
-      
-      // Guardar token solo si existe
-      if (response.token) {
-        localStorage.setItem("auth_token", response.token);
-        document.cookie = `auth_token=${response.token}; path=/; max-age=86400`; // 24 horas
+      try {
+        // Guardar usuario siempre
+        localStorage.setItem("auth_user", JSON.stringify(response));
+        document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(response))}; path=/; max-age=86400; SameSite=Lax`;
+        
+        // Guardar token solo si existe
+        if (response.token) {
+          localStorage.setItem("auth_token", response.token);
+          document.cookie = `auth_token=${response.token}; path=/; max-age=86400; SameSite=Lax`; // 24 horas
+        }
+      } catch (error) {
+        console.error("Error al guardar datos de autenticación:", error);
+        // Si hay error, limpiar datos previos antes de continuar
+        clearAuthData();
+        throw new Error("No se pudo guardar la sesión. Intenta nuevamente.");
       }
     }
     
@@ -25,20 +33,12 @@ export const authApi = {
   },
 
   logout: () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("auth_user");
-      
-      // Eliminar cookies también
-      document.cookie = "auth_token=; path=/; max-age=0";
-      document.cookie = "auth_user=; path=/; max-age=0";
-    }
+    clearAuthData();
   },
 
   getStoredUser: (): LoginResponse | null => {
-    if (typeof window === "undefined") return null;
-    const userStr = localStorage.getItem("auth_user");
-    return userStr ? JSON.parse(userStr) : null;
+    // Usar la función de validación que limpia datos corruptos automáticamente
+    return validateAndCleanStoredUser();
   },
 
   getPermissions: async (userId: string): Promise<string[]> => {
