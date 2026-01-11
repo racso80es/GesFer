@@ -39,6 +39,9 @@ public class AdminUserConfiguration : IEntityTypeConfiguration<AdminUser>
             .IsRequired()
             .HasMaxLength(50);
 
+        builder.Property(u => u.LastLoginAt)
+            .IsRequired(false);
+
         builder.Property(u => u.LastLoginIp)
             .HasMaxLength(45);
 

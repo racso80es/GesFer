@@ -55,31 +55,13 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "   Estructura de base de datos recreada" -ForegroundColor Green
 
-# Insertar datos de prueba
-Write-Host "4. Insertando datos iniciales..." -ForegroundColor Yellow
-$sqlFile = Join-Path $scriptsPath "seed-data.sql"
-
-if (Test-Path $sqlFile) {
-    $result = Get-Content $sqlFile -Raw | docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb 2>&1
-    $exitCode = $LASTEXITCODE
-    
-    if ($exitCode -eq 0) {
-        Write-Host "   Datos iniciales insertados correctamente" -ForegroundColor Green
-    }
-    else {
-        if ($result -match "Duplicate entry") {
-            Write-Host "   Algunos datos ya existen (esto es normal si ejecutas el script varias veces)" -ForegroundColor Yellow
-        }
-        else {
-            Write-Host "   Error al insertar datos. Verifica los logs arriba." -ForegroundColor Yellow
-            Write-Host "   Resultado: $result" -ForegroundColor Gray
-        }
-    }
-}
-else {
-    Write-Host "   ERROR: No se encontro el archivo seed-data.sql" -ForegroundColor Red
-    exit 1
-}
+# Nota: Los datos iniciales ahora se cargan desde archivos JSON mediante DbInitializer
+# No es necesario ejecutar scripts SQL manualmente. Los datos se cargan automáticamente
+# cuando se ejecuta la aplicación o la consola con la opción 1 (Inicialización completa)
+Write-Host "4. Datos iniciales..." -ForegroundColor Yellow
+Write-Host "   NOTA: Los datos iniciales ahora se cargan desde archivos JSON" -ForegroundColor Cyan
+Write-Host "   ubicados en Api/src/Infrastructure/Data/Seeds/" -ForegroundColor Cyan
+Write-Host "   Se cargan automáticamente mediante DbInitializer al iniciar la aplicación" -ForegroundColor Cyan
 
 Write-Host ""
 Write-Host "=== Recreacion completada ===" -ForegroundColor Green

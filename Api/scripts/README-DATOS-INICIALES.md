@@ -1,167 +1,95 @@
-# Gestión de Datos Iniciales en MySQL
+# Gestión de Datos Iniciales en GesFer
 
-Este directorio contiene los scripts SQL organizados para la gestión de datos iniciales en la base de datos MySQL de GesFer.
+## ⚠️ IMPORTANTE: Migración a Sistema JSON
 
-## Estructura de Archivos
+**Los datos iniciales ahora se gestionan mediante archivos JSON, no scripts SQL.**
 
-Los datos iniciales están organizados en tres categorías principales:
+El sistema ha migrado de scripts SQL a archivos JSON para una gestión más profesional y mantenible de los datos iniciales.
 
-### 1. `master-data.sql` - Datos Maestros
-**Contenido:**
-- **Idiomas**: Español, English, Català
-- **Permisos base del sistema**: Permisos fundamentales (read, write, delete) para todas las entidades
-- **Grupos base**: Administradores, Gestores, Consultores
-- **Asignación de permisos a grupos**: Configuración automática de permisos por grupo
+## Sistema Actual: Archivos JSON
 
-**Características:**
-- Estos datos son esenciales para el funcionamiento del sistema
-- Deben ejecutarse PRIMERO antes que cualquier otro script
-- Usan `INSERT IGNORE` para evitar duplicados
-- Son independientes de datos de muestra o prueba
-
-**Cuándo ejecutar:**
-- En la primera inicialización del sistema
-- Cuando se necesiten actualizar los permisos o grupos base
-- Antes de ejecutar `sample-data.sql` o `test-data.sql`
-
-### 2. `sample-data.sql` - Datos de Muestra
-**Contenido:**
-- **Empresa demo**: Empresa de demostración con datos completos
-- **Usuarios de ejemplo**: 
-  - `admin` (Administrador del sistema)
-  - `gestor` (Usuario gestor de ejemplo)
-- **Clientes de muestra**: 3 clientes con datos realistas
-- **Proveedores de muestra**: 3 proveedores con datos realistas
-- **Artículos, familias y tarifas**: (Comentados, descomentar si aplica)
-
-**Características:**
-- Datos diseñados para demostración y desarrollo
-- Requiere que `master-data.sql` haya sido ejecutado primero
-- Puede ejecutarse independientemente de `test-data.sql`
-- Usa `ON DUPLICATE KEY UPDATE` para actualizar datos existentes
-
-**Cuándo ejecutar:**
-- Para configurar un entorno de desarrollo/demostración
-- Cuando se necesiten datos de ejemplo para probar funcionalidades
-- En entornos de staging o demo
-
-### 3. `test-data.sql` - Datos de Prueba
-**Contenido:**
-- **Empresa de prueba**: Misma empresa demo (puede coexistir)
-- **Usuarios de prueba**: Usuario admin con credenciales conocidas
-- **Clientes de prueba**: 2 clientes con IDs fijos para tests determinísticos
-- **Proveedores de prueba**: 2 proveedores con IDs fijos para tests determinísticos
-
-**Características:**
-- Datos con IDs fijos y conocidos para tests determinísticos
-- Diseñado para ser fácilmente limpiable y recreable
-- Requiere que `master-data.sql` haya sido ejecutado primero
-- Puede ejecutarse independientemente de `sample-data.sql`
-
-**Cuándo ejecutar:**
-- Antes de ejecutar tests de integración
-- Para configurar un entorno de testing
-- Cuando se necesiten datos con IDs conocidos para aserciones determinísticas
-
-## Scripts PowerShell
-
-### `seed-all-data.ps1`
-Script principal que ejecuta los tres archivos SQL en el orden correcto.
-
-**Uso básico:**
-```powershell
-.\seed-all-data.ps1
+Los datos iniciales están organizados en archivos JSON ubicados en:
 ```
-Ejecuta `master-data.sql` y `sample-data.sql` (sin datos de prueba).
-
-**Incluir datos de prueba:**
-```powershell
-.\seed-all-data.ps1 -IncludeTestData
-```
-Ejecuta los tres scripts: master, sample y test.
-
-**Solo datos maestros:**
-```powershell
-.\seed-all-data.ps1 -OnlyMaster
+Api/src/Infrastructure/Data/Seeds/
 ```
 
-**Solo datos de muestra:**
-```powershell
-.\seed-all-data.ps1 -OnlySample
-```
+### Archivos Disponibles
 
-### `insert-seed-data.ps1`
-Script actualizado que usa la nueva estructura organizada. Mismos parámetros que `seed-all-data.ps1`.
+1. **`master-data.json`** - Datos maestros del sistema
+   - Idiomas (Español, English, Català)
+   - Permisos base del sistema
+   - Grupos base (Administradores, Gestores, Consultores)
+   - Asignación de permisos a grupos
+   - Usuario administrativo (admin)
 
-### `setup-database.ps1`
-Script actualizado que ejecuta `master-data.sql` y `sample-data.sql` en orden.
+2. **`demo-data.json`** - Datos de demostración
+   - Empresa demo
+   - Usuarios de ejemplo
+   - Clientes de muestra
+   - Proveedores de muestra
 
-## Orden de Ejecución Recomendado
+3. **`test-data.json`** - Datos de prueba para tests
+   - Datos con IDs fijos para tests determinísticos
+   - Diseñado para ser fácilmente limpiable
 
-### Inicialización Completa (Desarrollo/Demo)
-1. `master-data.sql` - Datos maestros
-2. `sample-data.sql` - Datos de muestra
-3. (Opcional) `test-data.sql` - Si se necesitan datos de prueba
+## Carga Automática
 
-### Solo para Tests
-1. `master-data.sql` - Datos maestros
-2. `test-data.sql` - Datos de prueba
+Los datos se cargan automáticamente mediante:
 
-### Solo Datos Maestros
-1. `master-data.sql` - Datos maestros
+1. **API (Development)**: Al iniciar la API en modo Development, `DbInitializer` aplica migraciones y carga datos desde JSON.
 
-## Ejecución Manual
+2. **Consola (Opción 1)**: La opción "Inicialización completa" de la consola ejecuta `DbInitializer` que:
+   - Aplica todas las migraciones pendientes
+   - Carga datos desde `master-data.json`
+   - Carga datos desde `demo-data.json`
 
-Si prefieres ejecutar los scripts manualmente:
+3. **Consola (Opción 6)**: Menú de seeds que permite ejecutar:
+   - Solo datos maestros
+   - Solo datos de muestra
+   - Solo datos de prueba
+   - Todos los seeds
 
-```bash
-# Desde el contenedor MySQL
-docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb < master-data.sql
-docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb < sample-data.sql
-docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb < test-data.sql
-```
+## Características del Sistema JSON
 
-O desde Adminer (http://localhost:8080):
-1. Seleccionar base de datos `ScrapDb`
-2. Ir a "SQL command"
-3. Copiar y pegar el contenido del script
-4. Ejecutar
+✅ **Idempotente**: Puede ejecutarse múltiples veces sin duplicar datos
+✅ **Mantenible**: Fácil de editar y versionar
+✅ **Consistente**: Mismo sistema para API, Consola y Tests
+✅ **Automático**: Se carga automáticamente en Development
+
+## Cómo Añadir Nuevos Datos
+
+1. **Datos maestros** → Editar `Api/src/Infrastructure/Data/Seeds/master-data.json`
+2. **Datos de muestra** → Editar `Api/src/Infrastructure/Data/Seeds/demo-data.json`
+3. **Datos de prueba** → Editar `Api/src/Infrastructure/Data/Seeds/test-data.json`
+
+**IMPORTANTE**: No edites el código C# para añadir datos. Usa los archivos JSON.
 
 ## Credenciales por Defecto
 
-Después de ejecutar los scripts, puedes usar estas credenciales:
+Después de la inicialización, puedes usar estas credenciales:
 
 - **Empresa**: Empresa Demo
 - **Usuario**: admin
 - **Contraseña**: admin123
 
-## Notas Importantes
+## Scripts SQL (DEPRECADOS)
 
-1. **Dependencias**: `sample-data.sql` y `test-data.sql` requieren que `master-data.sql` haya sido ejecutado primero.
+Los scripts SQL de inserción (`master-data.sql`, `seed-data.sql`, `sample-data.sql`, etc.) han sido eliminados.
 
-2. **Duplicados**: Los scripts usan `INSERT IGNORE` o `ON DUPLICATE KEY UPDATE` para evitar errores si se ejecutan múltiples veces.
+El sistema ahora usa exclusivamente archivos JSON para la gestión de datos iniciales.
 
-3. **Localizaciones**: Los datos de localización (países, estados, ciudades, códigos postales) se cargan automáticamente mediante el servicio `MasterDataSeeder` en el código C#. No están incluidos en los scripts SQL.
+## Migración desde Scripts SQL
 
-4. **Tests**: Los datos de prueba están diseñados para ser limpiados y recreados antes de cada suite de tests. Los tests de integración deberían usar transacciones o limpiar estos datos antes de ejecutarse.
+Si necesitas migrar datos desde scripts SQL antiguos:
 
-5. **IDs Fijos**: Los datos de prueba usan IDs fijos (GUIDs) para permitir tests determinísticos. No cambies estos IDs sin actualizar también los tests correspondientes.
+1. Abre el script SQL antiguo
+2. Identifica los datos a migrar
+3. Añádelos al archivo JSON correspondiente (`master-data.json`, `demo-data.json` o `test-data.json`)
+4. Ejecuta la opción 1 de la consola o reinicia la API en Development
 
-## Migración desde Scripts Antiguos
+## Documentación Técnica
 
-Los scripts antiguos (`seed-data.sql`, `seed-all-data.sql`, `recreate-seed-data.sql`) siguen disponibles pero se recomienda usar la nueva estructura organizada:
-
-- `seed-data.sql` → Reemplazado por `master-data.sql` + `sample-data.sql`
-- `seed-all-data.sql` → Reemplazado por `master-data.sql` + `sample-data.sql` + `test-data.sql`
-- `recreate-seed-data.sql` → Usar `seed-all-data.ps1` con limpieza previa
-
-## Mantenimiento
-
-Al agregar nuevos datos:
-
-1. **Datos maestros** → Agregar a `master-data.sql`
-2. **Datos de muestra** → Agregar a `sample-data.sql`
-3. **Datos de prueba** → Agregar a `test-data.sql`
-
-Mantén la separación clara entre las tres categorías para facilitar el mantenimiento y la comprensión del sistema.
-
+Para más detalles sobre el sistema de seeding, consulta:
+- `Api/src/Infrastructure/Services/JsonDataSeeder.cs` - Lógica de carga desde JSON
+- `Api/src/Infrastructure/Data/DbInitializer.cs` - Orquestación de migraciones y seeding
+- `Api/src/Infrastructure/Data/Seeds/README.md` - Estructura de los archivos JSON

@@ -254,7 +254,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
     public async Task Login_WithKnownCredentials_ShouldAlwaysWork_WithFixedPasswordHash()
     {
         // Arrange - Credenciales conocidas que DEBEN funcionar siempre
-        // Estas son las credenciales estándar que se usan en SetupService, seed-data.sql y TestDataSeeder
+        // Estas son las credenciales estándar que se usan en SetupService, master-data.json y TestDataSeeder
         const string knownCompany = "Empresa Demo";
         const string knownUsername = "admin";
         const string knownPassword = "admin123";

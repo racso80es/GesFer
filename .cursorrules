@@ -28,10 +28,15 @@ Siempre que realices cambios en el código de la solución debes:
 **Siempre que se cree, modifique o elimine una propiedad en cualquier entidad del proyecto (C#), debes realizar de forma atómica las siguientes acciones:**
 
 1. **Sincronización de Seeds**: 
-   - Actualiza la lógica de `SetupService.SeedInitialDataAsync()` para incluir valores coherentes para las nuevas propiedades.
-   - Actualiza `MasterDataSeeder.cs` si la propiedad afecta a datos maestros.
-   - Actualiza `seed-data.sql` si se usa para seeding.
-   - Si la propiedad es requerida, asegúrate de que el dato de ejemplo sea válido.
+   - **IMPORTANTE:** Para añadir o modificar datos de prueba/maestros, NO se debe tocar el código C#. En su lugar, edita los archivos JSON en `Api/src/Infrastructure/Data/Seeds/`.
+   - Los archivos JSON de seeds son la fuente de verdad para datos iniciales:
+     - `master-data.json`: Datos maestros del sistema (languages, permissions, groups, groupPermissions)
+     - `demo-data.json`: Datos de demostración (companies, users, userGroups, userPermissions, families, articles, suppliers, customers)
+     - `test-data.json`: Datos para tests de integración
+   - Si la propiedad es requerida, asegúrate de que el dato de ejemplo en el JSON sea válido.
+   - El sistema de seeding es completamente idempotente: puedes ejecutarlo múltiples veces sin duplicar datos.
+   - **NO actualices** `SetupService.SeedInitialDataAsync()` ni `MasterDataSeeder.cs` para datos de prueba. Solo edita los JSON.
+   - El archivo `seed-data.sql` es legacy y no se usa actualmente.
 
 2. **Sincronización de Tests**:
    - Localiza los Data Builders o Object Factories en el proyecto de Testing y actualízalos para reflejar el cambio en la entidad.
@@ -95,3 +100,24 @@ Siempre que realices cambios en el código de la solución debes:
 6. Revisar y reportar los resultados de los tests.
 7. Si hay fallos relacionados con los cambios, corregirlos y repetir desde el paso 3.
 8. **Solo después de que la consola marque 'TODO VERDE' y las ventanas del navegador se desplieguen sin errores**, informar que la tarea está finalizada.
+
+## Reglas de Persistencia y Base de Datos
+
+### Migraciones Automáticas
+
+- Las migraciones se aplican automáticamente al arrancar la aplicación **solo en modo Development**.
+- El proceso es manejado por `DbInitializer.InitializeAsync()` en `Program.cs`.
+- En producción, las migraciones deben aplicarse manualmente mediante `dotnet ef database update`.
+
+### Sistema de Seeding desde JSON
+
+- **Ubicación de archivos JSON:** `Api/src/Infrastructure/Data/Seeds/`
+- **Archivos principales:**
+  - `master-data.json`: Datos maestros (languages, permissions, groups, groupPermissions)
+  - `demo-data.json`: Datos de demostración (companies, users, families, articles, suppliers, customers)
+  - `test-data.json`: Datos para tests de integración
+- **Idempotencia:** El sistema de seeding es completamente idempotente. Verifica existencia antes de insertar y restaura entidades soft-deleted si es necesario.
+- **Para añadir datos de prueba:** Edita directamente los archivos JSON. NO modifiques código C#.
+- **Proceso automático:** El seeding se ejecuta automáticamente después de aplicar migraciones en modo Development.
+- **Clase responsable:** `JsonDataSeeder` en `Infrastructure/Services/` procesa los archivos JSON.
+- **Inicializador:** `DbInitializer` en `Infrastructure/Data/` coordina migraciones y seeding.

@@ -87,9 +87,9 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// NOTA: La gestión de la base de datos (migraciones, creación de tablas, datos iniciales)
-// se realiza mediante scripts externos (inicializar-completo.bat, scripts SQL, etc.)
-// La API solo se conecta a la base de datos existente sin realizar verificaciones automáticas.
+// Inicializar base de datos (migraciones y seeding) solo en Development
+// Este proceso es idempotente y seguro de ejecutar múltiples veces
+await DbInitializer.InitializeAsync(app.Services, app.Environment.IsDevelopment());
 
 // Configurar el pipeline HTTP
 if (app.Environment.IsDevelopment())

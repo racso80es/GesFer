@@ -1,10 +1,16 @@
-using System.Diagnostics;
-using System;
+using GesFer.Infrastructure.Data;
+using GesFer.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Pomelo.EntityFrameworkCore.MySql;
 
 namespace GesFer.ConsoleApp.Services;
 
 /// <summary>
-/// Servicio para ejecutar scripts SQL de seed
+/// Servicio para ejecutar seeds de datos desde archivos JSON
+/// Utiliza el sistema profesionalizado de DbInitializer y JsonDataSeeder
 /// </summary>
 public class SeedService
 {
@@ -19,133 +25,234 @@ public class SeedService
     }
 
     /// <summary>
-    /// Ejecuta un script SQL en el contenedor MySQL
+    /// Crea un ServiceProvider configurado para la consola
     /// </summary>
-    private async Task<bool> ExecuteSqlScriptAsync(string scriptPath, string scriptName)
+    private IServiceProvider CreateServiceProvider()
     {
-        if (!File.Exists(scriptPath))
-        {
-            Console.WriteLine($"    ⚠ No se encontró el archivo {scriptName}");
-            Console.WriteLine($"       Buscado en: {scriptPath}");
-            _logService.WriteLog($"⚠ No se encontró el archivo {scriptName} en {scriptPath}");
-            return false;
-        }
+        var services = new ServiceCollection();
 
-        Console.WriteLine($"    Ejecutando {scriptName}...");
-        _logService.WriteLog($"Ejecutando script SQL: {scriptName}");
+        // Configuración
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Path.Combine(_rootPath, "Api", "src", "Api"))
+            .AddJsonFile("appsettings.json", optional: true)
+            .AddJsonFile("appsettings.Development.json", optional: true)
+            .AddEnvironmentVariables()
+            .Build();
+
+        // Connection string
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
+
+        // DbContext
+        services.AddDbContext<ApplicationDbContext>(options =>
+        {
+            options.UseMySql(
+                connectionString,
+                new MySqlServerVersion(new Version(8, 0, 0)),
+                mysqlOptions =>
+                {
+                    mysqlOptions.EnableStringComparisonTranslations();
+                    mysqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null);
+                });
+        });
+
+        // Servicios necesarios
+        services.AddLogging(builder =>
+        {
+            builder.AddConsole();
+            builder.SetMinimumLevel(LogLevel.Information);
+        });
+
+        // Servicios de infraestructura
+        services.AddScoped<JsonDataSeeder>();
+        services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
+
+        return services.BuildServiceProvider();
+    }
+
+    /// <summary>
+    /// Ejecuta el seeding de datos maestros desde JSON
+    /// </summary>
+    public async Task<bool> ExecuteMasterDataAsync()
+    {
+        Console.WriteLine("Insertando datos maestros desde JSON...");
+        _logService.WriteLog("Iniciando seeding de datos maestros desde JSON");
 
         try
         {
-            // Leer el contenido del script
-            var scriptContent = await File.ReadAllTextAsync(scriptPath);
-            _logService.WriteLog($"Tamaño del script: {scriptContent.Length} caracteres");
-
-            var processInfo = new ProcessStartInfo
+            var serviceProvider = CreateServiceProvider();
+            using (serviceProvider as IDisposable)
             {
-                FileName = "docker",
-                Arguments = "exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb",
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
+                using var scope = serviceProvider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var seeder = scope.ServiceProvider.GetRequiredService<JsonDataSeeder>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<SeedService>>();
 
-            _logService.WriteLog($"Comando: docker {processInfo.Arguments}");
-
-            using var process = Process.Start(processInfo);
-            if (process == null)
-            {
-                var errorMsg = $"No se pudo iniciar docker para ejecutar {scriptName}";
-                Console.WriteLine($"    ERROR: {errorMsg}");
-                _logService.WriteError(errorMsg);
-                return false;
-            }
-
-            // Escribir el script en la entrada estándar
-            await process.StandardInput.WriteAsync(scriptContent);
-            process.StandardInput.Close();
-
-            var outputTask = process.StandardOutput.ReadToEndAsync();
-            var errorTask = process.StandardError.ReadToEndAsync();
-
-            await process.WaitForExitAsync();
-
-            var output = await outputTask;
-            var error = await errorTask;
-
-            _logService.WriteProcessOutput($"mysql exec {scriptName}", output, false);
-            if (!string.IsNullOrWhiteSpace(error))
-            {
-                _logService.WriteProcessOutput($"mysql exec {scriptName}", error, true);
-            }
-            _logService.WriteLog($"Código de salida: {process.ExitCode}");
-
-            if (process.ExitCode == 0)
-            {
-                Console.WriteLine($"    ✓ {scriptName} ejecutado correctamente");
-                _logService.WriteLog($"{scriptName} ejecutado correctamente");
-                return true;
-            }
-            else
-            {
-                Console.WriteLine($"    ⚠ Error al ejecutar {scriptName} (puede que algunos datos ya existan)");
-                _logService.WriteLog($"⚠ Error al ejecutar {scriptName} (código: {process.ExitCode})");
-                return true; // No es crítico si algunos datos ya existen
+                var masterDataResult = await seeder.SeedMasterDataAsync();
+                
+                if (masterDataResult.Loaded)
+                {
+                    Console.WriteLine("    ✓ Datos maestros insertados correctamente");
+                    _logService.WriteLog("Datos maestros insertados correctamente desde JSON");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("    ⚠ No se pudieron cargar los datos maestros (archivo no encontrado)");
+                    _logService.WriteLog("Advertencia: No se pudieron cargar los datos maestros");
+                    return false;
+                }
             }
         }
         catch (Exception ex)
         {
-            var errorMsg = $"Excepción al ejecutar {scriptName}: {ex.Message}";
-            Console.WriteLine($"    ⚠ Error al ejecutar {scriptName} (puede que algunos datos ya existan): {ex.Message}");
+            var errorMsg = $"Error al insertar datos maestros: {ex.Message}";
+            Console.WriteLine($"    ⚠ {errorMsg}");
             _logService.WriteError(errorMsg, ex);
-            return true; // No es crítico
+            return false;
         }
     }
 
     /// <summary>
-    /// Ejecuta el script de datos maestros
-    /// </summary>
-    public async Task<bool> ExecuteMasterDataAsync()
-    {
-        Console.WriteLine("Insertando datos maestros...");
-        var scriptPath = Path.Combine(_rootPath, "Api", "scripts", "master-data.sql");
-        return await ExecuteSqlScriptAsync(scriptPath, "master-data.sql");
-    }
-
-    /// <summary>
-    /// Ejecuta el script de datos de muestra
+    /// Ejecuta el seeding de datos de muestra desde JSON
     /// </summary>
     public async Task<bool> ExecuteSampleDataAsync()
     {
-        Console.WriteLine("Insertando datos de muestra...");
-        var scriptPath = Path.Combine(_rootPath, "Api", "scripts", "sample-data.sql");
-        return await ExecuteSqlScriptAsync(scriptPath, "sample-data.sql");
+        Console.WriteLine("Insertando datos de muestra desde JSON...");
+        _logService.WriteLog("Iniciando seeding de datos de muestra desde JSON");
+
+        try
+        {
+            var serviceProvider = CreateServiceProvider();
+            using (serviceProvider as IDisposable)
+            {
+                using var scope = serviceProvider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var seeder = scope.ServiceProvider.GetRequiredService<JsonDataSeeder>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<SeedService>>();
+
+                var demoDataResult = await seeder.SeedDemoDataAsync();
+                
+                if (demoDataResult.Loaded)
+                {
+                    Console.WriteLine("    ✓ Datos de muestra insertados correctamente");
+                    _logService.WriteLog("Datos de muestra insertados correctamente desde JSON");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("    ⚠ No se pudieron cargar los datos de muestra (archivo no encontrado)");
+                    _logService.WriteLog("Advertencia: No se pudieron cargar los datos de muestra");
+                    return false;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            var errorMsg = $"Error al insertar datos de muestra: {ex.Message}";
+            Console.WriteLine($"    ⚠ {errorMsg}");
+            _logService.WriteError(errorMsg, ex);
+            return false;
+        }
     }
 
     /// <summary>
-    /// Ejecuta el script de datos de prueba
+    /// Ejecuta el seeding de datos de prueba desde JSON
     /// </summary>
     public async Task<bool> ExecuteTestDataAsync()
     {
-        Console.WriteLine("Insertando datos de prueba...");
-        var scriptPath = Path.Combine(_rootPath, "Api", "scripts", "test-data.sql");
-        return await ExecuteSqlScriptAsync(scriptPath, "test-data.sql");
+        Console.WriteLine("Insertando datos de prueba desde JSON...");
+        _logService.WriteLog("Iniciando seeding de datos de prueba desde JSON");
+
+        try
+        {
+            var serviceProvider = CreateServiceProvider();
+            using (serviceProvider as IDisposable)
+            {
+                using var scope = serviceProvider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var seeder = scope.ServiceProvider.GetRequiredService<JsonDataSeeder>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<SeedService>>();
+
+                await seeder.SeedTestDataAsync();
+                
+                Console.WriteLine("    ✓ Datos de prueba insertados correctamente");
+                _logService.WriteLog("Datos de prueba insertados correctamente desde JSON");
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            var errorMsg = $"Error al insertar datos de prueba: {ex.Message}";
+            Console.WriteLine($"    ⚠ {errorMsg}");
+            _logService.WriteError(errorMsg, ex);
+            return false;
+        }
     }
 
     /// <summary>
-    /// Ejecuta todos los scripts de seed en orden
+    /// Ejecuta todos los seeds desde JSON en orden
+    /// Utiliza el mismo sistema que DbInitializer para mantener consistencia
     /// </summary>
     public async Task<bool> ExecuteAllSeedsAsync()
     {
-        var masterResult = await ExecuteMasterDataAsync();
-        await Task.Delay(500); // Pequeña pausa entre scripts
+        Console.WriteLine("Insertando todos los datos iniciales desde JSON...");
+        _logService.WriteLog("Iniciando seeding completo desde archivos JSON");
 
-        var sampleResult = await ExecuteSampleDataAsync();
-        await Task.Delay(500);
+        try
+        {
+            var serviceProvider = CreateServiceProvider();
+            using (serviceProvider as IDisposable)
+            {
+                using var scope = serviceProvider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var seeder = scope.ServiceProvider.GetRequiredService<JsonDataSeeder>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<SeedService>>();
 
-        var testResult = await ExecuteTestDataAsync();
+                // Paso 1: Datos maestros
+                Console.WriteLine("    Cargando datos maestros...");
+                var masterDataResult = await seeder.SeedMasterDataAsync();
+                if (masterDataResult.Loaded)
+                {
+                    Console.WriteLine("    ✓ Datos maestros cargados");
+                }
+                else
+                {
+                    Console.WriteLine("    ⚠ No se pudieron cargar los datos maestros");
+                }
+                await Task.Delay(500);
 
-        return masterResult && sampleResult && testResult;
+                // Paso 2: Datos de demostración
+                Console.WriteLine("    Cargando datos de demostración...");
+                var demoDataResult = await seeder.SeedDemoDataAsync();
+                if (demoDataResult.Loaded)
+                {
+                    Console.WriteLine("    ✓ Datos de demostración cargados");
+                }
+                else
+                {
+                    Console.WriteLine("    ⚠ No se pudieron cargar los datos de demostración");
+                }
+                await Task.Delay(500);
+
+                // Nota: AdminUser ahora se carga desde master-data.json mediante JsonDataSeeder
+                // No es necesario crearlo manualmente aquí
+
+                Console.WriteLine("    ✓ Todos los datos iniciales insertados correctamente");
+                _logService.WriteLog("Seeding completo desde JSON ejecutado correctamente");
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            var errorMsg = $"Error al insertar datos iniciales: {ex.Message}";
+            Console.WriteLine($"    ⚠ {errorMsg}");
+            _logService.WriteError(errorMsg, ex);
+            return false;
+        }
     }
+
 }

@@ -128,17 +128,19 @@ Este script:
    dotnet ef database update --project ../Infrastructure/GesFer.Infrastructure.csproj
    ```
 
-3. **Ejecuta el script de datos de prueba:**
-   - Desde Adminer (http://localhost:8080):
-     - Conecta a MySQL (Servidor: `db`, Usuario: `scrapuser`, Contraseña: `scrappassword`, Base de datos: `ScrapDb`)
-     - Abre la pestaña "SQL command"
-     - Copia y pega el contenido de `scripts/seed-data.sql`
-     - Ejecuta
+3. **Carga los datos iniciales:**
+   - **Opción A (Recomendada)**: Ejecuta la opción 1 de la consola (Inicialización completa)
+     - Esto aplicará migraciones y cargará datos desde archivos JSON automáticamente
    
-   - O desde línea de comandos:
-   ```powershell
-   Get-Content scripts/seed-data.sql | docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb
-   ```
+   - **Opción B**: Inicia la API en modo Development
+     - Los datos se cargarán automáticamente mediante `DbInitializer`
+   
+   - **Opción C**: Usa la opción 6 de la consola (Ejecutar seeds de datos)
+     - Permite ejecutar solo datos maestros, solo datos de muestra, o todos los seeds
+   
+   **Nota**: Los datos ahora se gestionan mediante archivos JSON en `Api/src/Infrastructure/Data/Seeds/`
+   - `master-data.json` - Datos maestros (idiomas, permisos, grupos, usuario admin)
+   - `demo-data.json` - Datos de demostración (empresa, usuarios, clientes, proveedores)
 
 ## 🔍 Verificar Datos Insertados
 

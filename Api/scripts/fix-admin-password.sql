@@ -7,7 +7,7 @@
 USE ScrapDb;
 
 -- Hash BCrypt correcto para "admin123" (verificado)
--- Este hash debe coincidir con el usado en SetupService.cs y seed-data.sql
+-- Este hash debe coincidir con el usado en SetupService.cs y master-data.json
 SET @correct_hash = '$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW';
 
 -- Actualizar el hash del usuario admin si existe

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BCrypt.Net;
 
 class Program
@@ -9,7 +9,7 @@ class Program
         var hashFromSeed = "$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW";
         
         Console.WriteLine($"Verificando contraseña: {password}");
-        Console.WriteLine($"Hash del seed-data.sql: {hashFromSeed}");
+        Console.WriteLine($"Hash del master-data.json: {hashFromSeed}");
         
         var isValid = BCrypt.Net.BCrypt.Verify(password, hashFromSeed);
         Console.WriteLine($"¿El hash verifica correctamente? {isValid}");

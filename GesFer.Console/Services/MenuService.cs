@@ -1,5 +1,14 @@
 using System;
 using System.Diagnostics;
+using GesFer.Infrastructure.Data;
+using GesFer.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Pomelo.EntityFrameworkCore.MySql;
 
 namespace GesFer.ConsoleApp.Services;
 
@@ -261,12 +270,12 @@ public class MenuService
         await _migrationService.CreateInitialMigrationIfNeededAsync();
         Console.WriteLine();
 
-        // 8. Aplicar migraciones
-        Console.WriteLine("[8/9] Aplicando migraciones a la base de datos...");
-        if (!await _migrationService.ApplyMigrationsAsync())
+        // 8. Aplicar migraciones y ejecutar seeds usando DbInitializer (sistema profesionalizado)
+        Console.WriteLine("[8/9] Aplicando migraciones y cargando datos iniciales desde JSON...");
+        if (!await ExecuteDatabaseInitializationAsync())
         {
             Console.WriteLine();
-            Console.WriteLine("ERROR: No se pudieron aplicar las migraciones");
+            Console.WriteLine("ERROR: No se pudo inicializar la base de datos");
             Console.WriteLine();
             Console.WriteLine("Para más detalles, revisa el archivo de log:");
             Console.WriteLine($"  {_logService.GetLogFilePath()}");
@@ -275,22 +284,16 @@ public class MenuService
             Console.ReadKey();
             return true;
         }
-        await _migrationService.VerifyTablesCreatedAsync();
-        Console.WriteLine();
-
-        // 9. Ejecutar seeds
-        Console.WriteLine("[9/9] Insertando datos iniciales...");
-        await _seedService.ExecuteAllSeedsAsync();
         Console.WriteLine();
 
         Console.WriteLine("========================================");
         Console.WriteLine("   Inicialización completada");
         Console.WriteLine("========================================");
         Console.WriteLine();
-        Console.WriteLine("Datos iniciales insertados:");
+        Console.WriteLine("Datos iniciales insertados desde JSON:");
         Console.WriteLine("  ✓ Datos maestros (idiomas, permisos, grupos)");
         Console.WriteLine("  ✓ Datos de muestra (empresa, usuarios, clientes, proveedores)");
-        Console.WriteLine("  ✓ Datos de prueba (para tests de integración)");
+        Console.WriteLine("  ✓ Usuario administrativo (admin/admin123)");
         Console.WriteLine();
         Console.WriteLine("Credenciales de acceso:");
         Console.WriteLine("  Empresa: Empresa Demo");
@@ -306,6 +309,77 @@ public class MenuService
         Console.ReadKey();
 
         return true;
+    }
+
+    /// <summary>
+    /// Ejecuta la inicialización de base de datos usando DbInitializer (migraciones + seeding desde JSON)
+    /// </summary>
+    private async Task<bool> ExecuteDatabaseInitializationAsync()
+    {
+        try
+        {
+            // Usar el mismo sistema que la API para mantener consistencia
+            // Esto aplica migraciones y carga datos desde JSON de forma idempotente
+            var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
+            var apiPath = Path.Combine(rootPath, "Api", "src", "Api");
+
+            // Configurar servicios igual que la API
+            var services = new ServiceCollection();
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(apiPath)
+                .AddJsonFile("appsettings.json", optional: true)
+                .AddJsonFile("appsettings.Development.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
+
+            var connectionString = configuration.GetConnectionString("DefaultConnection")
+                ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseMySql(
+                    connectionString,
+                    new MySqlServerVersion(new Version(8, 0, 0)),
+                    mysqlOptions =>
+                    {
+                        mysqlOptions.EnableStringComparisonTranslations();
+                        mysqlOptions.EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null);
+                    });
+            });
+
+            services.AddLogging(builder =>
+            {
+                builder.AddConsole();
+                builder.SetMinimumLevel(LogLevel.Information);
+            });
+
+            services.AddScoped<JsonDataSeeder>();
+            services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
+
+            var serviceProvider = services.BuildServiceProvider();
+            using (serviceProvider as IDisposable)
+            {
+                // Usar DbInitializer para aplicar migraciones y seeding
+                // Forzamos isDevelopment=true para que siempre ejecute en la consola
+                Console.WriteLine();
+                await DbInitializer.InitializeAsync(serviceProvider, isDevelopment: true);
+                Console.WriteLine();
+                
+                _logService.WriteLog("Inicialización de base de datos completada usando DbInitializer");
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            var errorMsg = $"Error al inicializar base de datos: {ex.Message}";
+            Console.WriteLine($"    ⚠ {errorMsg}");
+            _logService.WriteError(errorMsg, ex);
+            return false;
+        }
     }
 
     /// <summary>

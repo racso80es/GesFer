@@ -8,6 +8,15 @@ using BCrypt.Net;
 namespace GesFer.Infrastructure.Services;
 
 /// <summary>
+/// Resultado de la carga de datos de seed
+/// </summary>
+public class SeedResult
+{
+    public bool Loaded { get; set; }
+    public List<string> Entities { get; set; } = new();
+}
+
+/// <summary>
 /// Servicio para cargar datos de seed desde archivos JSON
 /// </summary>
 public class JsonDataSeeder
@@ -24,81 +33,123 @@ public class JsonDataSeeder
         _logger = logger;
 
         // Obtener la ruta de los archivos de seed
+        // Prioridad: Data/Seeds/ (nueva ubicación profesional) > Seeds/ (legacy)
         var basePath = AppContext.BaseDirectory;
         var currentDir = new DirectoryInfo(basePath);
         
         string? foundPath = null;
         
-        // Buscar la carpeta Seeds
-        // Primero intentar en el directorio de salida (bin/Debug/net8.0/Seeds)
-        var seedsInOutput = Path.Combine(basePath, "Seeds");
-        if (Directory.Exists(seedsInOutput))
+        // Estrategia de búsqueda mejorada:
+        // 1. Buscar Data/Seeds/ en el directorio de salida (bin/Debug/net8.0/Data/Seeds o bin/Release/net8.0/Data/Seeds)
+        var dataSeedsInOutput = Path.Combine(basePath, "Data", "Seeds");
+        if (Directory.Exists(dataSeedsInOutput))
         {
-            foundPath = seedsInOutput;
+            foundPath = dataSeedsInOutput;
         }
         else
         {
-            // Buscar en Infrastructure/Seeds desde el código fuente
-            var infrastructureDir = currentDir;
-            while (infrastructureDir != null && foundPath == null)
+            // 2. Buscar desde la raíz del proyecto (funciona desde consola, API y tests)
+            // Estrategia: subir desde el directorio actual hasta encontrar GesFer.sln
+            var searchDir = currentDir;
+            var maxDepth = 10; // Limitar la profundidad de búsqueda para evitar bucles infinitos
+            var depth = 0;
+            
+            while (searchDir != null && foundPath == null && depth < maxDepth)
             {
-                var seedsPath = Path.Combine(infrastructureDir.FullName, "Seeds");
-                if (Directory.Exists(seedsPath))
-                {
-                    foundPath = seedsPath;
-                    break;
-                }
+                depth++;
                 
-                // Si estamos en bin/Debug/net8.0, subir a src/Infrastructure
-                if (infrastructureDir.Name == "net8.0" && infrastructureDir.Parent?.Name == "Debug")
+                // Buscar GesFer.sln en la raíz o en Api/GesFer.sln
+                var solutionPathRoot = Path.Combine(searchDir.FullName, "GesFer.sln");
+                var solutionPathApi = Path.Combine(searchDir.FullName, "Api", "GesFer.sln");
+                var hasSolution = File.Exists(solutionPathRoot) || File.Exists(solutionPathApi);
+                
+                if (hasSolution)
                 {
-                    var debugDir = infrastructureDir.Parent;
-                    var binDir = debugDir?.Parent;
-                    var netDir = binDir?.Parent;
-                    var projectDir = netDir?.Parent;
-                    
-                    if (projectDir != null)
+                    // Encontramos la raíz del proyecto (o Api/), buscar Api/src/Infrastructure/Data/Seeds
+                    // Si GesFer.sln está en Api/, entonces searchDir ya está en la raíz
+                    var rootDir = File.Exists(solutionPathRoot) ? searchDir.FullName : searchDir.FullName;
+                    var projectSeedsPath = Path.Combine(rootDir, "Api", "src", "Infrastructure", "Data", "Seeds");
+                    if (Directory.Exists(projectSeedsPath))
                     {
-                        var infrastructurePath = Path.Combine(
-                            projectDir.FullName, 
-                            "Infrastructure", 
-                            "Seeds");
-                        if (Directory.Exists(infrastructurePath))
-                        {
-                            foundPath = infrastructurePath;
-                            break;
-                        }
+                        foundPath = projectSeedsPath;
+                        break;
                     }
-                }
-                
-                infrastructureDir = infrastructureDir.Parent;
-                
-                // Fallback: buscar desde la raíz del proyecto
-                if (infrastructureDir != null && File.Exists(Path.Combine(infrastructureDir.FullName, "GesFer.sln")))
-                {
-                    var fallbackPath = Path.Combine(infrastructureDir.FullName, "Api", "src", "Infrastructure", "Seeds");
-                    if (Directory.Exists(fallbackPath))
+                    
+                    // También buscar en ubicación legacy
+                    var legacySeedsPath = Path.Combine(rootDir, "Api", "src", "Infrastructure", "Seeds");
+                    if (Directory.Exists(legacySeedsPath))
                     {
-                        foundPath = fallbackPath;
+                        foundPath = legacySeedsPath;
+                        _logger.LogWarning("Usando ubicación legacy de seeds: {Path}. Se recomienda migrar a Data/Seeds/", foundPath);
                         break;
                     }
                 }
+                
+                // Buscar directamente Api/src/Infrastructure/Data/Seeds desde cualquier punto
+                var directApiSeedsPath = Path.Combine(searchDir.FullName, "Api", "src", "Infrastructure", "Data", "Seeds");
+                if (Directory.Exists(directApiSeedsPath))
+                {
+                    foundPath = directApiSeedsPath;
+                    break;
+                }
+                
+                // Buscar directamente Api/src/Infrastructure/Seeds (legacy)
+                var directApiLegacySeedsPath = Path.Combine(searchDir.FullName, "Api", "src", "Infrastructure", "Seeds");
+                if (Directory.Exists(directApiLegacySeedsPath))
+                {
+                    foundPath = directApiLegacySeedsPath;
+                    _logger.LogWarning("Usando ubicación legacy de seeds: {Path}. Se recomienda migrar a Data/Seeds/", foundPath);
+                    break;
+                }
+                
+                // Buscar Data/Seeds/ relativo al directorio actual (por si estamos en Infrastructure/Data/Seeds)
+                var dataSeedsPath = Path.Combine(searchDir.FullName, "Data", "Seeds");
+                if (Directory.Exists(dataSeedsPath))
+                {
+                    foundPath = dataSeedsPath;
+                    break;
+                }
+                
+                // Buscar Seeds/ relativo al directorio actual (ubicación legacy)
+                var seedsPath = Path.Combine(searchDir.FullName, "Seeds");
+                if (Directory.Exists(seedsPath))
+                {
+                    foundPath = seedsPath;
+                    _logger.LogWarning("Usando ubicación legacy de seeds: {Path}. Se recomienda migrar a Data/Seeds/", foundPath);
+                    break;
+                }
+                
+                searchDir = searchDir.Parent;
             }
         }
         
-        _seedsPath = foundPath ?? Path.Combine(basePath, "Seeds");
+        _seedsPath = foundPath ?? Path.Combine(basePath, "Data", "Seeds");
+        
+        if (!Directory.Exists(_seedsPath))
+        {
+            _logger.LogWarning("No se encontró la carpeta de seeds. Se usará: {Path}", _seedsPath);
+            Console.WriteLine($"    ⚠ Advertencia: Carpeta de seeds no encontrada. Buscando en: {_seedsPath}");
+            Console.WriteLine($"    ⚠ BaseDirectory: {basePath}");
+        }
+        else
+        {
+            _logger.LogInformation("Carpeta de seeds encontrada: {Path}", _seedsPath);
+            Console.WriteLine($"    ✓ Carpeta de seeds encontrada: {_seedsPath}");
+        }
     }
 
     /// <summary>
     /// Carga todos los datos maestros desde master-data.json
     /// </summary>
-    public async Task SeedMasterDataAsync()
+    /// <returns>Resultado con información de entidades cargadas</returns>
+    public async Task<SeedResult> SeedMasterDataAsync()
     {
+        var result = new SeedResult();
         var filePath = Path.Combine(_seedsPath, "master-data.json");
         if (!File.Exists(filePath))
         {
             _logger.LogWarning("Archivo master-data.json no encontrado en {Path}", filePath);
-            return;
+            return result;
         }
 
         _logger.LogInformation("Cargando datos maestros desde {Path}", filePath);
@@ -111,46 +162,61 @@ public class JsonDataSeeder
         if (data == null)
         {
             _logger.LogError("No se pudo deserializar master-data.json");
-            return;
+            return result;
         }
 
         // Seed Languages
-        if (data.Languages != null)
+        if (data.Languages != null && data.Languages.Any())
         {
             await SeedLanguagesAsync(data.Languages);
+            result.Entities.Add($"{data.Languages.Count} Language(s)");
         }
 
         // Seed Permissions
-        if (data.Permissions != null)
+        if (data.Permissions != null && data.Permissions.Any())
         {
             await SeedPermissionsAsync(data.Permissions);
+            result.Entities.Add($"{data.Permissions.Count} Permission(s)");
         }
 
         // Seed Groups
-        if (data.Groups != null)
+        if (data.Groups != null && data.Groups.Any())
         {
             await SeedGroupsAsync(data.Groups);
+            result.Entities.Add($"{data.Groups.Count} Group(s)");
         }
 
         // Seed GroupPermissions
-        if (data.GroupPermissions != null)
+        if (data.GroupPermissions != null && data.GroupPermissions.Any())
         {
             await SeedGroupPermissionsAsync(data.GroupPermissions);
+            result.Entities.Add($"{data.GroupPermissions.Count} GroupPermission(s)");
         }
 
+        // Seed AdminUsers
+        if (data.AdminUsers != null && data.AdminUsers.Any())
+        {
+            await SeedAdminUsersAsync(data.AdminUsers);
+            result.Entities.Add($"{data.AdminUsers.Count} AdminUser(s)");
+        }
+
+        result.Loaded = true;
         _logger.LogInformation("Datos maestros cargados correctamente");
+        return result;
     }
 
     /// <summary>
     /// Carga datos de demostración desde demo-data.json
     /// </summary>
-    public async Task SeedDemoDataAsync()
+    /// <returns>Resultado con información de entidades cargadas</returns>
+    public async Task<SeedResult> SeedDemoDataAsync()
     {
+        var result = new SeedResult();
         var filePath = Path.Combine(_seedsPath, "demo-data.json");
         if (!File.Exists(filePath))
         {
             _logger.LogWarning("Archivo demo-data.json no encontrado en {Path}", filePath);
-            return;
+            return result;
         }
 
         _logger.LogInformation("Cargando datos de demostración desde {Path}", filePath);
@@ -163,58 +229,68 @@ public class JsonDataSeeder
         if (data == null)
         {
             _logger.LogError("No se pudo deserializar demo-data.json");
-            return;
+            return result;
         }
 
         // Seed Companies
-        if (data.Companies != null)
+        if (data.Companies != null && data.Companies.Any())
         {
             await SeedCompaniesAsync(data.Companies);
+            result.Entities.Add($"{data.Companies.Count} Company(ies)");
         }
 
         // Seed Users
-        if (data.Users != null)
+        if (data.Users != null && data.Users.Any())
         {
             await SeedUsersAsync(data.Users);
+            result.Entities.Add($"{data.Users.Count} User(s)");
         }
 
         // Seed UserGroups
-        if (data.UserGroups != null)
+        if (data.UserGroups != null && data.UserGroups.Any())
         {
             await SeedUserGroupsAsync(data.UserGroups);
+            result.Entities.Add($"{data.UserGroups.Count} UserGroup(s)");
         }
 
         // Seed UserPermissions
-        if (data.UserPermissions != null)
+        if (data.UserPermissions != null && data.UserPermissions.Any())
         {
             await SeedUserPermissionsAsync(data.UserPermissions);
+            result.Entities.Add($"{data.UserPermissions.Count} UserPermission(s)");
         }
 
         // Seed Families
-        if (data.Families != null)
+        if (data.Families != null && data.Families.Any())
         {
             await SeedFamiliesAsync(data.Families);
+            result.Entities.Add($"{data.Families.Count} Family(ies)");
         }
 
         // Seed Articles
-        if (data.Articles != null)
+        if (data.Articles != null && data.Articles.Any())
         {
             await SeedArticlesAsync(data.Articles);
+            result.Entities.Add($"{data.Articles.Count} Article(s)");
         }
 
         // Seed Suppliers
-        if (data.Suppliers != null)
+        if (data.Suppliers != null && data.Suppliers.Any())
         {
             await SeedSuppliersAsync(data.Suppliers);
+            result.Entities.Add($"{data.Suppliers.Count} Supplier(s)");
         }
 
         // Seed Customers
-        if (data.Customers != null)
+        if (data.Customers != null && data.Customers.Any())
         {
             await SeedCustomersAsync(data.Customers);
+            result.Entities.Add($"{data.Customers.Count} Customer(s)");
         }
 
+        result.Loaded = true;
         _logger.LogInformation("Datos de demostración cargados correctamente");
+        return result;
     }
 
     /// <summary>
@@ -702,6 +778,7 @@ public class JsonDataSeeder
         public List<PermissionSeed>? Permissions { get; set; }
         public List<GroupSeed>? Groups { get; set; }
         public List<GroupPermissionSeed>? GroupPermissions { get; set; }
+        public List<AdminUserSeed>? AdminUsers { get; set; }
     }
 
     private class DemoDataSeed
@@ -835,6 +912,80 @@ public class JsonDataSeeder
         public string? Address { get; set; }
         public string? Phone { get; set; }
         public string? Email { get; set; }
+    }
+
+    private class AdminUserSeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string? Email { get; set; }
+        public string Role { get; set; } = "Admin";
+    }
+
+    #endregion
+
+    #region AdminUser Seeding
+
+    private async Task SeedAdminUsersAsync(List<AdminUserSeed> adminUsers)
+    {
+        // Hash BCrypt fijo conocido para "admin123" (usado en tests y setup)
+        const string fixedAdminHash = "$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW";
+
+        foreach (var adminUserData in adminUsers)
+        {
+            var existing = await _context.AdminUsers
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(u => u.Username == adminUserData.Username);
+
+            // Usar hash fijo para "admin123" para mantener consistencia
+            string passwordHash;
+            if (adminUserData.Password == "admin123")
+            {
+                passwordHash = fixedAdminHash;
+            }
+            else
+            {
+                passwordHash = BCrypt.Net.BCrypt.HashPassword(adminUserData.Password);
+            }
+
+            if (existing == null)
+            {
+                var adminUser = new AdminUser
+                {
+                    Id = Guid.Parse(adminUserData.Id),
+                    Username = adminUserData.Username,
+                    PasswordHash = passwordHash,
+                    FirstName = adminUserData.FirstName,
+                    LastName = adminUserData.LastName,
+                    Email = adminUserData.Email,
+                    Role = adminUserData.Role,
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = true
+                };
+                _context.AdminUsers.Add(adminUser);
+            }
+            else if (existing.DeletedAt != null)
+            {
+                existing.DeletedAt = null;
+                existing.IsActive = true;
+                existing.PasswordHash = passwordHash;
+                existing.Role = adminUserData.Role;
+                existing.UpdatedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                // Actualizar hash si es necesario
+                if (existing.PasswordHash != passwordHash)
+                {
+                    existing.PasswordHash = passwordHash;
+                    existing.UpdatedAt = DateTime.UtcNow;
+                }
+            }
+        }
+        await _context.SaveChangesAsync();
     }
 
     #endregion
