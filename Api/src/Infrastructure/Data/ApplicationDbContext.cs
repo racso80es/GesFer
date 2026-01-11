@@ -40,6 +40,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<City> Cities => Set<City>();
     public DbSet<PostalCode> PostalCodes => Set<PostalCode>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<Log> Logs => Set<Log>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

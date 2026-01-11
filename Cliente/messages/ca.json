@@ -32,7 +32,9 @@
     "dashboard": "Panell de control",
     "users": "Usuaris",
     "companies": "Empreses",
-    "customers": "Clients"
+    "customers": "Clients",
+    "systems": "Sistemes",
+    "logs": "Logs"
   },
   "users": {
     "title": "Usuaris",
@@ -178,6 +180,46 @@
     "user": "Usuari",
     "permissions": "Permisos",
     "assignedPermissions": "{count} permisos assignats"
+  },
+  "logs": {
+    "title": "Logs del Sistema",
+    "subtitle": "Visualitza i filtra els logs del sistema",
+    "loading": "Carregant logs...",
+    "error": "Error en carregar els logs",
+    "filters": {
+      "fromDate": "Data des de",
+      "toDate": "Data fins a",
+      "level": "Nivell",
+      "allLevels": "Tots els nivells",
+      "debug": "Debug",
+      "information": "Information",
+      "warning": "Warning",
+      "error": "Error",
+      "fatal": "Fatal",
+      "apply": "Aplicar filtres",
+      "clear": "Netejar filtres"
+    },
+    "table": {
+      "timestamp": "Data/Hora",
+      "level": "Nivell",
+      "message": "Missatge",
+      "source": "Font",
+      "details": "Detalls",
+      "expand": "Expandir",
+      "collapse": "Col·lapsar",
+      "noLogs": "No hi ha logs disponibles",
+      "properties": "Propietats",
+      "exception": "Excepció",
+      "clientInfo": "Informació del Client"
+    },
+    "pagination": {
+      "page": "Pàgina",
+      "of": "de",
+      "showing": "Mostrant",
+      "to": "a",
+      "ofTotal": "de",
+      "results": "resultats"
+    }
   }
 }
 

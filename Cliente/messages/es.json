@@ -32,7 +32,9 @@
     "dashboard": "Panel de control",
     "users": "Usuarios",
     "companies": "Empresas",
-    "customers": "Clientes"
+    "customers": "Clientes",
+    "systems": "Sistemas",
+    "logs": "Logs"
   },
   "users": {
     "title": "Usuarios",
@@ -178,5 +180,45 @@
     "user": "Usuario",
     "permissions": "Permisos",
     "assignedPermissions": "{count} permisos asignados"
+  },
+  "logs": {
+    "title": "Logs del Sistema",
+    "subtitle": "Visualiza y filtra los logs del sistema",
+    "loading": "Cargando logs...",
+    "error": "Error al cargar los logs",
+    "filters": {
+      "fromDate": "Fecha desde",
+      "toDate": "Fecha hasta",
+      "level": "Nivel",
+      "allLevels": "Todos los niveles",
+      "debug": "Debug",
+      "information": "Information",
+      "warning": "Warning",
+      "error": "Error",
+      "fatal": "Fatal",
+      "apply": "Aplicar filtros",
+      "clear": "Limpiar filtros"
+    },
+    "table": {
+      "timestamp": "Fecha/Hora",
+      "level": "Nivel",
+      "message": "Mensaje",
+      "source": "Fuente",
+      "details": "Detalles",
+      "expand": "Expandir",
+      "collapse": "Colapsar",
+      "noLogs": "No hay logs disponibles",
+      "properties": "Propiedades",
+      "exception": "Excepción",
+      "clientInfo": "Información del Cliente"
+    },
+    "pagination": {
+      "page": "Página",
+      "of": "de",
+      "showing": "Mostrando",
+      "to": "a",
+      "ofTotal": "de",
+      "results": "resultados"
+    }
   }
 }
