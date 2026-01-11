@@ -445,15 +445,29 @@ public class JsonDataSeeder
 
     private async Task SeedUsersAsync(List<UserSeed> users)
     {
+        // Hash BCrypt fijo conocido para "admin123" (usado en tests y setup)
+        // Este hash debe coincidir con el usado en SetupService y TestDataSeeder
+        const string fixedAdminHash = "$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW";
+
         foreach (var userData in users)
         {
             var existing = await _context.Users
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(u => u.Id == Guid.Parse(userData.Id));
 
+            // Usar hash fijo para "admin123" para mantener consistencia con tests
+            string passwordHash;
+            if (userData.Password == "admin123")
+            {
+                passwordHash = fixedAdminHash;
+            }
+            else
+            {
+                passwordHash = BCrypt.Net.BCrypt.HashPassword(userData.Password);
+            }
+
             if (existing == null)
             {
-                var passwordHash = BCrypt.Net.BCrypt.HashPassword(userData.Password);
                 var user = new User
                 {
                     Id = Guid.Parse(userData.Id),
@@ -477,7 +491,7 @@ public class JsonDataSeeder
                 // Actualizar password hash si es necesario
                 if (!string.IsNullOrEmpty(userData.Password))
                 {
-                    existing.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userData.Password);
+                    existing.PasswordHash = passwordHash;
                 }
             }
         }

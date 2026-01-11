@@ -12,9 +12,7 @@ logs/
 *.temp
 *.bak
 *.backup
-temp_*.txt
-
-# Carpetas temporales de compilación .NET (todos los proyectos)
+temp_*.txt# Carpetas temporales de compilación .NET (todos los proyectos)
 **/bin/
 **/obj/
 **/[Bb]in/
@@ -49,9 +47,7 @@ Cliente/config/local.json
 Cliente/.env
 Cliente/.env.local
 Cliente/.env.production
-Cliente/.env.production.local
-
-# Archivos de secretos y variables de entorno
+Cliente/.env.production.local# Archivos de secretos y variables de entorno
 *.secrets.json
 *.secrets
 .env

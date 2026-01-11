@@ -32,7 +32,7 @@ public class SetupController : ControllerBase
     /// 3. Recrea los contenedores con docker-compose
     /// 4. Espera a que MySQL esté listo
     /// 5. Crea la base de datos y todas las tablas
-    /// 6. Inserta los datos iniciales desde seed-data.sql
+    /// 6. Inserta los datos iniciales desde archivos JSON (master-data.json, demo-data.json)
     /// 
     /// ⚠️ ADVERTENCIA: Este endpoint elimina todos los datos existentes en la base de datos.
     /// </remarks>

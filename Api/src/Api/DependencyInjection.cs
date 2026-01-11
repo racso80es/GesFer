@@ -64,6 +64,7 @@ public static class DependencyInjection
         services.AddScoped<IAdminJwtService, AdminJwtService>();
         services.AddScoped<IAuditLogService, AuditLogService>();
         services.AddScoped<IStockService, StockService>();
+        services.AddScoped<JsonDataSeeder>();
 
         // Command Handlers - Registro automático de todos los handlers
         RegisterCommandHandlers(services);

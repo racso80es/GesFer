@@ -17,8 +17,8 @@ services:
       TZ: UTC
     ports:
       - "3306:3306"
-    volumes:
-      - ./docker_data/mysql:/var/lib/mysql
+    # Sin volumen persistente - MySQL será efímero y se reseteará en cada docker-compose down
+    # Los datos se cargan desde JSON vía SetupService al inicializar
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
       interval: 10s

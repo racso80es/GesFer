@@ -1,6 +1,7 @@
 using FluentAssertions;
 using GesFer.Application.DTOs.Country;
 using GesFer.Application.DTOs.State;
+using GesFer.Domain.Entities;
 using GesFer.IntegrationTests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
@@ -40,16 +41,18 @@ public class StateControllerTests : IClassFixture<CustomWebApplicationFactory<Ge
         await context.Database.EnsureCreatedAsync();
         await TestDataSeeder.SeedTestDataAsync(context);
 
-        // Crear un país de prueba
-        var createCountryDto = new CreateCountryDto
+        // Crear un país de prueba directamente en la base de datos
+        var testCountry = new Country
         {
             Name = "España",
             Code = "ES",
-            LanguageId = _languageEs
+            LanguageId = _languageEs,
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
         };
-        var createCountryResponse = await _client.PostAsJsonAsync("/api/country", createCountryDto);
-        var createdCountry = await createCountryResponse.Content.ReadFromJsonAsync<CountryDto>();
-        _testCountryId = createdCountry!.Id;
+        context.Countries.Add(testCountry);
+        await context.SaveChangesAsync();
+        _testCountryId = testCountry.Id;
     }
 
     [Fact]

@@ -6624,3 +6624,515 @@ No hay token de autenticación, no se puede limpiar datos
     [Mobile Safari] › tests\e2e\usuarios.spec.ts:50:7 › Usuarios E2E Tests › debe abrir el modal de crear usuario 
     [Mobile Safari] › tests\e2e\usuarios.spec.ts:63:7 › Usuarios E2E Tests › debe navegar correctamente a la página de usuarios 
   15 passed (2.4m)
+
+Running 16 tests using 4 workers
+
+No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401
+    at ApiClient.login [90m(C:\Proyectos\GesFer\Cliente\[39mtests\api\api-client.ts:80:13[90m)[39m
+    at TestDataCleanup.setAuthToken [90m(C:\Proyectos\GesFer\Cliente\[39mtests\helpers\test-data-cleanup.ts:24:24[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mtests\api\auth-api.spec.ts:13:5
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:311:11
+    at TimeoutManager.withRunnable [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:309:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:228:5[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:478:11
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:477:9[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:314:9
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:310:7
+    at WorkerMain._runTest [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:295:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:199:11[90m)[39m
+    at process.<anonymous> [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m
+No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401
+    at ApiClient.login [90m(C:\Proyectos\GesFer\Cliente\[39mtests\api\api-client.ts:80:13[90m)[39m
+    at TestDataCleanup.setAuthToken [90m(C:\Proyectos\GesFer\Cliente\[39mtests\helpers\test-data-cleanup.ts:24:24[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mtests\api\auth-api.spec.ts:13:5
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:311:11
+    at TimeoutManager.withRunnable [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:309:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:228:5[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:478:11
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:477:9[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:314:9
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:310:7
+    at WorkerMain._runTest [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:295:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:199:11[90m)[39m
+    at process.<anonymous> [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m
+No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401
+    at ApiClient.login [90m(C:\Proyectos\GesFer\Cliente\[39mtests\api\api-client.ts:80:13[90m)[39m
+    at TestDataCleanup.setAuthToken [90m(C:\Proyectos\GesFer\Cliente\[39mtests\helpers\test-data-cleanup.ts:24:24[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mtests\api\auth-api.spec.ts:13:5
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:311:11
+    at TimeoutManager.withRunnable [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:309:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:228:5[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:478:11
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:477:9[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:314:9
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:310:7
+    at WorkerMain._runTest [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:295:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:199:11[90m)[39m
+    at process.<anonymous> [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m
+No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401
+    at ApiClient.login [90m(C:\Proyectos\GesFer\Cliente\[39mtests\api\api-client.ts:80:13[90m)[39m
+    at TestDataCleanup.setAuthToken [90m(C:\Proyectos\GesFer\Cliente\[39mtests\helpers\test-data-cleanup.ts:24:24[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mtests\api\auth-api.spec.ts:13:5
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:311:11
+    at TimeoutManager.withRunnable [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:309:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:228:5[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:478:11
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:477:9[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:314:9
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:310:7
+    at WorkerMain._runTest [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:295:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:199:11[90m)[39m
+    at process.<anonymous> [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m
+No hay token de autenticación, no se puede limpiar datos
+  ok  1 [chromium] › tests\api\auth-api.spec.ts:43:7 › API - Autenticación › debe validar campos requeridos en login (1.3s)
+No hay token de autenticación, no se puede limpiar datos
+No hay token de autenticación, no se puede limpiar datos
+No hay token de autenticación, no se puede limpiar datos
+  ok  2 [chromium] › tests\api\auth-api.spec.ts:33:7 › API - Autenticación › debe rechazar login con credenciales inválidas (1.4s)
+  x   5 [chromium] › tests\api\usuarios-api.spec.ts:29:7 › API - Usuarios › debe obtener lista de usuarios (42ms)
+  x   3 [chromium] › tests\api\auth-api.spec.ts:21:7 › API - Autenticación › debe realizar login exitoso y obtener información del usuario (1.4s)
+  x   4 [chromium] › tests\api\auth-api.spec.ts:53:7 › API - Autenticación › debe obtener información del usuario autenticado (1.4s)
+  x   6 [chromium] › tests\api\usuarios-api.spec.ts:40:7 › API - Usuarios › debe obtener un usuario por ID (14ms)
+  x   7 [chromium] › tests\api\usuarios-api.spec.ts:61:7 › API - Usuarios › debe crear un nuevo usuario y limpiarlo después (44ms)
+  x   8 [chromium] › tests\api\usuarios-api.spec.ts:91:7 › API - Usuarios › debe permitir acceso sin token de autenticación (API sin autenticación requerida) (44ms)
+  x   9 [chromium] › tests\api\usuarios-api.spec.ts:102:7 › API - Usuarios › debe validar formato de ID al obtener usuario (42ms)
+No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401
+    at ApiClient.login [90m(C:\Proyectos\GesFer\Cliente\[39mtests\api\api-client.ts:80:13[90m)[39m
+    at TestDataCleanup.setAuthToken [90m(C:\Proyectos\GesFer\Cliente\[39mtests\helpers\test-data-cleanup.ts:24:24[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mtests\e2e\usuario-completo.spec.ts:12:5
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:311:11
+    at TimeoutManager.withRunnable [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:309:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:228:5[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:478:11
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:477:9[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:314:9
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:310:7
+    at WorkerMain._runTest [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:295:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:199:11[90m)[39m
+    at process.<anonymous> [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m
+No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401
+    at ApiClient.login [90m(C:\Proyectos\GesFer\Cliente\[39mtests\api\api-client.ts:80:13[90m)[39m
+    at TestDataCleanup.setAuthToken [90m(C:\Proyectos\GesFer\Cliente\[39mtests\helpers\test-data-cleanup.ts:24:24[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mtests\e2e\login.spec.ts:21:5
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:311:11
+    at TimeoutManager.withRunnable [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:309:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:228:5[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:478:11
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:477:9[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:314:9
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:310:7
+    at WorkerMain._runTest [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:295:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:199:11[90m)[39m
+    at process.<anonymous> [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m
+No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401
+    at ApiClient.login [90m(C:\Proyectos\GesFer\Cliente\[39mtests\api\api-client.ts:80:13[90m)[39m
+    at TestDataCleanup.setAuthToken [90m(C:\Proyectos\GesFer\Cliente\[39mtests\helpers\test-data-cleanup.ts:24:24[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mtests\e2e\login.spec.ts:21:5
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:311:11
+    at TimeoutManager.withRunnable [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:309:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:228:5[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:478:11
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:477:9[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:314:9
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:310:7
+    at WorkerMain._runTest [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:295:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:199:11[90m)[39m
+    at process.<anonymous> [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m
+No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401
+    at ApiClient.login [90m(C:\Proyectos\GesFer\Cliente\[39mtests\api\api-client.ts:80:13[90m)[39m
+    at TestDataCleanup.setAuthToken [90m(C:\Proyectos\GesFer\Cliente\[39mtests\helpers\test-data-cleanup.ts:24:24[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mtests\e2e\login.spec.ts:21:5
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:311:11
+    at TimeoutManager.withRunnable [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:309:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:228:5[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:478:11
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:477:9[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:314:9
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:310:7
+    at WorkerMain._runTest [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:295:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:199:11[90m)[39m
+    at process.<anonymous> [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m
+No hay token de autenticación, no se puede limpiar datos
+No hay token de autenticación, no se puede limpiar datos
+  ok 12 [chromium] › tests\e2e\login.spec.ts:45:7 › Login E2E Tests › debe mostrar error con credenciales inválidas (8.7s)
+  ok 11 [chromium] › tests\e2e\login.spec.ts:58:7 › Login E2E Tests › debe validar campos requeridos (8.8s)
+No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401
+    at ApiClient.login [90m(C:\Proyectos\GesFer\Cliente\[39mtests\api\api-client.ts:80:13[90m)[39m
+    at TestDataCleanup.setAuthToken [90m(C:\Proyectos\GesFer\Cliente\[39mtests\helpers\test-data-cleanup.ts:24:24[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mtests\e2e\usuarios.spec.ts:13:5
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:311:11
+    at TimeoutManager.withRunnable [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:309:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:228:5[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:478:11
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:477:9[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:314:9
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:310:7
+    at WorkerMain._runTest [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:295:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:199:11[90m)[39m
+    at process.<anonymous> [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m
+No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401
+    at ApiClient.login [90m(C:\Proyectos\GesFer\Cliente\[39mtests\api\api-client.ts:80:13[90m)[39m
+    at TestDataCleanup.setAuthToken [90m(C:\Proyectos\GesFer\Cliente\[39mtests\helpers\test-data-cleanup.ts:24:24[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mtests\e2e\usuarios.spec.ts:13:5
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:311:11
+    at TimeoutManager.withRunnable [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:309:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:228:5[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:478:11
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:477:9[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:314:9
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:310:7
+    at WorkerMain._runTest [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:295:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:199:11[90m)[39m
+    at process.<anonymous> [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m
+No hay token de autenticación, no se puede limpiar datos
+No hay token de autenticación, no se puede limpiar datos
+  x  10 [chromium] › tests\e2e\login.spec.ts:28:7 › Login E2E Tests › debe realizar login exitoso con credenciales válidas (20.8s)
+  x  13 [chromium] › tests\e2e\usuario-completo.spec.ts:19:7 › Usuario Completo E2E Tests › debe completar el flujo completo de usuario (20.9s)
+No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401
+    at ApiClient.login [90m(C:\Proyectos\GesFer\Cliente\[39mtests\api\api-client.ts:80:13[90m)[39m
+    at TestDataCleanup.setAuthToken [90m(C:\Proyectos\GesFer\Cliente\[39mtests\helpers\test-data-cleanup.ts:24:24[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mtests\e2e\usuarios.spec.ts:13:5
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:311:11
+    at TimeoutManager.withRunnable [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\timeoutManager.js:67:14[90m)[39m
+    at TestInfoImpl._runWithTimeout [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:309:7[90m)[39m
+    at FixtureRunner.resolveParametersAndRunFunction [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\fixtureRunner.js:228:5[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:478:11
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at WorkerMain._runEachHooksForSuites [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:477:9[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:314:9
+    at TestInfoImpl._runAsStep [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\testInfo.js:300:7[90m)[39m
+    at [90mC:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:310:7
+    at WorkerMain._runTest [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:295:5[90m)[39m
+    at WorkerMain.runTestGroup [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\worker\workerMain.js:199:11[90m)[39m
+    at process.<anonymous> [90m(C:\Proyectos\GesFer\Cliente\[39mnode_modules\[4mplaywright[24m\lib\common\process.js:65:22[90m)[39m
+  x  14 [chromium] › tests\e2e\usuarios.spec.ts:33:7 › Usuarios E2E Tests › debe mostrar la lista de usuarios (21.2s)
+  x  15 [chromium] › tests\e2e\usuarios.spec.ts:47:7 › Usuarios E2E Tests › debe abrir el modal de crear usuario (21.2s)
+  x  16 [chromium] › tests\e2e\usuarios.spec.ts:60:7 › Usuarios E2E Tests › debe navegar correctamente a la página de usuarios (21.0s)
+
+
+  1) [chromium] › tests\api\auth-api.spec.ts:21:7 › API - Autenticación › debe realizar login exitoso y obtener información del usuario 
+
+    Error: Login failed: 401
+
+       at api\api-client.ts:100
+
+       98 |
+       99 |     if (!response.ok()) {
+    > 100 |       throw new Error(`Login failed: ${response.status()}`);
+          |             ^
+      101 |     }
+      102 |
+      103 |     return await response.json();
+        at ApiClient.loginFull (C:\Proyectos\GesFer\Cliente\tests\api\api-client.ts:100:13)
+        at C:\Proyectos\GesFer\Cliente\tests\api\auth-api.spec.ts:22:23
+
+  2) [chromium] › tests\api\auth-api.spec.ts:53:7 › API - Autenticación › debe obtener información del usuario autenticado 
+
+    Error: Login failed: 401
+
+       at api\api-client.ts:100
+
+       98 |
+       99 |     if (!response.ok()) {
+    > 100 |       throw new Error(`Login failed: ${response.status()}`);
+          |             ^
+      101 |     }
+      102 |
+      103 |     return await response.json();
+        at ApiClient.loginFull (C:\Proyectos\GesFer\Cliente\tests\api\api-client.ts:100:13)
+        at C:\Proyectos\GesFer\Cliente\tests\api\auth-api.spec.ts:56:23
+
+  3) [chromium] › tests\api\usuarios-api.spec.ts:29:7 › API - Usuarios › debe obtener lista de usuarios 
+
+    Error: Login failed: 401
+
+       at api\api-client.ts:80
+
+      78 |
+      79 |     if (!response.ok()) {
+    > 80 |       throw new Error(`Login failed: ${response.status()}`);
+         |             ^
+      81 |     }
+      82 |
+      83 |     const data = await response.json();
+        at ApiClient.login (C:\Proyectos\GesFer\Cliente\tests\api\api-client.ts:80:13)
+        at C:\Proyectos\GesFer\Cliente\tests\api\usuarios-api.spec.ts:17:17
+
+  4) [chromium] › tests\api\usuarios-api.spec.ts:40:7 › API - Usuarios › debe obtener un usuario por ID 
+
+    Error: Login failed: 401
+
+       at api\api-client.ts:80
+
+      78 |
+      79 |     if (!response.ok()) {
+    > 80 |       throw new Error(`Login failed: ${response.status()}`);
+         |             ^
+      81 |     }
+      82 |
+      83 |     const data = await response.json();
+        at ApiClient.login (C:\Proyectos\GesFer\Cliente\tests\api\api-client.ts:80:13)
+        at C:\Proyectos\GesFer\Cliente\tests\api\usuarios-api.spec.ts:17:17
+
+  5) [chromium] › tests\api\usuarios-api.spec.ts:61:7 › API - Usuarios › debe crear un nuevo usuario y limpiarlo después 
+
+    Error: Login failed: 401
+
+       at api\api-client.ts:80
+
+      78 |
+      79 |     if (!response.ok()) {
+    > 80 |       throw new Error(`Login failed: ${response.status()}`);
+         |             ^
+      81 |     }
+      82 |
+      83 |     const data = await response.json();
+        at ApiClient.login (C:\Proyectos\GesFer\Cliente\tests\api\api-client.ts:80:13)
+        at C:\Proyectos\GesFer\Cliente\tests\api\usuarios-api.spec.ts:17:17
+
+  6) [chromium] › tests\api\usuarios-api.spec.ts:91:7 › API - Usuarios › debe permitir acceso sin token de autenticación (API sin autenticación requerida) 
+
+    Error: Login failed: 401
+
+       at api\api-client.ts:80
+
+      78 |
+      79 |     if (!response.ok()) {
+    > 80 |       throw new Error(`Login failed: ${response.status()}`);
+         |             ^
+      81 |     }
+      82 |
+      83 |     const data = await response.json();
+        at ApiClient.login (C:\Proyectos\GesFer\Cliente\tests\api\api-client.ts:80:13)
+        at C:\Proyectos\GesFer\Cliente\tests\api\usuarios-api.spec.ts:17:17
+
+  7) [chromium] › tests\api\usuarios-api.spec.ts:102:7 › API - Usuarios › debe validar formato de ID al obtener usuario 
+
+    Error: Login failed: 401
+
+       at api\api-client.ts:80
+
+      78 |
+      79 |     if (!response.ok()) {
+    > 80 |       throw new Error(`Login failed: ${response.status()}`);
+         |             ^
+      81 |     }
+      82 |
+      83 |     const data = await response.json();
+        at ApiClient.login (C:\Proyectos\GesFer\Cliente\tests\api\api-client.ts:80:13)
+        at C:\Proyectos\GesFer\Cliente\tests\api\usuarios-api.spec.ts:17:17
+
+  8) [chromium] › tests\e2e\login.spec.ts:28:7 › Login E2E Tests › debe realizar login exitoso con credenciales válidas 
+
+    [31mTest timeout of 20000ms exceeded.[39m
+
+    Error: page.waitForFunction: Test timeout of 20000ms exceeded.
+
+       at page-objects\LoginPage.ts:52
+
+      50 |   async verifyLoginSuccess() {
+      51 |     // Esperar a que el localStorage tenga el usuario (indica que el login se completó)
+    > 52 |     await this.page.waitForFunction(() => {
+         |                     ^
+      53 |       return localStorage.getItem('auth_user') !== null;
+      54 |     }, { timeout: 5000 });
+      55 |     
+        at LoginPage.verifyLoginSuccess (C:\Proyectos\GesFer\Cliente\tests\page-objects\LoginPage.ts:52:21)
+        at C:\Proyectos\GesFer\Cliente\tests\e2e\login.spec.ts:39:21
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\e2e-login-Login-E2E-Tests--361ea-so-con-credenciales-válidas-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\e2e-login-Login-E2E-Tests--361ea-so-con-credenciales-válidas-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\e2e-login-Login-E2E-Tests--361ea-so-con-credenciales-válidas-chromium\error-context.md
+
+  9) [chromium] › tests\e2e\usuario-completo.spec.ts:19:7 › Usuario Completo E2E Tests › debe completar el flujo completo de usuario 
+
+    [31mTest timeout of 20000ms exceeded.[39m
+
+    Error: page.waitForFunction: Test timeout of 20000ms exceeded.
+
+       at page-objects\LoginPage.ts:52
+
+      50 |   async verifyLoginSuccess() {
+      51 |     // Esperar a que el localStorage tenga el usuario (indica que el login se completó)
+    > 52 |     await this.page.waitForFunction(() => {
+         |                     ^
+      53 |       return localStorage.getItem('auth_user') !== null;
+      54 |     }, { timeout: 5000 });
+      55 |     
+        at LoginPage.verifyLoginSuccess (C:\Proyectos\GesFer\Cliente\tests\page-objects\LoginPage.ts:52:21)
+        at C:\Proyectos\GesFer\Cliente\tests\e2e\usuario-completo.spec.ts:26:21
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\e2e-usuario-completo-Usuar-4b1d8-l-flujo-completo-de-usuario-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\e2e-usuario-completo-Usuar-4b1d8-l-flujo-completo-de-usuario-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\e2e-usuario-completo-Usuar-4b1d8-l-flujo-completo-de-usuario-chromium\error-context.md
+
+  10) [chromium] › tests\e2e\usuarios.spec.ts:33:7 › Usuarios E2E Tests › debe mostrar la lista de usuarios 
+
+    [31mTest timeout of 20000ms exceeded while running "beforeEach" hook.[39m
+
+       9 |   const createdUserIds: string[] = [];
+      10 |
+    > 11 |   test.beforeEach(async ({ page, request }) => {
+         |        ^
+      12 |     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
+      13 |     await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
+      14 |
+        at C:\Proyectos\GesFer\Cliente\tests\e2e\usuarios.spec.ts:11:8
+
+    Error: page.waitForFunction: Test timeout of 20000ms exceeded.
+
+       at page-objects\LoginPage.ts:52
+
+      50 |   async verifyLoginSuccess() {
+      51 |     // Esperar a que el localStorage tenga el usuario (indica que el login se completó)
+    > 52 |     await this.page.waitForFunction(() => {
+         |                     ^
+      53 |       return localStorage.getItem('auth_user') !== null;
+      54 |     }, { timeout: 5000 });
+      55 |     
+        at LoginPage.verifyLoginSuccess (C:\Proyectos\GesFer\Cliente\tests\page-objects\LoginPage.ts:52:21)
+        at C:\Proyectos\GesFer\Cliente\tests\e2e\usuarios.spec.ts:19:21
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\e2e-usuarios-Usuarios-E2E--290f2-ostrar-la-lista-de-usuarios-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\e2e-usuarios-Usuarios-E2E--290f2-ostrar-la-lista-de-usuarios-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\e2e-usuarios-Usuarios-E2E--290f2-ostrar-la-lista-de-usuarios-chromium\error-context.md
+
+  11) [chromium] › tests\e2e\usuarios.spec.ts:47:7 › Usuarios E2E Tests › debe abrir el modal de crear usuario 
+
+    [31mTest timeout of 20000ms exceeded while running "beforeEach" hook.[39m
+
+       9 |   const createdUserIds: string[] = [];
+      10 |
+    > 11 |   test.beforeEach(async ({ page, request }) => {
+         |        ^
+      12 |     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
+      13 |     await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
+      14 |
+        at C:\Proyectos\GesFer\Cliente\tests\e2e\usuarios.spec.ts:11:8
+
+    Error: page.waitForFunction: Test timeout of 20000ms exceeded.
+
+       at page-objects\LoginPage.ts:52
+
+      50 |   async verifyLoginSuccess() {
+      51 |     // Esperar a que el localStorage tenga el usuario (indica que el login se completó)
+    > 52 |     await this.page.waitForFunction(() => {
+         |                     ^
+      53 |       return localStorage.getItem('auth_user') !== null;
+      54 |     }, { timeout: 5000 });
+      55 |     
+        at LoginPage.verifyLoginSuccess (C:\Proyectos\GesFer\Cliente\tests\page-objects\LoginPage.ts:52:21)
+        at C:\Proyectos\GesFer\Cliente\tests\e2e\usuarios.spec.ts:19:21
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\e2e-usuarios-Usuarios-E2E--3303f-r-el-modal-de-crear-usuario-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\e2e-usuarios-Usuarios-E2E--3303f-r-el-modal-de-crear-usuario-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\e2e-usuarios-Usuarios-E2E--3303f-r-el-modal-de-crear-usuario-chromium\error-context.md
+
+  12) [chromium] › tests\e2e\usuarios.spec.ts:60:7 › Usuarios E2E Tests › debe navegar correctamente a la página de usuarios 
+
+    [31mTest timeout of 20000ms exceeded while running "beforeEach" hook.[39m
+
+       9 |   const createdUserIds: string[] = [];
+      10 |
+    > 11 |   test.beforeEach(async ({ page, request }) => {
+         |        ^
+      12 |     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
+      13 |     await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
+      14 |
+        at C:\Proyectos\GesFer\Cliente\tests\e2e\usuarios.spec.ts:11:8
+
+    Error: page.waitForFunction: Test timeout of 20000ms exceeded.
+
+       at page-objects\LoginPage.ts:52
+
+      50 |   async verifyLoginSuccess() {
+      51 |     // Esperar a que el localStorage tenga el usuario (indica que el login se completó)
+    > 52 |     await this.page.waitForFunction(() => {
+         |                     ^
+      53 |       return localStorage.getItem('auth_user') !== null;
+      54 |     }, { timeout: 5000 });
+      55 |     
+        at LoginPage.verifyLoginSuccess (C:\Proyectos\GesFer\Cliente\tests\page-objects\LoginPage.ts:52:21)
+        at C:\Proyectos\GesFer\Cliente\tests\e2e\usuarios.spec.ts:19:21
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\e2e-usuarios-Usuarios-E2E--53071-nte-a-la-página-de-usuarios-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\e2e-usuarios-Usuarios-E2E--53071-nte-a-la-página-de-usuarios-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\e2e-usuarios-Usuarios-E2E--53071-nte-a-la-página-de-usuarios-chromium\error-context.md
+
+  12 failed
+    [chromium] › tests\api\auth-api.spec.ts:21:7 › API - Autenticación › debe realizar login exitoso y obtener información del usuario 
+    [chromium] › tests\api\auth-api.spec.ts:53:7 › API - Autenticación › debe obtener información del usuario autenticado 
+    [chromium] › tests\api\usuarios-api.spec.ts:29:7 › API - Usuarios › debe obtener lista de usuarios 
+    [chromium] › tests\api\usuarios-api.spec.ts:40:7 › API - Usuarios › debe obtener un usuario por ID 
+    [chromium] › tests\api\usuarios-api.spec.ts:61:7 › API - Usuarios › debe crear un nuevo usuario y limpiarlo después 
+    [chromium] › tests\api\usuarios-api.spec.ts:91:7 › API - Usuarios › debe permitir acceso sin token de autenticación (API sin autenticación requerida) 
+    [chromium] › tests\api\usuarios-api.spec.ts:102:7 › API - Usuarios › debe validar formato de ID al obtener usuario 
+    [chromium] › tests\e2e\login.spec.ts:28:7 › Login E2E Tests › debe realizar login exitoso con credenciales válidas 
+    [chromium] › tests\e2e\usuario-completo.spec.ts:19:7 › Usuario Completo E2E Tests › debe completar el flujo completo de usuario 
+    [chromium] › tests\e2e\usuarios.spec.ts:33:7 › Usuarios E2E Tests › debe mostrar la lista de usuarios 
+    [chromium] › tests\e2e\usuarios.spec.ts:47:7 › Usuarios E2E Tests › debe abrir el modal de crear usuario 
+    [chromium] › tests\e2e\usuarios.spec.ts:60:7 › Usuarios E2E Tests › debe navegar correctamente a la página de usuarios 
+  4 passed (47.4s)
+
+[36m  Serving HTML report at http://localhost:9323. Press Ctrl+C to quit.[39m
+^C

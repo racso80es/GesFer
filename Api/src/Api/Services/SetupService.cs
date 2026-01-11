@@ -1,5 +1,6 @@
 using GesFer.Domain.Entities;
 using GesFer.Infrastructure.Data;
+using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Text;
@@ -72,8 +73,34 @@ public class SetupService : ISetupService
                 result.Steps.Add("   ✓ Volúmenes limpiados");
             }
 
-            // Paso 3: Recrear contenedores
-            result.Steps.Add("3. Creando contenedores Docker...");
+            // Paso 3: Eliminar directorio de datos de MySQL (bind mount)
+            result.Steps.Add("3. Eliminando datos persistentes de MySQL...");
+            _logger.LogInformation("Eliminando directorio docker_data/mysql...");
+            
+            var mysqlDataPath = Path.Combine(_projectRoot, "docker_data", "mysql");
+            if (Directory.Exists(mysqlDataPath))
+            {
+                try
+                {
+                    Directory.Delete(mysqlDataPath, recursive: true);
+                    result.Steps.Add("   ✓ Directorio de datos de MySQL eliminado");
+                    _logger.LogInformation("Directorio {Path} eliminado correctamente", mysqlDataPath);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "No se pudo eliminar el directorio {Path}. Puede estar en uso. Error: {Error}", mysqlDataPath, ex.Message);
+                    result.Steps.Add($"   ⚠ Advertencia: No se pudo eliminar el directorio de datos: {ex.Message}");
+                    // Continuar de todas formas, MySQL sobrescribirá los datos al iniciar
+                }
+            }
+            else
+            {
+                result.Steps.Add("   ✓ El directorio de datos de MySQL no existe (limpio)");
+                _logger.LogInformation("El directorio {Path} no existe, MySQL se creará limpio", mysqlDataPath);
+            }
+
+            // Paso 4: Recrear contenedores
+            result.Steps.Add("4. Creando contenedores Docker...");
             _logger.LogInformation("Creando contenedores Docker...");
             
             var upResult = await ExecuteDockerCommandAsync("docker-compose up -d");
@@ -86,8 +113,8 @@ public class SetupService : ISetupService
             }
             result.Steps.Add("   ✓ Contenedores creados");
 
-            // Paso 4: Esperar a que MySQL esté listo
-            result.Steps.Add("4. Esperando a que MySQL esté listo...");
+            // Paso 5: Esperar a que MySQL esté listo
+            result.Steps.Add("5. Esperando a que MySQL esté listo...");
             _logger.LogInformation("Esperando a que MySQL esté listo...");
             
             var mysqlReady = await WaitForMySqlReadyAsync(TimeSpan.FromMinutes(2));
@@ -100,45 +127,46 @@ public class SetupService : ISetupService
             }
             result.Steps.Add("   ✓ MySQL está listo");
 
-            // Paso 5: Crear base de datos
-            result.Steps.Add("5. Creando base de datos...");
+            // Paso 6: Crear base de datos
+            result.Steps.Add("6. Creando base de datos...");
             _logger.LogInformation("Creando base de datos...");
             
             await CreateDatabaseAsync();
             result.Steps.Add("   ✓ Base de datos creada");
 
-            // Paso 6: Insertar idiomas maestros
-            result.Steps.Add("6. Insertando idiomas maestros...");
-            _logger.LogInformation("Insertando idiomas maestros...");
+            // Paso 7: Insertar datos maestros desde JSON (idiomas, permisos, grupos)
+            result.Steps.Add("7. Insertando datos maestros desde JSON...");
+            _logger.LogInformation("Insertando datos maestros desde JSON...");
             
             try
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
+                    var jsonDataSeeder = scope.ServiceProvider.GetRequiredService<JsonDataSeeder>();
+                    await jsonDataSeeder.SeedMasterDataAsync();
+                    result.Steps.Add("   ✓ Datos maestros insertados desde JSON");
+
+                    // Paso 8: Insertar datos maestros de España (geográficos)
+                    result.Steps.Add("8. Insertando datos maestros de España (geográficos)...");
+                    _logger.LogInformation("Insertando datos maestros de España...");
                     var masterDataSeeder = new GesFer.Infrastructure.Services.MasterDataSeeder(
                         scope.ServiceProvider.GetRequiredService<ApplicationDbContext>(),
                         scope.ServiceProvider.GetRequiredService<ILogger<GesFer.Infrastructure.Services.MasterDataSeeder>>(),
                         scope.ServiceProvider.GetRequiredService<ISequentialGuidGenerator>());
-                    await masterDataSeeder.SeedLanguagesAsync();
-                    result.Steps.Add("   ✓ Idiomas maestros insertados");
-
-                    // Paso 7: Insertar datos maestros de España
-                    result.Steps.Add("7. Insertando datos maestros de España...");
-                    _logger.LogInformation("Insertando datos maestros de España...");
                     await masterDataSeeder.SeedSpainDataAsync();
                 }
                 result.Steps.Add("   ✓ Datos maestros de España insertados");
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Error al insertar datos maestros de España");
+                _logger.LogWarning(ex, "Error al insertar datos maestros");
                 result.Errors.Add($"Error al insertar datos maestros: {ex.Message}");
                 result.Steps.Add($"   ⚠ Advertencia: Error al insertar datos maestros: {ex.Message}");
             }
 
-            // Paso 8: Insertar datos iniciales (incluyendo usuarios)
-            result.Steps.Add("8. Insertando datos iniciales (empresa, grupos, permisos, usuarios, proveedores, clientes)...");
-            _logger.LogInformation("Insertando datos iniciales...");
+            // Paso 9: Insertar datos iniciales (incluyendo usuarios) desde JSON
+            result.Steps.Add("9. Insertando datos iniciales desde JSON (empresa, grupos, permisos, usuarios, proveedores, clientes)...");
+            _logger.LogInformation("Insertando datos iniciales desde JSON...");
             
             var seedResult = await SeedInitialDataAsync();
             if (!seedResult.Success)
@@ -152,8 +180,8 @@ public class SetupService : ISetupService
                 result.Steps.Add("   ✓ Datos iniciales insertados (empresa, grupos, permisos, usuarios, proveedores, clientes)");
             }
 
-            // Paso 9: Verificar que los usuarios se insertaron correctamente
-            result.Steps.Add("9. Verificando usuarios insertados...");
+            // Paso 10: Verificar que los usuarios se insertaron correctamente
+            result.Steps.Add("10. Verificando usuarios insertados...");
             _logger.LogInformation("Verificando usuarios insertados...");
             
             var verifyResult = await VerifyUsersInsertedAsync();
@@ -291,118 +319,43 @@ public class SetupService : ISetupService
             }
 
             // Para bases de datos relacionales (MySQL)
-            logger.LogInformation("Eliminando tabla de migraciones si existe para permitir EnsureCreated...");
+            // Usar EnsureDeleted para eliminar completamente la base de datos antes de crearla
+            // Esto garantiza que no queden datos residuales
+            logger.LogInformation("Eliminando base de datos completamente para empezar limpio...");
             try
             {
-                await context.Database.ExecuteSqlRawAsync("DROP TABLE IF EXISTS __EFMigrationsHistory;");
-                logger.LogInformation("Tabla de migraciones eliminada (si existía)");
+                await context.Database.EnsureDeletedAsync();
+                logger.LogInformation("Base de datos eliminada completamente");
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, "No se pudo eliminar la tabla de migraciones, continuando...");
-            }
-
-            // Eliminar todas las tablas existentes para empezar limpio (en orden inverso de dependencias)
-            logger.LogInformation("Eliminando todas las tablas existentes si existen...");
-            var tablesToDrop = new[] { 
-                "SalesDeliveryNoteLines", "SalesDeliveryNotes", "SalesInvoices",
-                "PurchaseDeliveryNoteLines", "PurchaseDeliveryNotes", "PurchaseInvoices",
-                "TariffItems", "Articles", "Suppliers", "Customers",
-                "UserGroups", "UserPermissions", "GroupPermissions", 
-                "Users", "Groups", "Permissions", "Families", "Tariffs", "Companies",
-                "PostalCodes", "Cities", "States", "Countries", "Languages"
-            };
-            foreach (var tableName in tablesToDrop)
-            {
+                logger.LogWarning(ex, "No se pudo eliminar la base de datos, continuando... Error: {Error}", ex.Message);
+                // Intentar eliminar la base de datos manualmente como fallback
                 try
                 {
-                    await context.Database.ExecuteSqlRawAsync($"DROP TABLE IF EXISTS `{tableName}`;");
-                    logger.LogDebug("Tabla {TableName} eliminada (si existía)", tableName);
+                    await context.Database.ExecuteSqlRawAsync("DROP DATABASE IF EXISTS ScrapDb;");
+                    await context.Database.ExecuteSqlRawAsync("CREATE DATABASE ScrapDb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                    logger.LogInformation("Base de datos recreada manualmente");
                 }
-                catch (Exception ex)
+                catch (Exception fallbackEx)
                 {
-                    logger.LogWarning(ex, "No se pudo eliminar la tabla {TableName}, continuando...", tableName);
-                }
-            }
-            logger.LogInformation("Todas las tablas eliminadas (si existían)");
-
-            // Crear la base de datos desde cero
-            logger.LogInformation("Ejecutando EnsureCreated para crear todas las tablas...");
-            await context.Database.EnsureCreatedAsync();
-            logger.LogInformation("EnsureCreated completado");
-
-            // Esperar un momento para asegurar que todas las tablas se crearon
-            await Task.Delay(2000);
-
-            // Verificar que todas las tablas principales existan
-            logger.LogInformation("Verificando que todas las tablas se crearon correctamente...");
-            var tablesToCheck = new[] { 
-                "Languages", "Countries", "States", "Cities", "PostalCodes",
-                "Companies", "Users", "Groups", "Permissions", 
-                "UserGroups", "UserPermissions", "GroupPermissions",
-                "Families", "Articles", "Tariffs", "TariffItems",
-                "Suppliers", "Customers",
-                "PurchaseDeliveryNotes", "PurchaseDeliveryNoteLines", "PurchaseInvoices",
-                "SalesDeliveryNotes", "SalesDeliveryNoteLines", "SalesInvoices"
-            };
-            var missingTables = new List<string>();
-            
-            foreach (var tableName in tablesToCheck)
-            {
-                try
-                {
-                    // Intentar hacer una consulta simple a la tabla para verificar que existe
-                    // Esto es más confiable que consultar INFORMATION_SCHEMA
-                    await context.Database.ExecuteSqlRawAsync($"SELECT 1 FROM `{tableName}` LIMIT 1");
-                    logger.LogInformation("Tabla {TableName} verificada correctamente", tableName);
-                }
-                catch
-                {
-                    // Si falla, intentar verificar con INFORMATION_SCHEMA como respaldo
-                    try
-                    {
-                        var tableExists = await context.Database.SqlQueryRaw<int>(
-                            "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = {0}",
-                            tableName)
-                            .FirstOrDefaultAsync();
-                        
-                        if (tableExists > 0)
-                        {
-                            logger.LogInformation("Tabla {TableName} existe (verificada con INFORMATION_SCHEMA)", tableName);
-                        }
-                        else
-                        {
-                            missingTables.Add(tableName);
-                            logger.LogWarning("La tabla {TableName} no existe después de EnsureCreated", tableName);
-                        }
-                    }
-                    catch (Exception schemaEx)
-                    {
-                        // Si también falla INFORMATION_SCHEMA, asumir que la tabla no existe
-                        missingTables.Add(tableName);
-                        logger.LogWarning(schemaEx, "Error al verificar la tabla {TableName} con ambos métodos", tableName);
-                    }
+                    logger.LogWarning(fallbackEx, "No se pudo recrear la base de datos manualmente");
+                    // Continuar de todas formas
                 }
             }
 
-            // Solo lanzar excepción si realmente faltan tablas críticas
-            // Las tablas de relaciones pueden crearse después si las principales existen
-            var criticalTables = new[] { "Companies", "Users", "Groups", "Permissions" };
-            var missingCriticalTables = missingTables.Where(t => criticalTables.Contains(t)).ToList();
-            
-            if (missingCriticalTables.Any())
+            // Aplicar migraciones para crear la estructura de la base de datos
+            logger.LogInformation("Aplicando migraciones para crear la estructura de la base de datos...");
+            try
             {
-                logger.LogError("Las siguientes tablas críticas no se crearon: {MissingTables}", string.Join(", ", missingCriticalTables));
-                throw new InvalidOperationException($"No se pudieron crear las siguientes tablas críticas: {string.Join(", ", missingCriticalTables)}");
+                await context.Database.MigrateAsync();
+                logger.LogInformation("Migraciones aplicadas correctamente");
             }
-            
-            if (missingTables.Any())
+            catch (Exception ex)
             {
-                logger.LogWarning("Las siguientes tablas no se pudieron verificar (pero pueden existir): {MissingTables}", string.Join(", ", missingTables));
-                // No lanzar excepción, solo advertir, ya que las tablas pueden existir pero la verificación falló
+                logger.LogError(ex, "Error al aplicar migraciones: {Error}", ex.Message);
+                throw new InvalidOperationException($"No se pudieron aplicar las migraciones: {ex.Message}", ex);
             }
-
-            logger.LogInformation("Base de datos creada y todas las tablas verificadas correctamente");
         }
         catch (Exception ex)
         {
@@ -418,302 +371,26 @@ public class SetupService : ISetupService
             using var scope = _serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<SetupService>>();
+            var jsonDataSeeder = scope.ServiceProvider.GetRequiredService<JsonDataSeeder>();
 
-            // Verificar que las tablas críticas existan antes de intentar insertar datos (solo para bases de datos relacionales)
-            if (context.Database.IsRelational())
-            {
-                logger.LogInformation("Verificando que las tablas críticas existan antes de insertar datos...");
-                var requiredTables = new[] { "Companies", "Users", "Groups", "Permissions", "UserGroups", "UserPermissions", "GroupPermissions" };
-                var missingTables = new List<string>();
+            // Los datos maestros ya fueron cargados en el paso 6, pero los volvemos a cargar por seguridad
+            logger.LogInformation("Asegurando que los datos maestros estén cargados desde JSON...");
+            await jsonDataSeeder.SeedMasterDataAsync();
+            logger.LogInformation("Datos maestros verificados desde JSON");
 
-                foreach (var tableName in requiredTables)
-                {
-                    try
-                    {
-                        // Intentar hacer una consulta simple a la tabla para verificar que existe
-                        await context.Database.ExecuteSqlRawAsync($"SELECT 1 FROM `{tableName}` LIMIT 1");
-                        logger.LogInformation("Tabla {TableName} existe y es accesible", tableName);
-                    }
-                    catch
-                    {
-                        // Si falla la consulta directa, intentar con INFORMATION_SCHEMA como respaldo
-                        try
-                        {
-                            var tableExists = await context.Database.SqlQueryRaw<int>(
-                                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = {0}",
-                                tableName)
-                                .FirstOrDefaultAsync();
-                            
-                            if (tableExists > 0)
-                            {
-                                logger.LogInformation("Tabla {TableName} existe (verificada con INFORMATION_SCHEMA)", tableName);
-                            }
-                            else
-                            {
-                                missingTables.Add(tableName);
-                                logger.LogWarning("La tabla {TableName} no existe", tableName);
-                            }
-                        }
-                        catch
-                        {
-                            // Si ambos métodos fallan, asumir que la tabla no existe
-                            missingTables.Add(tableName);
-                            logger.LogWarning("No se pudo verificar la tabla {TableName}", tableName);
-                        }
-                    }
-                }
-
-                // Solo fallar si faltan tablas críticas
-                var criticalTables = new[] { "Companies", "Users", "Groups", "Permissions" };
-                var missingCriticalTables = missingTables.Where(t => criticalTables.Contains(t)).ToList();
-                
-                if (missingCriticalTables.Any())
-                {
-                    var errorMsg = $"Las siguientes tablas críticas no existen: {string.Join(", ", missingCriticalTables)}";
-                    logger.LogError(errorMsg);
-                    return (false, errorMsg);
-                }
-                
-                if (missingTables.Any())
-                {
-                    logger.LogWarning("Algunas tablas no se pudieron verificar, pero continuando con la inserción: {MissingTables}", string.Join(", ", missingTables));
-                }
-
-                logger.LogInformation("Todas las tablas críticas existen. Procediendo a insertar datos...");
-            }
-            else
-            {
-                logger.LogInformation("Base de datos no relacional detectada. Omitiendo verificación de tablas y procediendo a insertar datos...");
-            }
-
-            // Limpiar datos existentes si existen (usando IgnoreQueryFilters para incluir soft-deleted)
-            logger.LogInformation("Limpiando datos existentes...");
-            try
-            {
-                var existingCompanies = await context.Companies.IgnoreQueryFilters().ToListAsync();
-                var existingUsers = await context.Users.IgnoreQueryFilters().ToListAsync();
-                var existingGroups = await context.Groups.IgnoreQueryFilters().ToListAsync();
-                var existingPermissions = await context.Permissions.IgnoreQueryFilters().ToListAsync();
-                var existingUserGroups = await context.UserGroups.IgnoreQueryFilters().ToListAsync();
-                var existingUserPermissions = await context.UserPermissions.IgnoreQueryFilters().ToListAsync();
-                var existingGroupPermissions = await context.GroupPermissions.IgnoreQueryFilters().ToListAsync();
-
-                context.Companies.RemoveRange(existingCompanies);
-                context.Users.RemoveRange(existingUsers);
-                context.Groups.RemoveRange(existingGroups);
-                context.Permissions.RemoveRange(existingPermissions);
-                context.UserGroups.RemoveRange(existingUserGroups);
-                context.UserPermissions.RemoveRange(existingUserPermissions);
-                context.GroupPermissions.RemoveRange(existingGroupPermissions);
-                await context.SaveChangesAsync();
-                logger.LogInformation("Datos existentes eliminados");
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning(ex, "Error al limpiar datos existentes (puede que no existan): {ErrorMessage}", ex.Message);
-                // Continuar de todas formas
-            }
-
-            // Buscar datos maestros de dirección (España - Madrid)
-            var spain = await context.Countries.FirstOrDefaultAsync(c => c.Code == "ES");
-            var madridState = spain != null ? await context.States.FirstOrDefaultAsync(s => s.Code == "M" && s.CountryId == spain.Id) : null;
-            var madridCity = madridState != null ? await context.Cities.FirstOrDefaultAsync(c => c.Name == "Madrid" && c.StateId == madridState.Id) : null;
-            var madridPostalCode = madridCity != null ? await context.PostalCodes.FirstOrDefaultAsync(pc => pc.Code == "28001" && pc.CityId == madridCity.Id) : null;
-
-            if (spain == null || madridState == null || madridCity == null || madridPostalCode == null)
-            {
-                logger.LogWarning("No se encontraron todos los datos maestros de dirección. La empresa y usuario se crearán sin información de dirección completa.");
-            }
-
-            // Crear empresa con dirección completa
-            var company = new Company
-            {
-                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                Name = "Empresa Demo",
-                TaxId = "B12345678",
-                Address = "Calle Gran Vía, 1",
-                Phone = "912345678",
-                Email = "demo@empresa.com",
-                CountryId = spain?.Id,
-                StateId = madridState?.Id,
-                CityId = madridCity?.Id,
-                PostalCodeId = madridPostalCode?.Id,
-                LanguageId = spain?.LanguageId ?? Guid.Parse("10000000-0000-0000-0000-000000000001"),
-                CreatedAt = DateTime.UtcNow,
-                IsActive = true
-            };
-            context.Companies.Add(company);
-            logger.LogInformation("Empresa creada: {CompanyName} con dirección en {City}", company.Name, madridCity?.Name ?? "Madrid");
-
-            // Crear grupo
-            var group = new Group
-            {
-                Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                Name = "Administradores",
-                Description = "Grupo de administradores del sistema",
-                CreatedAt = DateTime.UtcNow,
-                IsActive = true
-            };
-            context.Groups.Add(group);
-            logger.LogInformation("Grupo creado: {GroupName}", group.Name);
-
-            // Crear permisos
-            var permissions = new List<Permission>
-            {
-                new Permission
-                {
-                    Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                    Key = "users.read",
-                    Description = "Ver usuarios",
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new Permission
-                {
-                    Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
-                    Key = "users.write",
-                    Description = "Crear/editar usuarios",
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new Permission
-                {
-                    Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
-                    Key = "articles.read",
-                    Description = "Ver artículos",
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new Permission
-                {
-                    Id = Guid.Parse("66666666-6666-6666-6666-666666666666"),
-                    Key = "articles.write",
-                    Description = "Crear/editar artículos",
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new Permission
-                {
-                    Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
-                    Key = "purchases.read",
-                    Description = "Ver compras",
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new Permission
-                {
-                    Id = Guid.Parse("88888888-8888-8888-8888-888888888888"),
-                    Key = "purchases.write",
-                    Description = "Crear/editar compras",
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true
-                }
-            };
-            context.Permissions.AddRange(permissions);
-            logger.LogInformation("Permisos creados: {Count} permisos", permissions.Count);
-
-            // Guardar permisos primero para tener los IDs disponibles
-            await context.SaveChangesAsync();
-            logger.LogInformation("Permisos guardados en la base de datos");
-
-            // Asignar permisos al grupo
-            var groupPermissions = new List<GroupPermission>
-            {
-                new GroupPermission
-                {
-                    Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                    GroupId = group.Id,
-                    PermissionId = permissions[0].Id, // users.read
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new GroupPermission
-                {
-                    Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                    GroupId = group.Id,
-                    PermissionId = permissions[1].Id, // users.write
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new GroupPermission
-                {
-                    Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                    GroupId = group.Id,
-                    PermissionId = permissions[2].Id, // articles.read
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true
-                },
-                new GroupPermission
-                {
-                    Id = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                    GroupId = group.Id,
-                    PermissionId = permissions[3].Id, // articles.write
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true
-                }
-            };
-            context.GroupPermissions.AddRange(groupPermissions);
-            logger.LogInformation("Permisos asignados al grupo: {Count} permisos", groupPermissions.Count);
-
-            // Crear usuario con hash BCrypt y dirección
-            var user = new User
-            {
-                Id = Guid.Parse("99999999-9999-9999-9999-999999999999"),
-                CompanyId = company.Id,
-                Username = "admin",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123", BCrypt.Net.BCrypt.GenerateSalt(11)),
-                FirstName = "Administrador",
-                LastName = "Sistema",
-                Email = "admin@empresa.com",
-                Phone = "912345678",
-                Address = "Calle Serrano, 15",
-                CountryId = spain?.Id,
-                StateId = madridState?.Id,
-                CityId = madridCity?.Id,
-                PostalCodeId = madridPostalCode?.Id,
-                LanguageId = spain?.LanguageId ?? company.LanguageId,
-                CreatedAt = DateTime.UtcNow,
-                IsActive = true
-            };
-            context.Users.Add(user);
-            logger.LogInformation("Usuario creado: {Username} con dirección en {City}", user.Username, madridCity?.Name ?? "Madrid");
-
-            // Guardar empresa, grupo y usuario primero
-            await context.SaveChangesAsync();
-            logger.LogInformation("Empresa, grupo y usuario guardados");
-
-            // Asignar usuario al grupo
-            var userGroup = new UserGroup
-            {
-                Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                UserId = user.Id,
-                GroupId = group.Id,
-                CreatedAt = DateTime.UtcNow,
-                IsActive = true
-            };
-            context.UserGroups.Add(userGroup);
-            logger.LogInformation("Usuario asignado al grupo");
-
-            // Asignar permiso directo al usuario
-            var userPermission = new UserPermission
-            {
-                Id = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
-                UserId = user.Id,
-                PermissionId = permissions[4].Id, // purchases.read
-                CreatedAt = DateTime.UtcNow,
-                IsActive = true
-            };
-            context.UserPermissions.Add(userPermission);
-            logger.LogInformation("Permiso directo asignado al usuario");
-
-            // Guardar todas las relaciones
-            await context.SaveChangesAsync();
-            logger.LogInformation("Relaciones de usuario guardadas");
+            // Usar JsonDataSeeder para cargar datos de demostración/iniciales desde demo-data.json
+            logger.LogInformation("Cargando datos iniciales desde demo-data.json...");
+            await jsonDataSeeder.SeedDemoDataAsync();
+            logger.LogInformation("Datos iniciales cargados desde demo-data.json");
 
             // Crear usuario administrativo (AdminUser) para acceso administrativo
-            // Verificar si ya existe un AdminUser con el mismo username
+            // Esto se hace manualmente porque JsonDataSeeder no soporta AdminUser todavía
             var existingAdminUser = await context.AdminUsers
+                .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(u => u.Username == "admin");
+            
+            // Hash BCrypt fijo para "admin123"
+            const string adminPasswordHashForAdminUser = "$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW";
             
             if (existingAdminUser == null)
             {
@@ -721,7 +398,7 @@ public class SetupService : ISetupService
                 {
                     Id = Guid.Parse("aaaaaaaa-0000-0000-0000-000000000000"),
                     Username = "admin",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123", BCrypt.Net.BCrypt.GenerateSalt(11)),
+                    PasswordHash = adminPasswordHashForAdminUser,
                     FirstName = "Administrador",
                     LastName = "Sistema",
                     Email = "admin@gesfer.local",
@@ -735,31 +412,25 @@ public class SetupService : ISetupService
             }
             else
             {
-                // Actualizar el hash de contraseña si el usuario ya existe (por si cambió la implementación)
-                existingAdminUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123", BCrypt.Net.BCrypt.GenerateSalt(11));
-                existingAdminUser.IsActive = true;
-                existingAdminUser.Role = "Admin";
-                existingAdminUser.UpdatedAt = DateTime.UtcNow;
-                await context.SaveChangesAsync();
-                logger.LogInformation("Usuario administrativo actualizado: {Username}", existingAdminUser.Username);
+                // Actualizar hash del admin user existente si es necesario
+                if (existingAdminUser.PasswordHash != adminPasswordHashForAdminUser)
+                {
+                    existingAdminUser.PasswordHash = adminPasswordHashForAdminUser;
+                    existingAdminUser.IsActive = true;
+                    existingAdminUser.DeletedAt = null;
+                    existingAdminUser.UpdatedAt = DateTime.UtcNow;
+                    await context.SaveChangesAsync();
+                    logger.LogInformation("Usuario administrativo actualizado con hash corregido: {Username}", existingAdminUser.Username);
+                }
             }
 
-            // Crear proveedores de prueba con direcciones completas
-            await SeedTestSuppliersAsync(context, company.Id, spain, logger);
-
-            // Crear clientes de prueba con direcciones completas
-            await SeedTestCustomersAsync(context, company.Id, spain, logger);
-
-            // Guardar todos los datos
-            await context.SaveChangesAsync();
-            logger.LogInformation("Todos los datos iniciales guardados correctamente");
-
+            logger.LogInformation("Todos los datos iniciales cargados correctamente desde JSON");
             return (true, null);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Excepción al insertar datos iniciales");
-            return (false, $"Error al insertar datos: {ex.Message}");
+            _logger.LogError(ex, "Excepción al insertar datos iniciales desde JSON");
+            return (false, $"Error al insertar datos desde JSON: {ex.Message}");
         }
     }
 

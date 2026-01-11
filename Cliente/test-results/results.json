@@ -1,0 +1,1148 @@
+{
+  "config": {
+    "configFile": "C:\\Proyectos\\GesFer\\Cliente\\playwright.config.ts",
+    "rootDir": "C:/Proyectos/GesFer/Cliente/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Proyectos/GesFer/Cliente/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Proyectos/GesFer/Cliente/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 20000
+      }
+    ],
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.57.0",
+    "workers": 4,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "api\\auth-api.spec.ts",
+      "file": "api/auth-api.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "API - Autenticación",
+          "file": "api/auth-api.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debe realizar login exitoso y obtener información del usuario",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1370,
+                      "error": {
+                        "message": "Error: Login failed: 401",
+                        "stack": "Error: Login failed: 401\n    at ApiClient.loginFull (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:100:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\auth-api.spec.ts:22:23",
+                        "location": {
+                          "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                          "column": 13,
+                          "line": 100
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:100\n\n\u001b[0m \u001b[90m  98 |\u001b[39m\n \u001b[90m  99 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok()) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 100 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Login failed: ${response.status()}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 101 |\u001b[39m     }\n \u001b[90m 102 |\u001b[39m\n \u001b[90m 103 |\u001b[39m     \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                            "column": 13,
+                            "line": 100
+                          },
+                          "message": "Error: Login failed: 401\n\n   at api\\api-client.ts:100\n\n   98 |\n   99 |     if (!response.ok()) {\n> 100 |       throw new Error(`Login failed: ${response.status()}`);\n      |             ^\n  101 |     }\n  102 |\n  103 |     return await response.json();\n    at ApiClient.loginFull (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:100:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\auth-api.spec.ts:22:23"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:80:13\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:24\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\auth-api.spec.ts:13:5\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:311:11\n    at TimeoutManager.withRunnable \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\timeoutManager.js:67:14\u001b[90m)\u001b[39m\n    at TestInfoImpl._runWithTimeout \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:309:7\u001b[90m)\u001b[39m\n    at FixtureRunner.resolveParametersAndRunFunction \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\fixtureRunner.js:228:5\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:478:11\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at WorkerMain._runEachHooksForSuites \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:477:9\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:314:9\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:310:7\n    at WorkerMain._runTest \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:295:5\u001b[90m)\u001b[39m\n    at WorkerMain.runTestGroup \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:199:11\u001b[90m)\u001b[39m\n    at process.<anonymous> \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\common\\process.js:65:22\u001b[90m)\u001b[39m\n"
+                        },
+                        {
+                          "text": "No hay token de autenticación, no se puede limpiar datos\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:54.999Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                        "column": 13,
+                        "line": 100
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "811441bc76ae2ee42483-0103b2fc606dddf98bb9",
+              "file": "api/auth-api.spec.ts",
+              "line": 21,
+              "column": 7
+            },
+            {
+              "title": "debe rechazar login con credenciales inválidas",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1373,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:80:13\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:24\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\auth-api.spec.ts:13:5\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:311:11\n    at TimeoutManager.withRunnable \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\timeoutManager.js:67:14\u001b[90m)\u001b[39m\n    at TestInfoImpl._runWithTimeout \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:309:7\u001b[90m)\u001b[39m\n    at FixtureRunner.resolveParametersAndRunFunction \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\fixtureRunner.js:228:5\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:478:11\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at WorkerMain._runEachHooksForSuites \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:477:9\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:314:9\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:310:7\n    at WorkerMain._runTest \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:295:5\u001b[90m)\u001b[39m\n    at WorkerMain.runTestGroup \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:199:11\u001b[90m)\u001b[39m\n    at process.<anonymous> \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\common\\process.js:65:22\u001b[90m)\u001b[39m\n"
+                        },
+                        {
+                          "text": "No hay token de autenticación, no se puede limpiar datos\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:54.998Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "811441bc76ae2ee42483-2f00d288cdcae1c12df5",
+              "file": "api/auth-api.spec.ts",
+              "line": 33,
+              "column": 7
+            },
+            {
+              "title": "debe validar campos requeridos en login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1313,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:80:13\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:24\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\auth-api.spec.ts:13:5\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:311:11\n    at TimeoutManager.withRunnable \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\timeoutManager.js:67:14\u001b[90m)\u001b[39m\n    at TestInfoImpl._runWithTimeout \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:309:7\u001b[90m)\u001b[39m\n    at FixtureRunner.resolveParametersAndRunFunction \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\fixtureRunner.js:228:5\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:478:11\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at WorkerMain._runEachHooksForSuites \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:477:9\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:314:9\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:310:7\n    at WorkerMain._runTest \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:295:5\u001b[90m)\u001b[39m\n    at WorkerMain.runTestGroup \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:199:11\u001b[90m)\u001b[39m\n    at process.<anonymous> \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\common\\process.js:65:22\u001b[90m)\u001b[39m\n"
+                        },
+                        {
+                          "text": "No hay token de autenticación, no se puede limpiar datos\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:54.998Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "811441bc76ae2ee42483-a62949215ca3f17c0218",
+              "file": "api/auth-api.spec.ts",
+              "line": 43,
+              "column": 7
+            },
+            {
+              "title": "debe obtener información del usuario autenticado",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 1362,
+                      "error": {
+                        "message": "Error: Login failed: 401",
+                        "stack": "Error: Login failed: 401\n    at ApiClient.loginFull (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:100:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\auth-api.spec.ts:56:23",
+                        "location": {
+                          "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                          "column": 13,
+                          "line": 100
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:100\n\n\u001b[0m \u001b[90m  98 |\u001b[39m\n \u001b[90m  99 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok()) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 100 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Login failed: ${response.status()}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 101 |\u001b[39m     }\n \u001b[90m 102 |\u001b[39m\n \u001b[90m 103 |\u001b[39m     \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                            "column": 13,
+                            "line": 100
+                          },
+                          "message": "Error: Login failed: 401\n\n   at api\\api-client.ts:100\n\n   98 |\n   99 |     if (!response.ok()) {\n> 100 |       throw new Error(`Login failed: ${response.status()}`);\n      |             ^\n  101 |     }\n  102 |\n  103 |     return await response.json();\n    at ApiClient.loginFull (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:100:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\auth-api.spec.ts:56:23"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:80:13\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:24\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\auth-api.spec.ts:13:5\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:311:11\n    at TimeoutManager.withRunnable \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\timeoutManager.js:67:14\u001b[90m)\u001b[39m\n    at TestInfoImpl._runWithTimeout \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:309:7\u001b[90m)\u001b[39m\n    at FixtureRunner.resolveParametersAndRunFunction \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\fixtureRunner.js:228:5\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:478:11\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at WorkerMain._runEachHooksForSuites \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:477:9\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:314:9\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:310:7\n    at WorkerMain._runTest \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:295:5\u001b[90m)\u001b[39m\n    at WorkerMain.runTestGroup \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:199:11\u001b[90m)\u001b[39m\n    at process.<anonymous> \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\common\\process.js:65:22\u001b[90m)\u001b[39m\n"
+                        },
+                        {
+                          "text": "No hay token de autenticación, no se puede limpiar datos\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:55.013Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                        "column": 13,
+                        "line": 100
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "811441bc76ae2ee42483-b413ae8c98e31c15d486",
+              "file": "api/auth-api.spec.ts",
+              "line": 53,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "api\\usuarios-api.spec.ts",
+      "file": "api/usuarios-api.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "API - Usuarios",
+          "file": "api/usuarios-api.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debe obtener lista de usuarios",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 42,
+                      "error": {
+                        "message": "Error: Login failed: 401",
+                        "stack": "Error: Login failed: 401\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:80:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:17",
+                        "location": {
+                          "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                          "column": 13,
+                          "line": 80
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:80\n\n\u001b[0m \u001b[90m 78 |\u001b[39m\n \u001b[90m 79 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok()) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 80 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Login failed: ${response.status()}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 81 |\u001b[39m     }\n \u001b[90m 82 |\u001b[39m\n \u001b[90m 83 |\u001b[39m     \u001b[36mconst\u001b[39m data \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                            "column": 13,
+                            "line": 80
+                          },
+                          "message": "Error: Login failed: 401\n\n   at api\\api-client.ts:80\n\n  78 |\n  79 |     if (!response.ok()) {\n> 80 |       throw new Error(`Login failed: ${response.status()}`);\n     |             ^\n  81 |     }\n  82 |\n  83 |     const data = await response.json();\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:80:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:17"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:56.341Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                        "column": 13,
+                        "line": 80
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "aca57025f2f1566f6aa9-480225172848a35f34df",
+              "file": "api/usuarios-api.spec.ts",
+              "line": 29,
+              "column": 7
+            },
+            {
+              "title": "debe obtener un usuario por ID",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 14,
+                      "error": {
+                        "message": "Error: Login failed: 401",
+                        "stack": "Error: Login failed: 401\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:80:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:17",
+                        "location": {
+                          "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                          "column": 13,
+                          "line": 80
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:80\n\n\u001b[0m \u001b[90m 78 |\u001b[39m\n \u001b[90m 79 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok()) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 80 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Login failed: ${response.status()}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 81 |\u001b[39m     }\n \u001b[90m 82 |\u001b[39m\n \u001b[90m 83 |\u001b[39m     \u001b[36mconst\u001b[39m data \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                            "column": 13,
+                            "line": 80
+                          },
+                          "message": "Error: Login failed: 401\n\n   at api\\api-client.ts:80\n\n  78 |\n  79 |     if (!response.ok()) {\n> 80 |       throw new Error(`Login failed: ${response.status()}`);\n     |             ^\n  81 |     }\n  82 |\n  83 |     const data = await response.json();\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:80:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:17"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:56.402Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                        "column": 13,
+                        "line": 80
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "aca57025f2f1566f6aa9-74c34ba6d8de7ddd48b2",
+              "file": "api/usuarios-api.spec.ts",
+              "line": 40,
+              "column": 7
+            },
+            {
+              "title": "debe crear un nuevo usuario y limpiarlo después",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 44,
+                      "error": {
+                        "message": "Error: Login failed: 401",
+                        "stack": "Error: Login failed: 401\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:80:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:17",
+                        "location": {
+                          "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                          "column": 13,
+                          "line": 80
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:80\n\n\u001b[0m \u001b[90m 78 |\u001b[39m\n \u001b[90m 79 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok()) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 80 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Login failed: ${response.status()}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 81 |\u001b[39m     }\n \u001b[90m 82 |\u001b[39m\n \u001b[90m 83 |\u001b[39m     \u001b[36mconst\u001b[39m data \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                            "column": 13,
+                            "line": 80
+                          },
+                          "message": "Error: Login failed: 401\n\n   at api\\api-client.ts:80\n\n  78 |\n  79 |     if (!response.ok()) {\n> 80 |       throw new Error(`Login failed: ${response.status()}`);\n     |             ^\n  81 |     }\n  82 |\n  83 |     const data = await response.json();\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:80:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:17"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:57.399Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                        "column": 13,
+                        "line": 80
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "aca57025f2f1566f6aa9-b1f478d32124fcad2cb2",
+              "file": "api/usuarios-api.spec.ts",
+              "line": 61,
+              "column": 7
+            },
+            {
+              "title": "debe permitir acceso sin token de autenticación (API sin autenticación requerida)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 44,
+                      "error": {
+                        "message": "Error: Login failed: 401",
+                        "stack": "Error: Login failed: 401\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:80:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:17",
+                        "location": {
+                          "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                          "column": 13,
+                          "line": 80
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:80\n\n\u001b[0m \u001b[90m 78 |\u001b[39m\n \u001b[90m 79 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok()) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 80 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Login failed: ${response.status()}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 81 |\u001b[39m     }\n \u001b[90m 82 |\u001b[39m\n \u001b[90m 83 |\u001b[39m     \u001b[36mconst\u001b[39m data \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                            "column": 13,
+                            "line": 80
+                          },
+                          "message": "Error: Login failed: 401\n\n   at api\\api-client.ts:80\n\n  78 |\n  79 |     if (!response.ok()) {\n> 80 |       throw new Error(`Login failed: ${response.status()}`);\n     |             ^\n  81 |     }\n  82 |\n  83 |     const data = await response.json();\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:80:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:17"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:57.403Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                        "column": 13,
+                        "line": 80
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "aca57025f2f1566f6aa9-194c22454115a9136591",
+              "file": "api/usuarios-api.spec.ts",
+              "line": 91,
+              "column": 7
+            },
+            {
+              "title": "debe validar formato de ID al obtener usuario",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 42,
+                      "error": {
+                        "message": "Error: Login failed: 401",
+                        "stack": "Error: Login failed: 401\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:80:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:17",
+                        "location": {
+                          "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                          "column": 13,
+                          "line": 80
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:80\n\n\u001b[0m \u001b[90m 78 |\u001b[39m\n \u001b[90m 79 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok()) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 80 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`Login failed: ${response.status()}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 81 |\u001b[39m     }\n \u001b[90m 82 |\u001b[39m\n \u001b[90m 83 |\u001b[39m     \u001b[36mconst\u001b[39m data \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                            "column": 13,
+                            "line": 80
+                          },
+                          "message": "Error: Login failed: 401\n\n   at api\\api-client.ts:80\n\n  78 |\n  79 |     if (!response.ok()) {\n> 80 |       throw new Error(`Login failed: ${response.status()}`);\n     |             ^\n  81 |     }\n  82 |\n  83 |     const data = await response.json();\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:80:13)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:17"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:57.420Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts",
+                        "column": 13,
+                        "line": 80
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "aca57025f2f1566f6aa9-a2b3cba1793fb87d7163",
+              "file": "api/usuarios-api.spec.ts",
+              "line": 102,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e\\login.spec.ts",
+      "file": "e2e/login.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Login E2E Tests",
+          "file": "e2e/login.spec.ts",
+          "line": 7,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debe realizar login exitoso con credenciales válidas",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 20752,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts",
+                            "column": 21,
+                            "line": 52
+                          },
+                          "message": "Error: page.waitForFunction: Test timeout of 20000ms exceeded.\n\n   at page-objects\\LoginPage.ts:52\n\n  50 |   async verifyLoginSuccess() {\n  51 |     // Esperar a que el localStorage tenga el usuario (indica que el login se completó)\n> 52 |     await this.page.waitForFunction(() => {\n     |                     ^\n  53 |       return localStorage.getItem('auth_user') !== null;\n  54 |     }, { timeout: 5000 });\n  55 |     \n    at LoginPage.verifyLoginSuccess (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:52:21)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\login.spec.ts:39:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:80:13\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:24\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\login.spec.ts:21:5\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:311:11\n    at TimeoutManager.withRunnable \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\timeoutManager.js:67:14\u001b[90m)\u001b[39m\n    at TestInfoImpl._runWithTimeout \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:309:7\u001b[90m)\u001b[39m\n    at FixtureRunner.resolveParametersAndRunFunction \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\fixtureRunner.js:228:5\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:478:11\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at WorkerMain._runEachHooksForSuites \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:477:9\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:314:9\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:310:7\n    at WorkerMain._runTest \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:295:5\u001b[90m)\u001b[39m\n    at WorkerMain.runTestGroup \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:199:11\u001b[90m)\u001b[39m\n    at process.<anonymous> \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\common\\process.js:65:22\u001b[90m)\u001b[39m\n"
+                        },
+                        {
+                          "text": "No hay token de autenticación, no se puede limpiar datos\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:57.448Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-login-Login-E2E-Tests--361ea-so-con-credenciales-válidas-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-login-Login-E2E-Tests--361ea-so-con-credenciales-válidas-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-login-Login-E2E-Tests--361ea-so-con-credenciales-válidas-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "537b83cfbdf14afda252-0264692cf55ee2ff0e51",
+              "file": "e2e/login.spec.ts",
+              "line": 28,
+              "column": 7
+            },
+            {
+              "title": "debe mostrar error con credenciales inválidas",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 8740,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:80:13\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:24\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\login.spec.ts:21:5\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:311:11\n    at TimeoutManager.withRunnable \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\timeoutManager.js:67:14\u001b[90m)\u001b[39m\n    at TestInfoImpl._runWithTimeout \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:309:7\u001b[90m)\u001b[39m\n    at FixtureRunner.resolveParametersAndRunFunction \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\fixtureRunner.js:228:5\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:478:11\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at WorkerMain._runEachHooksForSuites \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:477:9\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:314:9\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:310:7\n    at WorkerMain._runTest \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:295:5\u001b[90m)\u001b[39m\n    at WorkerMain.runTestGroup \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:199:11\u001b[90m)\u001b[39m\n    at process.<anonymous> \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\common\\process.js:65:22\u001b[90m)\u001b[39m\n"
+                        },
+                        {
+                          "text": "No hay token de autenticación, no se puede limpiar datos\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:58.393Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "537b83cfbdf14afda252-95dca3a0bd6f59e79fe8",
+              "file": "e2e/login.spec.ts",
+              "line": 45,
+              "column": 7
+            },
+            {
+              "title": "debe validar campos requeridos",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8807,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:80:13\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:24\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\login.spec.ts:21:5\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:311:11\n    at TimeoutManager.withRunnable \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\timeoutManager.js:67:14\u001b[90m)\u001b[39m\n    at TestInfoImpl._runWithTimeout \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:309:7\u001b[90m)\u001b[39m\n    at FixtureRunner.resolveParametersAndRunFunction \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\fixtureRunner.js:228:5\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:478:11\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at WorkerMain._runEachHooksForSuites \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:477:9\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:314:9\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:310:7\n    at WorkerMain._runTest \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:295:5\u001b[90m)\u001b[39m\n    at WorkerMain.runTestGroup \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:199:11\u001b[90m)\u001b[39m\n    at process.<anonymous> \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\common\\process.js:65:22\u001b[90m)\u001b[39m\n"
+                        },
+                        {
+                          "text": "No hay token de autenticación, no se puede limpiar datos\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:58.380Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "537b83cfbdf14afda252-964e677512f0954294f2",
+              "file": "e2e/login.spec.ts",
+              "line": 58,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e\\usuario-completo.spec.ts",
+      "file": "e2e/usuario-completo.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Usuario Completo E2E Tests",
+          "file": "e2e/usuario-completo.spec.ts",
+          "line": 7,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debe completar el flujo completo de usuario",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 3,
+                      "status": "timedOut",
+                      "duration": 20917,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 20000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts",
+                            "column": 21,
+                            "line": 52
+                          },
+                          "message": "Error: page.waitForFunction: Test timeout of 20000ms exceeded.\n\n   at page-objects\\LoginPage.ts:52\n\n  50 |   async verifyLoginSuccess() {\n  51 |     // Esperar a que el localStorage tenga el usuario (indica que el login se completó)\n> 52 |     await this.page.waitForFunction(() => {\n     |                     ^\n  53 |       return localStorage.getItem('auth_user') !== null;\n  54 |     }, { timeout: 5000 });\n  55 |     \n    at LoginPage.verifyLoginSuccess (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:52:21)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuario-completo.spec.ts:26:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:80:13\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:24\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\usuario-completo.spec.ts:12:5\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:311:11\n    at TimeoutManager.withRunnable \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\timeoutManager.js:67:14\u001b[90m)\u001b[39m\n    at TestInfoImpl._runWithTimeout \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:309:7\u001b[90m)\u001b[39m\n    at FixtureRunner.resolveParametersAndRunFunction \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\fixtureRunner.js:228:5\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:478:11\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at WorkerMain._runEachHooksForSuites \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:477:9\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:314:9\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:310:7\n    at WorkerMain._runTest \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:295:5\u001b[90m)\u001b[39m\n    at WorkerMain.runTestGroup \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:199:11\u001b[90m)\u001b[39m\n    at process.<anonymous> \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\common\\process.js:65:22\u001b[90m)\u001b[39m\n"
+                        },
+                        {
+                          "text": "No hay token de autenticación, no se puede limpiar datos\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:54:58.403Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-usuario-completo-Usuar-4b1d8-l-flujo-completo-de-usuario-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-usuario-completo-Usuar-4b1d8-l-flujo-completo-de-usuario-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-usuario-completo-Usuar-4b1d8-l-flujo-completo-de-usuario-chromium\\error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "29cd8d1e62b99441843a-9b0591718c60f51ef872",
+              "file": "e2e/usuario-completo.spec.ts",
+              "line": 19,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e\\usuarios.spec.ts",
+      "file": "e2e/usuarios.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Usuarios E2E Tests",
+          "file": "e2e/usuarios.spec.ts",
+          "line": 7,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debe mostrar la lista de usuarios",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 2,
+                      "status": "timedOut",
+                      "duration": 21159,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 20000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 20000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:11:8",
+                        "location": {
+                          "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts",
+                          "column": 8,
+                          "line": 11
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  9 |\u001b[39m   \u001b[36mconst\u001b[39m createdUserIds\u001b[33m:\u001b[39m string[] \u001b[33m=\u001b[39m []\u001b[33m;\u001b[39m\n \u001b[90m 10 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 11 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page\u001b[33m,\u001b[39m request }) \u001b[33m=>\u001b[39m {\n \u001b[90m    |\u001b[39m        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 12 |\u001b[39m     cleanup \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mTestDataCleanup\u001b[39m(request\u001b[33m,\u001b[39m process\u001b[33m.\u001b[39menv\u001b[33m.\u001b[39m\u001b[33mAPI_URL\u001b[39m \u001b[33m||\u001b[39m appConfig\u001b[33m.\u001b[39mapi\u001b[33m.\u001b[39murl)\u001b[33m;\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m cleanup\u001b[33m.\u001b[39msetAuthToken(\u001b[32m'Empresa Demo'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'admin'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'admin123'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 14 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts",
+                            "column": 8,
+                            "line": 11
+                          },
+                          "message": "\u001b[31mTest timeout of 20000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n   9 |   const createdUserIds: string[] = [];\n  10 |\n> 11 |   test.beforeEach(async ({ page, request }) => {\n     |        ^\n  12 |     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);\n  13 |     await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');\n  14 |\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:11:8"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts",
+                            "column": 21,
+                            "line": 52
+                          },
+                          "message": "Error: page.waitForFunction: Test timeout of 20000ms exceeded.\n\n   at page-objects\\LoginPage.ts:52\n\n  50 |   async verifyLoginSuccess() {\n  51 |     // Esperar a que el localStorage tenga el usuario (indica que el login se completó)\n> 52 |     await this.page.waitForFunction(() => {\n     |                     ^\n  53 |       return localStorage.getItem('auth_user') !== null;\n  54 |     }, { timeout: 5000 });\n  55 |     \n    at LoginPage.verifyLoginSuccess (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:52:21)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:19:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:80:13\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:24\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\usuarios.spec.ts:13:5\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:311:11\n    at TimeoutManager.withRunnable \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\timeoutManager.js:67:14\u001b[90m)\u001b[39m\n    at TestInfoImpl._runWithTimeout \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:309:7\u001b[90m)\u001b[39m\n    at FixtureRunner.resolveParametersAndRunFunction \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\fixtureRunner.js:228:5\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:478:11\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at WorkerMain._runEachHooksForSuites \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:477:9\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:314:9\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:310:7\n    at WorkerMain._runTest \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:295:5\u001b[90m)\u001b[39m\n    at WorkerMain.runTestGroup \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:199:11\u001b[90m)\u001b[39m\n    at process.<anonymous> \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\common\\process.js:65:22\u001b[90m)\u001b[39m\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:55:07.433Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-usuarios-Usuarios-E2E--290f2-ostrar-la-lista-de-usuarios-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-usuarios-Usuarios-E2E--290f2-ostrar-la-lista-de-usuarios-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-usuarios-Usuarios-E2E--290f2-ostrar-la-lista-de-usuarios-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts",
+                        "column": 8,
+                        "line": 11
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7fbfda8bbbad589d87e5-6916e9424cabd9fc12c0",
+              "file": "e2e/usuarios.spec.ts",
+              "line": 33,
+              "column": 7
+            },
+            {
+              "title": "debe abrir el modal de crear usuario",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 21183,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 20000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 20000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:11:8",
+                        "location": {
+                          "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts",
+                          "column": 8,
+                          "line": 11
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  9 |\u001b[39m   \u001b[36mconst\u001b[39m createdUserIds\u001b[33m:\u001b[39m string[] \u001b[33m=\u001b[39m []\u001b[33m;\u001b[39m\n \u001b[90m 10 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 11 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page\u001b[33m,\u001b[39m request }) \u001b[33m=>\u001b[39m {\n \u001b[90m    |\u001b[39m        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 12 |\u001b[39m     cleanup \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mTestDataCleanup\u001b[39m(request\u001b[33m,\u001b[39m process\u001b[33m.\u001b[39menv\u001b[33m.\u001b[39m\u001b[33mAPI_URL\u001b[39m \u001b[33m||\u001b[39m appConfig\u001b[33m.\u001b[39mapi\u001b[33m.\u001b[39murl)\u001b[33m;\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m cleanup\u001b[33m.\u001b[39msetAuthToken(\u001b[32m'Empresa Demo'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'admin'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'admin123'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 14 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts",
+                            "column": 8,
+                            "line": 11
+                          },
+                          "message": "\u001b[31mTest timeout of 20000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n   9 |   const createdUserIds: string[] = [];\n  10 |\n> 11 |   test.beforeEach(async ({ page, request }) => {\n     |        ^\n  12 |     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);\n  13 |     await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');\n  14 |\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:11:8"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts",
+                            "column": 21,
+                            "line": 52
+                          },
+                          "message": "Error: page.waitForFunction: Test timeout of 20000ms exceeded.\n\n   at page-objects\\LoginPage.ts:52\n\n  50 |   async verifyLoginSuccess() {\n  51 |     // Esperar a que el localStorage tenga el usuario (indica que el login se completó)\n> 52 |     await this.page.waitForFunction(() => {\n     |                     ^\n  53 |       return localStorage.getItem('auth_user') !== null;\n  54 |     }, { timeout: 5000 });\n  55 |     \n    at LoginPage.verifyLoginSuccess (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:52:21)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:19:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:80:13\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:24\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\usuarios.spec.ts:13:5\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:311:11\n    at TimeoutManager.withRunnable \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\timeoutManager.js:67:14\u001b[90m)\u001b[39m\n    at TestInfoImpl._runWithTimeout \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:309:7\u001b[90m)\u001b[39m\n    at FixtureRunner.resolveParametersAndRunFunction \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\fixtureRunner.js:228:5\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:478:11\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at WorkerMain._runEachHooksForSuites \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:477:9\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:314:9\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:310:7\n    at WorkerMain._runTest \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:295:5\u001b[90m)\u001b[39m\n    at WorkerMain.runTestGroup \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:199:11\u001b[90m)\u001b[39m\n    at process.<anonymous> \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\common\\process.js:65:22\u001b[90m)\u001b[39m\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:55:07.488Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-usuarios-Usuarios-E2E--3303f-r-el-modal-de-crear-usuario-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-usuarios-Usuarios-E2E--3303f-r-el-modal-de-crear-usuario-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-usuarios-Usuarios-E2E--3303f-r-el-modal-de-crear-usuario-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts",
+                        "column": 8,
+                        "line": 11
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7fbfda8bbbad589d87e5-9c466427655453390cbc",
+              "file": "e2e/usuarios.spec.ts",
+              "line": 47,
+              "column": 7
+            },
+            {
+              "title": "debe navegar correctamente a la página de usuarios",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 20000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 21019,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 20000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 20000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:11:8",
+                        "location": {
+                          "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts",
+                          "column": 8,
+                          "line": 11
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  9 |\u001b[39m   \u001b[36mconst\u001b[39m createdUserIds\u001b[33m:\u001b[39m string[] \u001b[33m=\u001b[39m []\u001b[33m;\u001b[39m\n \u001b[90m 10 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 11 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page\u001b[33m,\u001b[39m request }) \u001b[33m=>\u001b[39m {\n \u001b[90m    |\u001b[39m        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 12 |\u001b[39m     cleanup \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mTestDataCleanup\u001b[39m(request\u001b[33m,\u001b[39m process\u001b[33m.\u001b[39menv\u001b[33m.\u001b[39m\u001b[33mAPI_URL\u001b[39m \u001b[33m||\u001b[39m appConfig\u001b[33m.\u001b[39mapi\u001b[33m.\u001b[39murl)\u001b[33m;\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m cleanup\u001b[33m.\u001b[39msetAuthToken(\u001b[32m'Empresa Demo'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'admin'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'admin123'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 14 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts",
+                            "column": 8,
+                            "line": 11
+                          },
+                          "message": "\u001b[31mTest timeout of 20000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n   9 |   const createdUserIds: string[] = [];\n  10 |\n> 11 |   test.beforeEach(async ({ page, request }) => {\n     |        ^\n  12 |     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);\n  13 |     await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');\n  14 |\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:11:8"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts",
+                            "column": 21,
+                            "line": 52
+                          },
+                          "message": "Error: page.waitForFunction: Test timeout of 20000ms exceeded.\n\n   at page-objects\\LoginPage.ts:52\n\n  50 |   async verifyLoginSuccess() {\n  51 |     // Esperar a que el localStorage tenga el usuario (indica que el login se completó)\n> 52 |     await this.page.waitForFunction(() => {\n     |                     ^\n  53 |       return localStorage.getItem('auth_user') !== null;\n  54 |     }, { timeout: 5000 });\n  55 |     \n    at LoginPage.verifyLoginSuccess (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:52:21)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:19:21"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "No se pudo obtener token de autenticación para limpieza: Error: Login failed: 401\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:80:13\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:24\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\usuarios.spec.ts:13:5\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:311:11\n    at TimeoutManager.withRunnable \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\timeoutManager.js:67:14\u001b[90m)\u001b[39m\n    at TestInfoImpl._runWithTimeout \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:309:7\u001b[90m)\u001b[39m\n    at FixtureRunner.resolveParametersAndRunFunction \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\fixtureRunner.js:228:5\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:478:11\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at WorkerMain._runEachHooksForSuites \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:477:9\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:314:9\n    at TestInfoImpl._runAsStep \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\testInfo.js:300:7\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:310:7\n    at WorkerMain._runTest \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:295:5\u001b[90m)\u001b[39m\n    at WorkerMain.runTestGroup \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\worker\\workerMain.js:199:11\u001b[90m)\u001b[39m\n    at process.<anonymous> \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mnode_modules\\\u001b[4mplaywright\u001b[24m\\lib\\common\\process.js:65:22\u001b[90m)\u001b[39m\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2026-01-11T05:55:20.138Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-usuarios-Usuarios-E2E--53071-nte-a-la-página-de-usuarios-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-usuarios-Usuarios-E2E--53071-nte-a-la-página-de-usuarios-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Proyectos\\GesFer\\Cliente\\test-results\\e2e-usuarios-Usuarios-E2E--53071-nte-a-la-página-de-usuarios-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts",
+                        "column": 8,
+                        "line": 11
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7fbfda8bbbad589d87e5-73e7f311b5573c692bad",
+              "file": "e2e/usuarios.spec.ts",
+              "line": 60,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-01-11T05:54:53.882Z",
+    "duration": 47428.676,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 12,
+    "flaky": 0
+  }
+}

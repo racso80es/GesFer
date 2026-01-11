@@ -43,42 +43,23 @@ if (-not $hasTables) {
 
 Write-Host "   ✓ Las tablas existen" -ForegroundColor Green
 
-# Insertar datos de prueba (usando la nueva estructura organizada)
-Write-Host "4. Insertando datos iniciales..." -ForegroundColor Yellow
+# NOTA: Los datos ahora se cargan desde archivos JSON, no desde SQL
+# Los datos se cargan automáticamente cuando se inicia la API o mediante el endpoint /api/setup/initialize
+# Los archivos JSON se encuentran en: Api/src/Infrastructure/Seeds/
+# - master-data.json: Datos maestros (idiomas, permisos, grupos)
+# - demo-data.json: Datos de demostración (empresa, usuarios, clientes, proveedores)
+# - test-data.json: Datos de prueba
+Write-Host "4. Información sobre datos iniciales..." -ForegroundColor Yellow
+Write-Host "   ℹ Los datos ahora se cargan desde archivos JSON" -ForegroundColor Cyan
+Write-Host "   ℹ Los datos se cargan automáticamente al iniciar la API" -ForegroundColor Cyan
+Write-Host "   ℹ O mediante el endpoint: POST /api/setup/initialize" -ForegroundColor Cyan
+Write-Host "   ℹ Archivos JSON en: Api/src/Infrastructure/Seeds/" -ForegroundColor Cyan
 
-# Función para ejecutar un script SQL
-function Execute-SqlScript {
-    param(
-        [string]$ScriptName,
-        [string]$Description
-    )
-    
-    $scriptPath = Join-Path $PSScriptRoot $ScriptName
-    if (-not (Test-Path $scriptPath)) {
-        Write-Host "   ⚠ ADVERTENCIA: No se encontró el archivo $ScriptName" -ForegroundColor Yellow
-        return $false
-    }
-    
-    Write-Host "   Ejecutando $Description..." -ForegroundColor Yellow
-    $result = Get-Content $scriptPath | docker exec -i gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb 2>&1
-    
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "     ✓ Script ejecutado correctamente" -ForegroundColor Green
-        return $true
-    } else {
-        if ($result -match "Duplicate entry") {
-            Write-Host "     ⚠ Algunos datos ya existen (esto es normal si ejecutas el script varias veces)" -ForegroundColor Yellow
-            return $true
-        } else {
-            Write-Host "     ⚠ Advertencia: Puede haber errores. Verifica los logs arriba." -ForegroundColor Yellow
-            return $false
-        }
-    }
-}
-
-# Ejecutar scripts en orden
-Execute-SqlScript "master-data.sql" "Datos maestros" | Out-Null
-Execute-SqlScript "sample-data.sql" "Datos de muestra" | Out-Null
+Write-Host ""
+Write-Host "5. Para cargar los datos, puedes:" -ForegroundColor Yellow
+Write-Host "   - Iniciar la API (F5 en Visual Studio)" -ForegroundColor White
+Write-Host "   - O ejecutar: dotnet run --project Api/src/Api" -ForegroundColor White
+Write-Host "   - O llamar al endpoint: POST http://localhost:5000/api/setup/initialize" -ForegroundColor White
 
 Write-Host ""
 Write-Host "=== Configuración completada ===" -ForegroundColor Green
@@ -86,7 +67,7 @@ Write-Host ""
 Write-Host "Datos de prueba creados:" -ForegroundColor Cyan
 Write-Host "  Empresa: Empresa Demo" -ForegroundColor White
 Write-Host "  Usuario: admin" -ForegroundColor White
-Write-Host "  Contraseña: admin123" -ForegroundColor White
+Write-Host "  Password: admin123" -ForegroundColor White
 Write-Host ""
 Write-Host "Puedes probar el login en:" -ForegroundColor Cyan
 Write-Host "  http://localhost:5000/api/auth/login" -ForegroundColor White

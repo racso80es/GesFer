@@ -4,7 +4,7 @@
       "id": "11111111-1111-1111-1111-111111111111",
       "name": "Empresa Demo",
       "taxId": "B12345678",
-      "address": "Calle Demo 123",
+      "address": "Calle Gran Vía, 1",
       "phone": "912345678",
       "email": "demo@empresa.com",
       "languageId": "10000000-0000-0000-0000-000000000001"
@@ -23,13 +23,13 @@
       "languageId": "10000000-0000-0000-0000-000000000001"
     },
     {
-      "id": "88888888-8888-8888-8888-888888888888",
+      "id": "99999999-9999-9999-9999-999999999998",
       "companyId": "11111111-1111-1111-1111-111111111111",
-      "username": "manager",
-      "password": "manager123",
-      "firstName": "Manager",
-      "lastName": "Demo",
-      "email": "manager@empresa.com",
+      "username": "gestor",
+      "password": "gestor123",
+      "firstName": "Gestor",
+      "lastName": "Ejemplo",
+      "email": "gestor@empresa.com",
       "phone": "912345679",
       "languageId": "10000000-0000-0000-0000-000000000001"
     }
@@ -41,9 +41,9 @@
       "groupId": "22222222-2222-2222-2222-222222222222"
     },
     {
-      "id": "dddddddd-dddd-dddd-dddd-dddddddddddd",
-      "userId": "88888888-8888-8888-8888-888888888888",
-      "groupId": "33333333-3333-3333-3333-333333333333"
+      "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeed",
+      "userId": "99999999-9999-9999-9999-999999999998",
+      "groupId": "22222222-2222-2222-2222-222222222223"
     }
   ],
   "userPermissions": [
@@ -53,66 +53,62 @@
       "permissionId": "77777777-7777-7777-7777-777777777777"
     }
   ],
-  "families": [
-    {
-      "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-      "companyId": "11111111-1111-1111-1111-111111111111",
-      "name": "Chatarra Hierro",
-      "description": "Chatarra de hierro y acero",
-      "ivaPercentage": 21.0
-    },
-    {
-      "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
-      "companyId": "11111111-1111-1111-1111-111111111111",
-      "name": "Chatarra Cobre",
-      "description": "Chatarra de cobre",
-      "ivaPercentage": 21.0
-    }
-  ],
-  "articles": [
-    {
-      "id": "11111111-1111-1111-1111-111111111111",
-      "companyId": "11111111-1111-1111-1111-111111111111",
-      "familyId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-      "code": "HIERRO001",
-      "name": "Hierro Clase A",
-      "description": "Hierro de alta calidad",
-      "buyPrice": 0.50,
-      "sellPrice": 0.75,
-      "stock": 1000.0
-    },
-    {
-      "id": "22222222-2222-2222-2222-222222222222",
-      "companyId": "11111111-1111-1111-1111-111111111111",
-      "familyId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
-      "code": "COBRE001",
-      "name": "Cobre Clase A",
-      "description": "Cobre de alta calidad",
-      "buyPrice": 6.50,
-      "sellPrice": 7.50,
-      "stock": 500.0
-    }
-  ],
   "suppliers": [
     {
-      "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "id": "aaaaaaaa-1111-1111-1111-111111111111",
       "companyId": "11111111-1111-1111-1111-111111111111",
-      "name": "Proveedor Demo 1",
-      "taxId": "B87654321",
-      "address": "Calle Proveedor 1",
-      "phone": "912345680",
-      "email": "proveedor1@demo.com"
+      "name": "Proveedor Barcelona S.A.",
+      "taxId": "B44444444",
+      "address": "Avenida Diagonal, 100",
+      "phone": "934567890",
+      "email": "compras@proveedorbarcelona.es"
+    },
+    {
+      "id": "bbbbbbbb-2222-2222-2222-222222222222",
+      "companyId": "11111111-1111-1111-1111-111111111111",
+      "name": "Suministros Valencia",
+      "taxId": "A55555555",
+      "address": "Calle Colón, 25",
+      "phone": "963456789",
+      "email": "info@suministrosvalencia.es"
+    },
+    {
+      "id": "cccccccc-3333-3333-3333-333333333333",
+      "companyId": "11111111-1111-1111-1111-111111111111",
+      "name": "Distribuidora Sevilla",
+      "taxId": "B66666666",
+      "address": "Avenida de la Constitución, 5",
+      "phone": "954123456",
+      "email": "pedidos@distribuidorasevilla.es"
     }
   ],
   "customers": [
     {
-      "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      "id": "cccccccc-1111-1111-1111-111111111111",
       "companyId": "11111111-1111-1111-1111-111111111111",
-      "name": "Cliente Demo 1",
+      "name": "Cliente Madrid S.L.",
       "taxId": "B11111111",
-      "address": "Calle Cliente 1",
-      "phone": "912345681",
-      "email": "cliente1@demo.com"
+      "address": "Calle Alcalá, 45",
+      "phone": "915555555",
+      "email": "contacto@clientemadrid.es"
+    },
+    {
+      "id": "dddddddd-2222-2222-2222-222222222222",
+      "companyId": "11111111-1111-1111-1111-111111111111",
+      "name": "Comercial Bilbao",
+      "taxId": "A22222222",
+      "address": "Gran Vía, 8",
+      "phone": "944123456",
+      "email": "info@comercialbilbao.es"
+    },
+    {
+      "id": "eeeeeeee-3333-3333-3333-333333333333",
+      "companyId": "11111111-1111-1111-1111-111111111111",
+      "name": "Distribuidora Málaga",
+      "taxId": "B33333333",
+      "address": "Calle Larios, 12",
+      "phone": "952123456",
+      "email": "ventas@distribuidoramalaga.es"
     }
   ]
 }
