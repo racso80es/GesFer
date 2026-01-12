@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GesFer.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260111175612_AddLastLoginFieldsToAdminUsers")]
-    partial class AddLastLoginFieldsToAdminUsers
+    [Migration("20260112120311_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -595,6 +595,64 @@ namespace GesFer.Infrastructure.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("Languages", (string)null);
+                });
+
+            modelBuilder.Entity("GesFer.Domain.Entities.Log", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClientInfo")
+                        .HasColumnType("varchar");
+
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Exception")
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("MessageTemplate")
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("Properties")
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("Source")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("TimeStamp");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("Level");
+
+                    b.HasIndex("TimeStamp");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("CompanyId", "TimeStamp");
+
+                    b.HasIndex("Level", "TimeStamp");
+
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("GesFer.Domain.Entities.Permission", b =>

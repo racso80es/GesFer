@@ -12,35 +12,44 @@ public class LogConfiguration : IEntityTypeConfiguration<Log>
 
         builder.HasKey(l => l.Id);
 
+        // Id como INT AUTO_INCREMENT para compatibilidad con Serilog.Sinks.MySQL
+        builder.Property(l => l.Id)
+            .ValueGeneratedOnAdd();
+
         builder.Property(l => l.Level)
             .IsRequired()
             .HasMaxLength(50);
 
         builder.Property(l => l.Message)
             .IsRequired()
-            .HasMaxLength(2000);
+            .HasColumnType("longtext");
+
+        builder.Property(l => l.MessageTemplate)
+            .HasColumnType("longtext");
 
         builder.Property(l => l.Exception)
-            .HasMaxLength(10000);
+            .HasColumnType("longtext");
 
         builder.Property(l => l.Properties)
-            .HasColumnType("TEXT");
+            .HasColumnType("longtext");
 
         builder.Property(l => l.Source)
             .HasMaxLength(500);
 
-        builder.Property(l => l.Timestamp)
-            .IsRequired();
+        // TimeStamp con mayúscula para compatibilidad con Serilog
+        builder.Property(l => l.TimeStamp)
+            .IsRequired()
+            .HasColumnName("TimeStamp");
 
         builder.Property(l => l.ClientInfo)
-            .HasColumnType("TEXT");
+            .HasColumnType("longtext");
 
         // Índices para mejorar el rendimiento de consultas
         builder.HasIndex(l => l.Level);
-        builder.HasIndex(l => l.Timestamp);
+        builder.HasIndex(l => l.TimeStamp);
         builder.HasIndex(l => l.CompanyId);
         builder.HasIndex(l => l.UserId);
-        builder.HasIndex(l => new { l.Level, l.Timestamp });
-        builder.HasIndex(l => new { l.CompanyId, l.Timestamp });
+        builder.HasIndex(l => new { l.Level, l.TimeStamp });
+        builder.HasIndex(l => new { l.CompanyId, l.TimeStamp });
     }
 }

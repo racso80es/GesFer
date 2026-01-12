@@ -1,21 +1,31 @@
-using GesFer.Domain.Common;
-
 namespace GesFer.Domain.Entities;
 
 /// <summary>
-/// Entidad que representa un log del sistema
+/// Entidad que representa un log del sistema.
+/// NO hereda de BaseEntity porque Serilog.Sinks.MySQL requiere Id INT AUTO_INCREMENT.
+/// Esta entidad está diseñada específicamente para ser compatible con Serilog.
 /// </summary>
-public class Log : BaseEntity
+public class Log
 {
+    /// <summary>
+    /// Identificador único del log (INT AUTO_INCREMENT, administrado por MySQL/Serilog)
+    /// </summary>
+    public int Id { get; set; }
+
     /// <summary>
     /// Nivel del log (Debug, Information, Warning, Error, Fatal)
     /// </summary>
     public string Level { get; set; } = string.Empty;
 
     /// <summary>
-    /// Mensaje del log
+    /// Mensaje renderizado del log
     /// </summary>
     public string Message { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Template del mensaje (con placeholders) - usado por Serilog
+    /// </summary>
+    public string? MessageTemplate { get; set; }
 
     /// <summary>
     /// Mensaje de excepción si existe
@@ -28,14 +38,14 @@ public class Log : BaseEntity
     public string? Properties { get; set; }
 
     /// <summary>
+    /// Timestamp del log (UTC) - Serilog usa TimeStamp con mayúscula
+    /// </summary>
+    public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
+
+    /// <summary>
     /// Fuente del log (ej: "GesFer.Api.Controllers.CustomerController")
     /// </summary>
     public string? Source { get; set; }
-
-    /// <summary>
-    /// Timestamp del log (puede diferir de CreatedAt si el log viene del frontend)
-    /// </summary>
-    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     /// ID de la empresa si el log está asociado a un tenant

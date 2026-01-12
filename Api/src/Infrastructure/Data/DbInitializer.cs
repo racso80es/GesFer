@@ -60,6 +60,22 @@ public static class DbInitializer
         {
             logger.LogInformation("Verificando migraciones pendientes...");
 
+            // Verificar conexión a la base de datos
+            if (!await context.Database.CanConnectAsync())
+            {
+                logger.LogWarning("No se puede conectar a la base de datos. Intentando crear la base de datos...");
+                try
+                {
+                    await context.Database.EnsureCreatedAsync();
+                    logger.LogInformation("Base de datos creada exitosamente");
+                }
+                catch (Exception createEx)
+                {
+                    logger.LogError(createEx, "Error al crear la base de datos");
+                    throw new InvalidOperationException("No se pudo conectar ni crear la base de datos", createEx);
+                }
+            }
+
             // Obtener migraciones pendientes
             var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
             var pendingMigrationsList = pendingMigrations.ToList();
@@ -71,9 +87,24 @@ public static class DbInitializer
                     pendingMigrationsList.Count,
                     migrationsList);
                 
-                await context.Database.MigrateAsync();
-                logger.LogInformation("Migraciones aplicadas correctamente");
-                Console.WriteLine($"    Migraciones aplicadas: {string.Join(", ", pendingMigrationsList)}");
+                try
+                {
+                    await context.Database.MigrateAsync();
+                    logger.LogInformation("Migraciones aplicadas correctamente");
+                    Console.WriteLine($"    Migraciones aplicadas: {string.Join(", ", pendingMigrationsList)}");
+                }
+                catch (Exception migrateEx)
+                {
+                    logger.LogError(migrateEx, 
+                        "Error al aplicar migraciones. Tipo: {ExceptionType}, Mensaje: {Message}", 
+                        migrateEx.GetType().Name, 
+                        migrateEx.Message);
+                    throw new InvalidOperationException(
+                        $"Error al aplicar migraciones: {migrateEx.Message}. " +
+                        $"Verifique la configuración de la base de datos y las migraciones. " +
+                        $"Una vez corregido el problema, puede reintentar ejecutando la aplicación nuevamente.", 
+                        migrateEx);
+                }
             }
             else
             {
@@ -81,10 +112,17 @@ public static class DbInitializer
                 Console.WriteLine("    Migraciones: ninguna pendiente");
             }
         }
+        catch (InvalidOperationException)
+        {
+            // Re-lanzar InvalidOperationException sin envolver
+            throw;
+        }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error al aplicar migraciones");
-            throw;
+            logger.LogError(ex, "Error inesperado al aplicar migraciones. Tipo: {ExceptionType}", ex.GetType().Name);
+            throw new InvalidOperationException(
+                $"Error inesperado al aplicar migraciones: {ex.Message}", 
+                ex);
         }
     }
 

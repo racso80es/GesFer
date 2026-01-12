@@ -46,7 +46,7 @@ try
                 .WriteTo.Console()
                 .WriteTo.MySQL(
                     connectionString: connectionString,
-                    tableName: "SerilogLogs",
+                    tableName: "Logs",
                     storeTimestampInUtc: true);
         }
         else
@@ -58,7 +58,7 @@ try
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .WriteTo.MySQL(
                     connectionString: connectionString,
-                    tableName: "SerilogLogs",
+                    tableName: "Logs",
                     storeTimestampInUtc: true);
         }
     });

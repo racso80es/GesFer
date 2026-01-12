@@ -109,7 +109,8 @@ public class ApplicationDbContext : DbContext
     }
 
     /// <summary>
-    /// Configura UTF8 para todas las columnas de tipo string
+    /// Configura UTF8 para todas las columnas de tipo string que no tengan una configuración explícita de tipo.
+    /// No sobrescribe configuraciones explícitas como longtext, TEXT, etc.
     /// </summary>
     private void ConfigureUtf8(ModelBuilder modelBuilder)
     {
@@ -122,9 +123,21 @@ public class ApplicationDbContext : DbContext
 
             foreach (var property in properties)
             {
-                // MySQL usa utf8mb4_unicode_ci por defecto si se configura en el servidor
-                // Pero podemos forzarlo aquí también
-                property.SetColumnType("varchar");
+                // Solo configurar varchar si no hay una configuración explícita de tipo de columna
+                // Las configuraciones explícitas (como longtext, TEXT) tienen prioridad
+                var storeType = property.GetColumnType();
+                if (string.IsNullOrEmpty(storeType) || storeType == "nvarchar(max)" || storeType == "varchar(max)")
+                {
+                    // MySQL usa utf8mb4_unicode_ci por defecto si se configura en el servidor
+                    // Pero podemos forzarlo aquí también para propiedades sin configuración explícita
+                    // No establecemos varchar sin longitud, solo si hay HasMaxLength configurado
+                    if (property.GetMaxLength().HasValue)
+                    {
+                        // Si tiene MaxLength, usar varchar con esa longitud
+                        property.SetColumnType($"varchar({property.GetMaxLength().Value})");
+                    }
+                    // Si no tiene MaxLength y no tiene tipo explícito, dejar que EF Core use su configuración por defecto
+                }
             }
         }
     }
