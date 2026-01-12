@@ -33,8 +33,14 @@ public class TelemetryController : ControllerBase
     {
         try
         {
+            // INSTRUMENTACIÓN: Verificar que los datos están llegando
+            Console.WriteLine($"[TELEMETRY DEBUG] Log recibido - Level: {logDto.Level}, Message: {logDto.Message}, Source: {logDto.Source}");
+            _logger.LogInformation("[TELEMETRY DEBUG] Log recibido - Level: {Level}, Message: {Message}, Source: {Source}", 
+                logDto.Level, logDto.Message, logDto.Source);
+            
             // Mapear nivel numérico de Pino a LogEventLevel de Serilog
             var logLevel = MapPinoLevelToSerilogLevel(logDto.Level);
+            Console.WriteLine($"[TELEMETRY DEBUG] Nivel mapeado a Serilog: {logLevel}");
 
             // Serializar propiedades adicionales si existen
             string? propertiesJson = null;
@@ -61,17 +67,22 @@ public class TelemetryController : ControllerBase
             using (LogContext.PushProperty("CompanyId", companyId))
             using (LogContext.PushProperty("UserId", userId))
             {
+                // INSTRUMENTACIÓN: Verificar antes de escribir
+                Console.WriteLine($"[TELEMETRY DEBUG] Escribiendo log con nivel: {logLevel}, mensaje: {logDto.Message}");
+                
                 // Escribir el log usando Serilog
                 if (!string.IsNullOrEmpty(logDto.Exception))
                 {
                     // Si hay excepción, usar el método con excepción
                     var exception = new Exception(logDto.Exception);
                     Log.Write(logLevel, exception, logDto.Message);
+                    Console.WriteLine($"[TELEMETRY DEBUG] Log escrito con excepción usando Log.Write - Nivel: {logLevel}");
                 }
                 else
                 {
                     // Log normal sin excepción
                     Log.Write(logLevel, logDto.Message);
+                    Console.WriteLine($"[TELEMETRY DEBUG] Log escrito sin excepción usando Log.Write - Nivel: {logLevel}");
                 }
             }
 

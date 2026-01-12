@@ -17,15 +17,19 @@ public class LogConfiguration : IEntityTypeConfiguration<Log>
             .ValueGeneratedOnAdd();
 
         builder.Property(l => l.Level)
-            .IsRequired()
-            .HasMaxLength(50);
+            .IsRequired(false) // NULL permitido para compatibilidad con Serilog.Sinks.MySQL
+            .HasMaxLength(128); // Aumentado a 128 para compatibilidad con Serilog.Sinks.MySQL
 
         builder.Property(l => l.Message)
-            .IsRequired()
+            .IsRequired(false) // NULL permitido para compatibilidad con Serilog.Sinks.MySQL
             .HasColumnType("longtext");
 
         builder.Property(l => l.MessageTemplate)
             .HasColumnType("longtext");
+
+        // Template es requerido por Serilog.Sinks.MySQL v4.1+
+        // Aunque no está en la entidad, debe existir en la tabla
+        // Se añade mediante migración manual o ALTER TABLE
 
         builder.Property(l => l.Exception)
             .HasColumnType("longtext");

@@ -7,7 +7,11 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.Async;
 using Serilog.Sinks.MySQL;
+using Serilog.Debugging;
 using System.Text;
+
+// Habilitar self-logging de Serilog para diagnosticar problemas
+SelfLog.Enable(msg => Console.Error.WriteLine($"[SERILOG INTERNAL] {msg}"));
 
 // Configurar Serilog antes de crear el builder
 Log.Logger = new LoggerConfiguration()
@@ -47,6 +51,7 @@ try
                 .WriteTo.MySQL(
                     connectionString: connectionString,
                     tableName: "Logs",
+                    restrictedToMinimumLevel: LogEventLevel.Verbose, // Nivel mínimo explícito para el sink
                     storeTimestampInUtc: true);
         }
         else
@@ -59,6 +64,7 @@ try
                 .WriteTo.MySQL(
                     connectionString: connectionString,
                     tableName: "Logs",
+                    restrictedToMinimumLevel: LogEventLevel.Information, // Nivel mínimo explícito para el sink
                     storeTimestampInUtc: true);
         }
     });
