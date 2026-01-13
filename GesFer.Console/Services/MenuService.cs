@@ -22,6 +22,7 @@ public class MenuService
     private readonly SeedService _seedService;
     private readonly IntegrityValidationService _integrityValidationService;
     private readonly GoldenRulesComplianceService _goldenRulesService;
+    private readonly DatabaseInitializationService _databaseInitializationService;
     private readonly LogService _logService;
 
     public MenuService(
@@ -30,6 +31,7 @@ public class MenuService
         SeedService seedService,
         IntegrityValidationService integrityValidationService,
         GoldenRulesComplianceService goldenRulesService,
+        DatabaseInitializationService databaseInitializationService,
         LogService logService)
     {
         _dockerService = dockerService;
@@ -37,6 +39,7 @@ public class MenuService
         _seedService = seedService;
         _integrityValidationService = integrityValidationService;
         _goldenRulesService = goldenRulesService;
+        _databaseInitializationService = databaseInitializationService;
         _logService = logService;
     }
 
@@ -53,13 +56,14 @@ public class MenuService
         Console.WriteLine("Seleccione una opción:");
         Console.WriteLine();
         Console.WriteLine("  1. Inicialización completa");
-        Console.WriteLine("  2. Validación de integridad completa");
-        Console.WriteLine("  3. Cumplimiento de Reglas de Oro (continuar desde último punto)");
-        Console.WriteLine("  4. Gestionar contenedores Docker");
-        Console.WriteLine("  5. Aplicar migraciones de BD");
-        Console.WriteLine("  6. Ejecutar seeds de datos");
-        Console.WriteLine("  7. Squash de migraciones (Resetear y crear migración inicial única)");
-        Console.WriteLine("  8. Salir");
+        Console.WriteLine("  2. Inicialización de base de datos");
+        Console.WriteLine("  3. Validación de integridad completa");
+        Console.WriteLine("  4. Cumplimiento de Reglas de Oro (continuar desde último punto)");
+        Console.WriteLine("  5. Gestionar contenedores Docker");
+        Console.WriteLine("  6. Aplicar migraciones de BD");
+        Console.WriteLine("  7. Ejecutar seeds de datos");
+        Console.WriteLine("  8. Squash de migraciones (Resetear y crear migración inicial única)");
+        Console.WriteLine("  9. Salir");
         Console.WriteLine();
         Console.Write("Opción: ");
     }
@@ -67,7 +71,7 @@ public class MenuService
     /// <summary>
     /// Ejecuta la opción seleccionada
     /// </summary>
-    public async Task<bool> ExecuteOptionAsync(int option)
+    public async Task<bool> ExecuteOptionAsync(int option, bool waitForInput = true)
     {
         try
         {
@@ -76,18 +80,20 @@ public class MenuService
                 case 1:
                     return await ExecuteFullInitializationAsync();
                 case 2:
-                    return await ExecuteIntegrityValidationAsync();
+                    return await ExecuteDatabaseInitializationStep8Async(waitForInput);
                 case 3:
-                    return await ExecuteGoldenRulesComplianceAsync();
+                    return await ExecuteIntegrityValidationAsync();
                 case 4:
-                    return await ExecuteDockerMenuAsync();
+                    return await ExecuteGoldenRulesComplianceAsync();
                 case 5:
-                    return await ExecuteMigrationsMenuAsync();
+                    return await ExecuteDockerMenuAsync();
                 case 6:
-                    return await ExecuteSeedsMenuAsync();
+                    return await ExecuteMigrationsMenuAsync();
                 case 7:
-                    return await ExecuteMigrationSquashAsync();
+                    return await ExecuteSeedsMenuAsync();
                 case 8:
+                    return await ExecuteMigrationSquashAsync();
+                case 9:
                     return false; // Salir
                 default:
                     Console.WriteLine("Opción no válida. Presione cualquier tecla para continuar...");
@@ -273,13 +279,71 @@ public class MenuService
         await _migrationService.CreateInitialMigrationIfNeededAsync();
         Console.WriteLine();
 
-        // 8. Aplicar migraciones y ejecutar seeds usando DbInitializer (sistema profesionalizado)
+        // 8. Aplicar migraciones y ejecutar seeds usando DatabaseInitializationService
         Console.WriteLine("[8/9] Aplicando migraciones y cargando datos iniciales desde JSON...");
-        if (!await ExecuteDatabaseInitializationAsync())
+        var step8Result = await _databaseInitializationService.ExecuteStep8Async();
+        
+        // Mostrar información del proceso de forma visual
+        Console.WriteLine();
+        if (step8Result.Information.Any())
         {
+            foreach (var info in step8Result.Information)
+            {
+                if (info.Contains("✓"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"  {info}");
+                    Console.ResetColor();
+                }
+                else if (info.Contains("⚠"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"  {info}");
+                    Console.ResetColor();
+                }
+                else if (info.Contains("Paso") || info.Contains("Iniciando") || info.Contains("==="))
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"  {info}");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.WriteLine($"  {info}");
+                }
+            }
             Console.WriteLine();
+        }
+        
+        if (step8Result.Status != "ok")
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("ERROR: No se pudo inicializar la base de datos");
+            Console.ResetColor();
             Console.WriteLine();
+            
+            // Mostrar errores
+            if (step8Result.Errors.Any())
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Errores encontrados:");
+                foreach (var error in step8Result.Errors)
+                {
+                    Console.WriteLine($"  ❌ {error}");
+                }
+                Console.ResetColor();
+                Console.WriteLine();
+            }
+            
+            // Mostrar mensaje resumen
+            if (!string.IsNullOrEmpty(step8Result.Message))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Mensaje: {step8Result.Message}");
+                Console.ResetColor();
+                Console.WriteLine();
+            }
+            
             Console.WriteLine("Para más detalles, revisa el archivo de log:");
             Console.WriteLine($"  {_logService.GetLogFilePath()}");
             Console.WriteLine();
@@ -287,6 +351,11 @@ public class MenuService
             Console.ReadKey();
             return true;
         }
+        
+        // Mostrar mensaje de éxito
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"✓ {step8Result.Message}");
+        Console.ResetColor();
         Console.WriteLine();
 
         Console.WriteLine("========================================");
@@ -315,74 +384,124 @@ public class MenuService
     }
 
     /// <summary>
-    /// Ejecuta la inicialización de base de datos usando DbInitializer (migraciones + seeding desde JSON)
+    /// Ejecuta la inicialización de base de datos (Punto 8) de forma aislada
     /// </summary>
-    private async Task<bool> ExecuteDatabaseInitializationAsync()
+    private async Task<bool> ExecuteDatabaseInitializationStep8Async(bool waitForInput = true)
     {
         try
         {
-            // Usar el mismo sistema que la API para mantener consistencia
-            // Esto aplica migraciones y carga datos desde JSON de forma idempotente
-            var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
-            var apiPath = Path.Combine(rootPath, "Api", "src", "Api");
+            Console.Clear();
+        }
+        catch (IOException)
+        {
+            // Si no hay consola interactiva, continuar sin limpiar
+        }
+        
+        Console.WriteLine("========================================");
+        Console.WriteLine("   Inicialización de Base de Datos");
+        Console.WriteLine("========================================");
+        Console.WriteLine();
+        Console.WriteLine($"Log: {_logService.GetLogFilePath()}");
+        Console.WriteLine();
+        
+        var result = await _databaseInitializationService.ExecuteStep8Async();
+        
+        Console.WriteLine();
+        Console.WriteLine("========================================");
+        Console.ForegroundColor = result.Status == "ok" ? ConsoleColor.Green : ConsoleColor.Red;
+        Console.WriteLine($"   Resultado: {result.Status.ToUpper()}");
+        Console.ResetColor();
+        Console.WriteLine("========================================");
+        Console.WriteLine();
 
-            // Configurar servicios igual que la API
-            var services = new ServiceCollection();
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(apiPath)
-                .AddJsonFile("appsettings.json", optional: true)
-                .AddJsonFile("appsettings.Development.json", optional: true)
-                .AddEnvironmentVariables()
-                .Build();
-
-            var connectionString = configuration.GetConnectionString("DefaultConnection")
-                ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
-
-            services.AddDbContext<ApplicationDbContext>(options =>
+        // Mostrar información del proceso de forma visual
+        if (result.Information.Any())
+        {
+            Console.WriteLine("Información del proceso:");
+            Console.WriteLine();
+            foreach (var info in result.Information)
             {
-                options.UseMySql(
-                    connectionString,
-                    new MySqlServerVersion(new Version(8, 0, 0)),
-                    mysqlOptions =>
-                    {
-                        mysqlOptions.EnableStringComparisonTranslations();
-                        mysqlOptions.EnableRetryOnFailure(
-                            maxRetryCount: 5,
-                            maxRetryDelay: TimeSpan.FromSeconds(30),
-                            errorNumbersToAdd: null);
-                    });
-            });
+                if (info.Contains("✓"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"  {info}");
+                    Console.ResetColor();
+                }
+                else if (info.Contains("⚠"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"  {info}");
+                    Console.ResetColor();
+                }
+                else if (info.Contains("Paso") || info.Contains("Iniciando") || info.Contains("==="))
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine($"  {info}");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.WriteLine($"  {info}");
+                }
+            }
+            Console.WriteLine();
+        }
 
-            services.AddLogging(builder =>
+        // Mostrar errores si los hay
+        if (result.Errors.Any())
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Errores encontrados:");
+            foreach (var error in result.Errors)
             {
-                builder.AddConsole();
-                builder.SetMinimumLevel(LogLevel.Information);
-            });
+                Console.WriteLine($"  ❌ {error}");
+            }
+            Console.ResetColor();
+            Console.WriteLine();
+        }
 
-            services.AddScoped<JsonDataSeeder>();
-            services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
+        // Mostrar mensaje resumen
+        if (!string.IsNullOrEmpty(result.Message))
+        {
+            Console.ForegroundColor = result.Status == "ok" ? ConsoleColor.Green : ConsoleColor.Red;
+            Console.WriteLine($"Mensaje: {result.Message}");
+            Console.ResetColor();
+            Console.WriteLine();
+        }
 
-            var serviceProvider = services.BuildServiceProvider();
-            using (serviceProvider as IDisposable)
+        if (result.Status == "ok")
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("✓ Proceso completado exitosamente");
+            Console.ResetColor();
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("✗ Proceso falló");
+            Console.ResetColor();
+            Console.WriteLine();
+            Console.WriteLine("Para más detalles, revisa el archivo de log:");
+            Console.WriteLine($"  {_logService.GetLogFilePath()}");
+        }
+        
+        Console.WriteLine();
+        
+        // Solo esperar entrada si se ejecuta en modo interactivo
+        if (waitForInput)
+        {
+            Console.WriteLine("Presione cualquier tecla para continuar...");
+            try
             {
-                // Usar DbInitializer para aplicar migraciones y seeding
-                // Forzamos isDevelopment=true para que siempre ejecute en la consola
-                Console.WriteLine();
-                await DbInitializer.InitializeAsync(serviceProvider, isDevelopment: true);
-                Console.WriteLine();
-                
-                _logService.WriteLog("Inicialización de base de datos completada usando DbInitializer");
-                return true;
+                Console.ReadKey();
+            }
+            catch (InvalidOperationException)
+            {
+                // Si no hay consola interactiva, continuar sin esperar
             }
         }
-        catch (Exception ex)
-        {
-            var errorMsg = $"Error al inicializar base de datos: {ex.Message}";
-            Console.WriteLine($"    ⚠ {errorMsg}");
-            _logService.WriteError(errorMsg, ex);
-            return false;
-        }
+        
+        return result.Status == "ok";
     }
 
     /// <summary>
