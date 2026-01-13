@@ -1,12 +1,10 @@
 using FluentAssertions;
-using GesFer.Api.Services;
 using GesFer.Infrastructure.Data;
 using GesFer.IntegrationTests.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -15,15 +13,16 @@ namespace GesFer.IntegrationTests.Controllers;
 /// <summary>
 /// Tests de integración para SetupController
 /// </summary>
-public class SetupControllerTests : IClassFixture<CustomWebApplicationFactory<GesFer.Api.Program>>
+[Collection("DatabaseStep")]
+public class SetupControllerTests
 {
     private readonly HttpClient _client;
-    private readonly CustomWebApplicationFactory<GesFer.Api.Program> _factory;
+    private readonly DatabaseFixture _fixture;
 
-    public SetupControllerTests(CustomWebApplicationFactory<GesFer.Api.Program> factory)
+    public SetupControllerTests(DatabaseFixture fixture)
     {
-        _factory = factory;
-        _client = factory.CreateClient();
+        _fixture = fixture;
+        _client = fixture.Factory.CreateClient();
     }
 
     [Fact]
@@ -42,18 +41,11 @@ public class SetupControllerTests : IClassFixture<CustomWebApplicationFactory<Ge
     [Fact]
     public async Task SeedData_ShouldInsertUsersCorrectly()
     {
-        // Arrange
-        using var scope = _factory.Services.CreateScope();
+        // Arrange - La base de datos ya está inicializada por DatabaseFixture
+        using var scope = _fixture.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        
-        // Limpiar y crear base de datos en memoria
-        context.Database.EnsureDeleted();
-        context.Database.EnsureCreated();
-        
-        // Act - Seed datos usando el helper (simula lo que hace SetupService)
-        await TestDataSeeder.SeedTestDataAsync(context);
 
-        // Assert - Verificar que los usuarios se insertaron
+        // Assert - Verificar que los usuarios se insertaron (ya están en la BD por el fixture)
         var users = await context.Users
             .Where(u => u.DeletedAt == null)
             .ToListAsync();
@@ -78,6 +70,7 @@ public class SetupControllerTests : IClassFixture<CustomWebApplicationFactory<Ge
         var userPermissions = await context.UserPermissions
             .Where(up => up.UserId == adminUser.Id && up.DeletedAt == null)
             .ToListAsync();
+        
         userPermissions.Should().NotBeEmpty("El usuario debería tener al menos un permiso directo");
     }
 

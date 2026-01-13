@@ -36,19 +36,18 @@ if (-not $mysqlReady) {
 # Esperar un poco más para asegurar que MySQL esté completamente listo
 Start-Sleep -Seconds 5
 
-# Conectar a MySQL y crear la base de datos si no existe
+# Conectar a MySQL y verificar la base de datos
 Write-Host "3. Verificando base de datos..." -ForegroundColor Yellow
 $dbExists = docker exec gesfer_api_db mysql -u scrapuser -pscrappassword -e "SHOW DATABASES LIKE 'ScrapDb';" 2>&1
 if ($LASTEXITCODE -ne 0 -or $dbExists -notmatch "ScrapDb") {
-    Write-Host "   La base de datos no existe, se creara automaticamente con EnsureCreated" -ForegroundColor Yellow
+    Write-Host "   La base de datos no existe, se creara automaticamente con migraciones" -ForegroundColor Yellow
 } else {
     Write-Host "   Base de datos existe" -ForegroundColor Green
 }
 
-# Eliminar tabla de migraciones si existe para permitir EnsureCreated
-Write-Host "4. Preparando base de datos para EnsureCreated..." -ForegroundColor Yellow
-docker exec gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb -e "DROP TABLE IF EXISTS __EFMigrationsHistory;" 2>&1 | Out-Null
-Write-Host "   Preparacion completada" -ForegroundColor Green
+# NOTA: Las tablas se crean mediante migraciones, NO usar EnsureCreated
+Write-Host "4. Base de datos lista para migraciones..." -ForegroundColor Yellow
+Write-Host "   Las tablas se crearan mediante migraciones al iniciar la API" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "=== Base de datos lista para inicializacion ===" -ForegroundColor Cyan

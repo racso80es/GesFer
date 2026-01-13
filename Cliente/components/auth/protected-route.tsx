@@ -14,6 +14,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
   const hasRedirectedRef = useRef(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [forceAllowInteraction, setForceAllowInteraction] = useState(false);
 
   useEffect(() => {
     // Si ya verificamos, no hacer nada más
@@ -81,19 +82,9 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
     };
   }, [isAuthenticated, isLoading, router, pathname, hasCheckedAuth]);
 
-  // Verificar si estamos en una ruta de login (no requiere autenticación)
-  const isLoginPage = pathname?.includes('/login') || pathname === '/login';
-
-  // Si estamos en login, permitir acceso sin verificar autenticación
-  if (isLoginPage) {
-    return <>{children}</>;
-  }
-
   // Mientras carga y no hemos verificado, mostrar loading
   // El timeout de seguridad asegura que no se quede bloqueado indefinidamente
   // IMPORTANTE: Después de 3 segundos máximo, permitir interacción incluso si isLoading es true
-  const [forceAllowInteraction, setForceAllowInteraction] = useState(false);
-  
   useEffect(() => {
     if (isLoading && !hasCheckedAuth) {
       const forceTimeout = setTimeout(() => {
@@ -106,6 +97,14 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
       setForceAllowInteraction(false);
     }
   }, [isLoading, hasCheckedAuth]);
+
+  // Verificar si estamos en una ruta de login (no requiere autenticación)
+  const isLoginPage = pathname?.includes('/login') || pathname === '/login';
+
+  // Si estamos en login, permitir acceso sin verificar autenticación
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
   
   if (isLoading && !hasCheckedAuth && !forceAllowInteraction) {
     // Si hay usuario en localStorage pero isLoading todavía es true, permitir acceso

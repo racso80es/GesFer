@@ -1,7 +1,6 @@
 using FluentAssertions;
 using GesFer.Application.DTOs.Auth;
 using GesFer.Infrastructure.Data;
-using GesFer.IntegrationTests.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
@@ -16,38 +15,16 @@ namespace GesFer.IntegrationTests.Controllers;
 /// <summary>
 /// Tests de integración para AuthController
 /// </summary>
-public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<GesFer.Api.Program>>, IAsyncLifetime
+[Collection("DatabaseStep")]
+public class AuthControllerTests
 {
     private readonly HttpClient _client;
-    private readonly CustomWebApplicationFactory<GesFer.Api.Program> _factory;
+    private readonly DatabaseFixture _fixture;
 
-    public AuthControllerTests(CustomWebApplicationFactory<GesFer.Api.Program> factory)
+    public AuthControllerTests(DatabaseFixture fixture)
     {
-        _factory = factory;
-        _client = factory.CreateClient();
-    }
-
-    public async Task InitializeAsync()
-    {
-        await SeedTestDataAsync();
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
-    }
-
-    private async Task SeedTestDataAsync()
-    {
-        using var scope = _factory.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        
-        // Asegurar que la base de datos esté creada
-        await context.Database.EnsureDeletedAsync(); // Limpiar antes de crear
-        await context.Database.EnsureCreatedAsync();
-        
-        // Seed datos
-        await TestDataSeeder.SeedTestDataAsync(context);
+        _fixture = fixture;
+        _client = fixture.Factory.CreateClient();
     }
 
     [Fact]
@@ -268,7 +245,7 @@ public class AuthControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
         };
 
         // Verificar primero que el hash en la base de datos sea el correcto
-        using var scope = _factory.Services.CreateScope();
+        using var scope = _fixture.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
         var userFromDb = await context.Users

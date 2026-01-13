@@ -8,24 +8,6 @@ const getMinLevel = (): pino.Level => {
   return env === 'production' ? 'info' : 'debug';
 };
 
-// Configuración base del logger
-const loggerConfig: pino.LoggerOptions = {
-  level: getMinLevel(),
-  base: {
-    env: process.env.NODE_ENV || 'development',
-    app: 'GesFer-Client',
-  },
-  timestamp: pino.stdTimeFunctions.isoTime,
-  formatters: {
-    level: (label) => {
-      return { level: label };
-    },
-  },
-};
-
-// Crear el logger base
-const baseLogger = pino(loggerConfig);
-
 // Transportador personalizado para enviar logs al backend
 class TelemetryTransport {
   private apiUrl: string;
@@ -139,11 +121,8 @@ const telemetryTransport = new TelemetryTransport();
 
 // Hook personalizado para interceptar logs
 const telemetryHook = {
-  logMethod(inputArgs: any[], method: any) {
+  logMethod(inputArgs: any[], method: any, level: number) {
     const [obj, msg, ...args] = inputArgs;
-    
-    // Determinar el nivel numérico de Pino
-    const level = method.level || 30; // Por defecto info
     
     // Extraer información del log
     const message = typeof msg === 'string' ? msg : JSON.stringify(msg);
@@ -175,12 +154,26 @@ const telemetryHook = {
   },
 };
 
-// Crear el logger con el hook
-const logger = baseLogger.child({}, {
+// Configuración base del logger
+const loggerConfig: pino.LoggerOptions = {
+  level: getMinLevel(),
+  base: {
+    env: process.env.NODE_ENV || 'development',
+    app: 'GesFer-Client',
+  },
+  timestamp: pino.stdTimeFunctions.isoTime,
+  formatters: {
+    level: (label) => {
+      return { level: label };
+    },
+  },
   hooks: {
     logMethod: telemetryHook.logMethod as any,
   },
-});
+};
+
+// Crear el logger base
+const logger = pino(loggerConfig);
 
 // Exportar el logger
 export default logger;

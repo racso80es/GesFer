@@ -33,12 +33,12 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -48,22 +48,22 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("LastLoginIp")
                         .HasMaxLength(45)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(45)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -71,7 +71,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
@@ -96,7 +96,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("char(36)");
@@ -109,7 +109,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<Guid>("FamilyId")
                         .HasColumnType("char(36)");
@@ -120,7 +120,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<decimal>("SellPrice")
                         .HasPrecision(18, 4)
@@ -163,14 +163,14 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Action")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<DateTime>("ActionTimestamp")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("AdditionalData")
                         .HasMaxLength(2000)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(2000)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -178,7 +178,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("CursorId")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)");
@@ -186,7 +186,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("HttpMethod")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -194,7 +194,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Path")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -202,7 +202,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
@@ -235,7 +235,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<Guid>("StateId")
                         .HasColumnType("char(36)");
@@ -262,7 +262,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<Guid?>("CityId")
                         .HasColumnType("char(36)");
@@ -278,7 +278,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -289,11 +289,11 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<Guid?>("PostalCodeId")
                         .HasColumnType("char(36)");
@@ -303,7 +303,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("TaxId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -334,7 +334,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(3)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(3)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -351,7 +351,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -376,7 +376,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Address")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<Guid?>("CityId")
                         .HasColumnType("char(36)");
@@ -395,7 +395,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -403,11 +403,11 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<Guid?>("PostalCodeId")
                         .HasColumnType("char(36)");
@@ -420,7 +420,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("TaxId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -459,7 +459,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -471,7 +471,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -497,7 +497,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -505,7 +505,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -561,7 +561,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -571,7 +571,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -579,7 +579,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -601,32 +601,30 @@ namespace GesFer.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ClientInfo")
-                        .HasColumnType("varchar");
+                        .HasColumnType("longtext");
 
                     b.Property<Guid?>("CompanyId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Exception")
-                        .HasColumnType("varchar");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Level")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar");
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("varchar");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("MessageTemplate")
-                        .HasColumnType("varchar");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Properties")
-                        .HasColumnType("varchar");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Source")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime(6)")
@@ -667,7 +665,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -675,7 +673,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Key")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -700,7 +698,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(20)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -755,7 +753,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Reference")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<Guid>("SupplierId")
                         .HasColumnType("char(36)");
@@ -855,7 +853,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -917,7 +915,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Reference")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<Guid?>("SalesInvoiceId")
                         .HasColumnType("char(36)");
@@ -1017,7 +1015,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -1058,7 +1056,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Code")
                         .HasMaxLength(10)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(10)");
 
                     b.Property<Guid>("CountryId")
                         .HasColumnType("char(36)");
@@ -1075,7 +1073,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -1098,7 +1096,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Address")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<Guid?>("BuyTariffId")
                         .HasColumnType("char(36)");
@@ -1120,7 +1118,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -1128,11 +1126,11 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<Guid?>("PostalCodeId")
                         .HasColumnType("char(36)");
@@ -1142,7 +1140,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("TaxId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -1181,7 +1179,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -1189,7 +1187,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -1253,7 +1251,7 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Address")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<Guid?>("CityId")
                         .HasColumnType("char(36)");
@@ -1272,12 +1270,12 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -1288,16 +1286,16 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(500)");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<Guid?>("PostalCodeId")
                         .HasColumnType("char(36)");
@@ -1311,7 +1309,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 

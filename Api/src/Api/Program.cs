@@ -149,9 +149,37 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// Inicializar base de datos (migraciones y seeding) solo en Development
+// Inicializar base de datos (migraciones y seeding) según configuración
 // Este proceso es idempotente y seguro de ejecutar múltiples veces
-await DbInitializer.InitializeAsync(app.Services, app.Environment.IsDevelopment());
+var shouldInitialize = false;
+var isTesting = app.Environment.EnvironmentName == "Testing";
+
+// En Testing siempre ejecutar (necesario para tests E2E)
+if (isTesting)
+{
+    shouldInitialize = true;
+}
+// En Development, verificar la configuración AutoRunMigrations
+else if (isDevelopment)
+{
+    // Leer configuración, por defecto false si no está configurado
+    var autoRunMigrations = app.Configuration.GetValue<bool>("Database:AutoRunMigrations", false);
+    shouldInitialize = autoRunMigrations;
+    
+    if (autoRunMigrations)
+    {
+        Log.Information("AutoRunMigrations está habilitado. Las migraciones se ejecutarán automáticamente al iniciar.");
+    }
+    else
+    {
+        Log.Information("AutoRunMigrations está deshabilitado. Las migraciones no se ejecutarán automáticamente.");
+    }
+}
+
+if (shouldInitialize)
+{
+    await DbInitializer.InitializeAsync(app.Services, isDevelopment);
+}
 
 // Configurar el pipeline HTTP
 if (app.Environment.IsDevelopment())

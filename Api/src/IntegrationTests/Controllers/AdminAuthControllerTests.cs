@@ -1,9 +1,5 @@
 using FluentAssertions;
 using GesFer.Application.DTOs.Auth;
-using GesFer.Domain.Entities;
-using GesFer.Infrastructure.Data;
-using GesFer.IntegrationTests.Helpers;
-using Microsoft.Extensions.DependencyInjection;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http.Json;
@@ -16,38 +12,16 @@ namespace GesFer.IntegrationTests.Controllers;
 /// Tests de integración para AdminAuthController
 /// Valida el login administrativo y los claims del JWT (role: Admin, CursorId)
 /// </summary>
-public class AdminAuthControllerTests : IClassFixture<CustomWebApplicationFactory<GesFer.Api.Program>>, IAsyncLifetime
+[Collection("DatabaseStep")]
+public class AdminAuthControllerTests
 {
     private readonly HttpClient _client;
-    private readonly CustomWebApplicationFactory<GesFer.Api.Program> _factory;
+    private readonly DatabaseFixture _fixture;
 
-    public AdminAuthControllerTests(CustomWebApplicationFactory<GesFer.Api.Program> factory)
+    public AdminAuthControllerTests(DatabaseFixture fixture)
     {
-        _factory = factory;
-        _client = factory.CreateClient();
-    }
-
-    public async Task InitializeAsync()
-    {
-        await SeedTestDataAsync();
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
-    }
-
-    private async Task SeedTestDataAsync()
-    {
-        using var scope = _factory.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        
-        // Asegurar que la base de datos esté creada
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.EnsureCreatedAsync();
-        
-        // Seed datos (incluye AdminUser de prueba)
-        await TestDataSeeder.SeedTestDataAsync(context);
+        _fixture = fixture;
+        _client = fixture.Factory.CreateClient();
     }
 
     [Fact]

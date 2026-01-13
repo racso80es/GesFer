@@ -58,7 +58,8 @@ public class MenuService
         Console.WriteLine("  4. Gestionar contenedores Docker");
         Console.WriteLine("  5. Aplicar migraciones de BD");
         Console.WriteLine("  6. Ejecutar seeds de datos");
-        Console.WriteLine("  7. Salir");
+        Console.WriteLine("  7. Squash de migraciones (Resetear y crear migración inicial única)");
+        Console.WriteLine("  8. Salir");
         Console.WriteLine();
         Console.Write("Opción: ");
     }
@@ -85,6 +86,8 @@ public class MenuService
                 case 6:
                     return await ExecuteSeedsMenuAsync();
                 case 7:
+                    return await ExecuteMigrationSquashAsync();
+                case 8:
                     return false; // Salir
                 default:
                     Console.WriteLine("Opción no válida. Presione cualquier tecla para continuar...");
@@ -571,6 +574,117 @@ public class MenuService
         Console.WriteLine("Presione cualquier tecla para continuar...");
         Console.ReadKey();
         
+        return true;
+    }
+
+    /// <summary>
+    /// Ejecuta el squash de migraciones
+    /// </summary>
+    private async Task<bool> ExecuteMigrationSquashAsync()
+    {
+        Console.Clear();
+        Console.WriteLine("========================================");
+        Console.WriteLine("   Squash de Migraciones");
+        Console.WriteLine("========================================");
+        Console.WriteLine();
+        Console.WriteLine("Este proceso realizará:");
+        Console.WriteLine("  • Eliminación de todas las migraciones existentes");
+        Console.WriteLine("  • Generación de una nueva migración inicial única");
+        Console.WriteLine("  • Verificación de que incluya las tablas Logs y AdminUsers");
+        Console.WriteLine();
+        Console.WriteLine("⚠ ADVERTENCIA: Este proceso eliminará todas las migraciones existentes.");
+        Console.WriteLine("   Asegúrate de tener un backup si es necesario.");
+        Console.WriteLine();
+        Console.Write("¿Desea continuar? (s/N): ");
+        var confirm = Console.ReadLine();
+        
+        if (confirm?.Trim().ToLower() != "s" && confirm?.Trim().ToLower() != "sí")
+        {
+            Console.WriteLine();
+            Console.WriteLine("Operación cancelada.");
+            Console.WriteLine("Presione cualquier tecla para continuar...");
+            Console.ReadKey();
+            return true;
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Ejecutando squash de migraciones...");
+        Console.WriteLine();
+
+        var result = await _migrationService.SquashMigrationsAsync();
+
+        Console.WriteLine();
+        Console.WriteLine("========================================");
+        if (result.Success)
+        {
+            Console.WriteLine("   ✓ Squash de migraciones completado");
+            Console.WriteLine("========================================");
+            Console.WriteLine();
+            Console.WriteLine("Resumen:");
+            Console.WriteLine($"  • Archivos eliminados: {result.DeletedFilesCount}");
+            Console.WriteLine($"  • Archivos creados: {result.CreatedFilesCount}");
+            Console.WriteLine($"  • Total de tablas en migración: {result.TotalTablesInMigration}");
+            Console.WriteLine();
+            
+            if (result.CreatedFiles.Count > 0)
+            {
+                Console.WriteLine("Archivos de migración creados:");
+                foreach (var file in result.CreatedFiles)
+                {
+                    Console.WriteLine($"  - {file}");
+                }
+                Console.WriteLine();
+            }
+
+            if (result.TablesFound.Count > 0)
+            {
+                Console.WriteLine("Tablas encontradas en la migración:");
+                var criticalTables = new[] { "Logs", "AdminUsers" };
+                foreach (var table in result.TablesFound.OrderBy(t => t))
+                {
+                    var isCritical = criticalTables.Contains(table);
+                    var marker = isCritical ? "✓" : "  ";
+                    Console.WriteLine($"  {marker} {table}");
+                }
+                Console.WriteLine();
+            }
+
+            // Verificar tablas críticas
+            var hasLogs = result.TablesFound.Contains("Logs");
+            var hasAdminUsers = result.TablesFound.Contains("AdminUsers");
+            
+            if (hasLogs && hasAdminUsers)
+            {
+                Console.WriteLine("✓ Tablas críticas (Logs y AdminUsers) incluidas correctamente");
+            }
+            else
+            {
+                Console.WriteLine("⚠ ADVERTENCIA: Algunas tablas críticas no se encontraron:");
+                if (!hasLogs) Console.WriteLine("  - Logs");
+                if (!hasAdminUsers) Console.WriteLine("  - AdminUsers");
+            }
+        }
+        else
+        {
+            Console.WriteLine("   ✗ Squash de migraciones falló");
+            Console.WriteLine("========================================");
+            Console.WriteLine();
+            Console.WriteLine($"Error: {result.ErrorMessage}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Mensajes del proceso:");
+        foreach (var message in result.Messages)
+        {
+            Console.WriteLine($"  {message}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine($"Log completo disponible en: {_logService.GetLogFilePath()}");
+        Console.WriteLine();
+        Console.WriteLine("Presione cualquier tecla para continuar...");
+        Console.ReadKey();
+
         return true;
     }
 }

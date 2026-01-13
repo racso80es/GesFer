@@ -318,43 +318,188 @@ public class JsonDataSeeder
             return;
         }
 
-        // Seed Companies
-        if (data.Companies != null)
+        // Orden jerárquico EXACTO para evitar errores de Foreign Key:
+        // Este orden es CRÍTICO y no debe cambiarse sin revisar todas las dependencias
+        
+        // 1. Languages (sin dependencias) - DEBE ejecutarse primero
+        if (data.Languages != null && data.Languages.Any())
         {
+            await SeedLanguagesAsync(data.Languages);
+            // Guardar cambios explícitamente para asegurar que Languages estén disponibles
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Languages sembrados: {Count}", data.Languages.Count);
+        }
+
+        // 2. Countries (depende de Languages) - DEBE ejecutarse después de Languages
+        if (data.Countries != null && data.Countries.Any())
+        {
+            // Validar que todos los LanguageId referenciados existen
+            var countryLanguageIds = data.Countries.Select(c => Guid.Parse(c.LanguageId)).Distinct().ToList();
+            var existingCountryLanguages = await _context.Languages
+                .IgnoreQueryFilters()
+                .Where(l => countryLanguageIds.Contains(l.Id))
+                .Select(l => l.Id)
+                .ToListAsync();
+            
+            var missingCountryLanguages = countryLanguageIds.Except(existingCountryLanguages).ToList();
+            if (missingCountryLanguages.Any())
+            {
+                _logger.LogError("Error de integridad referencial: Los siguientes LanguageId no existen para Countries: {MissingIds}", 
+                    string.Join(", ", missingCountryLanguages));
+                throw new InvalidOperationException(
+                    $"No se pueden insertar Countries: Los siguientes LanguageId no existen en la base de datos: {string.Join(", ", missingCountryLanguages)}");
+            }
+            
+            await SeedCountriesAsync(data.Countries);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Countries sembrados: {Count}", data.Countries.Count);
+        }
+
+        // 3. Cities (depende de Countries/States) - DEBE ejecutarse después de Countries
+        if (data.Cities != null && data.Cities.Any())
+        {
+            await SeedCitiesAsync(data.Cities);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Cities sembrados: {Count}", data.Cities.Count);
+        }
+
+        // 4. Companies (depende de Languages) - DEBE ejecutarse después de Languages
+        if (data.Companies != null && data.Companies.Any())
+        {
+            // Validar que todos los LanguageId referenciados existen
+            var languageIds = data.Companies.Select(c => Guid.Parse(c.LanguageId)).Distinct().ToList();
+            var existingLanguages = await _context.Languages
+                .IgnoreQueryFilters()
+                .Where(l => languageIds.Contains(l.Id))
+                .Select(l => l.Id)
+                .ToListAsync();
+            
+            var missingLanguages = languageIds.Except(existingLanguages).ToList();
+            if (missingLanguages.Any())
+            {
+                _logger.LogError("Error de integridad referencial: Los siguientes LanguageId no existen: {MissingIds}", 
+                    string.Join(", ", missingLanguages));
+                throw new InvalidOperationException(
+                    $"No se pueden insertar Companies: Los siguientes LanguageId no existen en la base de datos: {string.Join(", ", missingLanguages)}");
+            }
+            
             await SeedCompaniesAsync(data.Companies);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Companies sembrados: {Count}", data.Companies.Count);
         }
 
-        // Seed Users
-        if (data.Users != null)
+        // 5. Users (depende de Companies y Languages) - DEBE ejecutarse después de Companies
+        if (data.Users != null && data.Users.Any())
         {
+            // Validar que todos los CompanyId y LanguageId referenciados existen
+            var companyIds = data.Users.Select(u => Guid.Parse(u.CompanyId)).Distinct().ToList();
+            var userLanguageIds = data.Users.Select(u => Guid.Parse(u.LanguageId)).Distinct().ToList();
+            
+            var existingCompanies = await _context.Companies
+                .IgnoreQueryFilters()
+                .Where(c => companyIds.Contains(c.Id))
+                .Select(c => c.Id)
+                .ToListAsync();
+            
+            var existingUserLanguages = await _context.Languages
+                .IgnoreQueryFilters()
+                .Where(l => userLanguageIds.Contains(l.Id))
+                .Select(l => l.Id)
+                .ToListAsync();
+            
+            var missingCompanies = companyIds.Except(existingCompanies).ToList();
+            var missingUserLanguages = userLanguageIds.Except(existingUserLanguages).ToList();
+            
+            if (missingCompanies.Any() || missingUserLanguages.Any())
+            {
+                var errors = new List<string>();
+                if (missingCompanies.Any())
+                    errors.Add($"CompanyId no existen: {string.Join(", ", missingCompanies)}");
+                if (missingUserLanguages.Any())
+                    errors.Add($"LanguageId no existen: {string.Join(", ", missingUserLanguages)}");
+                
+                _logger.LogError("Error de integridad referencial: {Errors}", string.Join("; ", errors));
+                throw new InvalidOperationException(
+                    $"No se pueden insertar Users: {string.Join("; ", errors)}");
+            }
+            
             await SeedUsersAsync(data.Users);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Users sembrados: {Count}", data.Users.Count);
         }
 
-        // Seed Groups
-        if (data.Groups != null)
+        // 6. Groups (sin dependencias)
+        if (data.Groups != null && data.Groups.Any())
         {
             await SeedGroupsAsync(data.Groups);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Groups sembrados: {Count}", data.Groups.Count);
         }
 
-        // Seed Permissions
-        if (data.Permissions != null)
+        // 7. Permissions (sin dependencias)
+        if (data.Permissions != null && data.Permissions.Any())
         {
             await SeedPermissionsAsync(data.Permissions);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Permissions sembrados: {Count}", data.Permissions.Count);
         }
 
-        // Seed UserGroups
-        if (data.UserGroups != null)
+        // 8. UserGroups (depende de Users y Groups) - DEBE ejecutarse después de Users y Groups
+        if (data.UserGroups != null && data.UserGroups.Any())
         {
             await SeedUserGroupsAsync(data.UserGroups);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("UserGroups sembrados: {Count}", data.UserGroups.Count);
         }
 
-        // Seed GroupPermissions
-        if (data.GroupPermissions != null)
+        // 9. GroupPermissions (depende de Groups y Permissions) - DEBE ejecutarse después de Groups y Permissions
+        if (data.GroupPermissions != null && data.GroupPermissions.Any())
         {
             await SeedGroupPermissionsAsync(data.GroupPermissions);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("GroupPermissions sembrados: {Count}", data.GroupPermissions.Count);
+        }
+
+        // 10. UserPermissions (depende de Users y Permissions) - DEBE ejecutarse después de Users y Permissions
+        // CRÍTICO: SaveChangesAsync ya se ejecutó después de Users (línea 427) y Permissions (línea 443)
+        if (data.UserPermissions != null && data.UserPermissions.Any())
+        {
+            await SeedUserPermissionsAsync(data.UserPermissions);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("UserPermissions sembrados: {Count}", data.UserPermissions.Count);
+        }
+
+        // 11. AdminUsers (sin dependencias) - Puede ejecutarse en cualquier momento
+        if (data.AdminUsers != null && data.AdminUsers.Any())
+        {
+            await SeedAdminUsersAsync(data.AdminUsers);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("AdminUsers sembrados: {Count}", data.AdminUsers.Count);
+        }
+
+        // 12. Suppliers (depende de Companies) - DEBE ejecutarse después de Companies
+        if (data.Suppliers != null && data.Suppliers.Any())
+        {
+            await SeedSuppliersAsync(data.Suppliers);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Suppliers sembrados: {Count}", data.Suppliers.Count);
+        }
+
+        // 13. Customers (depende de Companies) - DEBE ejecutarse después de Companies
+        if (data.Customers != null && data.Customers.Any())
+        {
+            await SeedCustomersAsync(data.Customers);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Customers sembrados: {Count}", data.Customers.Count);
         }
 
         _logger.LogInformation("Datos de prueba cargados correctamente");
+        Console.WriteLine("Datos de prueba cargados correctamente");
+        
+        // CRÍTICO: Limpiar el ChangeTracker para forzar a EF Core a consultar la base de datos real
+        // en lugar de usar objetos en memoria. Esto asegura que los datos sembrados estén disponibles
+        // para las consultas posteriores en los tests.
+        _context.ChangeTracker.Clear();
     }
 
     #region Private Seed Methods
@@ -379,14 +524,19 @@ public class JsonDataSeeder
                     IsActive = true
                 };
                 _context.Languages.Add(lang);
+                _logger.LogInformation("[SEED] Cargado registro específico para test: Language '{Name}' (Code: {Code}, Id: {Id})", 
+                    langData.Name, langData.Code, langData.Id);
             }
             else if (existing.DeletedAt != null)
             {
                 existing.DeletedAt = null;
                 existing.IsActive = true;
+                _logger.LogInformation("[SEED] Reactivado registro existente: Language '{Name}' (Code: {Code}, Id: {Id})", 
+                    langData.Name, langData.Code, langData.Id);
             }
         }
-        await _context.SaveChangesAsync();
+        // NOTA: SaveChangesAsync se llama explícitamente en SeedTestDataAsync después de SeedLanguagesAsync
+        // para garantizar persistencia inmediata y evitar problemas de concurrencia
     }
 
     private async Task SeedPermissionsAsync(List<PermissionSeed> permissions)
@@ -408,14 +558,19 @@ public class JsonDataSeeder
                     IsActive = true
                 };
                 _context.Permissions.Add(perm);
+                _logger.LogInformation("[SEED] Cargado registro específico para test: Permission '{Key}' (Id: {Id})", 
+                    permData.Key, permData.Id);
             }
             else if (existing.DeletedAt != null)
             {
                 existing.DeletedAt = null;
                 existing.IsActive = true;
+                _logger.LogInformation("[SEED] Reactivado registro existente: Permission '{Key}' (Id: {Id})", 
+                    permData.Key, permData.Id);
             }
         }
-        await _context.SaveChangesAsync();
+        // NOTA: SaveChangesAsync se llama explícitamente en SeedTestDataAsync después de SeedPermissionsAsync
+        // para garantizar persistencia inmediata y evitar problemas de concurrencia
     }
 
     private async Task SeedGroupsAsync(List<GroupSeed> groups)
@@ -437,11 +592,15 @@ public class JsonDataSeeder
                     IsActive = true
                 };
                 _context.Groups.Add(group);
+                _logger.LogInformation("[SEED] Cargado registro específico para test: Group '{Name}' (Id: {Id})", 
+                    groupData.Name, groupData.Id);
             }
             else if (existing.DeletedAt != null)
             {
                 existing.DeletedAt = null;
                 existing.IsActive = true;
+                _logger.LogInformation("[SEED] Reactivado registro existente: Group '{Name}' (Id: {Id})", 
+                    groupData.Name, groupData.Id);
             }
         }
         await _context.SaveChangesAsync();
@@ -449,13 +608,67 @@ public class JsonDataSeeder
 
     private async Task SeedGroupPermissionsAsync(List<GroupPermissionSeed> groupPermissions)
     {
+        // CRÍTICO: Validar explícitamente que Groups y Permissions existen antes de insertar GroupPermissions
+        var groupIds = groupPermissions.Select(gp => Guid.Parse(gp.GroupId)).Distinct().ToList();
+        var permissionIds = groupPermissions.Select(gp => Guid.Parse(gp.PermissionId)).Distinct().ToList();
+        
+        // Verificar que todos los GroupId existen en el contexto local
+        var existingGroups = await _context.Groups
+            .IgnoreQueryFilters()
+            .Where(g => groupIds.Contains(g.Id))
+            .Select(g => g.Id)
+            .ToListAsync();
+        
+        var missingGroups = groupIds.Except(existingGroups).ToList();
+        if (missingGroups.Any())
+        {
+            _logger.LogError("Error de integridad referencial: Los siguientes GroupId no existen para GroupPermissions: {MissingIds}", 
+                string.Join(", ", missingGroups));
+            throw new InvalidOperationException(
+                $"No se pueden insertar GroupPermissions: Los siguientes GroupId no existen en la base de datos: {string.Join(", ", missingGroups)}");
+        }
+        
+        // Verificar que todos los PermissionId existen en el contexto local
+        var existingPermissions = await _context.Permissions
+            .IgnoreQueryFilters()
+            .Where(p => permissionIds.Contains(p.Id))
+            .Select(p => p.Id)
+            .ToListAsync();
+        
+        var missingPermissions = permissionIds.Except(existingPermissions).ToList();
+        if (missingPermissions.Any())
+        {
+            _logger.LogError("Error de integridad referencial: Los siguientes PermissionId no existen para GroupPermissions: {MissingIds}", 
+                string.Join(", ", missingPermissions));
+            throw new InvalidOperationException(
+                $"No se pueden insertar GroupPermissions: Los siguientes PermissionId no existen en la base de datos: {string.Join(", ", missingPermissions)}");
+        }
+        
+        _logger.LogInformation("Validación exitosa: {GroupCount} grupos y {PermissionCount} permisos encontrados para GroupPermissions", 
+            existingGroups.Count, existingPermissions.Count);
+        
+        // Ahora insertar GroupPermissions con la garantía de que las FK existen
         foreach (var gpData in groupPermissions)
         {
+            var groupId = Guid.Parse(gpData.GroupId);
+            var permissionId = Guid.Parse(gpData.PermissionId);
+            
+            // Verificación adicional por si acaso
+            var groupExists = existingGroups.Contains(groupId);
+            var permissionExists = existingPermissions.Contains(permissionId);
+            
+            if (!groupExists || !permissionExists)
+            {
+                _logger.LogError("Error crítico: GroupId={GroupId} existe={GroupExists}, PermissionId={PermissionId} existe={PermissionExists}", 
+                    groupId, groupExists, permissionId, permissionExists);
+                continue; // Saltar este registro
+            }
+            
             var existing = await _context.GroupPermissions
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(gp => 
-                    gp.GroupId == Guid.Parse(gpData.GroupId) && 
-                    gp.PermissionId == Guid.Parse(gpData.PermissionId));
+                    gp.GroupId == groupId && 
+                    gp.PermissionId == permissionId);
 
             if (existing == null)
             {
@@ -469,21 +682,24 @@ public class JsonDataSeeder
                     var gp = new GroupPermission
                     {
                         Id = Guid.Parse(gpData.Id),
-                        GroupId = Guid.Parse(gpData.GroupId),
-                        PermissionId = Guid.Parse(gpData.PermissionId),
+                        GroupId = groupId,
+                        PermissionId = permissionId,
                         CreatedAt = DateTime.UtcNow,
                         IsActive = true
                     };
                     _context.GroupPermissions.Add(gp);
+                    _logger.LogDebug("GroupPermission añadido: GroupId={GroupId}, PermissionId={PermissionId}", groupId, permissionId);
                 }
             }
             else if (existing.DeletedAt != null)
             {
                 existing.DeletedAt = null;
                 existing.IsActive = true;
+                _logger.LogDebug("GroupPermission reactivado: GroupId={GroupId}, PermissionId={PermissionId}", groupId, permissionId);
             }
         }
         await _context.SaveChangesAsync();
+        _logger.LogInformation("GroupPermissions sembrados: {Count}", groupPermissions.Count);
     }
 
     private async Task SeedCompaniesAsync(List<CompanySeed> companies)
@@ -509,14 +725,19 @@ public class JsonDataSeeder
                     IsActive = true
                 };
                 _context.Companies.Add(company);
+                _logger.LogInformation("[SEED] Cargado registro específico para test: Company '{Name}' (Id: {Id})", 
+                    companyData.Name, companyData.Id);
             }
             else if (existing.DeletedAt != null)
             {
                 existing.DeletedAt = null;
                 existing.IsActive = true;
+                _logger.LogInformation("[SEED] Reactivado registro existente: Company '{Name}' (Id: {Id})", 
+                    companyData.Name, companyData.Id);
             }
         }
-        await _context.SaveChangesAsync();
+        // NOTA: SaveChangesAsync se llama explícitamente en SeedTestDataAsync después de SeedCompaniesAsync
+        // para garantizar persistencia inmediata y evitar problemas de concurrencia
     }
 
     private async Task SeedUsersAsync(List<UserSeed> users)
@@ -559,6 +780,8 @@ public class JsonDataSeeder
                     IsActive = true
                 };
                 _context.Users.Add(user);
+                _logger.LogInformation("[SEED] Cargado registro específico para test: User '{Username}' (Id: {Id})", 
+                    userData.Username, userData.Id);
             }
             else if (existing.DeletedAt != null)
             {
@@ -569,9 +792,12 @@ public class JsonDataSeeder
                 {
                     existing.PasswordHash = passwordHash;
                 }
+                _logger.LogInformation("[SEED] Reactivado registro existente: User '{Username}' (Id: {Id})", 
+                    userData.Username, userData.Id);
             }
         }
-        await _context.SaveChangesAsync();
+        // NOTA: SaveChangesAsync se llama explícitamente en SeedTestDataAsync después de SeedUsersAsync
+        // para garantizar persistencia inmediata y evitar problemas de concurrencia
     }
 
     private async Task SeedUserGroupsAsync(List<UserGroupSeed> userGroups)
@@ -607,33 +833,91 @@ public class JsonDataSeeder
 
     private async Task SeedUserPermissionsAsync(List<UserPermissionSeed> userPermissions)
     {
+        // CRÍTICO: Validar explícitamente que Users y Permissions existen antes de insertar UserPermissions
+        var userIds = userPermissions.Select(up => Guid.Parse(up.UserId)).Distinct().ToList();
+        var permissionIds = userPermissions.Select(up => Guid.Parse(up.PermissionId)).Distinct().ToList();
+        
+        // Verificar que todos los UserId existen en el contexto local
+        var existingUsers = await _context.Users
+            .IgnoreQueryFilters()
+            .Where(u => userIds.Contains(u.Id))
+            .Select(u => u.Id)
+            .ToListAsync();
+        
+        var missingUsers = userIds.Except(existingUsers).ToList();
+        if (missingUsers.Any())
+        {
+            _logger.LogError("Error de integridad referencial: Los siguientes UserId no existen para UserPermissions: {MissingIds}", 
+                string.Join(", ", missingUsers));
+            throw new InvalidOperationException(
+                $"No se pueden insertar UserPermissions: Los siguientes UserId no existen en la base de datos: {string.Join(", ", missingUsers)}");
+        }
+        
+        // Verificar que todos los PermissionId existen en el contexto local
+        var existingPermissions = await _context.Permissions
+            .IgnoreQueryFilters()
+            .Where(p => permissionIds.Contains(p.Id))
+            .Select(p => p.Id)
+            .ToListAsync();
+        
+        var missingPermissions = permissionIds.Except(existingPermissions).ToList();
+        if (missingPermissions.Any())
+        {
+            _logger.LogError("Error de integridad referencial: Los siguientes PermissionId no existen para UserPermissions: {MissingIds}", 
+                string.Join(", ", missingPermissions));
+            throw new InvalidOperationException(
+                $"No se pueden insertar UserPermissions: Los siguientes PermissionId no existen en la base de datos: {string.Join(", ", missingPermissions)}");
+        }
+        
+        _logger.LogInformation("Validación exitosa: {UserCount} usuarios y {PermissionCount} permisos encontrados para UserPermissions", 
+            existingUsers.Count, existingPermissions.Count);
+        
+        // Ahora insertar UserPermissions con la garantía de que las FK existen
         foreach (var upData in userPermissions)
         {
+            var userId = Guid.Parse(upData.UserId);
+            var permissionId = Guid.Parse(upData.PermissionId);
+            
+            // Verificación adicional por si acaso
+            var userExists = existingUsers.Contains(userId);
+            var permissionExists = existingPermissions.Contains(permissionId);
+            
+            if (!userExists || !permissionExists)
+            {
+                _logger.LogError("Error crítico: UserId={UserId} existe={UserExists}, PermissionId={PermissionId} existe={PermissionExists}", 
+                    userId, userExists, permissionId, permissionExists);
+                continue; // Saltar este registro
+            }
+            
             var existing = await _context.UserPermissions
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(up => 
-                    up.UserId == Guid.Parse(upData.UserId) && 
-                    up.PermissionId == Guid.Parse(upData.PermissionId));
+                    up.UserId == userId && 
+                    up.PermissionId == permissionId);
 
             if (existing == null)
             {
                 var up = new UserPermission
                 {
                     Id = Guid.Parse(upData.Id),
-                    UserId = Guid.Parse(upData.UserId),
-                    PermissionId = Guid.Parse(upData.PermissionId),
+                    UserId = userId,
+                    PermissionId = permissionId,
                     CreatedAt = DateTime.UtcNow,
                     IsActive = true
                 };
                 _context.UserPermissions.Add(up);
+                _logger.LogDebug("UserPermission añadido: UserId={UserId}, PermissionId={PermissionId}", userId, permissionId);
             }
             else if (existing.DeletedAt != null)
             {
                 existing.DeletedAt = null;
                 existing.IsActive = true;
+                _logger.LogDebug("UserPermission reactivado: UserId={UserId}, PermissionId={PermissionId}", userId, permissionId);
             }
         }
-        await _context.SaveChangesAsync();
+        // NOTA: SaveChangesAsync se llama explícitamente en SeedTestDataAsync después de SeedUserPermissionsAsync
+        // para garantizar persistencia inmediata y evitar problemas de concurrencia
+        _logger.LogInformation("UserPermissions preparados para guardar: {Count}", userPermissions.Count);
     }
 
     private async Task SeedFamiliesAsync(List<FamilySeed> families)
@@ -725,11 +1009,15 @@ public class JsonDataSeeder
                     IsActive = true
                 };
                 _context.Suppliers.Add(supplier);
+                _logger.LogInformation("[SEED] Cargado registro específico para test: Supplier '{Name}' (Id: {Id})", 
+                    supplierData.Name, supplierData.Id);
             }
             else if (existing.DeletedAt != null)
             {
                 existing.DeletedAt = null;
                 existing.IsActive = true;
+                _logger.LogInformation("[SEED] Reactivado registro existente: Supplier '{Name}' (Id: {Id})", 
+                    supplierData.Name, supplierData.Id);
             }
         }
         await _context.SaveChangesAsync();
@@ -758,6 +1046,69 @@ public class JsonDataSeeder
                     IsActive = true
                 };
                 _context.Customers.Add(customer);
+                _logger.LogInformation("[SEED] Cargado registro específico para test: Customer '{Name}' (Id: {Id})", 
+                    customerData.Name, customerData.Id);
+            }
+            else if (existing.DeletedAt != null)
+            {
+                existing.DeletedAt = null;
+                existing.IsActive = true;
+                _logger.LogInformation("[SEED] Reactivado registro existente: Customer '{Name}' (Id: {Id})", 
+                    customerData.Name, customerData.Id);
+            }
+        }
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task SeedCountriesAsync(List<CountrySeed> countries)
+    {
+        foreach (var countryData in countries)
+        {
+            var existing = await _context.Countries
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(c => c.Code == countryData.Code);
+
+            if (existing == null)
+            {
+                var country = new Country
+                {
+                    Id = Guid.Parse(countryData.Id),
+                    Name = countryData.Name,
+                    Code = countryData.Code,
+                    LanguageId = Guid.Parse(countryData.LanguageId),
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = true
+                };
+                _context.Countries.Add(country);
+            }
+            else if (existing.DeletedAt != null)
+            {
+                existing.DeletedAt = null;
+                existing.IsActive = true;
+            }
+        }
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task SeedCitiesAsync(List<CitySeed> cities)
+    {
+        foreach (var cityData in cities)
+        {
+            var existing = await _context.Cities
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(c => c.Id == Guid.Parse(cityData.Id));
+
+            if (existing == null)
+            {
+                var city = new City
+                {
+                    Id = Guid.Parse(cityData.Id),
+                    StateId = Guid.Parse(cityData.StateId),
+                    Name = cityData.Name,
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = true
+                };
+                _context.Cities.Add(city);
             }
             else if (existing.DeletedAt != null)
             {
@@ -795,12 +1146,19 @@ public class JsonDataSeeder
 
     private class TestDataSeed
     {
+        public List<LanguageSeed>? Languages { get; set; }
+        public List<CountrySeed>? Countries { get; set; }
+        public List<CitySeed>? Cities { get; set; }
         public List<CompanySeed>? Companies { get; set; }
         public List<UserSeed>? Users { get; set; }
         public List<GroupSeed>? Groups { get; set; }
         public List<PermissionSeed>? Permissions { get; set; }
         public List<UserGroupSeed>? UserGroups { get; set; }
         public List<GroupPermissionSeed>? GroupPermissions { get; set; }
+        public List<UserPermissionSeed>? UserPermissions { get; set; }
+        public List<AdminUserSeed>? AdminUsers { get; set; }
+        public List<SupplierSeed>? Suppliers { get; set; }
+        public List<CustomerSeed>? Customers { get; set; }
     }
 
     private class LanguageSeed
@@ -923,6 +1281,21 @@ public class JsonDataSeeder
         public string LastName { get; set; } = string.Empty;
         public string? Email { get; set; }
         public string Role { get; set; } = "Admin";
+    }
+
+    private class CountrySeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public string LanguageId { get; set; } = string.Empty;
+    }
+
+    private class CitySeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string StateId { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
     }
 
     #endregion

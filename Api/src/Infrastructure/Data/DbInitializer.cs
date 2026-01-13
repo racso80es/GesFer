@@ -2,6 +2,7 @@ using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace GesFer.Infrastructure.Data;
@@ -14,14 +15,18 @@ public static class DbInitializer
 {
     /// <summary>
     /// Inicializa la base de datos aplicando migraciones pendientes y cargando datos iniciales desde JSON.
-    /// Solo se ejecuta si isDevelopment es true.
+    /// Se ejecuta en modo Development o Testing.
     /// </summary>
     /// <param name="serviceProvider">Proveedor de servicios</param>
     /// <param name="isDevelopment">Indica si estamos en modo Development</param>
     public static async Task InitializeAsync(IServiceProvider serviceProvider, bool isDevelopment)
     {
-        // Solo ejecutar en modo Development
-        if (!isDevelopment)
+        // Ejecutar en modo Development o Testing
+        // En Testing, también ejecutamos migraciones para tests E2E
+        var environment = serviceProvider.GetRequiredService<IHostEnvironment>();
+        var shouldInitialize = isDevelopment || environment.EnvironmentName == "Testing";
+        
+        if (!shouldInitialize)
         {
             return;
         }
@@ -60,20 +65,19 @@ public static class DbInitializer
         {
             logger.LogInformation("Verificando migraciones pendientes...");
 
+            // Guarda de seguridad: Verificar que el proveedor sea relacional antes de aplicar migraciones
+            // Esto evita errores si por error se inyecta un proveedor no relacional (ej: In-Memory)
+            if (!context.Database.IsRelational())
+            {
+                logger.LogWarning("Saltando migraciones: El proveedor no es relacional.");
+                return;
+            }
+
             // Verificar conexión a la base de datos
             if (!await context.Database.CanConnectAsync())
             {
-                logger.LogWarning("No se puede conectar a la base de datos. Intentando crear la base de datos...");
-                try
-                {
-                    await context.Database.EnsureCreatedAsync();
-                    logger.LogInformation("Base de datos creada exitosamente");
-                }
-                catch (Exception createEx)
-                {
-                    logger.LogError(createEx, "Error al crear la base de datos");
-                    throw new InvalidOperationException("No se pudo conectar ni crear la base de datos", createEx);
-                }
+                logger.LogWarning("No se puede conectar a la base de datos. Las migraciones intentarán crear la base de datos si es necesario.");
+                // No usar EnsureCreated, dejar que MigrateAsync maneje la creación de la base de datos
             }
 
             // Obtener migraciones pendientes
@@ -95,15 +99,58 @@ public static class DbInitializer
                 }
                 catch (Exception migrateEx)
                 {
-                    logger.LogError(migrateEx, 
-                        "Error al aplicar migraciones. Tipo: {ExceptionType}, Mensaje: {Message}", 
-                        migrateEx.GetType().Name, 
-                        migrateEx.Message);
-                    throw new InvalidOperationException(
-                        $"Error al aplicar migraciones: {migrateEx.Message}. " +
-                        $"Verifique la configuración de la base de datos y las migraciones. " +
-                        $"Una vez corregido el problema, puede reintentar ejecutando la aplicación nuevamente.", 
-                        migrateEx);
+                    // Verificar si el error es porque las tablas ya existen
+                    // Esto puede ocurrir si EnsureDeletedAsync no funcionó correctamente
+                    // pero las migraciones ya están aplicadas
+                    if (migrateEx.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase) ||
+                        (migrateEx.InnerException?.Message?.Contains("already exists", StringComparison.OrdinalIgnoreCase) == true))
+                    {
+                        logger.LogWarning(migrateEx, 
+                            "Las tablas ya existen. Verificando si las migraciones están aplicadas...");
+                        
+                        // Verificar si las migraciones ya están aplicadas
+                        var appliedMigrations = await context.Database.GetAppliedMigrationsAsync();
+                        var appliedMigrationsList = appliedMigrations.ToList();
+                        
+                        if (appliedMigrationsList.Any())
+                        {
+                            logger.LogInformation("Las migraciones ya están aplicadas. La base de datos está actualizada.");
+                            Console.WriteLine($"    Migraciones ya aplicadas: {string.Join(", ", appliedMigrationsList)}");
+                        }
+                        else
+                        {
+                            // Las tablas existen pero las migraciones no están registradas
+                            // Esto es un estado inconsistente, intentar eliminar y recrear
+                            logger.LogWarning("Estado inconsistente detectado: tablas existen pero migraciones no registradas. Intentando corregir...");
+                            try
+                            {
+                                await context.Database.EnsureDeletedAsync();
+                                await context.Database.MigrateAsync();
+                                logger.LogInformation("Base de datos recreada y migraciones aplicadas correctamente");
+                            }
+                            catch (Exception fixEx)
+                            {
+                                logger.LogError(fixEx, "No se pudo corregir el estado inconsistente");
+                                throw new InvalidOperationException(
+                                    $"Error al aplicar migraciones: {migrateEx.Message}. " +
+                                    $"Verifique la configuración de la base de datos y las migraciones. " +
+                                    $"Una vez corregido el problema, puede reintentar ejecutando la aplicación nuevamente.", 
+                                    migrateEx);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        logger.LogError(migrateEx, 
+                            "Error al aplicar migraciones. Tipo: {ExceptionType}, Mensaje: {Message}", 
+                            migrateEx.GetType().Name, 
+                            migrateEx.Message);
+                        throw new InvalidOperationException(
+                            $"Error al aplicar migraciones: {migrateEx.Message}. " +
+                            $"Verifique la configuración de la base de datos y las migraciones. " +
+                            $"Una vez corregido el problema, puede reintentar ejecutando la aplicación nuevamente.", 
+                            migrateEx);
+                    }
                 }
             }
             else
@@ -137,43 +184,56 @@ public static class DbInitializer
         try
         {
             var seeder = services.GetRequiredService<JsonDataSeeder>();
+            var environment = services.GetRequiredService<IHostEnvironment>();
+            var isTesting = environment.EnvironmentName == "Testing";
 
-            // Cargar datos maestros y obtener resumen de entidades
-            var masterDataResult = await seeder.SeedMasterDataAsync();
-            
-            // Cargar datos de demostración y obtener resumen de entidades
-            var demoDataResult = await seeder.SeedDemoDataAsync();
-
-            // Mostrar resumen conciso de entidades cargadas
-            if (masterDataResult.Loaded || demoDataResult.Loaded)
+            if (isTesting)
             {
-                var entities = new List<string>();
-                
-                if (masterDataResult.Loaded && masterDataResult.Entities.Any())
-                {
-                    entities.AddRange(masterDataResult.Entities);
-                }
-                
-                if (demoDataResult.Loaded && demoDataResult.Entities.Any())
-                {
-                    entities.AddRange(demoDataResult.Entities);
-                }
-
-                if (entities.Any())
-                {
-                    Console.WriteLine($"    Seeds cargados: {string.Join(", ", entities)}");
-                }
-            }
-
-            // Registrar en log para debugging
-            if (masterDataResult.Loaded && demoDataResult.Loaded)
-            {
-                logger.LogInformation("Todos los datos iniciales han sido cargados correctamente");
+                // En modo Testing, cargar solo test-data.json
+                logger.LogInformation("Modo Testing detectado: cargando test-data.json");
+                await seeder.SeedTestDataAsync();
+                logger.LogInformation("test-data.json cargado correctamente");
             }
             else
             {
-                logger.LogWarning("Algunos datos iniciales no se pudieron cargar. master-data.json: {MasterLoaded}, demo-data.json: {DemoLoaded}",
-                    masterDataResult.Loaded, demoDataResult.Loaded);
+                // En modo Development, cargar master-data.json y demo-data.json
+                // Cargar datos maestros y obtener resumen de entidades
+                var masterDataResult = await seeder.SeedMasterDataAsync();
+                
+                // Cargar datos de demostración y obtener resumen de entidades
+                var demoDataResult = await seeder.SeedDemoDataAsync();
+
+                // Mostrar resumen conciso de entidades cargadas
+                if (masterDataResult.Loaded || demoDataResult.Loaded)
+                {
+                    var entities = new List<string>();
+                    
+                    if (masterDataResult.Loaded && masterDataResult.Entities.Any())
+                    {
+                        entities.AddRange(masterDataResult.Entities);
+                    }
+                    
+                    if (demoDataResult.Loaded && demoDataResult.Entities.Any())
+                    {
+                        entities.AddRange(demoDataResult.Entities);
+                    }
+
+                    if (entities.Any())
+                    {
+                        Console.WriteLine($"    Seeds cargados: {string.Join(", ", entities)}");
+                    }
+                }
+
+                // Registrar en log para debugging
+                if (masterDataResult.Loaded && demoDataResult.Loaded)
+                {
+                    logger.LogInformation("Todos los datos iniciales han sido cargados correctamente");
+                }
+                else
+                {
+                    logger.LogWarning("Algunos datos iniciales no se pudieron cargar. master-data.json: {MasterLoaded}, demo-data.json: {DemoLoaded}",
+                        masterDataResult.Loaded, demoDataResult.Loaded);
+                }
             }
         }
         catch (Exception ex)
