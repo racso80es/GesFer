@@ -1,6 +1,6 @@
 "use client";
 
-import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQueryClient, QueryCache } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { initializeClient, clearAuthData } from "@/lib/utils/client-init";
@@ -53,23 +53,28 @@ export function QueryProvider({ children }: { children: ReactNode }) {
       initResult = initializeClient();
     }
 
+    // Crear QueryCache con manejo global de errores
+    const queryCache = new QueryCache({
+      onError: (error: any, query) => {
+        // Si es un error 401, limpiar caché y datos de autenticación
+        if (error?.message?.includes("401") || error?.status === 401) {
+          console.warn("Error 401 detectado, limpiando datos de autenticación...");
+          if (typeof window !== "undefined") {
+            clearAuthData();
+            // El client se creará después, así que usamos el queryCache para limpiar
+            queryCache.clear();
+          }
+        }
+      },
+    });
+
     const client = new QueryClient({
+      queryCache,
       defaultOptions: {
         queries: {
           staleTime: 60 * 1000, // 1 minuto
           refetchOnWindowFocus: false,
           retry: 1,
-          // Invalidar queries automáticamente si hay errores de autenticación
-          onError: (error: any) => {
-            // Si es un error 401, limpiar caché y datos de autenticación
-            if (error?.message?.includes("401") || error?.status === 401) {
-              console.warn("Error 401 detectado, limpiando datos de autenticación...");
-              if (typeof window !== "undefined") {
-                clearAuthData();
-                client.clear();
-              }
-            }
-          },
         },
       },
     });
