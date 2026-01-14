@@ -1,8 +1,50 @@
-# Informe Exhaustivo: Situación Actual de la Base de Datos - GesFer
+---
+title: "Esquema de Base de Datos - GesFer"
+date: 2026-01-14
+author: "Cursor AI"
+status: "Final"
+branch: "AddLogger"
+---
 
-**Fecha de Análisis:** 10 de Enero de 2025  
-**Analista:** Senior .NET Database Architect  
+# Esquema de Base de Datos - GesFer
+
 **Solución:** GesFer - Sistema de Gestión de Compra/Venta de Chatarra
+
+---
+
+## Índice
+
+- [1. Entity Framework & Configuración](#1-entity-framework--configuración)
+  - [1.1 Versión de Entity Framework Core](#11-versión-de-entity-framework-core)
+  - [1.2 DbContext y Configuración del Proveedor](#12-dbcontext-y-configuración-del-proveedor)
+  - [1.3 Patrones Avanzados Implementados](#13-patrones-avanzados-implementados)
+- [2. Estructura de Datos (Mapeo)](#2-estructura-de-datos-mapeo)
+  - [2.1 Entidad Base](#21-entidad-base)
+  - [2.2 Tablas Principales y Relaciones](#22-tablas-principales-y-relaciones)
+  - [2.3 Resumen de Relaciones](#23-resumen-de-relaciones)
+  - [2.4 Configuraciones Fluent API Destacadas](#24-configuraciones-fluent-api-destacadas)
+  - [2.5 Ubicación de Configuraciones](#25-ubicación-de-configuraciones)
+- [3. Estrategia de Seeding (Semillas)](#3-estrategia-de-seeding-semillas)
+  - [3.1 Métodos de Seeding Identificados](#31-métodos-de-seeding-identificados)
+  - [3.2 Rutas Exactas de Archivos de Datos](#32-rutas-exactas-de-archivos-de-datos)
+  - [3.3 Lógica de Procesamiento](#33-lógica-de-procesamiento)
+  - [3.4 Scripts SQL Externos (Legacy)](#34-scripts-sql-externos-legacy)
+- [4. Migraciones](#4-migraciones)
+  - [4.1 Estado Actual de Migraciones](#41-estado-actual-de-migraciones)
+  - [4.2 Aplicación Automática de Migraciones](#42-aplicación-automática-de-migraciones)
+  - [4.3 Comandos de Migración](#43-comandos-de-migración)
+- [5. Resumen y Observaciones](#5-resumen-y-observaciones)
+  - [5.1 Puntos Fuertes](#51-puntos-fuertes)
+  - [5.2 Áreas de Mejora Potencial](#52-áreas-de-mejora-potencial)
+  - [5.3 Información No Encontrada](#53-información-no-encontrada)
+- [6. Conclusión](#6-conclusión)
+- [7. Tabla de Logs (Detalle)](#7-tabla-de-logs-detalle)
+  - [7.1 Estructura de la Tabla `Logs`](#71-estructura-de-la-tabla-logs)
+  - [7.2 Campos de la Tabla `Logs`](#72-campos-de-la-tabla-logs)
+  - [7.3 Índices de la Tabla `Logs`](#73-índices-de-la-tabla-logs)
+  - [7.4 Notas Importantes sobre la Tabla `Logs`](#74-notas-importantes-sobre-la-tabla-logs)
+- [8. Tabla de AdminUsers (Detalle del Campo Role)](#8-tabla-de-adminusers-detalle-del-campo-role)
+  - [8.1 Campo `Role` en `AdminUsers`](#81-campo-role-en-adminusers)
 
 ---
 
@@ -220,7 +262,8 @@ private void UpdateAuditFields()
 - `bool IsActive` - Indica si la entidad está activa
 - `bool IsDeleted` - Propiedad calculada que retorna `DeletedAt.HasValue`
 
-**Todas las entidades del dominio heredan de `BaseEntity`**
+**Todas las entidades del dominio heredan de `BaseEntity`**  
+**Excepción:** La entidad `Log` NO hereda de `BaseEntity` porque Serilog.Sinks.MySQL requiere `Id INT AUTO_INCREMENT` en lugar de `Guid`.
 
 ### 2.2 Tablas Principales y Relaciones
 
@@ -237,6 +280,7 @@ private void UpdateAuditFields()
 | `Group` | `Groups` | Grupos de usuarios | M:N con `User` (vía `UserGroup`), M:N con `Permission` (vía `GroupPermission`) |
 | `AdminUser` | `AdminUsers` | Usuarios administrativos del sistema | Sin relaciones (tabla independiente) |
 | `AuditLog` | `AuditLogs` | Registro de auditoría | Sin relaciones (tabla independiente) |
+| `Log` | `Logs` | Logs del sistema (Serilog) | Sin relaciones (tabla independiente, NO hereda de BaseEntity) |
 
 #### 2.2.2 Entidades Multi-Tenant (Relacionadas con Company)
 
@@ -506,6 +550,7 @@ private void ConfigureUtf8(ModelBuilder modelBuilder)
 - `GroupConfiguration.cs`
 - `GroupPermissionConfiguration.cs`
 - `LanguageConfiguration.cs`
+- `LogConfiguration.cs`
 - `PermissionConfiguration.cs`
 - `PostalCodeConfiguration.cs`
 - `PurchaseDeliveryNoteConfiguration.cs`
@@ -716,10 +761,12 @@ El `JsonDataSeeder` busca los archivos en el siguiente orden:
 
 **Migraciones Existentes:**
 
-1. **`20260109104825_InitialCreate`**
-   - **Fecha:** 09 de Enero de 2025, 10:48:25
-   - **Descripción:** Migración inicial que crea todas las tablas base del sistema
+1. **`20260113183859_InitialCreate`**
+   - **Fecha:** 13 de Enero de 2025, 18:38:59
+   - **Descripción:** Migración inicial que crea todas las tablas del sistema
    - **Tablas Creadas:**
+     - AdminUsers (con campo Role varchar(50), valor por defecto "Admin")
+     - AuditLogs
      - Groups, Languages, Permissions
      - Countries, States, Cities, PostalCodes
      - Companies
@@ -729,26 +776,17 @@ El `JsonDataSeeder` busca los archivos en el siguiente orden:
      - Suppliers, Customers
      - PurchaseInvoices, PurchaseDeliveryNotes, PurchaseDeliveryNoteLines
      - SalesInvoices, SalesDeliveryNotes, SalesDeliveryNoteLines
+     - **Logs** (tabla para Serilog con Id INT AUTO_INCREMENT)
    - **Archivos:**
-     - `20260109104825_InitialCreate.cs`
-     - `20260109104825_InitialCreate.Designer.cs`
+     - `20260113183859_InitialCreate.cs`
+     - `20260113183859_InitialCreate.Designer.cs`
 
-2. **`20260110064152_AddAdminUsersAndAuditLogs`**
-   - **Fecha:** 10 de Enero de 2025, 06:41:52
-   - **Descripción:** Agrega tablas para usuarios administrativos y logs de auditoría
-   - **Tablas Creadas:**
-     - AdminUsers
-     - AuditLogs
-   - **Archivos:**
-     - `20260110064152_AddAdminUsersAndAuditLogs.cs`
-     - `20260110064152_AddAdminUsersAndAuditLogs.Designer.cs`
-
-3. **`ApplicationDbContextModelSnapshot.cs`**
+2. **`ApplicationDbContextModelSnapshot.cs`**
    - **Estado:** Snapshot actual del modelo (después de todas las migraciones)
 
-**Total de Migraciones:** 2 migraciones aplicadas
+**Total de Migraciones:** 1 migración aplicada
 
-**Última Migración:** `20260110064152_AddAdminUsersAndAuditLogs` (10 de Enero de 2025)
+**Última Migración:** `20260113183859_InitialCreate` (13 de Enero de 2025)
 
 ### 4.2 Aplicación Automática de Migraciones
 
@@ -916,4 +954,83 @@ La base de datos de GesFer está bien estructurada y utiliza patrones modernos d
 
 ---
 
-**Fin del Informe**
+## 7. TABLA DE LOGS (DETALLE)
+
+### 7.1 Estructura de la Tabla `Logs`
+
+**Entidad:** `Log`  
+**Tabla:** `Logs`  
+**Ubicación del Modelo:** `Api/src/domain/Entities/Log.cs`  
+**Ubicación de la Configuración:** `Api/src/Infrastructure/Data/Configurations/LogConfiguration.cs`
+
+**Características Especiales:**
+- ❌ **NO hereda de `BaseEntity`** (requisito de Serilog.Sinks.MySQL)
+- ✅ **Id de tipo `INT AUTO_INCREMENT`** (no GUID)
+- ✅ **Sin Soft Delete** (no tiene campos `CreatedAt`, `UpdatedAt`, `DeletedAt`, `IsActive`)
+
+### 7.2 Campos de la Tabla `Logs`
+
+| Campo | Tipo C# | Tipo MySQL | Longitud | Nullable | Descripción |
+|-------|---------|-----------|----------|----------|-------------|
+| `Id` | `int` | `int` | - | ❌ NO | Identificador único (AUTO_INCREMENT, administrado por MySQL/Serilog) |
+| `Level` | `string` | `varchar(128)` | 128 | ✅ SÍ | Nivel del log (Debug, Information, Warning, Error, Fatal) |
+| `Message` | `string` | `longtext` | - | ✅ SÍ | Mensaje renderizado del log |
+| `Template` | `string?` | `longtext` | - | ✅ SÍ | Template del mensaje (con placeholders) - usado por Serilog |
+| `Exception` | `string?` | `longtext` | - | ✅ SÍ | Mensaje de excepción si existe |
+| `Properties` | `string?` | `longtext` | - | ✅ SÍ | Propiedades adicionales del log en formato JSON |
+| `TimeStamp` | `DateTime` | `datetime(6)` | - | ❌ NO | Timestamp del log (UTC) - Serilog usa TimeStamp con mayúscula |
+| `Source` | `string?` | `varchar(500)` | 500 | ✅ SÍ | Fuente del log (ej: "GesFer.Api.Controllers.CustomerController") |
+| `CompanyId` | `Guid?` | `char(36)` | - | ✅ SÍ | ID de la empresa si el log está asociado a un tenant |
+| `UserId` | `Guid?` | `char(36)` | - | ✅ SÍ | ID del usuario si el log está asociado a un usuario |
+| `ClientInfo` | `string?` | `longtext` | - | ✅ SÍ | Información del cliente (User-Agent, IP, etc.) en formato JSON |
+
+### 7.3 Índices de la Tabla `Logs`
+
+**Índices No Únicos:**
+- `IX_Logs_Level` - Índice en `Level`
+- `IX_Logs_TimeStamp` - Índice en `TimeStamp`
+- `IX_Logs_CompanyId` - Índice en `CompanyId`
+- `IX_Logs_UserId` - Índice en `UserId`
+
+**Índices Compuestos:**
+- `IX_Logs_Level_TimeStamp` - Índice compuesto en `(Level, TimeStamp)`
+- `IX_Logs_CompanyId_TimeStamp` - Índice compuesto en `(CompanyId, TimeStamp)`
+
+### 7.4 Notas Importantes sobre la Tabla `Logs`
+
+1. **Compatibilidad con Serilog:** La estructura está diseñada específicamente para ser compatible con `Serilog.Sinks.MySQL`, que requiere:
+   - `Id` como `INT AUTO_INCREMENT` (no GUID)
+   - Campo `TimeStamp` con mayúscula (no `Timestamp`)
+   - Campos opcionales para permitir flexibilidad en el logging
+
+2. **Sin Soft Delete:** A diferencia de otras entidades, `Log` no implementa Soft Delete porque los logs son registros históricos que no deben eliminarse lógicamente.
+
+3. **Relaciones:** La tabla `Logs` no tiene relaciones de clave foránea definidas con `Companies` o `Users`, aunque almacena `CompanyId` y `UserId` como referencias opcionales.
+
+---
+
+## 8. TABLA DE ADMINUSERS (DETALLE DEL CAMPO ROLE)
+
+### 8.1 Campo `Role` en `AdminUsers`
+
+**Entidad:** `AdminUser`  
+**Tabla:** `AdminUsers`  
+**Campo:** `Role`
+
+**Configuración:**
+- **Tipo C#:** `string`
+- **Tipo MySQL:** `varchar(50)`
+- **Longitud Máxima:** 50 caracteres
+- **Nullable:** ❌ NO (requerido)
+- **Valor por Defecto:** `"Admin"` (definido en el modelo C#)
+- **Índice:** ✅ SÍ (índice no único en `Role`)
+
+**Ubicación en el Código:**
+- **Modelo:** `Api/src/domain/Entities/AdminUser.cs` (línea 17)
+- **Configuración:** `Api/src/Infrastructure/Data/Configurations/AdminUserConfiguration.cs` (líneas 38-40)
+
+**Valor Observado en Base de Datos:** `"Admin"` (confirmado en migraciones y código)
+
+---
+
+**Sincronizado desde EF Core Model - Rama: AddLogger - 2026-01-14**
