@@ -494,7 +494,7 @@ builder.Host.UseSerilog((context, services, configuration) =>
 **Estructura:**
 - `Id` (Guid)
 - `Message` (text)
-- `MessageTemplate` (text)
+- `Template` (text)
 - `Level` (varchar)
 - `Timestamp` (datetime) - UTC
 - `Exception` (text, nullable)

@@ -25,7 +25,7 @@ public class Log
     /// <summary>
     /// Template del mensaje (con placeholders) - usado por Serilog
     /// </summary>
-    public string? MessageTemplate { get; set; }
+    public string? Template { get; set; }
 
     /// <summary>
     /// Mensaje de excepción si existe

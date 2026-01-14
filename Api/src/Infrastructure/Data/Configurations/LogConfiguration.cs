@@ -24,12 +24,9 @@ public class LogConfiguration : IEntityTypeConfiguration<Log>
             .IsRequired(false) // NULL permitido para compatibilidad con Serilog.Sinks.MySQL
             .HasColumnType("longtext");
 
-        builder.Property(l => l.MessageTemplate)
+        builder.Property(l => l.Template)
+            .HasColumnName("Template")
             .HasColumnType("longtext");
-
-        // Template es requerido por Serilog.Sinks.MySQL v4.1+
-        // Aunque no está en la entidad, debe existir en la tabla
-        // Se añade mediante migración manual o ALTER TABLE
 
         builder.Property(l => l.Exception)
             .HasColumnType("longtext");
