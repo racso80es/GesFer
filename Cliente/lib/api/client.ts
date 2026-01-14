@@ -46,13 +46,14 @@ class ApiClient {
     };
 
     // Agregar token de autenticación si existe
-    // Prioridad: token pasado como parámetro > token de la instancia > localStorage (legacy)
+    // Prioridad: token pasado como parámetro > token de la instancia > NextAuth session > localStorage (legacy)
     let token = this.accessToken;
     
     if (!token && typeof window !== "undefined") {
-      // Intentar obtener el token de la sesión de NextAuth desde localStorage
-      // NextAuth almacena la sesión en una cookie, pero para compatibilidad
-      // también intentamos localStorage (legacy)
+      // Intentar obtener el token de NextAuth session si está disponible
+      // NextAuth almacena la sesión en cookies, pero podemos acceder al token desde el contexto
+      // Para client components, necesitamos usar useSession de next-auth/react
+      // Por ahora, intentamos localStorage como fallback
       token = localStorage.getItem("auth_token") || undefined;
     }
 

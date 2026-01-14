@@ -133,7 +133,12 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtIssuer,
         ValidAudience = jwtAudience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey)),
-        ClockSkew = TimeSpan.Zero // Eliminar el tiempo de gracia por defecto
+        ClockSkew = TimeSpan.Zero, // Eliminar el tiempo de gracia por defecto
+        // Configurar el tipo de claim para roles
+        // ASP.NET Core busca roles en el claim especificado por RoleClaimType
+        // Por defecto usa "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        // que es el valor de ClaimTypes.Role
+        RoleClaimType = System.Security.Claims.ClaimTypes.Role
     };
 });
 

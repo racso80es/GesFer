@@ -1,17 +1,17 @@
 import { apiClient } from "./client";
 
 export interface LogDto {
-  id: string;
+  id: number;
   level: string;
   message: string;
+  messageTemplate?: string;
   exception?: string;
   properties?: string;
+  timeStamp: string; // DateTime desde el backend
   source?: string;
-  timestamp: string;
   companyId?: string;
   userId?: string;
   clientInfo?: string;
-  createdAt: string;
 }
 
 export interface LogsPagedResponse {
@@ -20,6 +20,8 @@ export interface LogsPagedResponse {
   pageNumber: number;
   pageSize: number;
   totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
 }
 
 export interface LogsFilter {
