@@ -120,8 +120,14 @@ class ApiClient {
     });
   }
 
-  async delete<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, {
+  async delete<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
+    const url = new URL(`${this.baseUrl}${endpoint}`);
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        url.searchParams.append(key, value);
+      });
+    }
+    return this.request<T>(url.pathname + url.search, {
       method: "DELETE",
     });
   }
