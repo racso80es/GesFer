@@ -7,7 +7,7 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        // Configurar codificación UTF-8 para la consola
+        // Configurar codificaci?n UTF-8 para la consola
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
         // Crear instancia del servicio de log
@@ -19,10 +19,11 @@ class Program
         var seedService = new SeedService(logService);
         var integrityValidationService = new IntegrityValidationService(logService);
         var goldenRulesService = new GoldenRulesComplianceService(logService);
-        var menuService = new MenuService(dockerService, migrationService, seedService, integrityValidationService, goldenRulesService, logService);
+        var databaseInitializationService = new DatabaseInitializationService(dockerService, logService);
+        var menuService = new MenuService(dockerService, migrationService, seedService, integrityValidationService, goldenRulesService, databaseInitializationService, logService);
 
-        // Si se pasa el argumento "--validate" o "-v", ejecutar validación de integridad automáticamente
-        if (args.Length > 0 && (args[0] == "--validate" || args[0] == "-v" || args[0] == "2"))
+        // Si se pasa el argumento "--validate" o "-v", ejecutar validaci?n de integridad autom?ticamente
+        if (args.Length > 0 && (args[0] == "--validate" || args[0] == "-v"))
         {
             try
             {
@@ -32,14 +33,32 @@ class Program
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error durante la validación: {ex.Message}");
-                logService.WriteError("Error durante la validación automática", ex);
+                Console.WriteLine($"Error durante la validaci?n: {ex.Message}");
+                logService.WriteError("Error durante la validaci?n autom?tica", ex);
                 Environment.Exit(1);
                 return;
             }
         }
 
-        // Si se pasa el argumento "--initialize" o "-i" o "1", ejecutar inicialización completa
+        // Si se pasa el argumento "2", ejecutar opción 2 del menú (Inicialización de base de datos)
+        if (args.Length > 0 && args[0] == "2")
+        {
+            try
+            {
+                var initResult = await menuService.ExecuteOptionAsync(2, waitForInput: false);
+                Environment.Exit(initResult ? 0 : 1);
+                return;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error durante la inicialización de base de datos: {ex.Message}");
+                logService.WriteError("Error durante la inicialización de base de datos", ex);
+                Environment.Exit(1);
+                return;
+            }
+        }
+
+        // Si se pasa el argumento "--initialize" o "-i" o "1", ejecutar inicializaci?n completa
         if (args.Length > 0 && (args[0] == "--initialize" || args[0] == "-i" || args[0] == "1"))
         {
             try
@@ -50,8 +69,8 @@ class Program
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error durante la inicialización: {ex.Message}");
-                logService.WriteError("Error durante la inicialización automática", ex);
+                Console.WriteLine($"Error durante la inicializaci?n: {ex.Message}");
+                logService.WriteError("Error durante la inicializaci?n autom?tica", ex);
                 Environment.Exit(1);
                 return;
             }
@@ -75,6 +94,88 @@ class Program
             }
         }
 
+        // Si se pasa el argumento "--step8" o "--punto8" o "8", ejecutar punto 8 de la opci?n 1
+        if (args.Length > 0 && (args[0] == "--step8" || args[0] == "--punto8" || args[0] == "8"))
+        {
+            try
+            {
+                var result = await databaseInitializationService.ExecuteStep8Async();
+                
+                Console.WriteLine();
+                Console.WriteLine("========================================");
+                Console.ForegroundColor = result.Status == "ok" ? ConsoleColor.Green : ConsoleColor.Red;
+                Console.WriteLine($"   Resultado: {result.Status.ToUpper()}");
+                Console.ResetColor();
+                Console.WriteLine("========================================");
+                Console.WriteLine();
+
+                // Mostrar informaci?n del proceso de forma visual
+                if (result.Information.Any())
+                {
+                    Console.WriteLine("Informaci?n del proceso:");
+                    Console.WriteLine();
+                    foreach (var info in result.Information)
+                    {
+                        if (info.Contains("?"))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"  {info}");
+                            Console.ResetColor();
+                        }
+                        else if (info.Contains("?"))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine($"  {info}");
+                            Console.ResetColor();
+                        }
+                        else if (info.Contains("Paso") || info.Contains("Iniciando") || info.Contains("==="))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.WriteLine($"  {info}");
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.WriteLine($"  {info}");
+                        }
+                    }
+                    Console.WriteLine();
+                }
+
+                // Mostrar errores si los hay
+                if (result.Errors.Any())
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Errores encontrados:");
+                    foreach (var error in result.Errors)
+                    {
+                        Console.WriteLine($"  ? {error}");
+                    }
+                    Console.ResetColor();
+                    Console.WriteLine();
+                }
+
+                // Mostrar mensaje resumen
+                if (!string.IsNullOrEmpty(result.Message))
+                {
+                    Console.ForegroundColor = result.Status == "ok" ? ConsoleColor.Green : ConsoleColor.Red;
+                    Console.WriteLine($"Mensaje: {result.Message}");
+                    Console.ResetColor();
+                    Console.WriteLine();
+                }
+
+                Environment.Exit(result.Status == "ok" ? 0 : 1);
+                return;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error durante la ejecuci?n del punto 8: {ex.Message}");
+                logService.WriteError("Error durante la ejecuci?n del punto 8", ex);
+                Environment.Exit(1);
+                return;
+            }
+        }
+
         // Modo interactivo (sin argumentos)
         bool continueRunning = true;
 
@@ -91,7 +192,7 @@ class Program
                 }
                 else
                 {
-                    Console.WriteLine("Opción no válida. Presione cualquier tecla para continuar...");
+                    Console.WriteLine("Opci?n no v?lida. Presione cualquier tecla para continuar...");
                     Console.ReadKey();
                 }
             }
@@ -104,6 +205,6 @@ class Program
         }
 
         Console.WriteLine();
-        Console.WriteLine("¡Hasta luego!");
+        Console.WriteLine("?Hasta luego!");
     }
 }

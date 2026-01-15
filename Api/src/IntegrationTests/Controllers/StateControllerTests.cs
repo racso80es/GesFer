@@ -2,7 +2,8 @@ using FluentAssertions;
 using GesFer.Application.DTOs.Country;
 using GesFer.Application.DTOs.State;
 using GesFer.Domain.Entities;
-using GesFer.IntegrationTests.Helpers;
+using GesFer.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
@@ -10,49 +11,76 @@ using Xunit;
 
 namespace GesFer.IntegrationTests.Controllers;
 
-public class StateControllerTests : IClassFixture<CustomWebApplicationFactory<GesFer.Api.Program>>, IAsyncLifetime
+[Collection("DatabaseStep")]
+public class StateControllerTests
 {
     private readonly HttpClient _client;
-    private readonly CustomWebApplicationFactory<GesFer.Api.Program> _factory;
+    private readonly DatabaseFixture _fixture;
     private readonly Guid _languageEs = Guid.Parse("10000000-0000-0000-0000-000000000001");
-    private Guid _testCountryId;
 
-    public StateControllerTests(CustomWebApplicationFactory<GesFer.Api.Program> factory)
+    public StateControllerTests(DatabaseFixture fixture)
     {
-        _factory = factory;
-        _client = factory.CreateClient();
+        _fixture = fixture;
+        _client = fixture.Factory.CreateClient();
     }
 
-    public async Task InitializeAsync()
+    private async Task<Guid> GetOrCreateTestCountryAsync()
     {
-        await SeedTestDataAsync();
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
-    }
-
-    private async Task SeedTestDataAsync()
-    {
-        using var scope = _factory.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<GesFer.Infrastructure.Data.ApplicationDbContext>();
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.EnsureCreatedAsync();
-        await TestDataSeeder.SeedTestDataAsync(context);
-
-        // Crear un país de prueba directamente en la base de datos
-        var testCountry = new Country
+        // Primero verificar si el país ya existe usando el API
+        var getAllResponse = await _client.GetAsync("/api/country");
+        List<CountryDto>? countries = null;
+        if (getAllResponse.IsSuccessStatusCode)
+        {
+            countries = await getAllResponse.Content.ReadFromJsonAsync<List<CountryDto>>();
+            // Buscar por código primero (más específico)
+            var existingCountry = countries?.FirstOrDefault(c => c.Code == "ES");
+            if (existingCountry != null)
+            {
+                return existingCountry.Id;
+            }
+            // Si no se encuentra por código, buscar por nombre
+            existingCountry = countries?.FirstOrDefault(c => c.Name == "España");
+            if (existingCountry != null)
+            {
+                return existingCountry.Id;
+            }
+        }
+        
+        // Si no existe, intentar crearlo usando el API
+        var createDto = new CreateCountryDto
         {
             Name = "España",
             Code = "ES",
-            LanguageId = _languageEs,
-            CreatedAt = DateTime.UtcNow,
-            IsActive = true
+            LanguageId = _languageEs
         };
-        context.Countries.Add(testCountry);
-        await context.SaveChangesAsync();
-        _testCountryId = testCountry.Id;
+        var createResponse = await _client.PostAsJsonAsync("/api/country", createDto);
+        if (createResponse.IsSuccessStatusCode)
+        {
+            var createdCountry = await createResponse.Content.ReadFromJsonAsync<CountryDto>();
+            return createdCountry!.Id;
+        }
+        else
+        {
+            // Si falla al crear (probablemente porque ya existe), intentar buscar nuevamente
+            var retryGetResponse = await _client.GetAsync("/api/country");
+            if (retryGetResponse.IsSuccessStatusCode)
+            {
+                var retryCountries = await retryGetResponse.Content.ReadFromJsonAsync<List<CountryDto>>();
+                var retryCountry = retryCountries?.FirstOrDefault(c => c.Code == "ES" || c.Name == "España");
+                if (retryCountry != null)
+                {
+                    return retryCountry.Id;
+                }
+            }
+        }
+        
+        // Si falla, intentar obtener el primer país disponible
+        if (countries != null && countries.Any())
+        {
+            return countries.First().Id;
+        }
+        
+        throw new InvalidOperationException("No se pudo crear ni encontrar un país de prueba");
     }
 
     [Fact]
@@ -70,28 +98,37 @@ public class StateControllerTests : IClassFixture<CustomWebApplicationFactory<Ge
     [Fact]
     public async Task GetAll_WithCountryIdFilter_ShouldReturnFilteredStates()
     {
+        // Arrange
+        var testCountryId = await GetOrCreateTestCountryAsync();
+        
         // Act
-        var response = await _client.GetAsync($"/api/state?countryId={_testCountryId}");
+        var response = await _client.GetAsync($"/api/state?countryId={testCountryId}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var states = await response.Content.ReadFromJsonAsync<List<StateDto>>();
         states.Should().NotBeNull();
-        states!.All(s => s.CountryId == _testCountryId).Should().BeTrue();
+        states!.All(s => s.CountryId == testCountryId).Should().BeTrue();
     }
 
     [Fact]
     public async Task GetById_WithValidId_ShouldReturnState()
     {
-        // Arrange - Crear una provincia primero
+        // Arrange - Crear una provincia primero con nombre único
+        var testCountryId = await GetOrCreateTestCountryAsync();
+        var uniqueName = $"Madrid_{Guid.NewGuid():N}";
         var createDto = new CreateStateDto
         {
-            CountryId = _testCountryId,
-            Name = "Madrid",
+            CountryId = testCountryId,
+            Name = uniqueName,
             Code = "M"
         };
         var createResponse = await _client.PostAsJsonAsync("/api/state", createDto);
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created, 
+            $"La creación del estado debería devolver Created, pero devolvió {createResponse.StatusCode}. " +
+            $"Respuesta: {await createResponse.Content.ReadAsStringAsync()}");
         var createdState = await createResponse.Content.ReadFromJsonAsync<StateDto>();
+        createdState.Should().NotBeNull("El estado creado no debería ser null");
         var stateId = createdState!.Id;
 
         // Act
@@ -102,7 +139,7 @@ public class StateControllerTests : IClassFixture<CustomWebApplicationFactory<Ge
         var state = await response.Content.ReadFromJsonAsync<StateDto>();
         state.Should().NotBeNull();
         state!.Id.Should().Be(stateId);
-        state.Name.Should().Be("Madrid");
+        state.Name.Should().Be(uniqueName);
     }
 
     [Fact]
@@ -121,11 +158,13 @@ public class StateControllerTests : IClassFixture<CustomWebApplicationFactory<Ge
     [Fact]
     public async Task Create_WithValidData_ShouldReturnCreated()
     {
-        // Arrange
+        // Arrange - Usar nombre único para evitar conflictos
+        var testCountryId = await GetOrCreateTestCountryAsync();
+        var uniqueName = $"Barcelona_{Guid.NewGuid():N}";
         var createDto = new CreateStateDto
         {
-            CountryId = _testCountryId,
-            Name = "Barcelona",
+            CountryId = testCountryId,
+            Name = uniqueName,
             Code = "B"
         };
 
@@ -133,11 +172,13 @@ public class StateControllerTests : IClassFixture<CustomWebApplicationFactory<Ge
         var response = await _client.PostAsJsonAsync("/api/state", createDto);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        response.StatusCode.Should().Be(HttpStatusCode.Created, 
+            $"La creación del estado debería devolver Created, pero devolvió {response.StatusCode}. " +
+            $"Respuesta: {await response.Content.ReadAsStringAsync()}");
         var state = await response.Content.ReadFromJsonAsync<StateDto>();
         state.Should().NotBeNull();
         state!.Name.Should().Be(createDto.Name);
-        state.CountryId.Should().Be(_testCountryId);
+        state.CountryId.Should().Be(testCountryId);
     }
 
     [Fact]
@@ -161,15 +202,21 @@ public class StateControllerTests : IClassFixture<CustomWebApplicationFactory<Ge
     [Fact]
     public async Task Update_WithValidData_ShouldReturnOk()
     {
-        // Arrange - Crear una provincia primero
+        // Arrange - Crear una provincia primero con nombre único
+        var testCountryId = await GetOrCreateTestCountryAsync();
+        var uniqueName = $"Valencia_{Guid.NewGuid():N}";
         var createDto = new CreateStateDto
         {
-            CountryId = _testCountryId,
-            Name = "Valencia",
+            CountryId = testCountryId,
+            Name = uniqueName,
             Code = "V"
         };
         var createResponse = await _client.PostAsJsonAsync("/api/state", createDto);
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created, 
+            $"La creación del estado debería devolver Created, pero devolvió {createResponse.StatusCode}. " +
+            $"Respuesta: {await createResponse.Content.ReadAsStringAsync()}");
         var createdState = await createResponse.Content.ReadFromJsonAsync<StateDto>();
+        createdState.Should().NotBeNull("El estado creado no debería ser null");
         var stateId = createdState!.Id;
 
         var updateDto = new UpdateStateDto
@@ -193,9 +240,10 @@ public class StateControllerTests : IClassFixture<CustomWebApplicationFactory<Ge
     public async Task Delete_WithValidId_ShouldReturnNoContent()
     {
         // Arrange - Crear una provincia para eliminar
+        var testCountryId = await GetOrCreateTestCountryAsync();
         var createDto = new CreateStateDto
         {
-            CountryId = _testCountryId,
+            CountryId = testCountryId,
             Name = "Provincia Para Eliminar",
             Code = "XX"
         };
@@ -214,4 +262,3 @@ public class StateControllerTests : IClassFixture<CustomWebApplicationFactory<Ge
         getResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
-

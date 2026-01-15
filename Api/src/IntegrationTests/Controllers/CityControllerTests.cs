@@ -2,47 +2,40 @@ using FluentAssertions;
 using GesFer.Application.DTOs.City;
 using GesFer.Application.DTOs.Country;
 using GesFer.Application.DTOs.State;
-using GesFer.IntegrationTests.Helpers;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
 using Xunit;
 
 namespace GesFer.IntegrationTests.Controllers;
 
-public class CityControllerTests : IClassFixture<CustomWebApplicationFactory<GesFer.Api.Program>>, IAsyncLifetime
+[Collection("DatabaseStep")]
+public class CityControllerTests
 {
     private readonly HttpClient _client;
-    private readonly CustomWebApplicationFactory<GesFer.Api.Program> _factory;
+    private readonly DatabaseFixture _fixture;
     private readonly Guid _languageEs = Guid.Parse("10000000-0000-0000-0000-000000000001");
-    private Guid _testCountryId;
-    private Guid _testStateId;
 
-    public CityControllerTests(CustomWebApplicationFactory<GesFer.Api.Program> factory)
+    public CityControllerTests(DatabaseFixture fixture)
     {
-        _factory = factory;
-        _client = factory.CreateClient();
+        _fixture = fixture;
+        _client = fixture.Factory.CreateClient();
     }
 
-    public async Task InitializeAsync()
+    private async Task<Guid> GetOrCreateTestCountryAsync()
     {
-        await SeedTestDataAsync();
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
-    }
-
-    private async Task SeedTestDataAsync()
-    {
-        using var scope = _factory.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<GesFer.Infrastructure.Data.ApplicationDbContext>();
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.EnsureCreatedAsync();
-        await TestDataSeeder.SeedTestDataAsync(context);
-
-        // Crear un país de prueba
+        // Primero verificar si el país ya existe
+        var getAllResponse = await _client.GetAsync("/api/country");
+        if (getAllResponse.IsSuccessStatusCode)
+        {
+            var countries = await getAllResponse.Content.ReadFromJsonAsync<List<CountryDto>>();
+            var existingCountry = countries?.FirstOrDefault(c => c.Code == "ES" && c.Name == "España");
+            if (existingCountry != null)
+            {
+                return existingCountry.Id;
+            }
+        }
+        
+        // Si no existe, crearlo
         var createCountryDto = new CreateCountryDto
         {
             Name = "España",
@@ -50,19 +43,54 @@ public class CityControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
             LanguageId = _languageEs
         };
         var createCountryResponse = await _client.PostAsJsonAsync("/api/country", createCountryDto);
-        var createdCountry = await createCountryResponse.Content.ReadFromJsonAsync<CountryDto>();
-        _testCountryId = createdCountry!.Id;
+        if (createCountryResponse.IsSuccessStatusCode)
+        {
+            var createdCountry = await createCountryResponse.Content.ReadFromJsonAsync<CountryDto>();
+            return createdCountry!.Id;
+        }
+        
+        // Si falla, intentar obtener el primer país disponible
+        if (getAllResponse.IsSuccessStatusCode)
+        {
+            var countries = await getAllResponse.Content.ReadFromJsonAsync<List<CountryDto>>();
+            if (countries != null && countries.Any())
+            {
+                return countries.First().Id;
+            }
+        }
+        
+        throw new InvalidOperationException("No se pudo crear ni encontrar un país de prueba");
+    }
 
-        // Crear una provincia de prueba
+    private async Task<Guid> GetOrCreateTestStateAsync(Guid countryId)
+    {
+        // Primero verificar si el estado ya existe
+        var getAllResponse = await _client.GetAsync($"/api/state?countryId={countryId}");
+        if (getAllResponse.IsSuccessStatusCode)
+        {
+            var states = await getAllResponse.Content.ReadFromJsonAsync<List<StateDto>>();
+            var existingState = states?.FirstOrDefault(s => s.Code == "M" && s.Name == "Madrid");
+            if (existingState != null)
+            {
+                return existingState.Id;
+            }
+        }
+        
+        // Si no existe, crearlo
         var createStateDto = new CreateStateDto
         {
-            CountryId = _testCountryId,
+            CountryId = countryId,
             Name = "Madrid",
             Code = "M"
         };
         var createStateResponse = await _client.PostAsJsonAsync("/api/state", createStateDto);
-        var createdState = await createStateResponse.Content.ReadFromJsonAsync<StateDto>();
-        _testStateId = createdState!.Id;
+        if (createStateResponse.IsSuccessStatusCode)
+        {
+            var createdState = await createStateResponse.Content.ReadFromJsonAsync<StateDto>();
+            return createdState!.Id;
+        }
+        
+        throw new InvalidOperationException("No se pudo crear ni encontrar un estado de prueba");
     }
 
     [Fact]
@@ -80,36 +108,45 @@ public class CityControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
     [Fact]
     public async Task GetAll_WithStateIdFilter_ShouldReturnFilteredCities()
     {
+        // Arrange
+        var testCountryId = await GetOrCreateTestCountryAsync();
+        var testStateId = await GetOrCreateTestStateAsync(testCountryId);
+        
         // Act
-        var response = await _client.GetAsync($"/api/city?stateId={_testStateId}");
+        var response = await _client.GetAsync($"/api/city?stateId={testStateId}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var cities = await response.Content.ReadFromJsonAsync<List<CityDto>>();
         cities.Should().NotBeNull();
-        cities!.All(c => c.StateId == _testStateId).Should().BeTrue();
+        cities!.All(c => c.StateId == testStateId).Should().BeTrue();
     }
 
     [Fact]
     public async Task GetAll_WithCountryIdFilter_ShouldReturnFilteredCities()
     {
+        // Arrange
+        var testCountryId = await GetOrCreateTestCountryAsync();
+        
         // Act
-        var response = await _client.GetAsync($"/api/city?countryId={_testCountryId}");
+        var response = await _client.GetAsync($"/api/city?countryId={testCountryId}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var cities = await response.Content.ReadFromJsonAsync<List<CityDto>>();
         cities.Should().NotBeNull();
-        cities!.All(c => c.CountryId == _testCountryId).Should().BeTrue();
+        cities!.All(c => c.CountryId == testCountryId).Should().BeTrue();
     }
 
     [Fact]
     public async Task GetById_WithValidId_ShouldReturnCity()
     {
         // Arrange - Crear una ciudad primero
+        var testCountryId = await GetOrCreateTestCountryAsync();
+        var testStateId = await GetOrCreateTestStateAsync(testCountryId);
         var createDto = new CreateCityDto
         {
-            StateId = _testStateId,
+            StateId = testStateId,
             Name = "Madrid"
         };
         var createResponse = await _client.PostAsJsonAsync("/api/city", createDto);
@@ -144,9 +181,11 @@ public class CityControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
     public async Task Create_WithValidData_ShouldReturnCreated()
     {
         // Arrange
+        var testCountryId = await GetOrCreateTestCountryAsync();
+        var testStateId = await GetOrCreateTestStateAsync(testCountryId);
         var createDto = new CreateCityDto
         {
-            StateId = _testStateId,
+            StateId = testStateId,
             Name = "Barcelona"
         };
 
@@ -158,7 +197,7 @@ public class CityControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
         var city = await response.Content.ReadFromJsonAsync<CityDto>();
         city.Should().NotBeNull();
         city!.Name.Should().Be(createDto.Name);
-        city.StateId.Should().Be(_testStateId);
+        city.StateId.Should().Be(testStateId);
     }
 
     [Fact]
@@ -182,9 +221,11 @@ public class CityControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
     public async Task Update_WithValidData_ShouldReturnOk()
     {
         // Arrange - Crear una ciudad primero
+        var testCountryId = await GetOrCreateTestCountryAsync();
+        var testStateId = await GetOrCreateTestStateAsync(testCountryId);
         var createDto = new CreateCityDto
         {
-            StateId = _testStateId,
+            StateId = testStateId,
             Name = "Valencia"
         };
         var createResponse = await _client.PostAsJsonAsync("/api/city", createDto);
@@ -211,9 +252,11 @@ public class CityControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
     public async Task Delete_WithValidId_ShouldReturnNoContent()
     {
         // Arrange - Crear una ciudad para eliminar
+        var testCountryId = await GetOrCreateTestCountryAsync();
+        var testStateId = await GetOrCreateTestStateAsync(testCountryId);
         var createDto = new CreateCityDto
         {
-            StateId = _testStateId,
+            StateId = testStateId,
             Name = "Ciudad Para Eliminar"
         };
         var createResponse = await _client.PostAsJsonAsync("/api/city", createDto);
@@ -231,4 +274,3 @@ public class CityControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
         getResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
-

@@ -56,8 +56,24 @@ const publicRoutes = ['/login', '/api/auth'];
 // Rutas que requieren autenticación
 const protectedRoutes = ['/dashboard', '/usuarios', '/clientes', '/empresas'];
 
+/**
+ * Normaliza la URL base corrigiendo localhost.com a localhost
+ * Esto previene errores DNS cuando el navegador envía un hostname incorrecto
+ */
+function getNormalizedBaseUrl(request: NextRequest): string {
+  const url = new URL(request.url);
+  
+  // Corregir localhost.com a localhost
+  if (url.hostname === 'localhost.com' || url.hostname === 'www.localhost.com') {
+    url.hostname = 'localhost';
+  }
+  
+  return url.origin;
+}
+
 export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const baseUrl = getNormalizedBaseUrl(request);
   
   // Eliminar cualquier locale de la URL si existe (redirigir a la ruta sin locale)
   const pathnameParts = pathname.split('/').filter(Boolean);
@@ -66,7 +82,7 @@ export default async function middleware(request: NextRequest) {
   // Si el primer segmento es un locale válido, redirigir a la ruta sin locale
   if (firstPart && locales.includes(firstPart as Locale)) {
     const pathWithoutLocale = '/' + pathnameParts.slice(1).join('/') || '/';
-    return NextResponse.redirect(new URL(pathWithoutLocale, request.url));
+    return NextResponse.redirect(new URL(pathWithoutLocale, baseUrl));
   }
   
   // Verificar si la ruta es pública
@@ -103,7 +119,7 @@ export default async function middleware(request: NextRequest) {
     
     if (!authenticated) {
       // Redirigir a login si no está autenticado
-      const loginUrl = new URL('/login', request.url);
+      const loginUrl = new URL('/login', baseUrl);
       loginUrl.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(loginUrl);
     }
@@ -113,7 +129,7 @@ export default async function middleware(request: NextRequest) {
   if (pathname === '/login') {
     const authenticated = await isAuthenticated();
     if (authenticated) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
+      return NextResponse.redirect(new URL('/dashboard', baseUrl));
     }
   }
   

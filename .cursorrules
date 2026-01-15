@@ -1,5 +1,116 @@
 # Reglas de comportamiento automatizado para Cursor
 
+## Arquitectura del Proyecto
+
+### Vertical Slice Architecture (VSA)
+- El proyecto utiliza **Vertical Slice Architecture (VSA)** como patrón arquitectónico principal.
+- La lógica se organiza por características (features) en lugar de por capas técnicas.
+- **Handlers viven en:** `Application/Handlers/{Feature}/` (ej: `Application/Handlers/User/CreateUserCommandHandler.cs`)
+- **NO crear servicios genéricos** para lógica de negocio. Cada feature tiene sus propios handlers.
+- Los handlers son específicos de cada feature y contienen toda la lógica relacionada.
+
+### Patrón REPR (Request-Endpoint-Response)
+- **Request (Comando):** `Application/Commands/{Feature}/` (ej: `CreateUserCommand`)
+- **Endpoint (Controlador):** `Api/Controllers/` - Recibe HTTP request, crea comando, invoca handler, retorna respuesta
+- **Response (DTO):** `Application/DTOs/{Feature}/` (ej: `UserDto`)
+- Los controladores deben ser delgados: solo mapean HTTP a comandos y respuestas.
+
+### Co-localización de Lógica
+- Toda la lógica relacionada con una feature debe estar junta:
+  ```
+  Application/Handlers/User/
+  ├── CreateUserCommandHandler.cs
+  ├── UpdateUserCommandHandler.cs
+  ├── DeleteUserCommandHandler.cs
+  └── GetUserByIdCommandHandler.cs
+  ```
+
+## Base de Datos y Persistencia
+
+### Soft Delete Global
+- **Todas las entidades implementan `BaseEntity`** que incluye `DeletedAt` (DateTime?).
+- **Los borrados físicos están PROHIBIDOS** salvo en tests de integración con Testcontainers.
+- Siempre usar soft delete: `entity.DeletedAt = DateTime.UtcNow` en lugar de `context.Remove(entity)`.
+- Para consultas que incluyan eliminados, usar `IgnoreQueryFilters()` explícitamente.
+
+### Migraciones Automáticas
+- Las migraciones se aplican automáticamente al arrancar la aplicación **solo en modo Development**.
+- El proceso es manejado por `DbInitializer.InitializeAsync()` en `Program.cs`.
+- En producción, las migraciones deben aplicarse manualmente mediante `dotnet ef database update`.
+
+### Sistema de Seeding desde JSON
+- **Ubicación de archivos JSON:** `Api/src/Infrastructure/Data/Seeds/`
+- **Archivos principales:**
+  - `master-data.json`: Datos maestros (languages, permissions, groups, groupPermissions)
+  - `demo-data.json`: Datos de demostración (companies, users, families, articles, suppliers, customers)
+  - `test-data.json`: Datos para tests de integración
+- **Idempotencia:** El sistema de seeding es completamente idempotente. Verifica existencia antes de insertar y restaura entidades soft-deleted si es necesario.
+- **Para añadir datos de prueba:** Edita directamente los archivos JSON. NO modifiques código C#.
+- **Proceso automático:** El seeding se ejecuta automáticamente después de aplicar migraciones en modo Development.
+- **Clase responsable:** `JsonDataSeeder` en `Infrastructure/Services/` procesa los archivos JSON.
+- **Inicializador:** `DbInitializer` en `Infrastructure/Data/` coordina migraciones y seeding.
+- **REGLAS OBLIGATORIAS:**
+  - **OBLIGATORIO: Cualquier nueva tabla en la base de datos debe tener su correspondiente sección de datos en `master-data.json` o `test-data.json`.**
+  - Si la tabla contiene datos maestros del sistema → `master-data.json`
+  - Si la tabla contiene datos de demostración → `demo-data.json`
+  - Si la tabla contiene datos para tests → `test-data.json`
+
+## Testing
+
+### Tests de Integración Backend
+- **Los tests de integración backend DEBEN usar Testcontainers** para bases de datos reales.
+- **PROHIBICIONES ESTRICTAS:**
+  - **PROHIBIDO usar bases de datos en memoria** (`UseInMemoryDatabase`) en tests de integración.
+  - **PROHIBIDO usar SqliteInMemory** o bases de datos locales en tests de integración.
+  - **PROHIBIDO usar la base de datos de desarrollo** (ScrapDb) en tests.
+  - **PROHIBIDO usar `CustomWebApplicationFactory`** en nuevos tests de integración.
+- **REGLAS OBLIGATORIAS:**
+  - **Los tests de integración SIEMPRE deben heredar de `IntegrationTestWebAppFactory`** (NO usar `CustomWebApplicationFactory`).
+  - **Implementación:** Usar `IntegrationTestWebAppFactory` que levanta un contenedor Docker MySQL 8.0 efímero.
+  - El contenedor se crea al inicio de los tests y se destruye al finalizar (IAsyncLifetime).
+  - Las migraciones se ejecutan automáticamente en el contenedor de test mediante `DbInitializer.InitializeAsync`.
+  - El seeding se ejecuta desde `test-data.json` automáticamente cuando el entorno es `Testing`.
+  - El método `InitializeAsync` espera a que el contenedor esté totalmente listo antes de devolver el control.
+
+### Tests E2E Frontend (Playwright)
+- Los tests E2E deben usar `docker-compose.test.yml` para levantar un entorno aislado.
+- El entorno de test incluye:
+  - `db-test`: MySQL 8.0 (puerto dinámico o distinto al 3306)
+  - `api-test`: API con `ASPNETCORE_ENVIRONMENT=Testing` apuntando a `db-test`
+- La API de test ejecuta migraciones automáticamente al inicio.
+
+## Frontend (Next.js)
+
+### Validaciones
+- **OBLIGATORIO usar `zod`** para todas las validaciones de formularios y datos.
+- No usar validaciones manuales o bibliotecas alternativas.
+
+### Componentes UI
+- **OBLIGATORIO usar componentes `shadcn/ui`** para elementos de interfaz.
+- No crear componentes personalizados que ya existen en shadcn/ui.
+- Los componentes shadcn/ui están en `Cliente/components/ui/`.
+
+## Vision Zero (Seguridad e Integridad)
+
+### Acciones Destructivas
+- **Cualquier acción destructiva en UI requiere confirmación explícita.**
+- Las acciones destructivas incluyen:
+  - Eliminación de entidades (usuarios, empresas, clientes, proveedores, artículos, grupos, permisos)
+  - Operaciones de truncado
+  - Limpieza masiva de datos
+- **PROHIBICIONES ESTRICTAS:**
+  - **PROHIBIDO realizar eliminaciones (Delete) en controladores de usuario o empresa sin usar el componente `DestructiveActionConfirm` en el frontend.**
+  - **PROHIBIDO usar `confirm()` o `window.confirm()` para acciones destructivas.** Debe usarse `DestructiveActionConfirm`.
+  - **PROHIBIDO habilitar botones de eliminación sin confirmación previa.**
+- **REGLAS OBLIGATORIAS:**
+  - **Implementación:** Usar el componente `DestructiveActionConfirm` que requiere escribir una palabra clave (por defecto "ELIMINAR") antes de habilitar el botón de ejecución.
+  - El componente debe mostrar un Dialog con:
+    - Descripción clara de la acción destructiva
+    - Campo de texto que requiere escribir la palabra clave exacta
+    - Botón deshabilitado hasta que la palabra clave sea correcta
+    - Botón de cancelar siempre visible
+    - Spinner de loading mientras se ejecuta la acción asíncrona (evita múltiples clics)
+
 ## Verificación de sintaxis y tests
 
 Siempre que realices cambios en el código de la solución debes:
@@ -100,24 +211,3 @@ Siempre que realices cambios en el código de la solución debes:
 6. Revisar y reportar los resultados de los tests.
 7. Si hay fallos relacionados con los cambios, corregirlos y repetir desde el paso 3.
 8. **Solo después de que la consola marque 'TODO VERDE' y las ventanas del navegador se desplieguen sin errores**, informar que la tarea está finalizada.
-
-## Reglas de Persistencia y Base de Datos
-
-### Migraciones Automáticas
-
-- Las migraciones se aplican automáticamente al arrancar la aplicación **solo en modo Development**.
-- El proceso es manejado por `DbInitializer.InitializeAsync()` en `Program.cs`.
-- En producción, las migraciones deben aplicarse manualmente mediante `dotnet ef database update`.
-
-### Sistema de Seeding desde JSON
-
-- **Ubicación de archivos JSON:** `Api/src/Infrastructure/Data/Seeds/`
-- **Archivos principales:**
-  - `master-data.json`: Datos maestros (languages, permissions, groups, groupPermissions)
-  - `demo-data.json`: Datos de demostración (companies, users, families, articles, suppliers, customers)
-  - `test-data.json`: Datos para tests de integración
-- **Idempotencia:** El sistema de seeding es completamente idempotente. Verifica existencia antes de insertar y restaura entidades soft-deleted si es necesario.
-- **Para añadir datos de prueba:** Edita directamente los archivos JSON. NO modifiques código C#.
-- **Proceso automático:** El seeding se ejecuta automáticamente después de aplicar migraciones en modo Development.
-- **Clase responsable:** `JsonDataSeeder` en `Infrastructure/Services/` procesa los archivos JSON.
-- **Inicializador:** `DbInitializer` en `Infrastructure/Data/` coordina migraciones y seeding.

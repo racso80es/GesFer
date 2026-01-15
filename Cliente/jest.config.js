@@ -30,6 +30,11 @@ const customJestConfig = {
     '/.next/',
     '/tests/', // Excluir tests de Playwright
     '/lib/config.test.ts', // Excluir archivo de configuración de tests
+    '/playwright-report/',
+    '/test-results/',
+  ],
+  transformIgnorePatterns: [
+    'node_modules/(?!(next-auth|@auth)/)',
   ],
 }
 

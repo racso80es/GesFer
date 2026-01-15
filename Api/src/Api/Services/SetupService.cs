@@ -310,9 +310,11 @@ public class SetupService : ISetupService
         try
         {
             // Solo proceder si es una base de datos relacional
+            // NOTA: EnsureCreated solo se usa para bases de datos NO relacionales (in-memory para tests)
+            // Para bases de datos relacionales (MySQL, SQL Server, etc.) siempre usar migraciones
             if (!context.Database.IsRelational())
             {
-                logger.LogInformation("Base de datos no relacional detectada. Usando EnsureCreated...");
+                logger.LogInformation("Base de datos no relacional detectada (in-memory). Usando EnsureCreated...");
                 await context.Database.EnsureCreatedAsync();
                 logger.LogInformation("Base de datos en memoria creada correctamente");
                 return;

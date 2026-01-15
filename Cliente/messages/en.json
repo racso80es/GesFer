@@ -32,7 +32,9 @@
     "dashboard": "Dashboard",
     "users": "Users",
     "companies": "Companies",
-    "customers": "Customers"
+    "customers": "Customers",
+    "systems": "Systems",
+    "logs": "Logs"
   },
   "users": {
     "title": "Users",
@@ -178,5 +180,57 @@
     "user": "User",
     "permissions": "Permissions",
     "assignedPermissions": "{count} assigned permissions"
+  },
+  "logs": {
+    "title": "System Logs",
+    "subtitle": "View and filter system logs",
+    "loading": "Loading logs...",
+    "error": "Error loading logs",
+    "filters": {
+      "fromDate": "From date",
+      "toDate": "To date",
+      "level": "Level",
+      "allLevels": "All levels",
+      "debug": "Debug",
+      "information": "Information",
+      "warning": "Warning",
+      "error": "Error",
+      "fatal": "Fatal",
+      "apply": "Apply filters",
+      "clear": "Clear filters"
+    },
+    "table": {
+      "timestamp": "Date/Time",
+      "level": "Level",
+      "message": "Message",
+      "source": "Source",
+      "details": "Details",
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "noLogs": "No logs available",
+      "properties": "Properties",
+      "exception": "Exception",
+      "clientInfo": "Client Information"
+    },
+    "pagination": {
+      "page": "Page",
+      "of": "of",
+      "showing": "Showing",
+      "to": "to",
+      "ofTotal": "of",
+      "results": "results"
+    },
+    "purge": {
+      "title": "Clear Log History",
+      "description": "Select a date limit. All logs before this date will be deleted. The date must be at least 7 days before today.",
+      "dateLimit": "Date Limit",
+      "dateLimitRequired": "You must select a date limit",
+      "dateLimitInvalid": "The date limit must be at least 7 days before today",
+      "confirmButton": "Confirm Purge",
+      "cancelButton": "Cancel",
+      "processing": "Processing...",
+      "success": "Purge successful: {count} logs deleted before {date}",
+      "error": "Error purging logs"
+    }
   }
 }

@@ -92,7 +92,7 @@ const Dialog = ({ open, onOpenChange, children }: DialogProps) => {
     >
       <div
         className="fixed inset-0 bg-black/50"
-        aria-hidden="true"
+        role="presentation"
         style={{ pointerEvents: 'auto' }}
       />
       <div onClick={(e) => e.stopPropagation()} style={{ pointerEvents: 'auto' }}>

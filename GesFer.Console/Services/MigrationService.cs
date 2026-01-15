@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace GesFer.ConsoleApp.Services;
 
@@ -458,4 +459,285 @@ public class MigrationService
             return true; // No es crítico
         }
     }
+
+    /// <summary>
+    /// Realiza el squash de migraciones: elimina todas las migraciones existentes y crea una nueva migración inicial única
+    /// </summary>
+    /// <returns>Resultado del proceso con estado y información útil</returns>
+    public async Task<MigrationSquashResult> SquashMigrationsAsync()
+    {
+        var result = new MigrationSquashResult();
+        result.Messages.Add("Iniciando proceso de squash de migraciones...");
+        _logService.WriteLog("========================================");
+        _logService.WriteLog("Inicio de squash de migraciones");
+        _logService.WriteLog("========================================");
+
+        try
+        {
+            // Obtener rutas
+            var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
+            var apiPath = Path.GetFullPath(Path.Combine(rootPath, "Api", "src", "Api"));
+            var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "Api", "src", "Infrastructure"));
+            var migrationsPath = Path.Combine(infrastructurePath, "Migrations");
+
+            result.Messages.Add($"Ruta de migraciones: {migrationsPath}");
+
+            // Paso 1: Verificar que dotnet-ef esté instalado
+            result.Messages.Add("Verificando herramienta dotnet-ef...");
+            if (!await IsEfToolInstalledAsync())
+            {
+                result.Messages.Add("Instalando herramienta dotnet-ef...");
+                if (!await InstallEfToolAsync())
+                {
+                    result.Success = false;
+                    result.ErrorMessage = "No se pudo instalar la herramienta dotnet-ef";
+                    result.Messages.Add($"ERROR: {result.ErrorMessage}");
+                    _logService.WriteError(result.ErrorMessage);
+                    return result;
+                }
+            }
+            result.Messages.Add("✓ Herramienta dotnet-ef disponible");
+
+            // Paso 2: Eliminar carpeta Migrations completa
+            result.Messages.Add("Eliminando carpeta de migraciones existentes...");
+            if (Directory.Exists(migrationsPath))
+            {
+                try
+                {
+                    var filesBefore = Directory.GetFiles(migrationsPath, "*.*", SearchOption.AllDirectories);
+                    result.Messages.Add($"Archivos encontrados en Migrations: {filesBefore.Length}");
+                    result.DeletedFilesCount = filesBefore.Length;
+
+                    Directory.Delete(migrationsPath, recursive: true);
+                    result.Messages.Add("✓ Carpeta Migrations eliminada correctamente");
+                    _logService.WriteLog($"Carpeta Migrations eliminada: {filesBefore.Length} archivos");
+                }
+                catch (Exception ex)
+                {
+                    result.Success = false;
+                    result.ErrorMessage = $"Error al eliminar carpeta Migrations: {ex.Message}";
+                    result.Messages.Add($"ERROR: {result.ErrorMessage}");
+                    _logService.WriteError(result.ErrorMessage, ex);
+                    return result;
+                }
+            }
+            else
+            {
+                result.Messages.Add("⚠ No se encontró carpeta Migrations (puede que ya esté eliminada)");
+                result.DeletedFilesCount = 0;
+            }
+
+            // Paso 3: Generar nueva migración inicial
+            result.Messages.Add("Generando nueva migración inicial única...");
+            var projectPath = Path.Combine(infrastructurePath, "GesFer.Infrastructure.csproj");
+            var startupProjectPath = Path.Combine(apiPath, "GesFer.Api.csproj");
+            var command = $"ef migrations add InitialCreate --project \"{projectPath}\" --startup-project \"{startupProjectPath}\"";
+
+            _logService.WriteLog($"Comando: dotnet {command}");
+            _logService.WriteLog($"Directorio de trabajo: {apiPath}");
+
+            try
+            {
+                var processInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "dotnet",
+                    Arguments = command,
+                    WorkingDirectory = apiPath,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var process = System.Diagnostics.Process.Start(processInfo);
+                if (process == null)
+                {
+                    result.Success = false;
+                    result.ErrorMessage = "No se pudo iniciar dotnet ef";
+                    result.Messages.Add($"ERROR: {result.ErrorMessage}");
+                    _logService.WriteError(result.ErrorMessage);
+                    return result;
+                }
+
+                var outputTask = process.StandardOutput.ReadToEndAsync();
+                var errorTask = process.StandardError.ReadToEndAsync();
+
+                await process.WaitForExitAsync();
+
+                var output = await outputTask;
+                var error = await errorTask;
+
+                _logService.WriteProcessOutput("dotnet ef migrations add", output, false);
+                if (!string.IsNullOrWhiteSpace(error))
+                {
+                    _logService.WriteProcessOutput("dotnet ef migrations add", error, true);
+                }
+
+                _logService.WriteLog($"Código de salida: {process.ExitCode}");
+
+                if (process.ExitCode != 0)
+                {
+                    result.Success = false;
+                    result.ErrorMessage = "Error al generar la migración inicial";
+                    result.Messages.Add($"ERROR: {result.ErrorMessage}");
+                    result.Messages.Add($"Salida: {output}");
+                    if (!string.IsNullOrWhiteSpace(error))
+                    {
+                        result.Messages.Add($"Errores: {error}");
+                    }
+                    _logService.WriteError(result.ErrorMessage);
+                    return result;
+                }
+
+                result.Messages.Add("✓ Migración inicial generada correctamente");
+                _logService.WriteLog("Migración inicial generada correctamente");
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.ErrorMessage = $"Excepción al generar migración: {ex.Message}";
+                result.Messages.Add($"ERROR: {result.ErrorMessage}");
+                _logService.WriteError(result.ErrorMessage, ex);
+                return result;
+            }
+
+            // Paso 4: Verificar que la migración se creó correctamente
+            result.Messages.Add("Verificando migración generada...");
+            if (Directory.Exists(migrationsPath))
+            {
+                var migrationFiles = Directory.GetFiles(migrationsPath, "*.cs");
+                result.CreatedFilesCount = migrationFiles.Length;
+                result.Messages.Add($"Archivos de migración creados: {migrationFiles.Length}");
+
+                foreach (var file in migrationFiles)
+                {
+                    var fileName = Path.GetFileName(file);
+                    result.Messages.Add($"  - {fileName}");
+                    result.CreatedFiles.Add(fileName);
+                }
+
+                // Verificar que la migración incluya las tablas críticas (Logs y AdminUsers)
+                var migrationFile = migrationFiles.FirstOrDefault(f => f.Contains("InitialCreate") && !f.Contains("Designer") && !f.Contains("Snapshot"));
+                if (migrationFile != null && File.Exists(migrationFile))
+                {
+                    var migrationContent = await File.ReadAllTextAsync(migrationFile);
+                    var hasLogsTable = migrationContent.Contains("CreateTable", StringComparison.OrdinalIgnoreCase) &&
+                                       migrationContent.Contains("Logs", StringComparison.OrdinalIgnoreCase);
+                    var hasAdminUsersTable = migrationContent.Contains("CreateTable", StringComparison.OrdinalIgnoreCase) &&
+                                            migrationContent.Contains("AdminUsers", StringComparison.OrdinalIgnoreCase);
+
+                    if (hasLogsTable)
+                    {
+                        result.Messages.Add("✓ Tabla 'Logs' encontrada en la migración");
+                        result.TablesFound.Add("Logs");
+                    }
+                    else
+                    {
+                        result.Messages.Add("⚠ Tabla 'Logs' no encontrada en la migración");
+                    }
+
+                    if (hasAdminUsersTable)
+                    {
+                        result.Messages.Add("✓ Tabla 'AdminUsers' encontrada en la migración");
+                        result.TablesFound.Add("AdminUsers");
+                    }
+                    else
+                        result.Messages.Add("⚠ Tabla 'AdminUsers' no encontrada en la migración");
+
+                    // Contar todas las tablas creadas
+                    var createTableMatches = Regex.Matches(
+                        migrationContent,
+                        @"CreateTable\s*\(\s*name:\s*""([^""]+)""",
+                        RegexOptions.IgnoreCase
+                    );
+
+                    result.TotalTablesInMigration = createTableMatches.Count;
+                    result.Messages.Add($"Total de tablas en la migración: {result.TotalTablesInMigration}");
+
+                    foreach (System.Text.RegularExpressions.Match match in createTableMatches)
+                    {
+                        if (match.Groups.Count > 1)
+                        {
+                            var tableName = match.Groups[1].Value;
+                            if (!result.TablesFound.Contains(tableName))
+                            {
+                                result.TablesFound.Add(tableName);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                result.Success = false;
+                result.ErrorMessage = "La carpeta Migrations no se creó después de generar la migración";
+                result.Messages.Add($"ERROR: {result.ErrorMessage}");
+                _logService.WriteError(result.ErrorMessage);
+                return result;
+            }
+
+            result.Success = true;
+            result.Messages.Add("========================================");
+            result.Messages.Add("Squash de migraciones completado exitosamente");
+            result.Messages.Add("========================================");
+            _logService.WriteLog("Squash de migraciones completado exitosamente");
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.ErrorMessage = $"Excepción durante el squash de migraciones: {ex.Message}";
+            result.Messages.Add($"ERROR: {result.ErrorMessage}");
+            _logService.WriteError(result.ErrorMessage, ex);
+            return result;
+        }
+    }
+}
+
+/// <summary>
+/// Resultado del proceso de squash de migraciones
+/// </summary>
+public class MigrationSquashResult
+{
+    /// <summary>
+    /// Indica si el proceso fue exitoso
+    /// </summary>
+    public bool Success { get; set; }
+
+    /// <summary>
+    /// Mensaje de error si el proceso falló
+    /// </summary>
+    public string? ErrorMessage { get; set; }
+
+    /// <summary>
+    /// Lista de mensajes informativos del proceso
+    /// </summary>
+    public List<string> Messages { get; set; } = new List<string>();
+
+    /// <summary>
+    /// Número de archivos eliminados
+    /// </summary>
+    public int DeletedFilesCount { get; set; }
+
+    /// <summary>
+    /// Número de archivos creados
+    /// </summary>
+    public int CreatedFilesCount { get; set; }
+
+    /// <summary>
+    /// Lista de nombres de archivos creados
+    /// </summary>
+    public List<string> CreatedFiles { get; set; } = new List<string>();
+
+    /// <summary>
+    /// Lista de tablas encontradas en la migración
+    /// </summary>
+    public List<string> TablesFound { get; set; } = new List<string>();
+
+    /// <summary>
+    /// Total de tablas en la migración
+    /// </summary>
+    public int TotalTablesInMigration { get; set; }
 }

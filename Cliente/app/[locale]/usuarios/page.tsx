@@ -23,6 +23,7 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import type { User, CreateUser, UpdateUser } from "@/lib/types/api";
+import { DestructiveActionConfirm } from "@/components/shared/DestructiveActionConfirm";
 
 // Mapeo de languageId (Guids) a códigos de idioma
 const languageIdToCode: Record<string, string> = {
@@ -40,6 +41,8 @@ export default function UsuariosPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
 
   const {
     data: usuarios,
@@ -174,19 +177,22 @@ export default function UsuariosPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('deleteConfirm'))) {
-      return;
-    }
-    setDeletingUserId(id);
+  const handleDeleteClick = (id: string) => {
+    setUserToDelete(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!userToDelete) return;
+    
+    setDeletingUserId(userToDelete);
     try {
-      await deleteMutation.mutateAsync(id);
+      await deleteMutation.mutateAsync(userToDelete);
+      setShowDeleteConfirm(false);
+      setUserToDelete(null);
     } catch (error) {
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Error al eliminar el usuario"
-      );
+      // El error se maneja en deleteMutation.onError
+      console.error("Error al eliminar usuario:", error);
     } finally {
       setDeletingUserId(null);
     }
@@ -311,7 +317,7 @@ export default function UsuariosPage() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => handleDelete(usuario.id)}
+                                onClick={() => handleDeleteClick(usuario.id)}
                                 disabled={deletingUserId === usuario.id}
                                 title={t('table.delete')}
                               >
@@ -369,6 +375,18 @@ export default function UsuariosPage() {
               )}
             </DialogContent>
           </Dialog>
+
+          <DestructiveActionConfirm
+            open={showDeleteConfirm}
+            onOpenChange={setShowDeleteConfirm}
+            onConfirm={handleDeleteConfirm}
+            title={t('deleteConfirmTitle') || "Eliminar Usuario"}
+            description={t('deleteConfirmDescription') || "Esta acción eliminará permanentemente el usuario. Esta acción no se puede deshacer."}
+            confirmationKeyword="ELIMINAR"
+            confirmButtonText={t('deleteConfirmButton') || "Eliminar"}
+            cancelButtonText={t('cancel') || "Cancelar"}
+            isLoading={deletingUserId !== null}
+          />
         </div>
       </MainLayout>
     </ProtectedRoute>

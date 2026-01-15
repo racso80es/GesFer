@@ -1,42 +1,22 @@
 using FluentAssertions;
 using GesFer.Application.DTOs.User;
-using GesFer.IntegrationTests.Helpers;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
 using Xunit;
 
 namespace GesFer.IntegrationTests.Controllers;
 
-public class UserControllerTests : IClassFixture<CustomWebApplicationFactory<GesFer.Api.Program>>, IAsyncLifetime
+[Collection("DatabaseStep")]
+public class UserControllerTests
 {
     private readonly HttpClient _client;
-    private readonly CustomWebApplicationFactory<GesFer.Api.Program> _factory;
+    private readonly DatabaseFixture _fixture;
     private readonly Guid _testCompanyId = Guid.Parse("11111111-1111-1111-1111-111111111111");
 
-    public UserControllerTests(CustomWebApplicationFactory<GesFer.Api.Program> factory)
+    public UserControllerTests(DatabaseFixture fixture)
     {
-        _factory = factory;
-        _client = factory.CreateClient();
-    }
-
-    public async Task InitializeAsync()
-    {
-        await SeedTestDataAsync();
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
-    }
-
-    private async Task SeedTestDataAsync()
-    {
-        using var scope = _factory.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<GesFer.Infrastructure.Data.ApplicationDbContext>();
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.EnsureCreatedAsync();
-        await TestDataSeeder.SeedTestDataAsync(context);
+        _fixture = fixture;
+        _client = fixture.Factory.CreateClient();
     }
 
     [Fact]
@@ -166,14 +146,30 @@ public class UserControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
     [Fact]
     public async Task Update_WithValidData_ShouldReturnOk()
     {
-        // Arrange
-        var userId = Guid.Parse("99999999-9999-9999-9999-999999999999");
+        // Arrange - Crear un usuario primero para actualizarlo
+        var createDto = new CreateUserDto
+        {
+            CompanyId = _testCompanyId,
+            Username = $"usuario_test_update_{Guid.NewGuid():N}",
+            Password = "admin123",
+            FirstName = "Usuario",
+            LastName = "Test Update",
+            Email = $"testupdate_{Guid.NewGuid():N}@empresa.com",
+            Phone = "911111111"
+        };
+        var createResponse = await _client.PostAsJsonAsync("/api/user", createDto);
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created, 
+            "El usuario de test debería crearse correctamente");
+        var createdUser = await createResponse.Content.ReadFromJsonAsync<UserDto>();
+        createdUser.Should().NotBeNull();
+        var userId = createdUser!.Id;
+        
         var updateDto = new UpdateUserDto
         {
-            Username = "admin_actualizado",
-            FirstName = "Administrador",
-            LastName = "Actualizado",
-            Email = "admin_actualizado@empresa.com",
+            Username = "usuario_test_update_actualizado",
+            FirstName = "Usuario",
+            LastName = "Test Update Actualizado",
+            Email = "testupdate_actualizado@empresa.com",
             Phone = "999999999",
             IsActive = true
         };
@@ -182,24 +178,43 @@ public class UserControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
         var response = await _client.PutAsJsonAsync($"/api/user/{userId}", updateDto);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.OK, 
+            $"La actualización debería devolver OK, pero devolvió {response.StatusCode}. " +
+            $"Respuesta: {await response.Content.ReadAsStringAsync()}");
         var user = await response.Content.ReadFromJsonAsync<UserDto>();
         user.Should().NotBeNull();
-        user!.FirstName.Should().Be(updateDto.FirstName);
+        user!.Id.Should().Be(userId); // Verificar que se actualizó el usuario correcto
+        user.FirstName.Should().Be(updateDto.FirstName);
         user.Email.Should().Be(updateDto.Email);
     }
 
     [Fact]
     public async Task Update_WithPassword_ShouldUpdatePassword()
     {
-        // Arrange
-        var userId = Guid.Parse("99999999-9999-9999-9999-999999999999");
+        // Arrange - Crear un usuario primero para actualizarlo
+        var createDto = new CreateUserDto
+        {
+            CompanyId = _testCompanyId,
+            Username = $"usuario_test_password_{Guid.NewGuid():N}",
+            Password = "admin123",
+            FirstName = "Usuario",
+            LastName = "Test Password",
+            Email = $"testpassword_{Guid.NewGuid():N}@empresa.com",
+            Phone = "922222222"
+        };
+        var createResponse = await _client.PostAsJsonAsync("/api/user", createDto);
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created, 
+            "El usuario de test debería crearse correctamente");
+        var createdUser = await createResponse.Content.ReadFromJsonAsync<UserDto>();
+        createdUser.Should().NotBeNull();
+        var userId = createdUser!.Id;
+        
         var updateDto = new UpdateUserDto
         {
-            Username = "admin",
+            Username = createdUser.Username, // Mantener el mismo username
             Password = "nueva_password",
-            FirstName = "Administrador",
-            LastName = "Sistema",
+            FirstName = "Usuario",
+            LastName = "Test Password",
             IsActive = true
         };
 
@@ -207,7 +222,12 @@ public class UserControllerTests : IClassFixture<CustomWebApplicationFactory<Ges
         var response = await _client.PutAsJsonAsync($"/api/user/{userId}", updateDto);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.OK, 
+            $"La actualización debería devolver OK, pero devolvió {response.StatusCode}. " +
+            $"Respuesta: {await response.Content.ReadAsStringAsync()}");
+        var user = await response.Content.ReadFromJsonAsync<UserDto>();
+        user.Should().NotBeNull();
+        user!.Id.Should().Be(userId); // Verificar que se actualizó el usuario correcto
     }
 
     [Fact]

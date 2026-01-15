@@ -9,13 +9,14 @@ namespace GesFer.IntegrationTests.Controllers;
 /// <summary>
 /// Tests de integración para HealthController
 /// </summary>
-public class HealthControllerTests : IClassFixture<CustomWebApplicationFactory<GesFer.Api.Program>>
+[Collection("DatabaseStep")]
+public class HealthControllerTests
 {
     private readonly HttpClient _client;
 
-    public HealthControllerTests(CustomWebApplicationFactory<GesFer.Api.Program> factory)
+    public HealthControllerTests(DatabaseFixture fixture)
     {
-        _client = factory.CreateClient();
+        _client = fixture.Factory.CreateClient();
     }
 
     [Fact]

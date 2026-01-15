@@ -1,0 +1,35 @@
+# Dockerfile para tests E2E
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 5000
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copiar archivos de proyecto
+COPY ["src/Api/GesFer.Api.csproj", "src/Api/"]
+COPY ["src/Application/GesFer.Application.csproj", "src/Application/"]
+COPY ["src/Domain/GesFer.Domain.csproj", "src/Domain/"]
+COPY ["src/Infrastructure/GesFer.Infrastructure.csproj", "src/Infrastructure/"]
+
+# Restaurar dependencias
+RUN dotnet restore "src/Api/GesFer.Api.csproj"
+
+# Copiar todo el código fuente
+COPY . .
+
+# Compilar la aplicación
+WORKDIR "/src/src/Api"
+RUN dotnet build "GesFer.Api.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "GesFer.Api.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+# Copiar archivos de seeds para que estén disponibles en runtime
+COPY --from=build /src/src/Infrastructure/Data/Seeds /app/Data/Seeds
+
+ENTRYPOINT ["dotnet", "GesFer.Api.dll"]

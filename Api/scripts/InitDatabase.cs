@@ -50,13 +50,13 @@ var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
 try
 {
-    if (context.Database.CanConnect())
+    if (await context.Database.CanConnectAsync())
     {
         // Eliminar tabla de migraciones si existe
         try
         {
             var sql = "DROP TABLE IF EXISTS __EFMigrationsHistory;";
-            context.Database.ExecuteSqlRaw(sql);
+            await context.Database.ExecuteSqlRawAsync(sql);
         }
         catch (Exception ex)
         {
@@ -76,10 +76,10 @@ try
         {
             try
             {
-                // Los nombres de tablas son constantes hardcodeadas, por lo que son seguros
-                // Usar ExecuteSqlRaw directamente ya que no hay riesgo de SQL injection
+            // Los nombres de tablas son constantes hardcodeadas, por lo que son seguros
+            // Usar ExecuteSqlRaw directamente ya que no hay riesgo de SQL injection
 #pragma warning disable EF1002 // El nombre de la tabla es una constante, no entrada del usuario
-                context.Database.ExecuteSqlRaw($"DROP TABLE IF EXISTS `{tableName}`;");
+                await context.Database.ExecuteSqlRawAsync($"DROP TABLE IF EXISTS `{tableName}`;");
 #pragma warning restore EF1002
             }
             catch (Exception ex)
@@ -88,9 +88,18 @@ try
             }
         }
         
-        // Crear tablas
-        context.Database.EnsureCreated();
-        Console.WriteLine("    ✓ Tablas creadas correctamente");
+        // Aplicar migraciones para crear tablas
+        // NO usar EnsureCreated - siempre usar migraciones
+        try
+        {
+            await context.Database.MigrateAsync();
+            Console.WriteLine("    ✓ Migraciones aplicadas correctamente");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error al aplicar migraciones: {Message}", ex.Message);
+            throw;
+        }
     }
     else
     {

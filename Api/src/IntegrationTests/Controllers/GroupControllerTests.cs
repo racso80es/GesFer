@@ -1,41 +1,25 @@
 using FluentAssertions;
 using GesFer.Application.DTOs.Group;
-using GesFer.IntegrationTests.Helpers;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
 using Xunit;
 
 namespace GesFer.IntegrationTests.Controllers;
 
-public class GroupControllerTests : IClassFixture<CustomWebApplicationFactory<GesFer.Api.Program>>, IAsyncLifetime
+/// <summary>
+/// Tests de integración para GroupController usando DatabaseFixture con Collection Fixture.
+/// Todos los tests en la colección "DatabaseStep" comparten el mismo contenedor MySQL.
+/// </summary>
+[Collection("DatabaseStep")]
+public class GroupControllerTests
 {
     private readonly HttpClient _client;
-    private readonly CustomWebApplicationFactory<GesFer.Api.Program> _factory;
+    private readonly DatabaseFixture _fixture;
 
-    public GroupControllerTests(CustomWebApplicationFactory<GesFer.Api.Program> factory)
+    public GroupControllerTests(DatabaseFixture fixture)
     {
-        _factory = factory;
-        _client = factory.CreateClient();
-    }
-
-    public async Task InitializeAsync()
-    {
-        await SeedTestDataAsync();
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
-    }
-
-    private async Task SeedTestDataAsync()
-    {
-        using var scope = _factory.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<GesFer.Infrastructure.Data.ApplicationDbContext>();
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.EnsureCreatedAsync();
-        await TestDataSeeder.SeedTestDataAsync(context);
+        _fixture = fixture;
+        _client = fixture.Factory.CreateClient();
     }
 
     [Fact]
@@ -122,12 +106,12 @@ public class GroupControllerTests : IClassFixture<CustomWebApplicationFactory<Ge
     [Fact]
     public async Task Update_WithValidData_ShouldReturnOk()
     {
-        // Arrange
-        var groupId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        // Arrange - Usar grupo específico de test, NO el grupo maestro Administradores
+        var groupId = Guid.Parse("22222222-2222-2222-2222-222222222225");
         var updateDto = new UpdateGroupDto
         {
-            Name = "Administradores Actualizado",
-            Description = "Descripción actualizada",
+            Name = "Grupo Test Update Actualizado",
+            Description = "Descripción actualizada para test",
             IsActive = true
         };
 
@@ -138,7 +122,8 @@ public class GroupControllerTests : IClassFixture<CustomWebApplicationFactory<Ge
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var group = await response.Content.ReadFromJsonAsync<GroupDto>();
         group.Should().NotBeNull();
-        group!.Name.Should().Be(updateDto.Name);
+        group!.Id.Should().Be(groupId); // Verificar que se actualizó el grupo correcto
+        group.Name.Should().Be(updateDto.Name);
         group.Description.Should().Be(updateDto.Description);
     }
 

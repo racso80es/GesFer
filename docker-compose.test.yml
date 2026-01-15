@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # Base de datos MySQL para tests E2E
+  db-test:
+    image: mysql:8.0
+    container_name: gesfer_test_db
+    restart: unless-stopped
+    command: 
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --max_allowed_packet=256M
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: GesFerTestDb
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpassword
+      TZ: UTC
+    ports:
+      - "3307:3306"  # Puerto diferente al de desarrollo (3306) para evitar conflictos
+    # Sin volumen persistente - MySQL será efímero y se reseteará en cada docker-compose down
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - gesfer_test_network
+
+  # API para tests E2E
+  api-test:
+    build:
+      context: ./Api
+      dockerfile: Dockerfile.test
+    container_name: gesfer_test_api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Testing
+      ASPNETCORE_URLS: http://+:5000
+      ConnectionStrings__DefaultConnection: "Server=db-test;Port=3306;Database=GesFerTestDb;User=testuser;Password=testpassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;"
+      JwtSettings__SecretKey: "YourSuperSecretKeyThatShouldBeAtLeast32CharactersLong!"
+      JwtSettings__Issuer: "GesFerApi"
+      JwtSettings__Audience: "GesFerClient"
+      JwtSettings__ExpirationMinutes: "60"
+    ports:
+      - "5001:5000"  # Puerto diferente al de desarrollo para evitar conflictos
+    depends_on:
+      db-test:
+        condition: service_healthy
+    networks:
+      - gesfer_test_network
+
+networks:
+  gesfer_test_network:
+    driver: bridge

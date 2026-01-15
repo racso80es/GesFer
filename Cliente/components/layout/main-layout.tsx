@@ -121,7 +121,7 @@ function SidebarContent({
   user: any;
   onLogout: () => void;
   onClose?: () => void;
-  navigation: Array<{ name: string; href: string; icon: any }>;
+  navigation: Array<{ name: string; href: string; icon: any; children?: Array<{ name: string; href: string; icon: any }> }>;
 }) {
   const pathname = usePathname();
   const tAuth = useTranslations('auth');
@@ -152,7 +152,11 @@ function SidebarContent({
       <nav className="flex-1 p-4 space-y-1">
         {navigation.map((item) => {
           const Icon = item.icon;
-          const isActive = normalizedPathname === item.href;
+          const hasChildren = item.children && item.children.length > 0;
+          const isActive = hasChildren 
+            ? item.children?.some(child => normalizedPathname === child.href)
+            : normalizedPathname === item.href;
+          
           // Mapear hrefs a test-ids
           const testIdMap: Record<string, string> = {
             '/dashboard': 'dashboard-dashboard-link',
@@ -160,7 +164,47 @@ function SidebarContent({
             '/usuarios': 'dashboard-usuarios-link',
             '/clientes': 'dashboard-clientes-link',
           };
-          const testId = testIdMap[item.href] || `dashboard-${item.href.replace('/', '')}-link`;
+          const testId = testIdMap[item.href] || `dashboard-${item.href.replace('/', '').replace('#', '')}-link`;
+          
+          if (hasChildren) {
+            return (
+              <div key={item.href} className="space-y-1">
+                <div className={cn(
+                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium",
+                  "text-muted-foreground"
+                )}>
+                  <Icon className="h-5 w-5" />
+                  {item.name}
+                </div>
+                <div className="ml-6 space-y-1">
+                  {item.children?.map((child) => {
+                    const ChildIcon = child.icon;
+                    const isChildActive = normalizedPathname === child.href;
+                    const childTestId = testIdMap[child.href] || `dashboard-${child.href.replace('/', '')}-link`;
+                    
+                    return (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        onClick={onClose}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                          "hover:bg-accent hover:text-accent-foreground",
+                          isChildActive
+                            ? "bg-accent text-accent-foreground"
+                            : "text-muted-foreground"
+                        )}
+                        data-testid={childTestId}
+                      >
+                        <ChildIcon className="h-4 w-4" />
+                        {child.name}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          }
           
           return (
             <Link

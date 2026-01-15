@@ -22,6 +22,17 @@ jest.mock('next/navigation', () => ({
   },
 }))
 
+// Mock next-auth/react
+jest.mock('next-auth/react', () => ({
+  useSession: jest.fn(() => ({
+    data: null,
+    status: 'unauthenticated',
+  })),
+  signIn: jest.fn(() => Promise.resolve({ ok: true })),
+  signOut: jest.fn(() => Promise.resolve()),
+  SessionProvider: ({ children }) => children,
+}))
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
