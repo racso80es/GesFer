@@ -219,6 +219,18 @@
       "to": "to",
       "ofTotal": "of",
       "results": "results"
+    },
+    "purge": {
+      "title": "Clear Log History",
+      "description": "Select a date limit. All logs before this date will be deleted. The date must be at least 7 days before today.",
+      "dateLimit": "Date Limit",
+      "dateLimitRequired": "You must select a date limit",
+      "dateLimitInvalid": "The date limit must be at least 7 days before today",
+      "confirmButton": "Confirm Purge",
+      "cancelButton": "Cancel",
+      "processing": "Processing...",
+      "success": "Purge successful: {count} logs deleted before {date}",
+      "error": "Error purging logs"
     }
   }
 }

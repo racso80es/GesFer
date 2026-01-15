@@ -219,6 +219,18 @@
       "to": "a",
       "ofTotal": "de",
       "results": "resultats"
+    },
+    "purge": {
+      "title": "Netejar Historial de Logs",
+      "description": "Selecciona una data límit. S'eliminaran tots els logs anteriors a aquesta data. La data ha de ser almenys 7 dies abans d'avui.",
+      "dateLimit": "Data Límit",
+      "dateLimitRequired": "Has de seleccionar una data límit",
+      "dateLimitInvalid": "La data límit ha de ser almenys 7 dies abans d'avui",
+      "confirmButton": "Confirmar Purga",
+      "cancelButton": "Cancel·lar",
+      "processing": "Processant...",
+      "success": "Purga exitosa: S'han eliminat {count} logs anteriors a {date}",
+      "error": "Error en purgar els logs"
     }
   }
 }

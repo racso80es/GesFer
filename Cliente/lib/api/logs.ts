@@ -34,6 +34,12 @@ export interface LogsFilter {
   pageSize?: number;
 }
 
+export interface PurgeLogsResponse {
+  deletedCount: number;
+  dateLimit: string;
+  message: string;
+}
+
 export const logsApi = {
   /**
    * Obtiene logs paginados con filtros opcionales
@@ -64,5 +70,16 @@ export const logsApi = {
     }
 
     return apiClient.get<LogsPagedResponse>("/api/log", params);
+  },
+
+  /**
+   * Purga logs antiguos anteriores a la fecha límite especificada
+   */
+  purge: async (dateLimit: Date): Promise<PurgeLogsResponse> => {
+    const params: Record<string, string> = {
+      dateLimit: dateLimit.toISOString(),
+    };
+    
+    return apiClient.delete<PurgeLogsResponse>("/api/log", params);
   },
 };

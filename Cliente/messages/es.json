@@ -219,6 +219,18 @@
       "to": "a",
       "ofTotal": "de",
       "results": "resultados"
+    },
+    "purge": {
+      "title": "Limpiar Historial de Logs",
+      "description": "Selecciona una fecha límite. Se eliminarán todos los logs anteriores a esta fecha. La fecha debe ser al menos 7 días antes de hoy.",
+      "dateLimit": "Fecha Límite",
+      "dateLimitRequired": "Debe seleccionar una fecha límite",
+      "dateLimitInvalid": "La fecha límite debe ser al menos 7 días antes de hoy",
+      "confirmButton": "Confirmar Eliminación",
+      "cancelButton": "Cancelar",
+      "processing": "Procesando...",
+      "success": "Purga exitosa: Se eliminaron {count} logs anteriores a {date}",
+      "error": "Error al purgar los logs"
     }
   }
 }
