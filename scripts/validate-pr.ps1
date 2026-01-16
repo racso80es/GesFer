@@ -72,7 +72,7 @@ function Stop-ProcessOnPort {
             foreach ($pid in $processes) {
                 try {
                     Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
-                    Write-Host "   🛑 Proceso $pid ($ServiceName) en puerto $Port terminado" -ForegroundColor Yellow
+                    Write-Host "   [STOP] Proceso $pid ($ServiceName) en puerto $Port terminado" -ForegroundColor Yellow
                 } catch {
                     # Ignorar si el proceso ya no existe
                 }
