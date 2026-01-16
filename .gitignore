@@ -83,3 +83,10 @@ ibtmp1
 undo_001
 undo_002
 /.vs
+
+# Reportes y resultados de tests
+Cliente/test-results/
+Cliente/playwright-report/
+**/test-results/
+**/playwright-report/
+*.webm
