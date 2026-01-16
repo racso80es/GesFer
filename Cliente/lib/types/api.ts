@@ -40,6 +40,8 @@ export interface User {
   isActive: boolean;
   createdAt: string;
   updatedAt?: string;
+  // ERROR INYECTADO PARA PROBAR JUEZ - Esta propiedad no existe en Backend
+  invalidField: boolean;
 }
 
 export interface CreateUser {
