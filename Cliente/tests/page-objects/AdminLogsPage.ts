@@ -22,17 +22,20 @@ export class AdminLogsPage extends BasePage {
     super(page);
     
     this.title = page.getByRole('heading', { name: /logs del sistema/i });
-    this.fromDateInput = page.locator('#fromDate');
-    this.toDateInput = page.locator('#toDate');
-    this.levelSelect = page.locator('#level');
-    this.applyFiltersButton = page.getByRole('button', { name: /aplicar filtros/i });
-    this.clearFiltersButton = page.getByRole('button', { name: /limpiar filtros/i });
-    this.logsTable = page.locator('table');
-    this.logsTableRows = page.locator('table tbody tr').filter({ hasNot: page.locator('[colspan]') });
-    this.noLogsMessage = page.getByText(/no hay logs disponibles/i);
-    this.paginationInfo = page.locator('text=/página \\d+ de \\d+/i');
-    this.previousPageButton = page.getByRole('button', { name: /anterior/i });
-    this.nextPageButton = page.getByRole('button', { name: /siguiente/i });
+    // Usar data-testid de componentes shared
+    this.fromDateInput = page.getByTestId('shared-input-datetime-from');
+    this.toDateInput = page.getByTestId('shared-input-datetime-to');
+    this.levelSelect = page.locator('#level'); // Select nativo, no tiene data-testid aún
+    this.applyFiltersButton = page.getByTestId('shared-button-apply-filters');
+    this.clearFiltersButton = page.getByTestId('shared-button-clear-filters');
+    // DataTable usa data-testid="shared-datatable-logs"
+    const dataTableContainer = page.getByTestId('shared-datatable-logs');
+    this.logsTable = dataTableContainer.locator('table');
+    this.logsTableRows = dataTableContainer.locator('table tbody tr').filter({ hasNot: page.locator('[colspan]') });
+    this.noLogsMessage = page.getByTestId('shared-datatable-logs-empty');
+    this.paginationInfo = page.getByTestId('shared-datatable-logs-pagination').locator('text=/página \\d+ de \\d+/i');
+    this.previousPageButton = page.getByTestId('shared-datatable-logs-pagination-previous');
+    this.nextPageButton = page.getByTestId('shared-datatable-logs-pagination-next');
   }
 
   /**
