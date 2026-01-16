@@ -8,7 +8,7 @@ import { Button } from "@/components/shared/Button";
 import { Input } from "@/components/shared/Input";
 import { ModalBase } from "@/components/shared/ModalBase";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserForm } from "@/components/admin/UserForm";
+import { UserForm } from "@/components/usuarios/user-form";
 import { usersApi } from "@/lib/api/users";
 import { useAuth } from "@/contexts/auth-context";
 import { Edit, User as UserIcon } from "lucide-react";
@@ -193,7 +193,6 @@ export default function PerfilPage() {
           >
             <UserForm
               user={user}
-              companyId={user.companyId}
               onSubmit={handleUpdate}
               onCancel={() => setIsEditModalOpen(false)}
               isLoading={updateMutation.isPending}
