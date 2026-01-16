@@ -1,4 +1,4 @@
-# Script de validación completa para Pull Request / Push (PowerShell)
+﻿# Script de validación completa para Pull Request / Push (PowerShell)
 # Ejecuta todos los tests: Backend build, Frontend unitarios, E2E
 # ORQUESTA servicios automáticamente: levanta Backend y Frontend antes de tests E2E
 # Limpia procesos al finalizar
