@@ -288,12 +288,12 @@ if ($ErrorCount -eq 0) {
             Pop-Location
         }
     } else {
-        Write-Host "❌ ERROR: Directorio Cliente/ no encontrado" -ForegroundColor Red
+        Write-Host "ERROR: Directorio Cliente/ no encontrado" -ForegroundColor Red
         $ErrorCount++
     }
 } else {
-    Write-Host "⏭️  [3/4] Saltando tests E2E debido a errores previos" -ForegroundColor Yellow
-    Write-Host "⏭️  [4/4] Saltando tests E2E debido a errores previos" -ForegroundColor Yellow
+    Write-Host "[SKIP] [3/4] Saltando tests E2E debido a errores previos" -ForegroundColor Yellow
+    Write-Host "[SKIP] [4/4] Saltando tests E2E debido a errores previos" -ForegroundColor Yellow
 }
 
 Write-Host ""
