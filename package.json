@@ -1,0 +1,12 @@
+{
+  "name": "gesfer-root",
+  "version": "1.0.0",
+  "description": "GesFer project root - Husky configuration",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^9.0.0"
+  }
+}

@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/Button";
 import {
   LayoutDashboard,
   Users,
@@ -98,6 +98,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             variant="ghost"
             size="icon"
             onClick={() => setSidebarOpen(true)}
+            data-testid="shared-button-main-sidebar-toggle"
           >
             <Menu className="h-6 w-6" />
           </Button>
@@ -143,7 +144,12 @@ function SidebarContent({
       <div className="flex items-center justify-between p-4 border-b">
         <h2 className="text-xl font-bold">GesFer</h2>
         {onClose && (
-          <Button variant="ghost" size="icon" onClick={onClose}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onClose}
+            data-testid="shared-button-sidebar-close"
+          >
             <X className="h-5 w-5" />
           </Button>
         )}

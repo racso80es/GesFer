@@ -205,8 +205,8 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
       console.log('[TEST] Tabla de logs no visible, pero continuando...');
     });
     
-    // Paso 3: Verificar que el botón "Limpiar Historial" está visible
-    const purgeButton = page.getByRole('button', { name: /limpiar historial/i });
+    // Paso 3: Verificar que el botón "Limpiar Historial" está visible (usar data-testid)
+    const purgeButton = page.getByTestId('shared-button-purge-logs');
     await expect(purgeButton).toBeVisible({ timeout: 5000 });
     console.log('[TEST] Botón "Limpiar Historial" encontrado');
     
@@ -215,15 +215,15 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
     console.log('[TEST] Clic en botón realizado');
     await page.waitForTimeout(1000);
     
-    // Paso 5: Verificar que el modal se abre
-    const modalTitle = page.getByRole('heading', { name: /limpiar historial de logs/i });
-    await expect(modalTitle).toBeVisible({ timeout: 10000 });
+    // Paso 5: Verificar que el modal se abre (usar data-testid)
+    const modalContainer = page.getByTestId('shared-modal-purge-logs');
+    await expect(modalContainer).toBeVisible({ timeout: 10000 });
+    const modalTitle = modalContainer.getByRole('heading', { name: /limpiar historial de logs/i });
+    await expect(modalTitle).toBeVisible({ timeout: 5000 });
     console.log('[TEST] Modal abierto correctamente');
     
-    // Paso 6: Verificar que el selector de fecha está presente y tiene la restricción de mínimo
-    const dateInput = page.locator('#purgeDateLimit').or(
-      page.locator('input[type="datetime-local"]').filter({ has: page.locator('text=/fecha límite/i') })
-    );
+    // Paso 6: Verificar que el selector de fecha está presente y tiene la restricción de mínimo (usar data-testid)
+    const dateInput = page.getByTestId('shared-input-datetime-purge');
     await expect(dateInput).toBeVisible({ timeout: 5000 });
     
     // Verificar que tiene el atributo max (restricción de 7 días)
@@ -279,8 +279,8 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
       }
     });
     
-    // Paso 9: Confirmar la eliminación
-    const confirmButton = page.getByRole('button', { name: /confirmar eliminación/i });
+    // Paso 9: Confirmar la eliminación (usar data-testid)
+    const confirmButton = page.getByTestId('shared-modal-purge-logs-confirm');
     await expect(confirmButton).toBeVisible({ timeout: 5000 });
     
     // Esperar la respuesta usando waitForResponse
@@ -320,7 +320,7 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
     await page.waitForTimeout(3000);
     
     // Verificar el estado final
-    const modalStillOpen = await modalTitle.isVisible({ timeout: 3000 }).catch(() => false);
+    const modalStillOpen = await modalContainer.isVisible({ timeout: 3000 }).catch(() => false);
     
     if (purgeResponseStatus) {
       // Si tenemos respuesta, verificar que sea exitosa
@@ -430,7 +430,7 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
     
     // Paso 11: Verificar que el modal se cerró (indicador de éxito si status 200)
     if (purgeResponseStatus === 200) {
-      await expect(modalTitle).not.toBeVisible({ timeout: 5000 });
+      await expect(modalContainer).not.toBeVisible({ timeout: 5000 });
       console.log('[TEST] Modal cerrado correctamente después de purga exitosa');
       
       // Paso 12: Verificar que se muestra el mensaje de éxito

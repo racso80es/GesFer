@@ -270,10 +270,10 @@ test.describe('Sistema de Logs E2E Tests', () => {
       return;
     }
     
-    // Hacer clic en el botón de expandir del primer log
-    const firstExpandButton = page.locator('table tbody tr').first().locator('button').filter({ 
-      has: page.locator('svg') 
-    });
+    // Hacer clic en el botón de expandir del primer log (usar data-testid)
+    // El botón tiene data-testid="shared-button-toggle-log-{logId}"
+    const firstLogRow = page.getByTestId('shared-datatable-logs').locator('table tbody tr').first();
+    const firstExpandButton = firstLogRow.locator('button[data-testid^="shared-button-toggle-log-"]');
     await firstExpandButton.click();
     
     // Verificar que se muestra una fila expandida con detalles

@@ -1,6 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import LoginPage from '@/app/login/page'
+import LoginPage from '@/app/(client)/login/page'
 import { useAuth } from '@/contexts/auth-context'
 
 // Mock the auth context
@@ -67,7 +67,10 @@ describe('LoginPage', () => {
     render(<LoginPage />)
     
     const submitButton = screen.getByRole('button', { name: /iniciar sesión|login/i })
-    await user.click(submitButton)
+    
+    await act(async () => {
+      await user.click(submitButton)
+    })
     
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith({
@@ -86,7 +89,10 @@ describe('LoginPage', () => {
     render(<LoginPage />)
     
     const submitButton = screen.getByRole('button', { name: /iniciar sesión|login/i })
-    await user.click(submitButton)
+    
+    await act(async () => {
+      await user.click(submitButton)
+    })
     
     await waitFor(() => {
       expect(screen.getByText(errorMessage)).toBeInTheDocument()
@@ -100,7 +106,10 @@ describe('LoginPage', () => {
     render(<LoginPage />)
     
     const submitButton = screen.getByRole('button', { name: /iniciar sesión|login/i })
-    await user.click(submitButton)
+    
+    await act(async () => {
+      await user.click(submitButton)
+    })
     
     await waitFor(() => {
       expect(submitButton).toBeDisabled()

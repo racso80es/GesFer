@@ -9,7 +9,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/auth-context";
-import UsuariosPage from "@/app/usuarios/page";
+import UsuariosPage from "@/app/(client)/usuarios/page";
 import EmpresasPage from "@/app/empresas/page";
 import { usersApi } from "@/lib/api/users";
 import { companiesApi } from "@/lib/api/companies";

@@ -1,39 +1,25 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
-import { Button } from "@/components/ui/button";
-import {
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  X,
-  FileText,
-} from "lucide-react";
+import { Button } from "@/components/shared/Button";
+import { Menu } from "lucide-react";
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
+import { Sidebar } from "./Sidebar";
+import { useSidebar } from "@/contexts/sidebar-context";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
 export function AdminLayout({ children }: AdminLayoutProps) {
-  const router = useRouter();
-  const { data: session } = useSession();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const navigation = [
-    { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-    { name: "Logs", href: "/admin/logs", icon: FileText },
-  ];
-
-  const handleLogout = async () => {
-    await signOut({ redirect: true, callbackUrl: "/admin/login" });
-  };
-
-  // Cerrar sidebar cuando cambia la ruta (en móvil)
   const pathname = usePathname();
+  const { isCollapsed } = useSidebar();
+  
+  // Remover la variable no usada
+
+  // Cerrar sidebar móvil cuando cambia la ruta
   useEffect(() => {
     setSidebarOpen(false);
   }, [pathname]);
@@ -52,6 +38,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     }
   }, [sidebarOpen]);
 
+  // Calcular padding dinámico según estado del sidebar
+  const sidebarWidth = isCollapsed ? 64 : 256; // 16 (4rem) cuando colapsado, 64 (16rem) cuando expandido
+
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar móvil */}
@@ -63,31 +52,35 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             aria-hidden="true"
           />
           <div className="fixed inset-y-0 left-0 w-64 bg-card border-r z-50">
-            <AdminSidebarContent
-              session={session}
-              onLogout={handleLogout}
-              onClose={() => setSidebarOpen(false)}
-              navigation={navigation}
-            />
+            <Sidebar onClose={() => setSidebarOpen(false)} isMobile />
           </div>
         </div>
       )}
 
       {/* Sidebar desktop */}
-      <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
+      <div
+        className={cn(
+          "hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 transition-all duration-300",
+          isCollapsed ? "lg:w-16" : "lg:w-64"
+        )}
+      >
         <div className="flex flex-col flex-grow bg-card border-r">
-          <AdminSidebarContent session={session} onLogout={handleLogout} navigation={navigation} />
+          <Sidebar />
         </div>
       </div>
 
-      {/* Contenido principal */}
-      <div className="flex flex-col flex-1 lg:pl-64">
+      {/* Contenido principal con padding dinámico */}
+      <div
+        className="flex flex-col flex-1 transition-all duration-300"
+        style={{ paddingLeft: isCollapsed ? "64px" : "256px" }}
+      >
         {/* Header móvil */}
         <header className="lg:hidden flex items-center justify-between p-4 bg-card border-b">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setSidebarOpen(true)}
+            data-testid="shared-button-sidebar-toggle"
           >
             <Menu className="h-6 w-6" />
           </Button>
@@ -99,74 +92,5 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <main className="flex-1 overflow-y-auto p-4 lg:p-8">{children}</main>
       </div>
     </div>
-  );
-}
-
-function AdminSidebarContent({
-  session,
-  onLogout,
-  onClose,
-  navigation,
-}: {
-  session: any;
-  onLogout: () => void;
-  onClose?: () => void;
-  navigation: Array<{ name: string; href: string; icon: any }>;
-}) {
-  const pathname = usePathname();
-
-  return (
-    <>
-      <div className="flex items-center justify-between p-4 border-b">
-        <h2 className="text-xl font-bold">GesFer Admin</h2>
-        {onClose && (
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="h-5 w-5" />
-          </Button>
-        )}
-      </div>
-
-      <nav className="flex-1 p-4 space-y-1">
-        {navigation.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href;
-          
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={onClose}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                "hover:bg-accent hover:text-accent-foreground",
-                isActive
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground"
-              )}
-            >
-              <Icon className="h-5 w-5" />
-              {item.name}
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className="p-4 border-t space-y-3">
-        {session?.user && (
-          <div className="px-3 py-2">
-            <p className="text-sm font-medium">{session.user.firstName} {session.user.lastName}</p>
-            <p className="text-xs text-muted-foreground">{session.user.username}</p>
-          </div>
-        )}
-        <Button
-          variant="ghost"
-          className="w-full justify-start"
-          onClick={onLogout}
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Cerrar sesión
-        </Button>
-      </div>
-    </>
   );
 }

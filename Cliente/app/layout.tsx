@@ -15,6 +15,12 @@ export const metadata: Metadata = {
   description: "Sistema de gestión de compra/venta de chatarra",
 };
 
+/**
+ * RootLayout - Layout minimalista de la raíz
+ * Solo contiene fuentes y etiquetas básicas (html, body)
+ * La lógica visual específica vive en los layouts de grupo (admin) y (client)
+ */
+
 export default async function RootLayout({
   children,
 }: {

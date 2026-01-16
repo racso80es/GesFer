@@ -1,0 +1,16 @@
+#!/bin/sh
+# Pre-commit hook para validación automática
+
+# Ejecutar script de validación
+# En Windows, usar PowerShell, en Linux/Mac usar bash
+
+if [ -f "scripts/validate-commit.ps1" ] && [ -n "$WINDIR" ]; then
+    # Windows: ejecutar PowerShell
+    powershell.exe -ExecutionPolicy Bypass -File scripts/validate-commit.ps1
+elif [ -f "scripts/validate-commit.sh" ]; then
+    # Linux/Mac: ejecutar .sh
+    bash scripts/validate-commit.sh
+else
+    echo "Error: scripts de validación no encontrados"
+    exit 1
+fi
