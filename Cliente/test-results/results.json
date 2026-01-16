@@ -91,7 +91,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 45,
+                      "duration": 52,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:33:31)\n    at ApiClient.loginFull (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:93:33)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\auth-api.spec.ts:22:39",
@@ -100,7 +100,7 @@
                           "column": 31,
                           "line": 33
                         },
-                        "snippet": "   at api\\api-client.ts:33\n\n  31 |    */\n  32 |   async post(endpoint: string, data: any, headers?: Record<string, string>): Promise<APIResponse> {\n> 33 |     return await this.request.post(`${this.baseURL}${endpoint}`, {\n     |                               ^\n  34 |       data,\n  35 |       headers: {\n  36 |         'Content-Type': 'application/json',"
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:33\n\n\u001b[0m \u001b[90m 31 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 32 |\u001b[39m   \u001b[36masync\u001b[39m post(endpoint\u001b[33m:\u001b[39m string\u001b[33m,\u001b[39m data\u001b[33m:\u001b[39m any\u001b[33m,\u001b[39m headers\u001b[33m?\u001b[39m\u001b[33m:\u001b[39m \u001b[33mRecord\u001b[39m\u001b[33m<\u001b[39m\u001b[33mstring\u001b[39m\u001b[33m,\u001b[39m string\u001b[33m>\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mAPIResponse\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39mpost(\u001b[32m`${this.baseURL}${endpoint}`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m       data\u001b[33m,\u001b[39m\n \u001b[90m 35 |\u001b[39m       headers\u001b[33m:\u001b[39m {\n \u001b[90m 36 |\u001b[39m         \u001b[32m'Content-Type'\u001b[39m\u001b[33m:\u001b[39m \u001b[32m'application/json'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -115,14 +115,14 @@
                       "stdout": [],
                       "stderr": [
                         {
-                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\auth-api.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@28'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@28'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768566625248\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\auth-api.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
+                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\auth-api.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@28'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@28'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768567070623\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\auth-api.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
                         },
                         {
                           "text": "No hay token de autenticación, no se puede limpiar datos\n"
                         }
                       ],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:25.204Z",
+                      "startTime": "2026-01-16T12:37:50.573Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -156,7 +156,7 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 46,
+                      "duration": 57,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 80\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 80\u001b[22m\n\n    at ApiClient.post (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:33:31)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\auth-api.spec.ts:34:38",
@@ -165,7 +165,7 @@
                           "column": 31,
                           "line": 33
                         },
-                        "snippet": "   at api\\api-client.ts:33\n\n  31 |    */\n  32 |   async post(endpoint: string, data: any, headers?: Record<string, string>): Promise<APIResponse> {\n> 33 |     return await this.request.post(`${this.baseURL}${endpoint}`, {\n     |                               ^\n  34 |       data,\n  35 |       headers: {\n  36 |         'Content-Type': 'application/json',"
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:33\n\n\u001b[0m \u001b[90m 31 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 32 |\u001b[39m   \u001b[36masync\u001b[39m post(endpoint\u001b[33m:\u001b[39m string\u001b[33m,\u001b[39m data\u001b[33m:\u001b[39m any\u001b[33m,\u001b[39m headers\u001b[33m?\u001b[39m\u001b[33m:\u001b[39m \u001b[33mRecord\u001b[39m\u001b[33m<\u001b[39m\u001b[33mstring\u001b[39m\u001b[33m,\u001b[39m string\u001b[33m>\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mAPIResponse\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39mpost(\u001b[32m`${this.baseURL}${endpoint}`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m       data\u001b[33m,\u001b[39m\n \u001b[90m 35 |\u001b[39m       headers\u001b[33m:\u001b[39m {\n \u001b[90m 36 |\u001b[39m         \u001b[32m'Content-Type'\u001b[39m\u001b[33m:\u001b[39m \u001b[32m'application/json'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -180,14 +180,14 @@
                       "stdout": [],
                       "stderr": [
                         {
-                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\auth-api.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@28'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@28'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768566625226\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\auth-api.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
+                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\auth-api.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@28'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@28'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768567070626\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\auth-api.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
                         },
                         {
                           "text": "No hay token de autenticación, no se puede limpiar datos\n"
                         }
                       ],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:25.177Z",
+                      "startTime": "2026-01-16T12:37:50.572Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -221,7 +221,7 @@
                       "workerIndex": 2,
                       "parallelIndex": 2,
                       "status": "failed",
-                      "duration": 48,
+                      "duration": 57,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 44\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 44\u001b[22m\n\n    at ApiClient.post (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:33:31)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\auth-api.spec.ts:44:38",
@@ -230,7 +230,7 @@
                           "column": 31,
                           "line": 33
                         },
-                        "snippet": "   at api\\api-client.ts:33\n\n  31 |    */\n  32 |   async post(endpoint: string, data: any, headers?: Record<string, string>): Promise<APIResponse> {\n> 33 |     return await this.request.post(`${this.baseURL}${endpoint}`, {\n     |                               ^\n  34 |       data,\n  35 |       headers: {\n  36 |         'Content-Type': 'application/json',"
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:33\n\n\u001b[0m \u001b[90m 31 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 32 |\u001b[39m   \u001b[36masync\u001b[39m post(endpoint\u001b[33m:\u001b[39m string\u001b[33m,\u001b[39m data\u001b[33m:\u001b[39m any\u001b[33m,\u001b[39m headers\u001b[33m?\u001b[39m\u001b[33m:\u001b[39m \u001b[33mRecord\u001b[39m\u001b[33m<\u001b[39m\u001b[33mstring\u001b[39m\u001b[33m,\u001b[39m string\u001b[33m>\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mAPIResponse\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39mpost(\u001b[32m`${this.baseURL}${endpoint}`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m       data\u001b[33m,\u001b[39m\n \u001b[90m 35 |\u001b[39m       headers\u001b[33m:\u001b[39m {\n \u001b[90m 36 |\u001b[39m         \u001b[32m'Content-Type'\u001b[39m\u001b[33m:\u001b[39m \u001b[32m'application/json'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -245,14 +245,14 @@
                       "stdout": [],
                       "stderr": [
                         {
-                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\auth-api.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@28'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@28'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768566625254\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\auth-api.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
+                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\auth-api.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@28'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@28'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768567070666\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\auth-api.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
                         },
                         {
                           "text": "No hay token de autenticación, no se puede limpiar datos\n"
                         }
                       ],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:25.209Z",
+                      "startTime": "2026-01-16T12:37:50.603Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -286,7 +286,7 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "failed",
-                      "duration": 48,
+                      "duration": 51,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:33:31)\n    at ApiClient.loginFull (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:93:33)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\auth-api.spec.ts:56:39",
@@ -295,7 +295,7 @@
                           "column": 31,
                           "line": 33
                         },
-                        "snippet": "   at api\\api-client.ts:33\n\n  31 |    */\n  32 |   async post(endpoint: string, data: any, headers?: Record<string, string>): Promise<APIResponse> {\n> 33 |     return await this.request.post(`${this.baseURL}${endpoint}`, {\n     |                               ^\n  34 |       data,\n  35 |       headers: {\n  36 |         'Content-Type': 'application/json',"
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:33\n\n\u001b[0m \u001b[90m 31 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 32 |\u001b[39m   \u001b[36masync\u001b[39m post(endpoint\u001b[33m:\u001b[39m string\u001b[33m,\u001b[39m data\u001b[33m:\u001b[39m any\u001b[33m,\u001b[39m headers\u001b[33m?\u001b[39m\u001b[33m:\u001b[39m \u001b[33mRecord\u001b[39m\u001b[33m<\u001b[39m\u001b[33mstring\u001b[39m\u001b[33m,\u001b[39m string\u001b[33m>\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mAPIResponse\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39mpost(\u001b[32m`${this.baseURL}${endpoint}`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m       data\u001b[33m,\u001b[39m\n \u001b[90m 35 |\u001b[39m       headers\u001b[33m:\u001b[39m {\n \u001b[90m 36 |\u001b[39m         \u001b[32m'Content-Type'\u001b[39m\u001b[33m:\u001b[39m \u001b[32m'application/json'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -310,14 +310,14 @@
                       "stdout": [],
                       "stderr": [
                         {
-                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\auth-api.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@28'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@28'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768566625247\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\auth-api.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
+                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\auth-api.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@28'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@28'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768567070621\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\auth-api.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
                         },
                         {
                           "text": "No hay token de autenticación, no se puede limpiar datos\n"
                         }
                       ],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:25.200Z",
+                      "startTime": "2026-01-16T12:37:50.571Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -365,10 +365,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 1,
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 32,
+                      "duration": 42,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:33:31)\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:73:33)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:33",
@@ -377,7 +377,7 @@
                           "column": 31,
                           "line": 33
                         },
-                        "snippet": "   at api\\api-client.ts:33\n\n  31 |    */\n  32 |   async post(endpoint: string, data: any, headers?: Record<string, string>): Promise<APIResponse> {\n> 33 |     return await this.request.post(`${this.baseURL}${endpoint}`, {\n     |                               ^\n  34 |       data,\n  35 |       headers: {\n  36 |         'Content-Type': 'application/json',"
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:33\n\n\u001b[0m \u001b[90m 31 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 32 |\u001b[39m   \u001b[36masync\u001b[39m post(endpoint\u001b[33m:\u001b[39m string\u001b[33m,\u001b[39m data\u001b[33m:\u001b[39m any\u001b[33m,\u001b[39m headers\u001b[33m?\u001b[39m\u001b[33m:\u001b[39m \u001b[33mRecord\u001b[39m\u001b[33m<\u001b[39m\u001b[33mstring\u001b[39m\u001b[33m,\u001b[39m string\u001b[33m>\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mAPIResponse\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39mpost(\u001b[32m`${this.baseURL}${endpoint}`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m       data\u001b[33m,\u001b[39m\n \u001b[90m 35 |\u001b[39m       headers\u001b[33m:\u001b[39m {\n \u001b[90m 36 |\u001b[39m         \u001b[32m'Content-Type'\u001b[39m\u001b[33m:\u001b[39m \u001b[32m'application/json'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -392,7 +392,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:26.273Z",
+                      "startTime": "2026-01-16T12:37:51.717Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -423,10 +423,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
                       "status": "failed",
-                      "duration": 34,
+                      "duration": 38,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:33:31)\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:73:33)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:33",
@@ -435,7 +435,7 @@
                           "column": 31,
                           "line": 33
                         },
-                        "snippet": "   at api\\api-client.ts:33\n\n  31 |    */\n  32 |   async post(endpoint: string, data: any, headers?: Record<string, string>): Promise<APIResponse> {\n> 33 |     return await this.request.post(`${this.baseURL}${endpoint}`, {\n     |                               ^\n  34 |       data,\n  35 |       headers: {\n  36 |         'Content-Type': 'application/json',"
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:33\n\n\u001b[0m \u001b[90m 31 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 32 |\u001b[39m   \u001b[36masync\u001b[39m post(endpoint\u001b[33m:\u001b[39m string\u001b[33m,\u001b[39m data\u001b[33m:\u001b[39m any\u001b[33m,\u001b[39m headers\u001b[33m?\u001b[39m\u001b[33m:\u001b[39m \u001b[33mRecord\u001b[39m\u001b[33m<\u001b[39m\u001b[33mstring\u001b[39m\u001b[33m,\u001b[39m string\u001b[33m>\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mAPIResponse\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39mpost(\u001b[32m`${this.baseURL}${endpoint}`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m       data\u001b[33m,\u001b[39m\n \u001b[90m 35 |\u001b[39m       headers\u001b[33m:\u001b[39m {\n \u001b[90m 36 |\u001b[39m         \u001b[32m'Content-Type'\u001b[39m\u001b[33m:\u001b[39m \u001b[32m'application/json'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -450,7 +450,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:26.282Z",
+                      "startTime": "2026-01-16T12:37:51.708Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -481,10 +481,10 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 3,
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 36,
+                      "duration": 38,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:33:31)\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:73:33)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:33",
@@ -493,7 +493,7 @@
                           "column": 31,
                           "line": 33
                         },
-                        "snippet": "   at api\\api-client.ts:33\n\n  31 |    */\n  32 |   async post(endpoint: string, data: any, headers?: Record<string, string>): Promise<APIResponse> {\n> 33 |     return await this.request.post(`${this.baseURL}${endpoint}`, {\n     |                               ^\n  34 |       data,\n  35 |       headers: {\n  36 |         'Content-Type': 'application/json',"
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:33\n\n\u001b[0m \u001b[90m 31 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 32 |\u001b[39m   \u001b[36masync\u001b[39m post(endpoint\u001b[33m:\u001b[39m string\u001b[33m,\u001b[39m data\u001b[33m:\u001b[39m any\u001b[33m,\u001b[39m headers\u001b[33m?\u001b[39m\u001b[33m:\u001b[39m \u001b[33mRecord\u001b[39m\u001b[33m<\u001b[39m\u001b[33mstring\u001b[39m\u001b[33m,\u001b[39m string\u001b[33m>\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mAPIResponse\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39mpost(\u001b[32m`${this.baseURL}${endpoint}`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m       data\u001b[33m,\u001b[39m\n \u001b[90m 35 |\u001b[39m       headers\u001b[33m:\u001b[39m {\n \u001b[90m 36 |\u001b[39m         \u001b[32m'Content-Type'\u001b[39m\u001b[33m:\u001b[39m \u001b[32m'application/json'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -508,7 +508,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:26.287Z",
+                      "startTime": "2026-01-16T12:37:51.705Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -542,7 +542,7 @@
                       "workerIndex": 7,
                       "parallelIndex": 2,
                       "status": "failed",
-                      "duration": 41,
+                      "duration": 46,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:33:31)\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:73:33)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:33",
@@ -551,7 +551,7 @@
                           "column": 31,
                           "line": 33
                         },
-                        "snippet": "   at api\\api-client.ts:33\n\n  31 |    */\n  32 |   async post(endpoint: string, data: any, headers?: Record<string, string>): Promise<APIResponse> {\n> 33 |     return await this.request.post(`${this.baseURL}${endpoint}`, {\n     |                               ^\n  34 |       data,\n  35 |       headers: {\n  36 |         'Content-Type': 'application/json',"
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:33\n\n\u001b[0m \u001b[90m 31 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 32 |\u001b[39m   \u001b[36masync\u001b[39m post(endpoint\u001b[33m:\u001b[39m string\u001b[33m,\u001b[39m data\u001b[33m:\u001b[39m any\u001b[33m,\u001b[39m headers\u001b[33m?\u001b[39m\u001b[33m:\u001b[39m \u001b[33mRecord\u001b[39m\u001b[33m<\u001b[39m\u001b[33mstring\u001b[39m\u001b[33m,\u001b[39m string\u001b[33m>\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mAPIResponse\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39mpost(\u001b[32m`${this.baseURL}${endpoint}`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m       data\u001b[33m,\u001b[39m\n \u001b[90m 35 |\u001b[39m       headers\u001b[33m:\u001b[39m {\n \u001b[90m 36 |\u001b[39m         \u001b[32m'Content-Type'\u001b[39m\u001b[33m:\u001b[39m \u001b[32m'application/json'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -566,7 +566,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:26.302Z",
+                      "startTime": "2026-01-16T12:37:51.736Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -598,9 +598,9 @@
                   "results": [
                     {
                       "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "parallelIndex": 3,
                       "status": "failed",
-                      "duration": 36,
+                      "duration": 34,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:33:31)\n    at ApiClient.login (C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\api-client.ts:73:33)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\api\\usuarios-api.spec.ts:17:33",
@@ -609,7 +609,7 @@
                           "column": 31,
                           "line": 33
                         },
-                        "snippet": "   at api\\api-client.ts:33\n\n  31 |    */\n  32 |   async post(endpoint: string, data: any, headers?: Record<string, string>): Promise<APIResponse> {\n> 33 |     return await this.request.post(`${this.baseURL}${endpoint}`, {\n     |                               ^\n  34 |       data,\n  35 |       headers: {\n  36 |         'Content-Type': 'application/json',"
+                        "snippet": "\u001b[90m   at \u001b[39mapi\\api-client.ts:33\n\n\u001b[0m \u001b[90m 31 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 32 |\u001b[39m   \u001b[36masync\u001b[39m post(endpoint\u001b[33m:\u001b[39m string\u001b[33m,\u001b[39m data\u001b[33m:\u001b[39m any\u001b[33m,\u001b[39m headers\u001b[33m?\u001b[39m\u001b[33m:\u001b[39m \u001b[33mRecord\u001b[39m\u001b[33m<\u001b[39m\u001b[33mstring\u001b[39m\u001b[33m,\u001b[39m string\u001b[33m>\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mAPIResponse\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39mpost(\u001b[32m`${this.baseURL}${endpoint}`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m       data\u001b[33m,\u001b[39m\n \u001b[90m 35 |\u001b[39m       headers\u001b[33m:\u001b[39m {\n \u001b[90m 36 |\u001b[39m         \u001b[32m'Content-Type'\u001b[39m\u001b[33m:\u001b[39m \u001b[32m'application/json'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -624,7 +624,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:27.308Z",
+                      "startTime": "2026-01-16T12:37:52.705Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -675,9 +675,9 @@
                   "results": [
                     {
                       "workerIndex": 9,
-                      "parallelIndex": 0,
+                      "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 3182,
+                      "duration": 3048,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/admin/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/admin/login\", waiting until \"load\"\u001b[22m\n\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\admin_logs.spec.ts:21:16",
@@ -686,7 +686,7 @@
                           "column": 16,
                           "line": 21
                         },
-                        "snippet": "  19 |     // Nota: El login de admin usa el campo \"usuario\" (username), no email\n  20 |     // El usuario admin@gesfer.local probablemente tiene username \"admin\"\n> 21 |     await page.goto(`${CLIENT_URL}/admin/login`);\n     |                ^\n  22 |     \n  23 |     // Esperar a que el formulario esté visible\n  24 |     await page.waitForSelector('input[type=\"text\"], input[name=\"usuario\"]', { timeout: 10000 });"
+                        "snippet": "\u001b[0m \u001b[90m 19 |\u001b[39m     \u001b[90m// Nota: El login de admin usa el campo \"usuario\" (username), no email\u001b[39m\n \u001b[90m 20 |\u001b[39m     \u001b[90m// El usuario admin@gesfer.local probablemente tiene username \"admin\"\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 21 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${CLIENT_URL}/admin/login`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 22 |\u001b[39m     \n \u001b[90m 23 |\u001b[39m     \u001b[90m// Esperar a que el formulario esté visible\u001b[39m\n \u001b[90m 24 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'input[type=\"text\"], input[name=\"usuario\"]'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -705,7 +705,7 @@
                         }
                       ],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:27.299Z",
+                      "startTime": "2026-01-16T12:37:52.704Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -765,9 +765,9 @@
                   "results": [
                     {
                       "workerIndex": 10,
-                      "parallelIndex": 3,
+                      "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 339,
+                      "duration": 349,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → POST http://localhost:5000/api/admin/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 44\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → POST http://localhost:5000/api/admin/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 44\u001b[22m\n\n    at apiRequestContext.post: connect ECONNREFUSED ::1:5000\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logging-persistence.spec.ts:16:46",
@@ -790,7 +790,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:27.312Z",
+                      "startTime": "2026-01-16T12:37:52.708Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -824,7 +824,7 @@
                       "workerIndex": 11,
                       "parallelIndex": 2,
                       "status": "failed",
-                      "duration": 341,
+                      "duration": 342,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → POST http://localhost:5000/api/admin/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 44\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → POST http://localhost:5000/api/admin/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 44\u001b[22m\n\n    at apiRequestContext.post: connect ECONNREFUSED ::1:5000\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logging-persistence.spec.ts:16:46",
@@ -847,7 +847,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:27.340Z",
+                      "startTime": "2026-01-16T12:37:52.733Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -896,9 +896,9 @@
                   "results": [
                     {
                       "workerIndex": 12,
-                      "parallelIndex": 1,
+                      "parallelIndex": 3,
                       "status": "failed",
-                      "duration": 2451,
+                      "duration": 2405,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\login.spec.ts:12:16",
@@ -907,7 +907,7 @@
                           "column": 16,
                           "line": 12
                         },
-                        "snippet": "  10 |   test.beforeEach(async ({ request, page }) => {\n  11 |     // Limpiar localStorage y cookies antes de cada test para evitar sesiones anteriores\n> 12 |     await page.goto('/login');\n     |                ^\n  13 |     await page.evaluate(() => {\n  14 |       localStorage.clear();\n  15 |       document.cookie.split(\";\").forEach(function(c) { "
+                        "snippet": "\u001b[0m \u001b[90m 10 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ request\u001b[33m,\u001b[39m page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 11 |\u001b[39m     \u001b[90m// Limpiar localStorage y cookies antes de cada test para evitar sesiones anteriores\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m {\n \u001b[90m 14 |\u001b[39m       localStorage\u001b[33m.\u001b[39mclear()\u001b[33m;\u001b[39m\n \u001b[90m 15 |\u001b[39m       document\u001b[33m.\u001b[39mcookie\u001b[33m.\u001b[39msplit(\u001b[32m\";\"\u001b[39m)\u001b[33m.\u001b[39mforEach(\u001b[36mfunction\u001b[39m(c) { \u001b[0m"
                       },
                       "errors": [
                         {
@@ -930,7 +930,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:28.363Z",
+                      "startTime": "2026-01-16T12:37:53.674Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -973,9 +973,9 @@
                   "results": [
                     {
                       "workerIndex": 13,
-                      "parallelIndex": 3,
+                      "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 2606,
+                      "duration": 2648,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\login.spec.ts:12:16",
@@ -984,7 +984,7 @@
                           "column": 16,
                           "line": 12
                         },
-                        "snippet": "  10 |   test.beforeEach(async ({ request, page }) => {\n  11 |     // Limpiar localStorage y cookies antes de cada test para evitar sesiones anteriores\n> 12 |     await page.goto('/login');\n     |                ^\n  13 |     await page.evaluate(() => {\n  14 |       localStorage.clear();\n  15 |       document.cookie.split(\";\").forEach(function(c) { "
+                        "snippet": "\u001b[0m \u001b[90m 10 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ request\u001b[33m,\u001b[39m page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 11 |\u001b[39m     \u001b[90m// Limpiar localStorage y cookies antes de cada test para evitar sesiones anteriores\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m {\n \u001b[90m 14 |\u001b[39m       localStorage\u001b[33m.\u001b[39mclear()\u001b[33m;\u001b[39m\n \u001b[90m 15 |\u001b[39m       document\u001b[33m.\u001b[39mcookie\u001b[33m.\u001b[39msplit(\u001b[32m\";\"\u001b[39m)\u001b[33m.\u001b[39mforEach(\u001b[36mfunction\u001b[39m(c) { \u001b[0m"
                       },
                       "errors": [
                         {
@@ -1007,7 +1007,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:28.682Z",
+                      "startTime": "2026-01-16T12:37:53.971Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1052,7 +1052,7 @@
                       "workerIndex": 14,
                       "parallelIndex": 2,
                       "status": "failed",
-                      "duration": 2630,
+                      "duration": 2651,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\login.spec.ts:12:16",
@@ -1061,7 +1061,7 @@
                           "column": 16,
                           "line": 12
                         },
-                        "snippet": "  10 |   test.beforeEach(async ({ request, page }) => {\n  11 |     // Limpiar localStorage y cookies antes de cada test para evitar sesiones anteriores\n> 12 |     await page.goto('/login');\n     |                ^\n  13 |     await page.evaluate(() => {\n  14 |       localStorage.clear();\n  15 |       document.cookie.split(\";\").forEach(function(c) { "
+                        "snippet": "\u001b[0m \u001b[90m 10 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ request\u001b[33m,\u001b[39m page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 11 |\u001b[39m     \u001b[90m// Limpiar localStorage y cookies antes de cada test para evitar sesiones anteriores\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m {\n \u001b[90m 14 |\u001b[39m       localStorage\u001b[33m.\u001b[39mclear()\u001b[33m;\u001b[39m\n \u001b[90m 15 |\u001b[39m       document\u001b[33m.\u001b[39mcookie\u001b[33m.\u001b[39msplit(\u001b[32m\";\"\u001b[39m)\u001b[33m.\u001b[39mforEach(\u001b[36mfunction\u001b[39m(c) { \u001b[0m"
                       },
                       "errors": [
                         {
@@ -1084,7 +1084,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:28.715Z",
+                      "startTime": "2026-01-16T12:37:53.991Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1144,9 +1144,9 @@
                   "results": [
                     {
                       "workerIndex": 15,
-                      "parallelIndex": 0,
+                      "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 342,
+                      "duration": 335,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → POST http://localhost:5000/api/admin/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 44\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → POST http://localhost:5000/api/admin/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 44\u001b[22m\n\n    at apiRequestContext.post: connect ECONNREFUSED ::1:5000\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs_purge_logic.spec.ts:11:41",
@@ -1169,7 +1169,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:31.828Z",
+                      "startTime": "2026-01-16T12:37:57.016Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -1201,9 +1201,9 @@
                   "results": [
                     {
                       "workerIndex": 16,
-                      "parallelIndex": 1,
+                      "parallelIndex": 3,
                       "status": "failed",
-                      "duration": 342,
+                      "duration": 333,
                       "error": {
                         "message": "Error: apiRequestContext.post: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → POST http://localhost:5000/api/admin/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 44\u001b[22m\n",
                         "stack": "Error: apiRequestContext.post: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → POST http://localhost:5000/api/admin/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 44\u001b[22m\n\n    at apiRequestContext.post: connect ECONNREFUSED ::1:5000\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs_purge_logic.spec.ts:88:41",
@@ -1226,7 +1226,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:32.100Z",
+                      "startTime": "2026-01-16T12:37:57.329Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -1258,12 +1258,12 @@
                   "results": [
                     {
                       "workerIndex": 17,
-                      "parallelIndex": 3,
+                      "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 341,
+                      "duration": 334,
                       "error": {
-                        "message": "Error: apiRequestContext.delete: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → DELETE http://localhost:5000/api/log?dateLimit=2026-01-08T12%3A30%3A32.466Z\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n",
-                        "stack": "Error: apiRequestContext.delete: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → DELETE http://localhost:5000/api/log?dateLimit=2026-01-08T12%3A30%3A32.466Z\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\n    at apiRequestContext.delete: connect ECONNREFUSED ::1:5000\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs_purge_logic.spec.ts:137:47",
+                        "message": "Error: apiRequestContext.delete: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → DELETE http://localhost:5000/api/log?dateLimit=2026-01-08T12%3A37%3A57.725Z\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.delete: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → DELETE http://localhost:5000/api/log?dateLimit=2026-01-08T12%3A37%3A57.725Z\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\n    at apiRequestContext.delete: connect ECONNREFUSED ::1:5000\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs_purge_logic.spec.ts:137:47",
                         "location": {
                           "file": "apiRequestContext.delete: connect ECONNREFUSED :",
                           "column": 5000,
@@ -1277,13 +1277,13 @@
                             "column": 5000,
                             "line": 1
                           },
-                          "message": "Error: apiRequestContext.delete: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → DELETE http://localhost:5000/api/log?dateLimit=2026-01-08T12%3A30%3A32.466Z\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\n    at apiRequestContext.delete: connect ECONNREFUSED ::1:5000\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs_purge_logic.spec.ts:137:47"
+                          "message": "Error: apiRequestContext.delete: connect ECONNREFUSED ::1:5000\nCall log:\n\u001b[2m  - → DELETE http://localhost:5000/api/log?dateLimit=2026-01-08T12%3A37%3A57.725Z\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\n    at apiRequestContext.delete: connect ECONNREFUSED ::1:5000\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs_purge_logic.spec.ts:137:47"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:32.439Z",
+                      "startTime": "2026-01-16T12:37:57.699Z",
                       "annotations": [],
                       "attachments": [],
                       "errorLocation": {
@@ -1325,7 +1325,7 @@
                       "workerIndex": 18,
                       "parallelIndex": 2,
                       "status": "failed",
-                      "duration": 2858,
+                      "duration": 2730,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/admin/login\", waiting until \"networkidle\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/admin/login\", waiting until \"networkidle\"\u001b[22m\n\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs_purge_logic.spec.ts:154:16",
@@ -1334,7 +1334,7 @@
                           "column": 16,
                           "line": 154
                         },
-                        "snippet": "  152 |   test('debe completar el flujo completo de purga desde la interfaz', async ({ page }) => {\n  153 |     // Paso 1: Login como admin\n> 154 |     await page.goto(`${CLIENT_URL}/admin/login`, { waitUntil: 'networkidle' });\n      |                ^\n  155 |     \n  156 |     // Esperar a que la página cargue completamente\n  157 |     await page.waitForLoadState('domcontentloaded');"
+                        "snippet": "\u001b[0m \u001b[90m 152 |\u001b[39m   test(\u001b[32m'debe completar el flujo completo de purga desde la interfaz'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 153 |\u001b[39m     \u001b[90m// Paso 1: Login como admin\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 154 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${CLIENT_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'networkidle'\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 155 |\u001b[39m     \n \u001b[90m 156 |\u001b[39m     \u001b[90m// Esperar a que la página cargue completamente\u001b[39m\n \u001b[90m 157 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'domcontentloaded'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -1349,7 +1349,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:32.492Z",
+                      "startTime": "2026-01-16T12:37:57.735Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1409,9 +1409,9 @@
                   "results": [
                     {
                       "workerIndex": 19,
-                      "parallelIndex": 0,
+                      "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 2595,
+                      "duration": 2456,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs.spec.ts:18:16",
@@ -1420,7 +1420,7 @@
                           "column": 16,
                           "line": 18
                         },
-                        "snippet": "  16 |   test('debe autenticarse como admin y acceder a la página de logs', async ({ page }) => {\n  17 |     // Navegar a login de admin\n> 18 |     await page.goto('/admin/login');\n     |                ^\n  19 |     \n  20 |     // Esperar a que el formulario esté visible\n  21 |     await page.waitForSelector('input[type=\"text\"], input[name=\"usuario\"]', { timeout: 10000 });"
+                        "snippet": "\u001b[0m \u001b[90m 16 |\u001b[39m   test(\u001b[32m'debe autenticarse como admin y acceder a la página de logs'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 17 |\u001b[39m     \u001b[90m// Navegar a login de admin\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 18 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/admin/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 19 |\u001b[39m     \n \u001b[90m 20 |\u001b[39m     \u001b[90m// Esperar a que el formulario esté visible\u001b[39m\n \u001b[90m 21 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'input[type=\"text\"], input[name=\"usuario\"]'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -1435,7 +1435,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:33.164Z",
+                      "startTime": "2026-01-16T12:37:58.304Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1478,9 +1478,9 @@
                   "results": [
                     {
                       "workerIndex": 20,
-                      "parallelIndex": 1,
+                      "parallelIndex": 3,
                       "status": "failed",
-                      "duration": 2546,
+                      "duration": 2451,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs.spec.ts:57:16",
@@ -1489,7 +1489,7 @@
                           "column": 16,
                           "line": 57
                         },
-                        "snippet": "  55 |   test('debe insertar un log en la BD y mostrarlo en la pantalla de consulta', async ({ page, request }) => {\n  56 |     // Paso 1: Autenticarse como admin\n> 57 |     await page.goto('/admin/login');\n     |                ^\n  58 |     await page.waitForSelector('input[type=\"text\"], input[name=\"usuario\"]', { timeout: 10000 });\n  59 |     \n  60 |     const usuarioInput = page.locator('input[type=\"text\"]').or(page.locator('input[name=\"usuario\"]')).first();"
+                        "snippet": "\u001b[0m \u001b[90m 55 |\u001b[39m   test(\u001b[32m'debe insertar un log en la BD y mostrarlo en la pantalla de consulta'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page\u001b[33m,\u001b[39m request }) \u001b[33m=>\u001b[39m {\n \u001b[90m 56 |\u001b[39m     \u001b[90m// Paso 1: Autenticarse como admin\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 57 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/admin/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 58 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'input[type=\"text\"], input[name=\"usuario\"]'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 59 |\u001b[39m     \n \u001b[90m 60 |\u001b[39m     \u001b[36mconst\u001b[39m usuarioInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"text\"]'\u001b[39m)\u001b[33m.\u001b[39mor(page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[name=\"usuario\"]'\u001b[39m))\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -1504,7 +1504,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:33.460Z",
+                      "startTime": "2026-01-16T12:37:58.655Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1547,9 +1547,9 @@
                   "results": [
                     {
                       "workerIndex": 21,
-                      "parallelIndex": 3,
+                      "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 2598,
+                      "duration": 2508,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs.spec.ts:128:16",
@@ -1558,7 +1558,7 @@
                           "column": 16,
                           "line": 128
                         },
-                        "snippet": "  126 |   test('debe filtrar logs por nivel', async ({ page }) => {\n  127 |     // Autenticarse como admin\n> 128 |     await page.goto('/admin/login');\n      |                ^\n  129 |     await page.waitForSelector('input[type=\"text\"], input[name=\"usuario\"]', { timeout: 10000 });\n  130 |     \n  131 |     const usuarioInput = page.locator('input[type=\"text\"]').or(page.locator('input[name=\"usuario\"]')).first();"
+                        "snippet": "\u001b[0m \u001b[90m 126 |\u001b[39m   test(\u001b[32m'debe filtrar logs por nivel'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 127 |\u001b[39m     \u001b[90m// Autenticarse como admin\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 128 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/admin/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 129 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'input[type=\"text\"], input[name=\"usuario\"]'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 130 |\u001b[39m     \n \u001b[90m 131 |\u001b[39m     \u001b[36mconst\u001b[39m usuarioInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"text\"]'\u001b[39m)\u001b[33m.\u001b[39mor(page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[name=\"usuario\"]'\u001b[39m))\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -1573,7 +1573,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:33.759Z",
+                      "startTime": "2026-01-16T12:37:59.000Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1618,7 +1618,7 @@
                       "workerIndex": 22,
                       "parallelIndex": 2,
                       "status": "failed",
-                      "duration": 2397,
+                      "duration": 2411,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs.spec.ts:178:16",
@@ -1627,7 +1627,7 @@
                           "column": 16,
                           "line": 178
                         },
-                        "snippet": "  176 |   test('debe filtrar logs por rango de fechas', async ({ page }) => {\n  177 |     // Autenticarse como admin\n> 178 |     await page.goto('/admin/login');\n      |                ^\n  179 |     await page.waitForSelector('input[type=\"text\"], input[name=\"usuario\"]', { timeout: 10000 });\n  180 |     \n  181 |     const usuarioInput = page.locator('input[type=\"text\"]').or(page.locator('input[name=\"usuario\"]')).first();"
+                        "snippet": "\u001b[0m \u001b[90m 176 |\u001b[39m   test(\u001b[32m'debe filtrar logs por rango de fechas'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 177 |\u001b[39m     \u001b[90m// Autenticarse como admin\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 178 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/admin/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 179 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'input[type=\"text\"], input[name=\"usuario\"]'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 180 |\u001b[39m     \n \u001b[90m 181 |\u001b[39m     \u001b[36mconst\u001b[39m usuarioInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"text\"]'\u001b[39m)\u001b[33m.\u001b[39mor(page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[name=\"usuario\"]'\u001b[39m))\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -1642,7 +1642,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:36.743Z",
+                      "startTime": "2026-01-16T12:38:01.586Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1685,9 +1685,9 @@
                   "results": [
                     {
                       "workerIndex": 23,
-                      "parallelIndex": 0,
+                      "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 2489,
+                      "duration": 2395,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs.spec.ts:238:16",
@@ -1696,7 +1696,7 @@
                           "column": 16,
                           "line": 238
                         },
-                        "snippet": "  236 |   test('debe expandir y mostrar detalles de un log', async ({ page }) => {\n  237 |     // Autenticarse como admin\n> 238 |     await page.goto('/admin/login');\n      |                ^\n  239 |     await page.waitForSelector('input[type=\"text\"], input[name=\"usuario\"]', { timeout: 10000 });\n  240 |     \n  241 |     const usuarioInput = page.locator('input[type=\"text\"]').or(page.locator('input[name=\"usuario\"]')).first();"
+                        "snippet": "\u001b[0m \u001b[90m 236 |\u001b[39m   test(\u001b[32m'debe expandir y mostrar detalles de un log'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 237 |\u001b[39m     \u001b[90m// Autenticarse como admin\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 238 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/admin/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 239 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'input[type=\"text\"], input[name=\"usuario\"]'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 240 |\u001b[39m     \n \u001b[90m 241 |\u001b[39m     \u001b[36mconst\u001b[39m usuarioInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"text\"]'\u001b[39m)\u001b[33m.\u001b[39mor(page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[name=\"usuario\"]'\u001b[39m))\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -1711,7 +1711,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:37.109Z",
+                      "startTime": "2026-01-16T12:38:01.972Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1754,9 +1754,9 @@
                   "results": [
                     {
                       "workerIndex": 24,
-                      "parallelIndex": 1,
+                      "parallelIndex": 3,
                       "status": "failed",
-                      "duration": 2665,
+                      "duration": 2452,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs.spec.ts:290:16",
@@ -1765,7 +1765,7 @@
                           "column": 16,
                           "line": 290
                         },
-                        "snippet": "  288 |   test('debe mostrar paginación cuando hay más de una página', async ({ page }) => {\n  289 |     // Autenticarse como admin\n> 290 |     await page.goto('/admin/login');\n      |                ^\n  291 |     await page.waitForSelector('input[type=\"text\"], input[name=\"usuario\"]', { timeout: 10000 });\n  292 |     \n  293 |     const usuarioInput = page.locator('input[type=\"text\"]').or(page.locator('input[name=\"usuario\"]')).first();"
+                        "snippet": "\u001b[0m \u001b[90m 288 |\u001b[39m   test(\u001b[32m'debe mostrar paginación cuando hay más de una página'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 289 |\u001b[39m     \u001b[90m// Autenticarse como admin\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 290 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/admin/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 291 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'input[type=\"text\"], input[name=\"usuario\"]'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 292 |\u001b[39m     \n \u001b[90m 293 |\u001b[39m     \u001b[36mconst\u001b[39m usuarioInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"text\"]'\u001b[39m)\u001b[33m.\u001b[39mor(page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[name=\"usuario\"]'\u001b[39m))\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -1780,7 +1780,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:37.300Z",
+                      "startTime": "2026-01-16T12:38:02.294Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1823,9 +1823,9 @@
                   "results": [
                     {
                       "workerIndex": 25,
-                      "parallelIndex": 3,
+                      "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 2568,
+                      "duration": 2553,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/admin/login\", waiting until \"load\"\u001b[22m\n\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\logs.spec.ts:355:16",
@@ -1834,7 +1834,7 @@
                           "column": 16,
                           "line": 355
                         },
-                        "snippet": "  353 |   test('debe limpiar filtros correctamente', async ({ page }) => {\n  354 |     // Autenticarse como admin\n> 355 |     await page.goto('/admin/login');\n      |                ^\n  356 |     await page.waitForSelector('input[type=\"text\"], input[name=\"usuario\"]', { timeout: 10000 });\n  357 |     \n  358 |     const usuarioInput = page.locator('input[type=\"text\"]').or(page.locator('input[name=\"usuario\"]')).first();"
+                        "snippet": "\u001b[0m \u001b[90m 353 |\u001b[39m   test(\u001b[32m'debe limpiar filtros correctamente'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 354 |\u001b[39m     \u001b[90m// Autenticarse como admin\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 355 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/admin/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 356 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'input[type=\"text\"], input[name=\"usuario\"]'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 357 |\u001b[39m     \n \u001b[90m 358 |\u001b[39m     \u001b[36mconst\u001b[39m usuarioInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"text\"]'\u001b[39m)\u001b[33m.\u001b[39mor(page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[name=\"usuario\"]'\u001b[39m))\u001b[33m.\u001b[39mfirst()\u001b[33m;\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
@@ -1849,7 +1849,7 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:37.602Z",
+                      "startTime": "2026-01-16T12:38:02.625Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -1911,7 +1911,7 @@
                       "workerIndex": 26,
                       "parallelIndex": 2,
                       "status": "failed",
-                      "duration": 2495,
+                      "duration": 2411,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\BasePage.ts:21:21)\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:33:17)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuario-completo.spec.ts:24:21",
@@ -1920,7 +1920,7 @@
                           "column": 21,
                           "line": 21
                         },
-                        "snippet": "   at page-objects\\BasePage.ts:21\n\n  19 |   }\n  20 |\n> 21 |   /**\n     |      ^\n  22 |    * Espera a que la página esté completamente cargada\n  23 |    */\n  24 |   async waitForLoad() {"
+                        "snippet": "\u001b[90m   at \u001b[39mpage-objects\\BasePage.ts:21\n\n\u001b[0m \u001b[90m 19 |\u001b[39m   }\n \u001b[90m 20 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 21 |\u001b[39m   \u001b[90m/**\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 22 |\u001b[39m \u001b[90m   * Espera a que la página esté completamente cargada\u001b[39m\n \u001b[90m 23 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 24 |\u001b[39m   \u001b[36masync\u001b[39m waitForLoad() {\u001b[0m"
                       },
                       "errors": [
                         {
@@ -1929,20 +1929,20 @@
                             "column": 21,
                             "line": 21
                           },
-                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n\n   at page-objects\\BasePage.ts:21\n\n  19 |   }\n  20 |\n> 21 |   /**\n     |      ^\n  22 |    * Espera a que la página esté completamente cargada\n  23 |    */\n  24 |   async waitForLoad() {\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\BasePage.ts:21:21)\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:33:17)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuario-completo.spec.ts:24:21"
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n\n   at page-objects\\BasePage.ts:21\n\n  19 |   }\n  20 |\n> 21 |   /**\n     |                ^\n  22 |    * Espera a que la página esté completamente cargada\n  23 |    */\n  24 |   async waitForLoad() {\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\BasePage.ts:21:21)\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:33:17)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuario-completo.spec.ts:24:21"
                         }
                       ],
                       "stdout": [],
                       "stderr": [
                         {
-                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\usuario-completo.spec.ts:12:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@28'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@28'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768566640620\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\e2e\\\\usuario-completo.spec.ts:12:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
+                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\usuario-completo.spec.ts:12:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@28'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@28'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768567085144\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\e2e\\\\usuario-completo.spec.ts:12:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
                         },
                         {
                           "text": "No hay token de autenticación, no se puede limpiar datos\n"
                         }
                       ],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:40.526Z",
+                      "startTime": "2026-01-16T12:38:05.104Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2002,9 +2002,9 @@
                   "results": [
                     {
                       "workerIndex": 27,
-                      "parallelIndex": 0,
+                      "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 2438,
+                      "duration": 2406,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\BasePage.ts:21:21)\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:33:17)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:17:21",
@@ -2013,7 +2013,7 @@
                           "column": 21,
                           "line": 21
                         },
-                        "snippet": "   at page-objects\\BasePage.ts:21\n\n  19 |   }\n  20 |\n> 21 |   /**\n     |      ^\n  22 |    * Espera a que la página esté completamente cargada\n  23 |    */\n  24 |   async waitForLoad() {"
+                        "snippet": "\u001b[90m   at \u001b[39mpage-objects\\BasePage.ts:21\n\n\u001b[0m \u001b[90m 19 |\u001b[39m   }\n \u001b[90m 20 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 21 |\u001b[39m   \u001b[90m/**\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 22 |\u001b[39m \u001b[90m   * Espera a que la página esté completamente cargada\u001b[39m\n \u001b[90m 23 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 24 |\u001b[39m   \u001b[36masync\u001b[39m waitForLoad() {\u001b[0m"
                       },
                       "errors": [
                         {
@@ -2022,17 +2022,17 @@
                             "column": 21,
                             "line": 21
                           },
-                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n\n   at page-objects\\BasePage.ts:21\n\n  19 |   }\n  20 |\n> 21 |   /**\n     |      ^\n  22 |    * Espera a que la página esté completamente cargada\n  23 |    */\n  24 |   async waitForLoad() {\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\BasePage.ts:21:21)\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:33:17)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:17:21"
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n\n   at page-objects\\BasePage.ts:21\n\n  19 |   }\n  20 |\n> 21 |   /**\n     |                ^\n  22 |    * Espera a que la página esté completamente cargada\n  23 |    */\n  24 |   async waitForLoad() {\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\BasePage.ts:21:21)\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:33:17)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:17:21"
                         }
                       ],
                       "stdout": [],
                       "stderr": [
                         {
-                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\usuarios.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@38'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@38'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768566641462\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\e2e\\\\usuarios.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
+                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\usuarios.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@38'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@38'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768567085776\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\e2e\\\\usuarios.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
                         }
                       ],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:41.223Z",
+                      "startTime": "2026-01-16T12:38:05.551Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2075,9 +2075,9 @@
                   "results": [
                     {
                       "workerIndex": 28,
-                      "parallelIndex": 1,
+                      "parallelIndex": 3,
                       "status": "failed",
-                      "duration": 2631,
+                      "duration": 2407,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\BasePage.ts:21:21)\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:33:17)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:17:21",
@@ -2086,7 +2086,7 @@
                           "column": 21,
                           "line": 21
                         },
-                        "snippet": "   at page-objects\\BasePage.ts:21\n\n  19 |   }\n  20 |\n> 21 |   /**\n     |      ^\n  22 |    * Espera a que la página esté completamente cargada\n  23 |    */\n  24 |   async waitForLoad() {"
+                        "snippet": "\u001b[90m   at \u001b[39mpage-objects\\BasePage.ts:21\n\n\u001b[0m \u001b[90m 19 |\u001b[39m   }\n \u001b[90m 20 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 21 |\u001b[39m   \u001b[90m/**\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 22 |\u001b[39m \u001b[90m   * Espera a que la página esté completamente cargada\u001b[39m\n \u001b[90m 23 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 24 |\u001b[39m   \u001b[36masync\u001b[39m waitForLoad() {\u001b[0m"
                       },
                       "errors": [
                         {
@@ -2095,17 +2095,17 @@
                             "column": 21,
                             "line": 21
                           },
-                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n\n   at page-objects\\BasePage.ts:21\n\n  19 |   }\n  20 |\n> 21 |   /**\n     |      ^\n  22 |    * Espera a que la página esté completamente cargada\n  23 |    */\n  24 |   async waitForLoad() {\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\BasePage.ts:21:21)\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:33:17)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:17:21"
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n\n   at page-objects\\BasePage.ts:21\n\n  19 |   }\n  20 |\n> 21 |   /**\n     |                ^\n  22 |    * Espera a que la página esté completamente cargada\n  23 |    */\n  24 |   async waitForLoad() {\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\BasePage.ts:21:21)\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:33:17)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:17:21"
                         }
                       ],
                       "stdout": [],
                       "stderr": [
                         {
-                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\usuarios.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@38'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@38'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768566641747\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\e2e\\\\usuarios.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
+                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\usuarios.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@38'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@38'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768567086178\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\e2e\\\\usuarios.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
                         }
                       ],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:41.531Z",
+                      "startTime": "2026-01-16T12:38:05.981Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2148,9 +2148,9 @@
                   "results": [
                     {
                       "workerIndex": 29,
-                      "parallelIndex": 3,
+                      "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 2544,
+                      "duration": 2398,
                       "error": {
                         "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n",
                         "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\BasePage.ts:21:21)\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:33:17)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:17:21",
@@ -2159,7 +2159,7 @@
                           "column": 21,
                           "line": 21
                         },
-                        "snippet": "   at page-objects\\BasePage.ts:21\n\n  19 |   }\n  20 |\n> 21 |   /**\n     |      ^\n  22 |    * Espera a que la página esté completamente cargada\n  23 |    */\n  24 |   async waitForLoad() {"
+                        "snippet": "\u001b[90m   at \u001b[39mpage-objects\\BasePage.ts:21\n\n\u001b[0m \u001b[90m 19 |\u001b[39m   }\n \u001b[90m 20 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 21 |\u001b[39m   \u001b[90m/**\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 22 |\u001b[39m \u001b[90m   * Espera a que la página esté completamente cargada\u001b[39m\n \u001b[90m 23 |\u001b[39m \u001b[90m   */\u001b[39m\n \u001b[90m 24 |\u001b[39m   \u001b[36masync\u001b[39m waitForLoad() {\u001b[0m"
                       },
                       "errors": [
                         {
@@ -2168,17 +2168,17 @@
                             "column": 21,
                             "line": 21
                           },
-                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n\n   at page-objects\\BasePage.ts:21\n\n  19 |   }\n  20 |\n> 21 |   /**\n     |      ^\n  22 |    * Espera a que la página esté completamente cargada\n  23 |    */\n  24 |   async waitForLoad() {\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\BasePage.ts:21:21)\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:33:17)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:17:21"
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/login\", waiting until \"load\"\u001b[22m\n\n\n   at page-objects\\BasePage.ts:21\n\n  19 |   }\n  20 |\n> 21 |   /**\n     |                ^\n  22 |    * Espera a que la página esté completamente cargada\n  23 |    */\n  24 |   async waitForLoad() {\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\BasePage.ts:21:21)\n    at LoginPage.goto (C:\\Proyectos\\GesFer\\Cliente\\tests\\page-objects\\LoginPage.ts:33:17)\n    at C:\\Proyectos\\GesFer\\Cliente\\tests\\e2e\\usuarios.spec.ts:17:21"
                         }
                       ],
                       "stdout": [],
                       "stderr": [
                         {
-                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\usuarios.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@38'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@38'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768566641892\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\e2e\\\\usuarios.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
+                          "text": "No se pudo obtener token de autenticación para limpieza: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\nCall log:\n\u001b[2m  - → POST http://127.0.0.1:5000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - Content-Type: application/json\u001b[22m\n\u001b[2m    - content-length: 69\u001b[22m\n\n    at ApiClient.post \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:33:31\u001b[90m)\u001b[39m\n    at ApiClient.login \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\api\\api-client.ts:73:33\u001b[90m)\u001b[39m\n    at TestDataCleanup.setAuthToken \u001b[90m(C:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\helpers\\test-data-cleanup.ts:24:45\u001b[90m)\u001b[39m\n    at \u001b[90mC:\\Proyectos\\GesFer\\Cliente\\\u001b[39mtests\\e2e\\usuarios.spec.ts:13:19 {\n  name: \u001b[32m'Error'\u001b[39m,\n  \u001b[32mSymbol(step)\u001b[39m: {\n    location: {\n      file: \u001b[32m'C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts'\u001b[39m,\n      line: \u001b[33m33\u001b[39m,\n      column: \u001b[33m31\u001b[39m,\n      function: \u001b[32m'ApiClient.post'\u001b[39m\n    },\n    category: \u001b[32m'pw:api'\u001b[39m,\n    title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n    apiName: \u001b[32m'apiRequestContext.post'\u001b[39m,\n    params: {\n      url: \u001b[32m'http://127.0.0.1:5000/api/auth/login'\u001b[39m,\n      params: \u001b[90mundefined\u001b[39m,\n      encodedParams: \u001b[90mundefined\u001b[39m,\n      method: \u001b[32m'POST'\u001b[39m,\n      headers: \u001b[36m[Array]\u001b[39m,\n      postData: \u001b[90mundefined\u001b[39m,\n      jsonData: \u001b[32m'{\"empresa\":\"Empresa Demo\",\"usuario\":\"admin\",\"contraseña\":\"admin123\"}'\u001b[39m,\n      formData: \u001b[90mundefined\u001b[39m,\n      multipartData: \u001b[90mundefined\u001b[39m,\n      timeout: \u001b[33m0\u001b[39m,\n      failOnStatusCode: \u001b[90mundefined\u001b[39m,\n      ignoreHTTPSErrors: \u001b[90mundefined\u001b[39m,\n      maxRedirects: \u001b[90mundefined\u001b[39m,\n      maxRetries: \u001b[90mundefined\u001b[39m,\n      __testHookLookup: \u001b[90mundefined\u001b[39m\n    },\n    group: \u001b[90mundefined\u001b[39m,\n    stepId: \u001b[32m'pw:api@38'\u001b[39m,\n    boxedStack: \u001b[90mundefined\u001b[39m,\n    steps: [],\n    attachmentIndices: [],\n    info: TestStepInfoImpl {\n      annotations: [],\n      _testInfo: \u001b[36m[TestInfoImpl]\u001b[39m,\n      _stepId: \u001b[32m'pw:api@38'\u001b[39m,\n      _title: \u001b[32m'POST \"/api/auth/login\"'\u001b[39m,\n      _parentStep: \u001b[36m[TestStepInfoImpl]\u001b[39m,\n      skip: \u001b[36m[Function (anonymous)]\u001b[39m\n    },\n    complete: \u001b[36m[Function: complete]\u001b[39m,\n    endWallTime: \u001b[33m1768567086473\u001b[39m,\n    error: {\n      message: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m,\n      stack: \u001b[32m'Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:5000\\n'\u001b[39m +\n        \u001b[32m'Call log:\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m  - → POST http://127.0.0.1:5000/api/auth/login\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.4 Safari/537.36\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept: */*\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - accept-encoding: gzip,deflate,br\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - Content-Type: application/json\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\x1B[2m    - content-length: 69\\x1B[22m\\n'\u001b[39m +\n        \u001b[32m'\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.post (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:33:31)\\n'\u001b[39m +\n        \u001b[32m'    at ApiClient.login (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\api\\\\api-client.ts:73:33)\\n'\u001b[39m +\n        \u001b[32m'    at TestDataCleanup.setAuthToken (C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\helpers\\\\test-data-cleanup.ts:24:45)\\n'\u001b[39m +\n        \u001b[32m'    at C:\\\\Proyectos\\\\GesFer\\\\Cliente\\\\tests\\\\e2e\\\\usuarios.spec.ts:13:19'\u001b[39m,\n      cause: \u001b[90mundefined\u001b[39m\n    }\n  }\n}\n"
                         }
                       ],
                       "retry": 0,
-                      "startTime": "2026-01-16T12:30:41.641Z",
+                      "startTime": "2026-01-16T12:38:06.298Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -2214,8 +2214,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-01-16T12:30:23.943Z",
-    "duration": 20468.804,
+    "startTime": "2026-01-16T12:37:49.423Z",
+    "duration": 19426.566,
     "expected": 0,
     "skipped": 0,
     "unexpected": 30,
