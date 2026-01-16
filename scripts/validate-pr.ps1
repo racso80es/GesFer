@@ -232,7 +232,11 @@ if ($ErrorCount -eq 0) {
                 $frontendStartInfo.RedirectStandardOutput = $true
                 $frontendStartInfo.RedirectStandardError = $true
                 $frontendStartInfo.CreateNoWindow = $true
-                $frontendStartInfo.EnvironmentVariables["PORT"] = "3000"
+                if (-not $frontendStartInfo.EnvironmentVariables.ContainsKey("PORT")) {
+                    $frontendStartInfo.EnvironmentVariables.Add("PORT", "3000")
+                } else {
+                    $frontendStartInfo.EnvironmentVariables["PORT"] = "3000"
+                }
                 
                 $FrontendProcess = New-Object System.Diagnostics.Process
                 $FrontendProcess.StartInfo = $frontendStartInfo
