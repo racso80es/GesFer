@@ -115,10 +115,7 @@ function Cleanup-Services {
 }
 
 # Registrar cleanup al finalizar (éxito o error)
-trap {
-    Cleanup-Services
-    throw
-}
+# Nota: trap se manejará al final del script
 
 # 1. Validar Backend - Build
 Write-Host "📦 [1/4] Compilando Backend (dotnet build)..." -ForegroundColor Yellow
@@ -299,7 +296,11 @@ if ($ErrorCount -eq 0) {
 Write-Host ""
 
 # Limpiar servicios antes de mostrar resultado final
-Cleanup-Services
+try {
+    Cleanup-Services
+} catch {
+    # Ignorar errores en limpieza
+}
 
 Write-Host ""
 Write-Host "==========================================" -ForegroundColor Cyan
