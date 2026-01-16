@@ -98,6 +98,51 @@ import { Button } from "@/components/shared/Button";
 
 ## 🔗 Integridad de Datos
 
+### Validación de Formularios con Zod
+
+**REGLAS OBLIGATORIAS:**
+
+1. **No usar validaciones hardcoded:** Todas las validaciones de formularios DEBEN usar esquemas Zod (`z.object()`) que reflejen exactamente las restricciones del Backend.
+
+2. **Sincronización Backend-Frontend:** Los esquemas Zod DEBEN estar en `Cliente/lib/validations/` y reflejar las mismas reglas que las entidades del Backend (por ejemplo, `UserConfiguration.cs`, `CompanyConfiguration.cs`).
+
+3. **Ejemplo de esquema Zod:**
+   ```typescript
+   // Cliente/lib/validations/user.ts
+   export const createUserSchema = z.object({
+     username: z.string().min(1, "El nombre de usuario es obligatorio").max(100, "No puede exceder 100 caracteres"),
+     // ... refleja las validaciones de UserConfiguration.cs en el Backend
+   });
+   ```
+
+4. **Uso en formularios:** Los componentes de formulario (`UserForm`, `CompanyForm`, etc.) DEBEN usar estos esquemas para validar antes de enviar al Backend.
+
+### Patrón Listado-Formulario
+
+**ESTÁNDAR OBLIGATORIO:**
+
+1. **Listado (`DataTable`):** Todas las entidades principales DEBEN usar `shared/DataTable` para mostrar listados con:
+   - Búsqueda integrada
+   - Filtros opcionales
+   - Acciones (editar, eliminar) con `data-testid` estandarizados
+
+2. **Formularios Reutilizables:** Crear componentes de formulario en `Cliente/components/admin/` o `Cliente/components/(client)/` que:
+   - Usen componentes `shared/Input`, `shared/Button`
+   - Validen con esquemas Zod
+   - Tengan `data-testid` en todos los campos
+   - Manejen estados de carga y errores
+
+3. **Modales (`ModalBase`):** Los formularios de creación/edición DEBEN estar dentro de `shared/ModalBase`.
+
+### Componentes de Formulario Disponibles
+
+- **`Cliente/components/admin/UserForm.tsx`** - Formulario de usuario (crear/editar) con validación Zod
+- **`Cliente/components/admin/CompanyForm.tsx`** - Formulario de empresa (crear/editar) con validación Zod
+
+---
+
+## 🔗 Integridad de Datos
+
 ### Sincronización Backend ↔ Frontend
 
 **REQUISITO OBLIGATORIO:**
