@@ -9,12 +9,13 @@
 ## 📋 Índice
 
 1. [Protocolo de Calidad](#protocolo-de-calidad)
-2. [Arquitectura de UI](#arquitectura-de-ui)
-3. [Integridad de Datos](#integridad-de-datos)
-4. [Estandarización de Tests](#estandarización-de-tests)
-5. [Reglas de Commit](#reglas-de-commit)
-6. [Estructura de Rutas](#estructura-de-rutas)
-7. [Mantenimiento de Reglas](#mantenimiento-de-reglas)
+2. [Protocolo de Certificación Activa (Pre-Push)](#protocolo-de-certificación-activa-pre-push)
+3. [Arquitectura de UI](#arquitectura-de-ui)
+4. [Integridad de Datos](#integridad-de-datos)
+5. [Estandarización de Tests](#estandarización-de-tests)
+6. [Reglas de Commit](#reglas-de-commit)
+7. [Estructura de Rutas](#estructura-de-rutas)
+8. [Mantenimiento de Reglas](#mantenimiento-de-reglas)
 
 ---
 
@@ -291,6 +292,59 @@ El estado del sidebar (colapsado/expandido) se maneja mediante `SidebarContext` 
 
 - **Hook:** `useSidebar()` proporciona `isCollapsed`, `toggleSidebar()`, `collapseSidebar()`, `expandSidebar()`
 - **Padding dinámico:** El contenido principal ajusta su padding según `isCollapsed`
+
+---
+
+## 🛡️ Protocolo de Certificación Activa (Pre-Push)
+
+### Juez del Proyecto - Bloqueo Técnico
+
+**REGLAS ESTRICTAS:**
+
+1. **Antes de cada PR/push**, el sistema ejecuta automáticamente el **Juez del Proyecto** mediante el hook `pre-push` de Husky.
+
+2. **El Juez ejecuta validación completa:**
+   - ✅ Compilación del Backend (`dotnet build`)
+   - ✅ Tests unitarios del Frontend (`npm run test`)
+   - ✅ Tests E2E del Frontend (`npx playwright test`)
+
+3. **Bloqueo absoluto:** Si **CUALQUIER** test falla, el push es **BLOQUEADO FÍSICAMENTE**. No se puede hacer push hasta que todos los tests pasen.
+
+4. **Script de validación:** `scripts/validate-pr.sh` (Linux/Mac) o `scripts/validate-pr.ps1` (Windows)
+
+5. **Obligación de reparación:** Si el Juez detecta fallos (❌/⚠️), DEBES corregirlos en el código ANTES de intentar push nuevamente.
+
+### Auditoría Pre-PR (Contrato Maestro)
+
+**PROCESO OBLIGATORIO:**
+
+1. **Antes de cada PR**, generar una auditoría en `docs/governance/audits/` siguiendo el formato:
+   ```
+   YYYYMMDD_HHMM_[NOMBRE-RAMA]_CIERRE.md
+   ```
+
+2. **El informe debe cubrir:**
+   - Estado de compilación (Backend)
+   - Estado de tests unitarios (Frontend)
+   - Estado de tests E2E (Frontend)
+   - Cumplimiento de Reglas de Oro (componentes shared, data-testid, etc.)
+   - Sincronización Backend-Frontend
+
+3. **Criterio de éxito:** El informe DEBE acabar siendo **100% ✅**. Si detecta fallos, corregirlos ANTES de proceder.
+
+4. **Formato del informe:**
+   - Usar emojis: ✅ (correcto), ❌ (error crítico), ⚠️ (advertencia)
+   - Incluir resumen ejecutivo al inicio
+   - Detallar cada área auditada
+   - Conclusión con estado general
+
+5. **Validación cruzada:** La auditoría debe validarse ejecutando `scripts/validate-pr.sh` manualmente para confirmar que el estado reportado es correcto.
+
+### Ejemplo de Nombre de Auditoría
+
+```
+docs/governance/audits/20260116_1430_refactor-estructura-cliente_CIERRE.md
+```
 
 ---
 

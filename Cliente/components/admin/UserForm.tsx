@@ -101,7 +101,7 @@ export function UserForm({
       const result = schema.safeParse(formData);
       if (!result.success) {
         const newErrors: Record<string, string> = {};
-        result.error.errors.forEach((err) => {
+        result.error.issues.forEach((err) => {
           if (err.path[0]) {
             newErrors[err.path[0].toString()] = err.message;
           }

@@ -11,8 +11,6 @@ export interface ButtonProps extends ShadcnButtonProps {
    * Ejemplo: shared-button-confirm, shared-button-cancel
    */
   "data-testid"?: string;
-  // ERROR INYECTADO PARA PROBAR EL JUEZ
-  invalidProperty: number;
 }
 
 /**
