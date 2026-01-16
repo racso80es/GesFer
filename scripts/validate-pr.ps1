@@ -68,31 +68,22 @@ Write-Host "🎭 [3/3] Ejecutando tests E2E (Playwright)..." -ForegroundColor Ye
 if (Test-Path "Cliente") {
     Push-Location Cliente
     try {
-        # Ejecutar tests E2E y capturar output
-        $e2eProcess = Start-Process -FilePath "npx" -ArgumentList "playwright","test" -NoNewWindow -Wait -PassThru -RedirectStandardOutput "test-output.txt" -RedirectStandardError "test-errors.txt"
+        # Ejecutar tests E2E y capturar output completo
+        $tempOutputFile = "temp-e2e-output.txt"
+        $null = & npx playwright test *> $tempOutputFile 2>&1
+        $e2eExitCode = $LASTEXITCODE
         
-        $e2eExitCode = $e2eProcess.ExitCode
         $e2eOutput = ""
-        $e2eErrors = ""
-        
-        if (Test-Path "test-output.txt") {
-            $e2eOutput = Get-Content "test-output.txt" -Raw -ErrorAction SilentlyContinue
+        if (Test-Path $tempOutputFile) {
+            $e2eOutput = Get-Content $tempOutputFile -Raw -ErrorAction SilentlyContinue
+            Remove-Item $tempOutputFile -ErrorAction SilentlyContinue
         }
-        if (Test-Path "test-errors.txt") {
-            $e2eErrors = Get-Content "test-errors.txt" -Raw -ErrorAction SilentlyContinue
-        }
-        
-        $combinedOutput = "$e2eOutput $e2eErrors"
-        
-        # Limpiar archivos temporales
-        if (Test-Path "test-output.txt") { Remove-Item "test-output.txt" -ErrorAction SilentlyContinue }
-        if (Test-Path "test-errors.txt") { Remove-Item "test-errors.txt" -ErrorAction SilentlyContinue }
         
         if ($e2eExitCode -eq 0) {
             Write-Host "✅ Tests E2E pasados" -ForegroundColor Green
         } else {
             # Verificar si los fallos son por falta de servicios (ECONNREFUSED o ERR_CONNECTION_REFUSED)
-            if ($combinedOutput -match "ECONNREFUSED|ERR_CONNECTION_REFUSED") {
+            if ($e2eOutput -match "ECONNREFUSED|ERR_CONNECTION_REFUSED") {
                 Write-Host "⚠️  ADVERTENCIA: Tests E2E fallaron porque los servicios no están corriendo" -ForegroundColor Yellow
                 Write-Host "   Esto es esperado si API (puerto 5000) o Cliente (puerto 3000) no están activos" -ForegroundColor Yellow
                 Write-Host "   Los tests E2E se ejecutarán en CI/CD o cuando los servicios estén disponibles" -ForegroundColor Yellow
