@@ -82,12 +82,15 @@ export default defineConfig({
     },
   ],
 
-  /* Servidor de desarrollo local - Deshabilitado porque se ejecuta manualmente */
-  // webServer: {
-  //   command: 'npm run dev',
-  //   url: TEST_CLIENT_URL,
-  //   reuseExistingServer: true,
-  //   timeout: 120 * 1000,
-  // },
+  /* Servidor de desarrollo local - Respaldo si no se orquesta desde scripts */
+  /* Nota: El script validate-pr.ps1/sh orquesta servicios, pero webServer actúa como respaldo */
+  webServer: {
+    command: 'npm run dev',
+    url: TEST_CLIENT_URL,
+    reuseExistingServer: true, // Reutilizar si ya está corriendo (orquestado por script)
+    timeout: 180 * 1000, // 3 minutos para compilación inicial de Next.js
+    stdout: 'pipe',
+    stderr: 'pipe',
+  },
 });
 

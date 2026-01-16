@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import UsuariosPage from "@/app/(client)/usuarios/page";
 import { useAuth } from "@/contexts/auth-context";
@@ -134,7 +134,10 @@ describe("UsuariosPage", () => {
     render(<UsuariosPage />);
 
     const newUserButton = screen.getByText("Nuevo Usuario");
-    await user.click(newUserButton);
+    
+    await act(async () => {
+      await user.click(newUserButton);
+    });
 
     await waitFor(() => {
       expect(screen.getByText("Crear Nuevo Usuario")).toBeInTheDocument();
