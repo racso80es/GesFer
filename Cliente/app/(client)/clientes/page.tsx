@@ -3,7 +3,7 @@
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { MainLayout } from "@/components/layout/main-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/Button";
 import { Loading } from "@/components/ui/loading";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { useQuery } from "@tanstack/react-query";
@@ -57,7 +57,9 @@ export default function ClientesPage() {
                 {t('subtitle')}
               </p>
             </div>
-            <Button>
+            <Button
+              data-testid="shared-button-clientes-new-customer"
+            >
               <Plus className="h-4 w-4 mr-2" />
               {t('newCustomer')}
             </Button>
@@ -137,6 +139,7 @@ export default function ClientesPage() {
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => setSelectedCustomerId(cliente.id)}
+                                data-testid={`shared-button-clientes-edit-${cliente.id}`}
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
@@ -144,6 +147,7 @@ export default function ClientesPage() {
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => handleDelete(cliente.id)}
+                                data-testid={`shared-button-clientes-delete-${cliente.id}`}
                               >
                                 <Trash2 className="h-4 w-4 text-destructive" />
                               </Button>

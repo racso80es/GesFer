@@ -3,7 +3,7 @@
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { MainLayout } from "@/components/layout/main-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/Button";
 import { Loading } from "@/components/ui/loading";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { useQuery } from "@tanstack/react-query";
@@ -62,6 +62,7 @@ export default function CompanyDetailPage({
               variant="ghost"
               onClick={() => router.back()}
               className="mb-4"
+              data-testid="shared-button-empresas-back"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver
@@ -89,6 +90,7 @@ export default function CompanyDetailPage({
                 variant="ghost"
                 size="icon"
                 onClick={() => router.back()}
+                data-testid="shared-button-empresas-back-icon"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
@@ -100,6 +102,7 @@ export default function CompanyDetailPage({
             <Button
               variant="outline"
               onClick={() => router.push(`/empresas?edit=${company.id}`)}
+              data-testid={`shared-button-empresas-edit-${company.id}`}
             >
               <Edit className="h-4 w-4 mr-2" />
               Editar

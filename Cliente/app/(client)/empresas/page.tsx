@@ -3,17 +3,10 @@
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { MainLayout } from "@/components/layout/main-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/Button";
 import { Loading } from "@/components/ui/loading";
 import { ErrorMessage } from "@/components/ui/error-message";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { ModalBase } from "@/components/shared/ModalBase";
 import { CompanyForm } from "@/components/empresas/company-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { companiesApi } from "@/lib/api/companies";
@@ -127,7 +120,10 @@ export default function EmpresasPage() {
                 {t('subtitle')}
               </p>
             </div>
-            <Button onClick={() => setIsCreateModalOpen(true)}>
+            <Button 
+              onClick={() => setIsCreateModalOpen(true)}
+              data-testid="shared-button-empresas-new-company"
+            >
               <Plus className="h-4 w-4 mr-2" />
               {t('newCompany')}
             </Button>
@@ -156,7 +152,10 @@ export default function EmpresasPage() {
                 <p className="text-muted-foreground mb-4">
                   {t('noCompanies')}
                 </p>
-                <Button onClick={() => setIsCreateModalOpen(true)}>
+                <Button 
+                  onClick={() => setIsCreateModalOpen(true)}
+                  data-testid="shared-button-empresas-create-first"
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   {t('createFirst')}
                 </Button>
@@ -215,6 +214,7 @@ export default function EmpresasPage() {
                                 size="icon"
                                 onClick={() => handleView(empresa.id)}
                                 title={t('table.view')}
+                                data-testid={`shared-button-empresas-view-${empresa.id}`}
                               >
                                 <Eye className="h-4 w-4" />
                               </Button>
@@ -223,6 +223,7 @@ export default function EmpresasPage() {
                                 size="icon"
                                 onClick={() => setEditingCompany(empresa)}
                                 title={t('table.edit')}
+                                data-testid={`shared-button-empresas-edit-${empresa.id}`}
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
@@ -232,6 +233,7 @@ export default function EmpresasPage() {
                                 onClick={() => handleDelete(empresa.id)}
                                 disabled={deletingCompanyId === empresa.id}
                                 title={t('table.delete')}
+                                data-testid={`shared-button-empresas-delete-${empresa.id}`}
                               >
                                 <Trash2 className="h-4 w-4 text-destructive" />
                               </Button>
@@ -247,46 +249,37 @@ export default function EmpresasPage() {
           )}
 
           {/* Modal Crear Empresa */}
-          <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-            <DialogContent>
-              <DialogClose onClose={() => setIsCreateModalOpen(false)} />
-              <DialogHeader>
-                <DialogTitle>{t('createCompany')}</DialogTitle>
-                <DialogDescription>
-                  {t('createDescription')}
-                </DialogDescription>
-              </DialogHeader>
-              <CompanyForm
-                onSubmit={handleCreate}
-                onCancel={() => setIsCreateModalOpen(false)}
-                isLoading={createMutation.isPending}
-              />
-            </DialogContent>
-          </Dialog>
+          <ModalBase
+            open={isCreateModalOpen}
+            onOpenChange={setIsCreateModalOpen}
+            title={t('createCompany')}
+            description={t('createDescription')}
+            data-testid="shared-modal-empresas-create"
+          >
+            <CompanyForm
+              onSubmit={handleCreate}
+              onCancel={() => setIsCreateModalOpen(false)}
+              isLoading={createMutation.isPending}
+            />
+          </ModalBase>
 
           {/* Modal Editar Empresa */}
-          <Dialog
+          <ModalBase
             open={!!editingCompany}
             onOpenChange={(open) => !open && setEditingCompany(null)}
+            title={t('editCompany')}
+            description={t('editDescription')}
+            data-testid="shared-modal-empresas-edit"
           >
-            <DialogContent>
-              <DialogClose onClose={() => setEditingCompany(null)} />
-              <DialogHeader>
-                <DialogTitle>{t('editCompany')}</DialogTitle>
-                <DialogDescription>
-                  {t('editDescription')}
-                </DialogDescription>
-              </DialogHeader>
-              {editingCompany && (
-                <CompanyForm
-                  company={editingCompany}
-                  onSubmit={handleUpdate}
-                  onCancel={() => setEditingCompany(null)}
-                  isLoading={updateMutation.isPending}
-                />
-              )}
-            </DialogContent>
-          </Dialog>
+            {editingCompany && (
+              <CompanyForm
+                company={editingCompany}
+                onSubmit={handleUpdate}
+                onCancel={() => setEditingCompany(null)}
+                isLoading={updateMutation.isPending}
+              />
+            )}
+          </ModalBase>
         </div>
       </MainLayout>
     </ProtectedRoute>

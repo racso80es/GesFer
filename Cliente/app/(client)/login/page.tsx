@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/shared/Input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/Button";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { Building2, User, Lock, Loader2 } from "lucide-react";
 import { useTranslations } from 'next-intl';
@@ -118,7 +118,7 @@ export default function LoginPage() {
                   }
                   className="pl-10"
                   required
-                  data-testid="login-empresa-input"
+                  data-testid="shared-input-text-empresa"
                 />
               </div>
             </div>
@@ -137,7 +137,7 @@ export default function LoginPage() {
                   }
                   className="pl-10"
                   required
-                  data-testid="login-usuario-input"
+                  data-testid="shared-input-text-usuario"
                 />
               </div>
             </div>
@@ -156,7 +156,7 @@ export default function LoginPage() {
                   }
                   className="pl-10"
                   required
-                  data-testid="login-password-input"
+                  data-testid="shared-input-password-contraseña"
                 />
               </div>
             </div>
@@ -167,7 +167,7 @@ export default function LoginPage() {
               type="submit"
               className="w-full"
               disabled={isLoading}
-              data-testid="login-submit-button"
+              data-testid="shared-button-login-submit"
             >
               {isLoading ? (
                 <>

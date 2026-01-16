@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/Button";
 import {
   LayoutDashboard,
   LogOut,
@@ -41,12 +41,22 @@ export function Sidebar({ onClose, isMobile = false }: SidebarProps) {
       <div className="flex items-center justify-between p-4 border-b">
         {!isCollapsed && <h2 className="text-xl font-bold">GesFer Admin</h2>}
         {isMobile && onClose && (
-          <Button variant="ghost" size="icon" onClick={onClose}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onClose}
+            data-testid="shared-button-sidebar-close-mobile"
+          >
             <X className="h-5 w-5" />
           </Button>
         )}
         {!isMobile && (
-          <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleSidebar}
+            data-testid="shared-button-sidebar-collapse"
+          >
             {isCollapsed ? (
               <ChevronRight className="h-5 w-5" />
             ) : (
@@ -100,6 +110,7 @@ export function Sidebar({ onClose, isMobile = false }: SidebarProps) {
           )}
           onClick={handleLogout}
           title={isCollapsed ? "Cerrar sesión" : undefined}
+          data-testid="shared-button-sidebar-logout"
         >
           <LogOut className="h-4 w-4 mr-2 flex-shrink-0" />
           {!isCollapsed && <span>Cerrar sesión</span>}

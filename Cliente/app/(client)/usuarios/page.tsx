@@ -3,17 +3,10 @@
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { MainLayout } from "@/components/layout/main-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/Button";
 import { Loading } from "@/components/ui/loading";
 import { ErrorMessage } from "@/components/ui/error-message";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { ModalBase } from "@/components/shared/ModalBase";
 import { UserForm } from "@/components/usuarios/user-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { usersApi } from "@/lib/api/users";
@@ -177,7 +170,10 @@ export default function UsuariosPage() {
                 {t('subtitle')}
               </p>
             </div>
-            <Button onClick={() => setIsCreateModalOpen(true)} data-testid="usuarios-new-user-button">
+            <Button 
+              onClick={() => setIsCreateModalOpen(true)} 
+              data-testid="shared-button-usuarios-new-user"
+            >
               <Plus className="h-4 w-4 mr-2" />
               {t('newUser')}
             </Button>
@@ -206,7 +202,10 @@ export default function UsuariosPage() {
                 <p className="text-muted-foreground mb-4">
                   {t('noUsers')}
                 </p>
-                <Button onClick={() => setIsCreateModalOpen(true)}>
+                <Button 
+                  onClick={() => setIsCreateModalOpen(true)}
+                  data-testid="shared-button-usuarios-create-first"
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   {t('createFirst')}
                 </Button>
@@ -267,6 +266,7 @@ export default function UsuariosPage() {
                                 size="icon"
                                 onClick={() => handleView(usuario.id)}
                                 title={t('table.view')}
+                                data-testid={`shared-button-usuarios-view-${usuario.id}`}
                               >
                                 <Eye className="h-4 w-4" />
                               </Button>
@@ -275,6 +275,7 @@ export default function UsuariosPage() {
                                 size="icon"
                                 onClick={() => setEditingUser(usuario)}
                                 title={t('table.edit')}
+                                data-testid={`shared-button-usuarios-edit-${usuario.id}`}
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
@@ -284,6 +285,7 @@ export default function UsuariosPage() {
                                 onClick={() => handleDelete(usuario.id)}
                                 disabled={deletingUserId === usuario.id}
                                 title={t('table.delete')}
+                                data-testid={`shared-button-usuarios-delete-${usuario.id}`}
                               >
                                 <Trash2 className="h-4 w-4 text-destructive" />
                               </Button>
@@ -299,46 +301,37 @@ export default function UsuariosPage() {
           )}
 
           {/* Modal Crear Usuario */}
-          <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-            <DialogContent data-testid="usuarios-create-modal">
-              <DialogClose onClose={() => setIsCreateModalOpen(false)} />
-              <DialogHeader>
-                <DialogTitle>{t('createUser')}</DialogTitle>
-                <DialogDescription>
-                  {t('createDescription')}
-                </DialogDescription>
-              </DialogHeader>
-              <UserForm
-                onSubmit={handleCreate}
-                onCancel={() => setIsCreateModalOpen(false)}
-                isLoading={createMutation.isPending}
-              />
-            </DialogContent>
-          </Dialog>
+          <ModalBase
+            open={isCreateModalOpen}
+            onOpenChange={setIsCreateModalOpen}
+            title={t('createUser')}
+            description={t('createDescription')}
+            data-testid="shared-modal-usuarios-create"
+          >
+            <UserForm
+              onSubmit={handleCreate}
+              onCancel={() => setIsCreateModalOpen(false)}
+              isLoading={createMutation.isPending}
+            />
+          </ModalBase>
 
           {/* Modal Editar Usuario */}
-          <Dialog
+          <ModalBase
             open={!!editingUser}
             onOpenChange={(open) => !open && setEditingUser(null)}
+            title={t('editUser')}
+            description={t('editDescription')}
+            data-testid="shared-modal-usuarios-edit"
           >
-            <DialogContent data-testid="usuarios-edit-modal">
-              <DialogClose onClose={() => setEditingUser(null)} />
-              <DialogHeader>
-                <DialogTitle>{t('editUser')}</DialogTitle>
-                <DialogDescription>
-                  {t('editDescription')}
-                </DialogDescription>
-              </DialogHeader>
-              {editingUser && (
-                <UserForm
-                  user={editingUser}
-                  onSubmit={handleUpdate}
-                  onCancel={() => setEditingUser(null)}
-                  isLoading={updateMutation.isPending}
-                />
-              )}
-            </DialogContent>
-          </Dialog>
+            {editingUser && (
+              <UserForm
+                user={editingUser}
+                onSubmit={handleUpdate}
+                onCancel={() => setEditingUser(null)}
+                isLoading={updateMutation.isPending}
+              />
+            )}
+          </ModalBase>
         </div>
       </MainLayout>
     </ProtectedRoute>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/Button";
 import { Menu } from "lucide-react";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
@@ -80,6 +80,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             variant="ghost"
             size="icon"
             onClick={() => setSidebarOpen(true)}
+            data-testid="shared-button-sidebar-toggle"
           >
             <Menu className="h-6 w-6" />
           </Button>
