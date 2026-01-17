@@ -1,6 +1,7 @@
 using GesFer.Application.Commands.User;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.User;
+using GesFer.Domain.ValueObjects;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -76,10 +77,17 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserD
                 throw new InvalidOperationException($"No se encontró el idioma con ID {command.Dto.LanguageId.Value}");
         }
 
+        // Validar y convertir Email si se proporciona
+        Email? email = null;
+        if (!string.IsNullOrWhiteSpace(command.Dto.Email))
+        {
+            email = Email.Create(command.Dto.Email);
+        }
+
         user.Username = command.Dto.Username;
         user.FirstName = command.Dto.FirstName;
         user.LastName = command.Dto.LastName;
-        user.Email = command.Dto.Email;
+        user.Email = email;
         user.Phone = command.Dto.Phone;
         user.Address = command.Dto.Address;
         user.PostalCodeId = command.Dto.PostalCodeId;

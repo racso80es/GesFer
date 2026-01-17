@@ -1,4 +1,5 @@
 using GesFer.Domain.Entities;
+using GesFer.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -6,6 +7,21 @@ namespace GesFer.Infrastructure.Data.Configurations;
 
 public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 {
+    private static TaxId? ConvertStringToTaxId(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        return TaxId.TryCreate(value, out var taxId) ? taxId : (TaxId?)null;
+    }
+
+    private static Email? ConvertStringToEmail(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        return Email.TryCreate(value, out var email) ? email : (Email?)null;
+    }
     public void Configure(EntityTypeBuilder<Customer> builder)
     {
         builder.ToTable("Customers");
@@ -17,7 +33,10 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .HasMaxLength(200);
 
         builder.Property(c => c.TaxId)
-            .HasMaxLength(50);
+            .HasMaxLength(50)
+            .HasConversion(
+                taxId => taxId.HasValue ? taxId.Value.Value : null,
+                value => ConvertStringToTaxId(value));
 
         builder.Property(c => c.Address)
             .HasMaxLength(500);
@@ -26,7 +45,10 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .HasMaxLength(50);
 
         builder.Property(c => c.Email)
-            .HasMaxLength(200);
+            .HasMaxLength(200)
+            .HasConversion(
+                email => email.HasValue ? email.Value.Value : null,
+                value => ConvertStringToEmail(value));
 
         // Relaciones
         builder.HasOne(c => c.Company)

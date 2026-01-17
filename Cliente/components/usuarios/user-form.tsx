@@ -192,6 +192,7 @@ export function UserForm({
           </Label>
           <Input
             id="username"
+            data-test-id="user-form-username"
             value={formData.username}
             onChange={(e) =>
               setFormData({ ...formData, username: e.target.value })
@@ -264,6 +265,7 @@ export function UserForm({
           <Label htmlFor="email">{t('email')}</Label>
           <Input
             id="email"
+            data-test-id="user-form-email"
             type="email"
             value={formData.email || ""}
             onChange={(e) =>

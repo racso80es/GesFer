@@ -2,6 +2,7 @@ using GesFer.Application.Commands.User;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.User;
 using GesFer.Domain.Entities;
+using GesFer.Domain.ValueObjects;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -79,6 +80,13 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
         // Hash de la contraseña
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(command.Dto.Password, BCrypt.Net.BCrypt.GenerateSalt(11));
 
+        // Validar y convertir Email si se proporciona
+        Email? email = null;
+        if (!string.IsNullOrWhiteSpace(command.Dto.Email))
+        {
+            email = Email.Create(command.Dto.Email);
+        }
+
         var user = new GesFer.Domain.Entities.User
         {
             CompanyId = command.Dto.CompanyId,
@@ -86,7 +94,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
             PasswordHash = passwordHash,
             FirstName = command.Dto.FirstName,
             LastName = command.Dto.LastName,
-            Email = command.Dto.Email,
+            Email = email,
             Phone = command.Dto.Phone,
             Address = command.Dto.Address,
             PostalCodeId = command.Dto.PostalCodeId,

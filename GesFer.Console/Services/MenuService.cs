@@ -44,6 +44,17 @@ public class MenuService
     }
 
     /// <summary>
+    /// Helper para leer tecla de forma segura en entornos no interactivos
+    /// </summary>
+    private void SafeReadKey()
+    {
+        if (!Console.IsInputRedirected)
+        {
+            Console.ReadKey();
+        }
+    }
+
+    /// <summary>
     /// Muestra el menú principal
     /// </summary>
     public void ShowMenu()
@@ -97,7 +108,7 @@ public class MenuService
                     return false; // Salir
                 default:
                     Console.WriteLine("Opción no válida. Presione cualquier tecla para continuar...");
-                    Console.ReadKey();
+                    SafeReadKey();
                     return true;
             }
         }
@@ -105,7 +116,7 @@ public class MenuService
         {
             Console.WriteLine($"Error: {ex.Message}");
             Console.WriteLine("Presione cualquier tecla para continuar...");
-            Console.ReadKey();
+            SafeReadKey();
             return true;
         }
     }
@@ -132,7 +143,7 @@ public class MenuService
         {
             Console.WriteLine("ERROR: Docker no está corriendo. Por favor, inicia Docker Desktop.");
             Console.WriteLine("Presione cualquier tecla para continuar...");
-            Console.ReadKey();
+            SafeReadKey();
             return true;
         }
         Console.WriteLine("    ✓ Docker está corriendo");
@@ -200,7 +211,7 @@ public class MenuService
                         Console.WriteLine($"Ruta del proyecto: {apiProjectPath}");
                         Console.WriteLine();
                         Console.WriteLine("Presione cualquier tecla para continuar...");
-                        Console.ReadKey();
+                        SafeReadKey();
                         
                         _logService.WriteError($"La API no compila. ExitCode: {buildProcessInstance.ExitCode}");
                         _logService.WriteLog($"Salida de compilación: {output}");
@@ -240,7 +251,7 @@ public class MenuService
         {
             Console.WriteLine("ERROR: No se pudieron crear los contenedores");
             Console.WriteLine("Presione cualquier tecla para continuar...");
-            Console.ReadKey();
+            SafeReadKey();
             return true;
         }
         Console.WriteLine();
@@ -251,7 +262,7 @@ public class MenuService
         {
             Console.WriteLine("ERROR: MySQL no está listo");
             Console.WriteLine("Presione cualquier tecla para continuar...");
-            Console.ReadKey();
+            SafeReadKey();
             return true;
         }
         Console.WriteLine();
@@ -264,7 +275,7 @@ public class MenuService
             {
                 Console.WriteLine("ERROR: No se pudo instalar dotnet-ef");
                 Console.WriteLine("Presione cualquier tecla para continuar...");
-                Console.ReadKey();
+                SafeReadKey();
                 return true;
             }
         }
@@ -493,7 +504,7 @@ public class MenuService
             Console.WriteLine("Presione cualquier tecla para continuar...");
             try
             {
-                Console.ReadKey();
+                SafeReadKey();
             }
             catch (InvalidOperationException)
             {
@@ -644,7 +655,7 @@ public class MenuService
             Console.WriteLine("Revisa los errores anteriores antes de continuar.");
             Console.WriteLine("Presione cualquier tecla para continuar...");
         }
-        Console.ReadKey();
+        SafeReadKey();
         
         return true;
     }

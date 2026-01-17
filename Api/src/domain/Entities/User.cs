@@ -1,4 +1,5 @@
 using GesFer.Domain.Common;
+using GesFer.Domain.ValueObjects;
 
 namespace GesFer.Domain.Entities;
 
@@ -12,7 +13,7 @@ public class User : BaseEntity
     public string PasswordHash { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
-    public string? Email { get; set; }
+    public Email? Email { get; set; }
     public string? Phone { get; set; }
 
     // Campos de dirección (opcionales)

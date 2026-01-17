@@ -193,14 +193,20 @@ class Program
                 else
                 {
                     Console.WriteLine("Opci?n no v?lida. Presione cualquier tecla para continuar...");
-                    Console.ReadKey();
+                    if (!Console.IsInputRedirected)
+                    {
+                        Console.ReadKey();
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error inesperado: {ex.Message}");
                 Console.WriteLine("Presione cualquier tecla para continuar...");
-                Console.ReadKey();
+                if (!Console.IsInputRedirected)
+                {
+                    Console.ReadKey();
+                }
             }
         }
 

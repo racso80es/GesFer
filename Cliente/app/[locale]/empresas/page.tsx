@@ -22,6 +22,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import type { Company, CreateCompany, UpdateCompany } from "@/lib/types/api";
+import { DestructiveActionConfirm } from "@/components/shared/DestructiveActionConfirm";
 
 export default function EmpresasPage() {
   const router = useRouter();
@@ -30,6 +31,8 @@ export default function EmpresasPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<Company | null>(null);
   const [deletingCompanyId, setDeletingCompanyId] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [companyToDelete, setCompanyToDelete] = useState<string | null>(null);
 
   const {
     data: empresas,
@@ -94,19 +97,21 @@ export default function EmpresasPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('deleteConfirm'))) {
-      return;
-    }
-    setDeletingCompanyId(id);
+  const handleDeleteClick = (id: string) => {
+    setCompanyToDelete(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!companyToDelete) return;
+    
+    setDeletingCompanyId(companyToDelete);
     try {
-      await deleteMutation.mutateAsync(id);
+      await deleteMutation.mutateAsync(companyToDelete);
+      setShowDeleteConfirm(false);
+      setCompanyToDelete(null);
     } catch (error) {
-      alert(
-        error instanceof Error
-          ? error.message
-          : t('error')
-      );
+      console.error("Error al eliminar empresa:", error);
     } finally {
       setDeletingCompanyId(null);
     }
@@ -229,7 +234,7 @@ export default function EmpresasPage() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => handleDelete(empresa.id)}
+                                onClick={() => handleDeleteClick(empresa.id)}
                                 disabled={deletingCompanyId === empresa.id}
                                 title={t('table.delete')}
                               >
@@ -287,6 +292,18 @@ export default function EmpresasPage() {
               )}
             </DialogContent>
           </Dialog>
+
+          <DestructiveActionConfirm
+            open={showDeleteConfirm}
+            onOpenChange={setShowDeleteConfirm}
+            onConfirm={handleDeleteConfirm}
+            title={t('deleteConfirmTitle') || "Eliminar Empresa"}
+            description={t('deleteConfirmDescription') || "Esta acción eliminará permanentemente la empresa. Esta acción no se puede deshacer."}
+            confirmationKeyword="ELIMINAR"
+            confirmButtonText={t('deleteConfirmButton') || "Eliminar"}
+            cancelButtonText={t('cancel') || "Cancelar"}
+            isLoading={deletingCompanyId !== null}
+          />
         </div>
       </MainLayout>
     </ProtectedRoute>

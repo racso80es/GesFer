@@ -1,4 +1,5 @@
 using GesFer.Domain.Entities;
+using GesFer.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -6,6 +7,13 @@ namespace GesFer.Infrastructure.Data.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
+    private static Email? ConvertStringToEmail(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        return Email.TryCreate(value, out var email) ? email : (Email?)null;
+    }
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("Users");
@@ -29,7 +37,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(100);
 
         builder.Property(u => u.Email)
-            .HasMaxLength(200);
+            .HasMaxLength(200)
+            .HasConversion(
+                email => email.HasValue ? email.Value.Value : null,
+                value => ConvertStringToEmail(value));
 
         builder.Property(u => u.Phone)
             .HasMaxLength(50);

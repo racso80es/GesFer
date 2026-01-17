@@ -1,6 +1,7 @@
 using GesFer.Application.Commands.Company;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Company;
+using GesFer.Domain.ValueObjects;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -71,11 +72,25 @@ public class UpdateCompanyCommandHandler : ICommandHandler<UpdateCompanyCommand,
                 throw new InvalidOperationException($"No se encontró el idioma con ID {command.Dto.LanguageId.Value}");
         }
 
+        // Validar y convertir TaxId si se proporciona
+        TaxId? taxId = null;
+        if (!string.IsNullOrWhiteSpace(command.Dto.TaxId))
+        {
+            taxId = TaxId.Create(command.Dto.TaxId);
+        }
+
+        // Validar y convertir Email si se proporciona
+        Email? email = null;
+        if (!string.IsNullOrWhiteSpace(command.Dto.Email))
+        {
+            email = Email.Create(command.Dto.Email);
+        }
+
         company.Name = command.Dto.Name;
-        company.TaxId = command.Dto.TaxId;
+        company.TaxId = taxId;
         company.Address = command.Dto.Address;
         company.Phone = command.Dto.Phone;
-        company.Email = command.Dto.Email;
+        company.Email = email;
         company.PostalCodeId = command.Dto.PostalCodeId;
         company.CityId = command.Dto.CityId;
         company.StateId = command.Dto.StateId;

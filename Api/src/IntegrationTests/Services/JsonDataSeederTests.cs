@@ -1,9 +1,11 @@
 using FluentAssertions;
+using GesFer.Domain.Entities;
 using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 using Xunit;
 using SeedResult = GesFer.Infrastructure.Services.SeedResult;
 
@@ -113,5 +115,155 @@ public class JsonDataSeederTests
         // Los métodos deben ejecutarse sin lanzar excepciones
         await masterDataAction.Should().NotThrowAsync("SeedMasterDataAsync no debe lanzar excepciones");
         await demoDataAction.Should().NotThrowAsync("SeedDemoDataAsync no debe lanzar excepciones");
+    }
+
+    /// <summary>
+    /// Test de seguridad: Valida que usuarios huérfanos (vinculados a empresas rechazadas)
+    /// son descartados silenciosamente sin lanzar excepciones de Foreign Key.
+    /// </summary>
+    [Fact]
+    public async Task Seed_OrphanUsers_AreSkipped()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        
+        // Configurar DbContext en memoria
+        services.AddDbContext<ApplicationDbContext>(options =>
+        {
+            options.UseInMemoryDatabase(databaseName: $"TestDb_OrphanUsers_{Guid.NewGuid()}");
+        });
+
+        services.AddLogging(builder =>
+        {
+            builder.AddConsole();
+            builder.SetMinimumLevel(LogLevel.Warning);
+        });
+
+        services.AddScoped<JsonDataSeeder>();
+        services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
+
+        var serviceProvider = services.BuildServiceProvider();
+        using var scope = serviceProvider.CreateScope();
+        
+        var seeder = scope.ServiceProvider.GetRequiredService<JsonDataSeeder>();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        // Crear Language necesario para la empresa
+        var languageId = Guid.Parse("10000000-0000-0000-0000-000000000001");
+        var language = new Language
+        {
+            Id = languageId,
+            Name = "Español",
+            Code = "es",
+            Description = "Español",
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
+        };
+        context.Languages.Add(language);
+        await context.SaveChangesAsync();
+
+        // Crear JSON temporal con 1 Empresa Inválida y 1 Usuario vinculado
+        var invalidCompanyId = Guid.Parse("99999999-9999-9999-9999-999999999999");
+        var orphanUserId = Guid.Parse("88888888-8888-8888-8888-888888888888");
+        
+        var testData = new
+        {
+            languages = new[]
+            {
+                new
+                {
+                    id = languageId.ToString(),
+                    name = "Español",
+                    code = "es",
+                    description = "Español"
+                }
+            },
+            companies = new[]
+            {
+                new
+                {
+                    id = invalidCompanyId.ToString(),
+                    name = "Empresa Inválida",
+                    taxId = "INVALIDO", // TaxId inválido que será rechazado
+                    address = "Calle Test",
+                    phone = "912345678",
+                    email = "test@test.com",
+                    languageId = languageId.ToString()
+                }
+            },
+            users = new[]
+            {
+                new
+                {
+                    id = orphanUserId.ToString(),
+                    companyId = invalidCompanyId.ToString(), // Vinculado a empresa inválida
+                    username = "usuario_huérfano",
+                    password = "admin123",
+                    firstName = "Usuario",
+                    lastName = "Huérfano",
+                    email = "usuario@test.com",
+                    phone = "912345678",
+                    languageId = languageId.ToString()
+                }
+            }
+        };
+
+        // Crear archivo JSON en la ubicación esperada por JsonDataSeeder
+        var basePath = AppContext.BaseDirectory;
+        var seedsPath = Path.Combine(basePath, "Data", "Seeds");
+        if (!Directory.Exists(seedsPath))
+        {
+            Directory.CreateDirectory(seedsPath);
+        }
+        var expectedFilePath = Path.Combine(seedsPath, "test-data.json");
+        
+        // Guardar el archivo original si existe
+        string? originalContent = null;
+        var originalExists = File.Exists(expectedFilePath);
+        if (originalExists)
+        {
+            originalContent = await File.ReadAllTextAsync(expectedFilePath);
+        }
+        
+        try
+        {
+            // Escribir el archivo de test
+            var jsonContent = JsonSerializer.Serialize(testData, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+            await File.WriteAllTextAsync(expectedFilePath, jsonContent);
+
+            // Act: Ejecutar SeedTestDataAsync
+            // No debe lanzar excepción de Foreign Key
+            Func<Task> seedAction = async () => await seeder.SeedTestDataAsync();
+            await seedAction.Should().NotThrowAsync("SeedTestDataAsync no debe lanzar excepción de Foreign Key");
+
+            // Assert: Verificar que el conteo de usuarios en BD sea 0
+            var userCount = await context.Users
+                .IgnoreQueryFilters()
+                .CountAsync();
+            
+            userCount.Should().Be(0, "No debe haber usuarios insertados porque la empresa padre fue rechazada");
+
+            // Verificar que la empresa inválida tampoco fue insertada
+            var companyCount = await context.Companies
+                .IgnoreQueryFilters()
+                .CountAsync();
+            
+            companyCount.Should().Be(0, "La empresa inválida no debe haber sido insertada");
+        }
+        finally
+        {
+            // Restaurar archivo original si existía
+            if (originalExists && originalContent != null)
+            {
+                await File.WriteAllTextAsync(expectedFilePath, originalContent);
+            }
+            else if (File.Exists(expectedFilePath) && !originalExists)
+            {
+                File.Delete(expectedFilePath);
+            }
+        }
     }
 }

@@ -94,6 +94,10 @@ public class CustomerController : ControllerBase
             var result = await _createHandler.HandleAsync(command);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
         catch (InvalidOperationException ex)
         {
             return BadRequest(new { message = ex.Message });
@@ -119,6 +123,10 @@ public class CustomerController : ControllerBase
             var command = new UpdateCustomerCommand(id, dto);
             var result = await _updateHandler.HandleAsync(command);
             return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
         }
         catch (InvalidOperationException ex)
         {

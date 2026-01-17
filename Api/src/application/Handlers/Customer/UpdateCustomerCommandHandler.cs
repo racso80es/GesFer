@@ -1,6 +1,7 @@
 using GesFer.Application.Commands.Customer;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Customer;
+using GesFer.Domain.ValueObjects;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -72,11 +73,25 @@ public class UpdateCustomerCommandHandler : ICommandHandler<UpdateCustomerComman
                 throw new InvalidOperationException($"No se encontró el país con ID {command.Dto.CountryId.Value}");
         }
 
+        // Validar y convertir TaxId si se proporciona
+        TaxId? taxId = null;
+        if (!string.IsNullOrWhiteSpace(command.Dto.TaxId))
+        {
+            taxId = TaxId.Create(command.Dto.TaxId);
+        }
+
+        // Validar y convertir Email si se proporciona
+        Email? email = null;
+        if (!string.IsNullOrWhiteSpace(command.Dto.Email))
+        {
+            email = Email.Create(command.Dto.Email);
+        }
+
         customer.Name = command.Dto.Name;
-        customer.TaxId = command.Dto.TaxId;
+        customer.TaxId = taxId;
         customer.Address = command.Dto.Address;
         customer.Phone = command.Dto.Phone;
-        customer.Email = command.Dto.Email;
+        customer.Email = email;
         customer.SellTariffId = command.Dto.SellTariffId;
         customer.PostalCodeId = command.Dto.PostalCodeId;
         customer.CityId = command.Dto.CityId;

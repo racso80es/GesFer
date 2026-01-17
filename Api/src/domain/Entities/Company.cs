@@ -1,4 +1,5 @@
 using GesFer.Domain.Common;
+using GesFer.Domain.ValueObjects;
 
 namespace GesFer.Domain.Entities;
 
@@ -8,10 +9,10 @@ namespace GesFer.Domain.Entities;
 public class Company : BaseEntity
 {
     public string Name { get; set; } = string.Empty;
-    public string? TaxId { get; set; }
+    public TaxId? TaxId { get; set; }
     public string Address { get; set; } = string.Empty; // Obligatorio
     public string? Phone { get; set; }
-    public string? Email { get; set; }
+    public Email? Email { get; set; }
 
     // Campos de dirección
     public Guid? PostalCodeId { get; set; }

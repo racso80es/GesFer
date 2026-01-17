@@ -1,4 +1,5 @@
 using GesFer.Domain.Common;
+using GesFer.Domain.ValueObjects;
 
 namespace GesFer.Domain.Entities;
 
@@ -9,10 +10,10 @@ public class Customer : BaseEntity
 {
     public Guid CompanyId { get; set; }
     public string Name { get; set; } = string.Empty;
-    public string? TaxId { get; set; }
+    public TaxId? TaxId { get; set; }
     public string? Address { get; set; }
     public string? Phone { get; set; }
-    public string? Email { get; set; }
+    public Email? Email { get; set; }
     public Guid? SellTariffId { get; set; } // Tarifa de venta opcional
 
     // Campos de dirección

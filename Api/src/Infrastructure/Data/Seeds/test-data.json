@@ -31,11 +31,21 @@
   ],
   "companies": [
     {
-      "_comment": "DATOS MAESTROS: Empresa base del sistema - NO MODIFICAR",
+      "_comment": "DATOS MALOS: Legacy 'B12345678' inválido según algoritmo oficial (debe ser rechazado para validar cuarentena)",
       "id": "11111111-1111-1111-1111-111111111111",
-      "name": "Empresa Demo",
+      "name": "Empresa Legacy Inválida",
       "taxId": "B12345678",
       "address": "Calle Demo 123",
+      "phone": "912345678",
+      "email": "demo@empresa.com",
+      "languageId": "10000000-0000-0000-0000-000000000001"
+    },
+    {
+      "_comment": "DATOS BUENOS: Empresa base del sistema con TaxId válido - DEBE SER LA REFERENCIADA POR USERS",
+      "id": "11111111-1111-1111-1111-111111111115",
+      "name": "Empresa Demo",
+      "taxId": "B87654321",
+      "address": "Calle Gran Vía, 1",
       "phone": "912345678",
       "email": "demo@empresa.com",
       "languageId": "10000000-0000-0000-0000-000000000001"
@@ -49,13 +59,33 @@
       "phone": "987654321",
       "email": "testupdate@empresa.com",
       "languageId": "10000000-0000-0000-0000-000000000001"
+    },
+    {
+      "_comment": "DATOS MALOS: Empresa con TaxId inválido (debe ser ignorado por el seeder)",
+      "id": "11111111-1111-1111-1111-111111111113",
+      "name": "Empresa TaxId Inválido",
+      "taxId": "INVALID999",
+      "address": "Calle Test",
+      "phone": "988888888",
+      "email": "valido@empresa.com",
+      "languageId": "10000000-0000-0000-0000-000000000001"
+    },
+    {
+      "_comment": "DATOS MALOS: Empresa con Email inválido (debe ser ignorado por el seeder)",
+      "id": "11111111-1111-1111-1111-111111111114",
+      "name": "Empresa Email Inválido",
+      "taxId": "B99999999",
+      "address": "Calle Test",
+      "phone": "999999999",
+      "email": "email-sin-arroba-invalido",
+      "languageId": "10000000-0000-0000-0000-000000000001"
     }
   ],
   "users": [
     {
-      "_comment": "DATOS MAESTROS: Usuario admin base - NO MODIFICAR",
+      "_comment": "DATOS MAESTROS: Usuario admin base - REFERENCIA Company válida (11111111-1111-1111-1111-111111111115)",
       "id": "99999999-9999-9999-9999-999999999999",
-      "companyId": "11111111-1111-1111-1111-111111111111",
+      "companyId": "11111111-1111-1111-1111-111111111115",
       "username": "admin",
       "password": "admin123",
       "firstName": "Administrador",
@@ -65,9 +95,9 @@
       "languageId": "10000000-0000-0000-0000-000000000001"
     },
     {
-      "_comment": "DATOS MAESTROS: Usuario gestor base - NO MODIFICAR",
+      "_comment": "DATOS MAESTROS: Usuario gestor base - REFERENCIA Company válida (11111111-1111-1111-1111-111111111115)",
       "id": "99999999-9999-9999-9999-999999999998",
-      "companyId": "11111111-1111-1111-1111-111111111111",
+      "companyId": "11111111-1111-1111-1111-111111111115",
       "username": "gestor",
       "password": "gestor123",
       "firstName": "Gestor",
@@ -77,9 +107,9 @@
       "languageId": "10000000-0000-0000-0000-000000000001"
     },
     {
-      "_comment": "DATOS DE TEST: Usuario específico para test Update_WithValidData_ShouldReturnOk",
+      "_comment": "DATOS DE TEST: Usuario específico para test Update_WithValidData_ShouldReturnOk - REFERENCIA Company válida",
       "id": "99999999-9999-9999-9999-999999999997",
-      "companyId": "11111111-1111-1111-1111-111111111111",
+      "companyId": "11111111-1111-1111-1111-111111111115",
       "username": "usuario_test_update",
       "password": "admin123",
       "firstName": "Usuario",
@@ -89,9 +119,9 @@
       "languageId": "10000000-0000-0000-0000-000000000001"
     },
     {
-      "_comment": "DATOS DE TEST: Usuario específico para test Update_WithPassword_ShouldUpdatePassword",
+      "_comment": "DATOS DE TEST: Usuario específico para test Update_WithPassword_ShouldUpdatePassword - REFERENCIA Company válida",
       "id": "99999999-9999-9999-9999-999999999996",
-      "companyId": "11111111-1111-1111-1111-111111111111",
+      "companyId": "11111111-1111-1111-1111-111111111115",
       "username": "usuario_test_password",
       "password": "admin123",
       "firstName": "Usuario",
@@ -536,7 +566,7 @@
   "suppliers": [
     {
       "id": "aaaaaaaa-1111-1111-1111-111111111111",
-      "companyId": "11111111-1111-1111-1111-111111111111",
+      "companyId": "11111111-1111-1111-1111-111111111115",
       "name": "Proveedor Test 1",
       "taxId": "B11111111",
       "address": "Calle Proveedor 1",
@@ -545,7 +575,7 @@
     },
     {
       "id": "bbbbbbbb-2222-2222-2222-222222222222",
-      "companyId": "11111111-1111-1111-1111-111111111111",
+      "companyId": "11111111-1111-1111-1111-111111111115",
       "name": "Proveedor Test 2",
       "taxId": "B22222222",
       "address": "Calle Proveedor 2",
@@ -554,7 +584,7 @@
     },
     {
       "id": "cccccccc-3333-3333-3333-333333333333",
-      "companyId": "11111111-1111-1111-1111-111111111111",
+      "companyId": "11111111-1111-1111-1111-111111111115",
       "name": "Distribuidora Sevilla",
       "taxId": "B66666666",
       "address": "Avenida de la Constitución, 5",
@@ -564,8 +594,9 @@
   ],
   "customers": [
     {
+      "_comment": "DATOS BUENOS: Cliente con TaxId y Email válidos",
       "id": "cccccccc-1111-1111-1111-111111111111",
-      "companyId": "11111111-1111-1111-1111-111111111111",
+      "companyId": "11111111-1111-1111-1111-111111111115",
       "name": "Cliente Test 1",
       "taxId": "B33333333",
       "address": "Calle Cliente 1",
@@ -573,8 +604,9 @@
       "email": "cliente1@test.com"
     },
     {
+      "_comment": "DATOS BUENOS: Cliente con TaxId y Email válidos",
       "id": "dddddddd-2222-2222-2222-222222222222",
-      "companyId": "11111111-1111-1111-1111-111111111111",
+      "companyId": "11111111-1111-1111-1111-111111111115",
       "name": "Cliente Test 2",
       "taxId": "B44444444",
       "address": "Calle Cliente 2",
@@ -582,13 +614,44 @@
       "email": "cliente2@test.com"
     },
     {
+      "_comment": "DATOS BUENOS: Cliente con TaxId y Email válidos",
       "id": "eeeeeeee-3333-3333-3333-333333333333",
-      "companyId": "11111111-1111-1111-1111-111111111111",
+      "companyId": "11111111-1111-1111-1111-111111111115",
       "name": "Distribuidora Málaga",
       "taxId": "B33333333",
       "address": "Calle Larios, 12",
       "phone": "952123456",
       "email": "ventas@distribuidoramalaga.es"
+    },
+    {
+      "_comment": "DATOS MALOS: Cliente con TaxId inválido (debe ser ignorado por el seeder)",
+      "id": "ffffffff-0000-0000-0000-000000000001",
+      "companyId": "11111111-1111-1111-1111-111111111115",
+      "name": "Cliente TaxId Inválido",
+      "taxId": "INVALID123",
+      "address": "Calle Test",
+      "phone": "955555555",
+      "email": "valido@test.com"
+    },
+    {
+      "_comment": "DATOS MALOS: Cliente con Email inválido (debe ser ignorado por el seeder)",
+      "id": "ffffffff-0000-0000-0000-000000000002",
+      "companyId": "11111111-1111-1111-1111-111111111115",
+      "name": "Cliente Email Inválido",
+      "taxId": "B55555555",
+      "address": "Calle Test",
+      "phone": "966666666",
+      "email": "email-invalido-sin-arroba"
+    },
+    {
+      "_comment": "DATOS MALOS: Cliente con TaxId y Email inválidos (debe ser ignorado por el seeder)",
+      "id": "ffffffff-0000-0000-0000-000000000003",
+      "companyId": "11111111-1111-1111-1111-111111111115",
+      "name": "Cliente Datos Inválidos",
+      "taxId": "BADTAXID",
+      "address": "Calle Test",
+      "phone": "977777777",
+      "email": "email.mal.formato"
     }
   ]
 }

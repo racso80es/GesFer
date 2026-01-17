@@ -12,11 +12,14 @@ import { useAuth } from "@/contexts/auth-context";
 import { Plus, Edit, Trash2, Building2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslations } from 'next-intl';
+import { DestructiveActionConfirm } from "@/components/shared/DestructiveActionConfirm";
 
 export default function ClientesPage() {
   const { user } = useAuth();
   const t = useTranslations('customers');
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [customerToDelete, setCustomerToDelete] = useState<string | null>(null);
 
   const {
     data: clientes,
@@ -29,20 +32,21 @@ export default function ClientesPage() {
     enabled: !!user?.companyId,
   });
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('deleteConfirm'))) {
-      return;
-    }
+  const handleDeleteClick = (id: string) => {
+    setCustomerToDelete(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!customerToDelete) return;
 
     try {
-      await customersApi.delete(id);
+      await customersApi.delete(customerToDelete);
+      setShowDeleteConfirm(false);
+      setCustomerToDelete(null);
       refetch();
     } catch (error) {
-      alert(
-        error instanceof Error
-          ? error.message
-          : t('deleteError')
-      );
+      console.error("Error al eliminar cliente:", error);
     }
   };
 
@@ -146,7 +150,7 @@ export default function ClientesPage() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => handleDelete(cliente.id)}
+                                onClick={() => handleDeleteClick(cliente.id)}
                                 data-testid={`shared-button-clientes-delete-${cliente.id}`}
                               >
                                 <Trash2 className="h-4 w-4 text-destructive" />
@@ -161,6 +165,18 @@ export default function ClientesPage() {
               </CardContent>
             </Card>
           )}
+
+          <DestructiveActionConfirm
+            open={showDeleteConfirm}
+            onOpenChange={setShowDeleteConfirm}
+            onConfirm={handleDeleteConfirm}
+            title={t('deleteConfirmTitle') || "Eliminar Cliente"}
+            description={t('deleteConfirmDescription') || "Esta acción eliminará permanentemente el cliente. Esta acción no se puede deshacer."}
+            confirmationKeyword="ELIMINAR"
+            confirmButtonText={t('deleteConfirmButton') || "Eliminar"}
+            cancelButtonText={t('cancel') || "Cancelar"}
+            isLoading={false}
+          />
         </div>
       </MainLayout>
     </ProtectedRoute>

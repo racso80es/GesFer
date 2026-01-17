@@ -130,6 +130,7 @@ export function CompanyForm({
           </Label>
           <Input
             id="name"
+            data-test-id="company-form-name"
             value={formData.name}
             onChange={(e) =>
               setFormData({ ...formData, name: e.target.value })
@@ -146,6 +147,7 @@ export function CompanyForm({
           <Label htmlFor="taxId">{t('taxId')}</Label>
           <Input
             id="taxId"
+            data-test-id="company-form-taxId"
             value={formData.taxId || ""}
             onChange={(e) =>
               setFormData({ ...formData, taxId: e.target.value || undefined })
@@ -171,6 +173,7 @@ export function CompanyForm({
           <Label htmlFor="email">{t('email')}</Label>
           <Input
             id="email"
+            data-test-id="company-form-email"
             type="email"
             value={formData.email || ""}
             onChange={(e) =>
