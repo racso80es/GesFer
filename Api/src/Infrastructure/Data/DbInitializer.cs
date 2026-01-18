@@ -47,6 +47,69 @@ public static class DbInitializer
             // Paso 2: Cargar datos iniciales desde JSON
             await SeedDataFromJsonAsync(context, services, logger);
 
+            // SMOKE TEST: Verificación de Integridad de Acceso
+            var adminExists = await context.Users.AnyAsync(u => u.Username == "admin");
+            if (!adminExists)
+            {
+                var errorMessage = "🔥 FALLO CRÍTICO DE DESPLIEGUE: El usuario 'admin' no ha sido creado. El sistema sería inaccesible. Revise la validación de Seeds.";
+                logger.LogError(errorMessage);
+                Console.WriteLine($"    ❌ {errorMessage}");
+                throw new Exception(errorMessage);
+            }
+            
+            var adminUser = await context.Users
+                .Include(u => u.Company)
+                .FirstOrDefaultAsync(u => u.Username == "admin");
+            
+            // KAIZEN: Verificación adicional de integridad referencial
+            if (adminUser == null)
+            {
+                var errorMessage = "🔥 FALLO CRÍTICO: Usuario 'admin' existe pero no se pudo cargar. Estado inconsistente detectado.";
+                logger.LogError(errorMessage);
+                Console.WriteLine($"    ❌ {errorMessage}");
+                throw new Exception(errorMessage);
+            }
+            
+            // KAIZEN: Verificar que el admin tenga CompanyId vinculado
+            if (adminUser.CompanyId == Guid.Empty || adminUser.CompanyId == default(Guid))
+            {
+                var errorMessage = $"🔥 FALLO CRÍTICO DE INTEGRIDAD REFERENCIAL: El usuario 'admin' no tiene CompanyId vinculado (CompanyId: {adminUser.CompanyId}). El sistema sería inaccesible. Revise la vinculación en demo-data.json.";
+                logger.LogError(errorMessage);
+                Console.WriteLine($"    ❌ {errorMessage}");
+                throw new Exception(errorMessage);
+            }
+            
+            // KAIZEN: Verificar que la empresa vinculada existe
+            if (adminUser.Company == null)
+            {
+                var errorMessage = $"🔥 FALLO CRÍTICO DE INTEGRIDAD REFERENCIAL: El usuario 'admin' tiene CompanyId ({adminUser.CompanyId}) pero la empresa no existe en la base de datos. Revise la creación de empresas en demo-data.json.";
+                logger.LogError(errorMessage);
+                Console.WriteLine($"    ❌ {errorMessage}");
+                throw new Exception(errorMessage);
+            }
+            
+            // KAIZEN: Verificar que la empresa vinculada es "Empresa Admin" con el GUID correcto
+            const string EXPECTED_ADMIN_COMPANY_NAME = "Empresa Admin";
+            const string EXPECTED_ADMIN_COMPANY_ID = "550e8400-e29b-41d4-a716-446655440000";
+            
+            if (adminUser.Company.Name != EXPECTED_ADMIN_COMPANY_NAME)
+            {
+                var warningMessage = $"⚠️ ADVERTENCIA: El usuario 'admin' está vinculado a '{adminUser.Company.Name}' en lugar de '{EXPECTED_ADMIN_COMPANY_NAME}'. Esto puede causar problemas de autenticación.";
+                logger.LogWarning(warningMessage);
+                Console.WriteLine($"    ⚠ {warningMessage}");
+            }
+            
+            if (adminUser.CompanyId.ToString() != EXPECTED_ADMIN_COMPANY_ID)
+            {
+                var warningMessage = $"⚠️ ADVERTENCIA: El usuario 'admin' tiene CompanyId '{adminUser.CompanyId}' en lugar del esperado '{EXPECTED_ADMIN_COMPANY_ID}'. Verifique la sincronización en demo-data.json.";
+                logger.LogWarning(warningMessage);
+                Console.WriteLine($"    ⚠ {warningMessage}");
+            }
+            
+            var companyInfo = $" (Empresa: {adminUser.Company.Name}, CompanyId: {adminUser.CompanyId})";
+            logger.LogInformation("✅ Smoke Test Superado: Usuario 'admin' verificado correctamente{CompanyInfo}", companyInfo);
+            Console.WriteLine($"    ✅ Smoke Test Superado: Usuario 'admin' verificado{companyInfo}");
+
             logger.LogInformation("=== Inicialización de base de datos completada exitosamente ===");
         }
         catch (Exception ex)

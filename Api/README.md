@@ -65,6 +65,11 @@ La API estará disponible en:
 - HTTPS: `https://localhost:5001`
 - Swagger: `http://localhost:5000/swagger` o `https://localhost:5001/swagger`
 
+### Panel de Administración Web
+
+El panel de administración web está disponible en:
+- **WebAdmin**: `http://localhost:3000/admin/login`
+
 ## 📁 Estructura del Proyecto
 
 ```
@@ -81,6 +86,11 @@ Api/
 ## 🔐 Autenticación
 
 El sistema implementa autenticación multi-tenant con RBAC (Role-Based Access Control).
+
+### Panel de Administración
+
+El panel de administración web está disponible en:
+- **WebAdmin**: `http://localhost:3000/admin/login`
 
 ### Endpoint de Login
 

@@ -89,7 +89,7 @@ public class MenuService
             switch (option)
             {
                 case 1:
-                    return await ExecuteFullInitializationAsync();
+                    return await ExecuteFullInitializationAsync(waitForInput);
                 case 2:
                     return await ExecuteDatabaseInitializationStep8Async(waitForInput);
                 case 3:
@@ -124,7 +124,7 @@ public class MenuService
     /// <summary>
     /// Ejecuta la inicialización completa
     /// </summary>
-    private async Task<bool> ExecuteFullInitializationAsync()
+    private async Task<bool> ExecuteFullInitializationAsync(bool waitForInput = true)
     {
         Console.Clear();
         Console.WriteLine("========================================");
@@ -358,8 +358,18 @@ public class MenuService
             Console.WriteLine("Para más detalles, revisa el archivo de log:");
             Console.WriteLine($"  {_logService.GetLogFilePath()}");
             Console.WriteLine();
-            Console.WriteLine("Presione cualquier tecla para continuar...");
-            Console.ReadKey();
+            if (waitForInput && !Console.IsInputRedirected)
+            {
+                Console.WriteLine("Presione cualquier tecla para continuar...");
+                try
+                {
+                    Console.ReadKey();
+                }
+                catch (InvalidOperationException)
+                {
+                    // Si no hay consola interactiva, continuar sin esperar
+                }
+            }
             return true;
         }
         
@@ -379,7 +389,7 @@ public class MenuService
         Console.WriteLine("  ✓ Usuario administrativo (admin/admin123)");
         Console.WriteLine();
         Console.WriteLine("Credenciales de acceso:");
-        Console.WriteLine("  Empresa: Empresa Demo");
+        Console.WriteLine("  Empresa: Empresa Admin");
         Console.WriteLine("  Usuario: admin");
         Console.WriteLine("  Contraseña: admin123");
         Console.WriteLine();
@@ -388,8 +398,18 @@ public class MenuService
         Console.WriteLine("  - Memcached: localhost:11211");
         Console.WriteLine("  - Adminer: http://localhost:8080");
         Console.WriteLine();
-        Console.WriteLine("Presione cualquier tecla para continuar...");
-        Console.ReadKey();
+        if (waitForInput && !Console.IsInputRedirected)
+        {
+            Console.WriteLine("Presione cualquier tecla para continuar...");
+            try
+            {
+                Console.ReadKey();
+            }
+            catch (InvalidOperationException)
+            {
+                // Si no hay consola interactiva, continuar sin esperar
+            }
+        }
 
         return true;
     }

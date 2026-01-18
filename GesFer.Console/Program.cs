@@ -1,12 +1,99 @@
 using GesFer.ConsoleApp.Services;
 using System;
+using System.Linq;
 
 namespace GesFer.ConsoleApp;
 
 class Program
 {
+    /// <summary>
+    /// Verifica si la aplicación está en modo interactivo (no CI/CD, no redirigida)
+    /// </summary>
+    private static bool IsInteractiveMode()
+    {
+        // Detectar entornos de CI/CD mediante variables de entorno comunes
+        var ciEnvVars = new[] { "CI", "CONTINUOUS_INTEGRATION", "TF_BUILD", "JENKINS_URL", "GITHUB_ACTIONS", "GITLAB_CI" };
+        var isCI = ciEnvVars.Any(envVar => !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(envVar)));
+        
+        // Verificar si la entrada está redirigida (pipe, archivo, etc.)
+        var isInputRedirected = Console.IsInputRedirected;
+        
+        // Verificar si hay un debugger adjunto (modo desarrollo interactivo)
+        var isDebuggerAttached = System.Diagnostics.Debugger.IsAttached;
+        
+        // Modo interactivo solo si: no es CI/CD, entrada no redirigida, y hay consola disponible
+        return !isCI && !isInputRedirected && !isDebuggerAttached;
+    }
+
+    /// <summary>
+    /// Lee una tecla de forma segura solo si estamos en modo interactivo
+    /// </summary>
+    private static void SafeReadKey()
+    {
+        if (IsInteractiveMode())
+        {
+            try
+            {
+                Console.ReadKey();
+            }
+            catch (InvalidOperationException)
+            {
+                // Si no hay consola interactiva, continuar sin esperar
+            }
+        }
+    }
+
+    /// <summary>
+    /// Limpia procesos .NET que puedan estar bloqueando puertos o archivos
+    /// </summary>
+    private static void CleanupDotNetProcesses()
+    {
+        try
+        {
+            var processesToKill = new[] { "GesFer.Console", "GesFer.Api", "dotnet" };
+            var killedCount = 0;
+            
+            foreach (var processName in processesToKill)
+            {
+                var processes = System.Diagnostics.Process.GetProcessesByName(processName);
+                foreach (var process in processes)
+                {
+                    try
+                    {
+                        // Solo matar procesos que no sean el actual
+                        if (process.Id != System.Diagnostics.Process.GetCurrentProcess().Id)
+                        {
+                            process.Kill(true); // Kill con árbol de procesos
+                            killedCount++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Ignorar errores al matar procesos (pueden no existir o no tener permisos)
+                        System.Diagnostics.Debug.WriteLine($"No se pudo matar proceso {processName}: {ex.Message}");
+                    }
+                }
+            }
+            
+            if (killedCount > 0)
+            {
+                Console.WriteLine($"⚠ Limpieza automática: {killedCount} proceso(s) .NET detenido(s)");
+                // Esperar un momento para que los procesos terminen completamente
+                System.Threading.Thread.Sleep(500);
+            }
+        }
+        catch (Exception ex)
+        {
+            // No fallar si la limpieza falla, solo loguear
+            System.Diagnostics.Debug.WriteLine($"Error en limpieza de procesos: {ex.Message}");
+        }
+    }
+
     static async Task Main(string[] args)
     {
+        // KAIZEN: Limpieza automática de procesos .NET al inicio
+        CleanupDotNetProcesses();
+        
         // Configurar codificaci?n UTF-8 para la consola
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
@@ -63,7 +150,7 @@ class Program
         {
             try
             {
-                var initResult = await menuService.ExecuteOptionAsync(1);
+                var initResult = await menuService.ExecuteOptionAsync(1, waitForInput: false);
                 Environment.Exit(initResult ? 0 : 1);
                 return;
             }
@@ -193,20 +280,14 @@ class Program
                 else
                 {
                     Console.WriteLine("Opci?n no v?lida. Presione cualquier tecla para continuar...");
-                    if (!Console.IsInputRedirected)
-                    {
-                        Console.ReadKey();
-                    }
+                    SafeReadKey();
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error inesperado: {ex.Message}");
                 Console.WriteLine("Presione cualquier tecla para continuar...");
-                if (!Console.IsInputRedirected)
-                {
-                    Console.ReadKey();
-                }
+                SafeReadKey();
             }
         }
 
