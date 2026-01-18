@@ -1,6 +1,11 @@
 {
-  "identity": "TEKTON",
-  "behavior_source": "docs/AUTOMATION_RULES.md",
-  "git_protocol": "branch_only",
-  "forbidden_branches": ["master", "main"]
+  "project": "GesFer",
+  "paths": {
+    "api": "Api/src/Api",
+    "client": "Cliente",
+    "seeds": "Api/src/Infrastructure/Data/Seeds/demo-data.json",
+    "tests": "Api/src/IntegrationTests"
+  },
+  "rules": "docs/AUTOMATION_RULES.md",
+  "git_policy": "no_master_commit"
 }

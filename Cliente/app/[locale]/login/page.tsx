@@ -11,20 +11,20 @@ import { ErrorMessage } from "@/components/ui/error-message";
 import { Building2, User, Lock, Loader2 } from "lucide-react";
 import { useTranslations } from 'next-intl';
 
-// Constante definitiva para autofill de credenciales de cliente
-// GUID de Empresa Cliente: 33333333-3333-3333-3333-333333333333
-const MOCK_CLIENT_CREDENTIALS = {
-  empresa: "Empresa Cliente",
-  usuario: "user_test",
-  contraseña: "user123",
+// Constante definitiva para autofill de credenciales de admin
+// GUID de Empresa Admin: 550e8400-e29b-41d4-a716-446655440000
+const MOCK_ADMIN_CREDENTIALS = {
+  empresa: "Empresa Admin",
+  usuario: "admin",
+  contraseña: "admin123",
 } as const;
 
 export default function LoginPage() {
   const router = useRouter();
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const t = useTranslations('auth');
-  // Contexto CLIENTE: Autocompletado para login de cliente
-  const [formData, setFormData] = useState(MOCK_CLIENT_CREDENTIALS);
+  // Contexto ADMIN: Autocompletado para login de admin
+  const [formData, setFormData] = useState(MOCK_ADMIN_CREDENTIALS);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [forceShowForm, setForceShowForm] = useState(false);
