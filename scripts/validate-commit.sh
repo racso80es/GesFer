@@ -11,7 +11,31 @@ echo "🔍 Iniciando validación pre-commit..."
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+WHITE='\033[1;37m'
 NC='\033[0m' # No Color
+
+# PROTOCOLO DE PROTECCIÓN: Bloquear commits directos a master/main
+CURRENT_BRANCH=$(git branch --show-current)
+if [ "$CURRENT_BRANCH" = "master" ] || [ "$CURRENT_BRANCH" = "main" ]; then
+    echo ""
+    echo -e "${RED}========================================${NC}"
+    echo -e "${RED}ERROR: COMMIT BLOQUEADO${NC}"
+    echo -e "${RED}========================================${NC}"
+    echo ""
+    echo -e "${YELLOW}PROHIBIDO hacer commits directos a la rama '$CURRENT_BRANCH'.${NC}"
+    echo ""
+    echo -e "${CYAN}Flujo obligatorio:${NC}"
+    echo -e "${WHITE}  1. git checkout -b feature/o-fix/nombre-tarea${NC}"
+    echo -e "${WHITE}  2. Realizar cambios${NC}"
+    echo -e "${WHITE}  3. git commit${NC}"
+    echo -e "${WHITE}  4. git push origin feature/o-fix/nombre-tarea${NC}"
+    echo -e "${WHITE}  5. Crear Pull Request${NC}"
+    echo ""
+    echo -e "${YELLOW}Master/main solo se actualiza mediante merge de PR.${NC}"
+    echo ""
+    exit 1
+fi
 
 # Función para mostrar errores
 error() {

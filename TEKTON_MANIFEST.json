@@ -1,0 +1,6 @@
+{
+  "identity": "TEKTON",
+  "behavior_source": "docs/AUTOMATION_RULES.md",
+  "git_protocol": "branch_only",
+  "forbidden_branches": ["master", "main"]
+}

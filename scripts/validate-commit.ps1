@@ -5,6 +5,28 @@ $ErrorActionPreference = "Stop"
 
 Write-Host "Iniciando validacion pre-commit..." -ForegroundColor Cyan
 
+# PROTOCOLO DE PROTECCIÓN: Bloquear commits directos a master/main
+$currentBranch = git branch --show-current
+if ($currentBranch -eq "master" -or $currentBranch -eq "main") {
+    Write-Host ""
+    Write-Host "========================================" -ForegroundColor Red
+    Write-Host "ERROR: COMMIT BLOQUEADO" -ForegroundColor Red
+    Write-Host "========================================" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "PROHIBIDO hacer commits directos a la rama '$currentBranch'." -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "Flujo obligatorio:" -ForegroundColor Cyan
+    Write-Host "  1. git checkout -b feature/o-fix/nombre-tarea" -ForegroundColor White
+    Write-Host "  2. Realizar cambios" -ForegroundColor White
+    Write-Host "  3. git commit" -ForegroundColor White
+    Write-Host "  4. git push origin feature/o-fix/nombre-tarea" -ForegroundColor White
+    Write-Host "  5. Crear Pull Request" -ForegroundColor White
+    Write-Host ""
+    Write-Host "Master/main solo se actualiza mediante merge de PR." -ForegroundColor Yellow
+    Write-Host ""
+    exit 1
+}
+
 $ErrorCount = 0
 
 # 1. Validar Backend - Build
