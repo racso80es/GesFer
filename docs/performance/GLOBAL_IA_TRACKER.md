@@ -25,13 +25,12 @@ Este archivo consolida la telemetría de desempeño de IA por rama/tarea. Es **o
 
 ## Registro de reportes
 
-- `IA_PERF_feat-architectural-alignment-S-Plus.md` — Rama `feat/architectural-alignment-S-Plus` (canónico para el Juez)
-- `IA_PERF_feat-architectural-alignment.md` — Rama `feat/architectural-alignment-S-Plus` (alias humano)
-- `IA_PERF_architectural-alignment.md` — Rama `feat/architectural-alignment-S-Plus` (alias humano adicional)
-- `IA_PERF_chore-master-passport.md` — Rama `chore/master-passport` (pasaporte troncal + excepcion informativa en Juez)
-- `IA_PERF_fix-admin-auth-isolation.md` — Rama `fix/admin-auth-isolation` (bifurcación de dominio Admin ↔ Cliente)
-- `IA_PERF_fix-cleanup-and-roles-definition.md` — Rama `fix/cleanup-and-roles-definition` (purificación de ruido + soberanía de roles/permisos)
-- `IA_PERF_docs-evolution-log-and-saas-tiers.md` — Rama `docs/evolution-log-and-saas-tiers` (registro de consciencia + tiers SaaS)
+Los reportes `IA_PERF_<rama>.md` existen para satisfacer el enforcement del Juez Modular durante el trabajo de una rama.
+
+- **Regla**: al cierre, la inteligencia valiosa se consolida en `docs/EVOLUTION_LOG.md` y los reportes históricos redundantes pueden eliminarse para evitar fragmentación.
+- **Artefactos obligatorios por infraestructura** (no eliminables):
+  - `docs/performance/GLOBAL_IA_TRACKER.md`
+  - `docs/performance/templates/IA_PERF_REPORT.md`
 
 ---
 

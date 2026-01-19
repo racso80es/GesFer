@@ -92,7 +92,11 @@ Estas preguntas son obligatorias antes de implementar lógica de dominio o regla
 
 GesFer se empaqueta comercialmente en tres niveles (tiers). **Los tiers no cambian el dominio**: solo delimitan alcance, límites operativos y capacidades habilitadas para cada empresa.
 
-- **Demo**: evaluación y onboarding guiado; límites operativos deliberados (capacidad y/o módulos); datos de ejemplo; sin integraciones avanzadas.
-- **Funcional**: operación diaria completa para la empresa (compra → stock → venta + caja), multi‑usuario y perfiles/permiso por empresa.
-- **Premium**: capacidades avanzadas (analítica, auditoría, automatizaciones e integraciones) y garantías superiores (SLA/soporte según contrato).
+- **Demo**: funciones base de evaluación (**Báscula**) con límites explícitos de **tiempo** y/o **volumen**; onboarding guiado; datos de ejemplo; sin integraciones avanzadas.
+- **Funcional**: operativa completa de planta para la empresa (**Caja**, **Stock**, **Usuarios**) sosteniendo el flujo compra → stock → venta; multi‑usuario y permisos por empresa.
+- **Premium**: capacidades avanzadas (**Analítica**, **multi‑sede**, **contratos marco**) y garantías superiores (SLA/soporte según contrato).
+
+### Regla de soberanía contractual (SaaS)
+
+La soberanía operativa de una empresa (qué módulos/capacidades puede usar y bajo qué límites) está supeditada al **contrato de producto activo** (tier).
 

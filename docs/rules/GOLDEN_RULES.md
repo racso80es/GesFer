@@ -250,4 +250,23 @@ Todo lo demás (DTOs, stores, guards, middleware, servicios de auth, rutas, vali
 
 GesFer no impone jerarquías fijas. La responsabilidad del sistema es validar de forma granular (Acceso, Consulta, Edición, Modificación, Borrado) que el usuario posee el derecho requerido en su perfil para la acción solicitada. La gestión de estos derechos es potestad exclusiva de la empresa.
 
+---
+
+## 17) [DOD: REGLA DE SINCRONIZACIÓN] — Local y Nube como espejo (S+)
+
+Una tarea **no se considera finalizada** hasta que se cumplan **ambas** condiciones:
+
+1. **Nube en verde**:
+   - `master` (troncal) está en verde en la nube (CI/checks pasando).
+2. **Local como espejo**:
+   - El entorno local está **purgado** de ramas temporales y sincronizado con `origin/master`.
+
+### Evidencia mínima (condición de parada)
+
+- `git status` debe reportar exactamente:
+  - `Your branch is up to date with 'origin/master'.`
+  - `nothing to commit, working tree clean`
+- No deben existir ramas locales activas adicionales (solo `master`).
+- Se debe ejecutar `git remote prune origin` para eliminar referencias muertas.
+
 
