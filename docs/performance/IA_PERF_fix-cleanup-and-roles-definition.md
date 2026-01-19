@@ -30,7 +30,7 @@ Se consolidó el modelo conceptual de roles con soberanía de empresa y validaci
 
 - **Evidencia**:
   - Eliminación de instrumentación temporal en backend: `Api/src/Api/Controllers/TelemetryController.cs`.
-  - Purga de ruido en frontend (runtime + E2E): `Cliente/*` (sin trazas de `console.log`).
+  - Purga de ruido en frontend (runtime + E2E): `Cliente/*` (sin trazas de logging de consola).
   - Consolidación conceptual en documentación soberana: `docs/BUSINESS_DOMAIN.md` + `docs/rules/GOLDEN_RULES.md`.
 
 ---
