@@ -26,4 +26,12 @@ Este manifiesto define los pilares no negociables que gobiernan el comportamient
 - **Logs**: los logs son evidencia, no adorno. Deben soportar diagnóstico y auditoría.
 - **AC-001 [LOGS]**: antes de cerrar una tarea, debe existir un autocheck reproducible que confirme que el trabajo no rompe el contrato de logs/validación.
 
+---
+
+## 4) Pragmatismo de Sector
+
+- GesFer se construye para la **realidad operativa del sector tradicional** (recuperación/chatarrerías).
+- Se prioriza la **utilidad en planta** (flujo real, velocidad operativa, claridad de uso) por encima de la abstracción técnica.
+- Toda decisión técnica debe poder justificarse con impacto directo en la operativa: **compras**, **stock por familias**, **ventas** y **flujo de caja**.
+
 

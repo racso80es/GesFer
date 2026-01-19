@@ -236,4 +236,12 @@ Esta Ley define una frontera **estructural y no negociable** entre los dominios 
 
 Todo lo demás (DTOs, stores, guards, middleware, servicios de auth, rutas, validaciones) debe existir en **linajes separados** por dominio.
 
+---
+
+## 15) [INTEGRIDAD CONCEPTUAL] — Norte de Dominio (bloqueante, S+)
+
+- Toda propuesta técnica debe ser validada contra `docs/BUSINESS_DOMAIN.md`.
+- Queda prohibido implementar lógica de dominio de forma autónoma sin alineación explícita con el modelo de compra/venta de metales:
+  - Compra minorista de pequeñas cantidades → Almacenamiento/Stock → Venta mayorista en grandes paquetes.
+
 
