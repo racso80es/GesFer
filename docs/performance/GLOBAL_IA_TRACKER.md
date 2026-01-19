@@ -44,5 +44,5 @@ Este archivo consolida la telemetría de desempeño de IA por rama/tarea. Es **o
 - **2026-01-19** — `fix/cleanup-and-roles-definition`
   - **Resultado**: VERDE (Juez Modular: `validate-commit` + `validate-pr`; E2E con advertencia de entorno).
   - **Acción**: eliminación de ruido/instrumentación temporal + consolidación de roles (Administrador Global/Empresa/Operativos) y regla de validación granular de acción.
-  - **Commit**: `29ff67af5d922cc53c0f8c1157e256bf695f30b7`
+  - **Commit**: `8b9af0d3e7812c6bbe935e7a020b7bf928e834c8`
 
