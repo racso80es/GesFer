@@ -29,4 +29,14 @@ Este archivo consolida la telemetría de desempeño de IA por rama/tarea. Es **o
 - `IA_PERF_feat-architectural-alignment.md` — Rama `feat/architectural-alignment-S-Plus` (alias humano)
 - `IA_PERF_architectural-alignment.md` — Rama `feat/architectural-alignment-S-Plus` (alias humano adicional)
 - `IA_PERF_chore-master-passport.md` — Rama `chore/master-passport` (pasaporte troncal + excepcion informativa en Juez)
+- `IA_PERF_fix-admin-auth-isolation.md` — Rama `fix/admin-auth-isolation` (bifurcación de dominio Admin ↔ Cliente)
+
+---
+
+## Operaciones (eventos de cierre)
+
+- **2026-01-19** — `fix/admin-auth-isolation`
+  - **Resultado**: VERDE (Juez Modular + build backend + tests FE; E2E con advertencia de entorno).
+  - **Acción**: aislamiento total del dominio Admin (sin empresa/tenant) + nueva Ley de Invariancia y Soberanía de Dominio.
+  - **Commit**: `04a0c78558325b5b09160e6e55fe77bfc2138111`
 
