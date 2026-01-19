@@ -86,3 +86,13 @@ Estas preguntas son obligatorias antes de implementar lógica de dominio o regla
 - No convertir GesFer en un ERP genérico “para todo”. El núcleo es **recuperación/chatarrería**.
 - No implementar lógica de dominio “por inspiración técnica” sin trazabilidad al flujo de agregación de valor.
 
+---
+
+## 6) Tiers SaaS (Demo / Funcional / Premium)
+
+GesFer se empaqueta comercialmente en tres niveles (tiers). **Los tiers no cambian el dominio**: solo delimitan alcance, límites operativos y capacidades habilitadas para cada empresa.
+
+- **Demo**: evaluación y onboarding guiado; límites operativos deliberados (capacidad y/o módulos); datos de ejemplo; sin integraciones avanzadas.
+- **Funcional**: operación diaria completa para la empresa (compra → stock → venta + caja), multi‑usuario y perfiles/permiso por empresa.
+- **Premium**: capacidades avanzadas (analítica, auditoría, automatizaciones e integraciones) y garantías superiores (SLA/soporte según contrato).
+

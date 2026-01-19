@@ -31,6 +31,7 @@ Este archivo consolida la telemetría de desempeño de IA por rama/tarea. Es **o
 - `IA_PERF_chore-master-passport.md` — Rama `chore/master-passport` (pasaporte troncal + excepcion informativa en Juez)
 - `IA_PERF_fix-admin-auth-isolation.md` — Rama `fix/admin-auth-isolation` (bifurcación de dominio Admin ↔ Cliente)
 - `IA_PERF_fix-cleanup-and-roles-definition.md` — Rama `fix/cleanup-and-roles-definition` (purificación de ruido + soberanía de roles/permisos)
+- `IA_PERF_docs-evolution-log-and-saas-tiers.md` — Rama `docs/evolution-log-and-saas-tiers` (registro de consciencia + tiers SaaS)
 
 ---
 
