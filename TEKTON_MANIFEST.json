@@ -6,6 +6,7 @@
     "seeds": "Api/src/Infrastructure/Data/Seeds/demo-data.json",
     "tests": "Api/src/IntegrationTests"
   },
-  "rules": "docs/AUTOMATION_RULES.md",
+  "manifesto": "docs/MANIFESTO.md",
+  "rules": "docs/rules/GOLDEN_RULES.md",
   "git_policy": "no_master_commit"
 }

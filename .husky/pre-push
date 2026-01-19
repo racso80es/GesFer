@@ -7,35 +7,34 @@ echo "🚨 JUEZ DEL PROYECTO ACTIVADO"
 echo "Ejecutando validación completa antes de push..."
 echo ""
 
-# PRE-PUSH HOOK COMENTADO TEMPORALMENTE PARA PERMITIR PUSH SIN BLOQUEOS
 # Detectar sistema operativo y ejecutar script apropiado
-# if [ -n "$WINDIR" ] || [ -n "$OS" ]; then
-#     # Windows: usar PowerShell
-#     if [ -f "scripts/validate-pr.ps1" ]; then
-#         powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/validate-pr.ps1
-#         VALIDATION_EXIT_CODE=$?
-#     else
-#         echo "❌ ERROR: scripts/validate-pr.ps1 no encontrado"
-#         exit 1
-#     fi
-# else
-#     # Linux/Mac: usar bash
-#     if [ -f "scripts/validate-pr.sh" ]; then
-#         sh scripts/validate-pr.sh
-#         VALIDATION_EXIT_CODE=$?
-#     else
-#         echo "❌ ERROR: scripts/validate-pr.sh no encontrado"
-#         exit 1
-#     fi
-# fi
-#
-# if [ $VALIDATION_EXIT_CODE -ne 0 ]; then
-#     echo ""
-#     echo "❌ PUSH BLOQUEADO por el Juez del Proyecto"
-#     echo "   Todos los tests deben pasar antes de hacer push"
-#     exit 1
-# fi
-#
-# echo ""
-# echo "✅ PUSH AUTORIZADO por el Juez del Proyecto"
+if [ -n "$WINDIR" ] || [ -n "$OS" ]; then
+    # Windows: usar PowerShell
+    if [ -f "scripts/validate-pr.ps1" ]; then
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/validate-pr.ps1
+        VALIDATION_EXIT_CODE=$?
+    else
+        echo "❌ ERROR: scripts/validate-pr.ps1 no encontrado"
+        exit 1
+    fi
+else
+    # Linux/Mac: usar bash
+    if [ -f "scripts/validate-pr.sh" ]; then
+        sh scripts/validate-pr.sh
+        VALIDATION_EXIT_CODE=$?
+    else
+        echo "❌ ERROR: scripts/validate-pr.sh no encontrado"
+        exit 1
+    fi
+fi
+
+if [ $VALIDATION_EXIT_CODE -ne 0 ]; then
+    echo ""
+    echo "❌ PUSH BLOQUEADO por el Juez del Proyecto"
+    echo "   Corrige los errores antes de hacer push"
+    exit 1
+fi
+
+echo ""
+echo "✅ PUSH AUTORIZADO por el Juez del Proyecto"
 exit 0

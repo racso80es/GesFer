@@ -121,29 +121,6 @@ export interface UpdateCustomer {
   isActive: boolean;
 }
 
-// Tipos para State
-export interface State {
-  id: string;
-  countryId: string;
-  name: string;
-  code?: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt?: string;
-}
-
-export interface CreateState {
-  countryId: string;
-  name: string;
-  code?: string;
-}
-
-export interface UpdateState {
-  name: string;
-  code?: string;
-  isActive: boolean;
-}
-
 // Tipos para Country
 export interface Country {
   id: string;

@@ -27,6 +27,81 @@ if ($currentBranch -eq "master" -or $currentBranch -eq "main") {
     exit 1
 }
 
+function Fail-SGrade {
+    param(
+        [string]$Message
+    )
+    Write-Host ""
+    Write-Host "ERROR S-GRADE: $Message" -ForegroundColor Red
+    exit 1
+}
+
+function Assert-BranchDocumentation {
+    Write-Host "Verificando documentación obligatoria de rama..." -ForegroundColor Yellow
+
+    $branch = (git branch --show-current).Trim()
+    if ([string]::IsNullOrWhiteSpace($branch)) {
+        Fail-SGrade "Documentación de rama ausente."
+    }
+
+    $docBranchName = ($branch -replace "[/\\]", "-")
+    $docPath = Join-Path -Path "docs\branches" -ChildPath ("{0}.md" -f $docBranchName)
+
+    if (-not (Test-Path $docPath)) {
+        Fail-SGrade "Documentación de rama ausente."
+    }
+
+    $content = (Get-Content -Path $docPath -Raw -ErrorAction SilentlyContinue)
+    if ([string]::IsNullOrWhiteSpace($content)) {
+        Fail-SGrade "Documentación de rama ausente."
+    }
+
+    Write-Host "Documentación de rama OK: $docPath" -ForegroundColor Green
+}
+
+function Assert-AiTelemetry {
+    Write-Host "Verificando telemetría IA obligatoria..." -ForegroundColor Yellow
+
+    $telemetryPath = "docs\performance\GLOBAL_IA_TRACKER.md"
+    if (-not (Test-Path $telemetryPath)) {
+        Fail-SGrade "Telemetría IA ausente."
+    }
+
+    $content = (Get-Content -Path $telemetryPath -Raw -ErrorAction SilentlyContinue)
+    if ([string]::IsNullOrWhiteSpace($content)) {
+        Fail-SGrade "Telemetría IA ausente."
+    }
+
+    Write-Host "Telemetría IA OK: $telemetryPath" -ForegroundColor Green
+}
+
+function Assert-AiPerfReport {
+    Write-Host "Verificando reporte de rendimiento IA de la rama..." -ForegroundColor Yellow
+
+    $branch = (git branch --show-current).Trim()
+    if ([string]::IsNullOrWhiteSpace($branch)) {
+        Fail-SGrade "Telemetría IA ausente."
+    }
+
+    $docBranchName = ($branch -replace "[/\\]", "-")
+    $reportPath = Join-Path -Path "docs\performance" -ChildPath ("IA_PERF_{0}.md" -f $docBranchName)
+
+    if (-not (Test-Path $reportPath)) {
+        Fail-SGrade "Telemetría IA ausente."
+    }
+
+    $content = (Get-Content -Path $reportPath -Raw -ErrorAction SilentlyContinue)
+    if ([string]::IsNullOrWhiteSpace($content)) {
+        Fail-SGrade "Telemetría IA ausente."
+    }
+
+    Write-Host "Reporte IA OK: $reportPath" -ForegroundColor Green
+}
+
+$null = Assert-BranchDocumentation
+$null = Assert-AiTelemetry
+$null = Assert-AiPerfReport
+
 $ErrorCount = 0
 
 # 1. Validar Backend - Build

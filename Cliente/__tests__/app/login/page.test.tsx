@@ -55,9 +55,9 @@ describe('LoginPage', () => {
     const usuarioInput = screen.getByLabelText(/usuario|username/i) as HTMLInputElement
     const contraseñaInput = screen.getByLabelText(/contraseña|password/i) as HTMLInputElement
     
-    expect(empresaInput.value).toBe('Empresa Demo')
-    expect(usuarioInput.value).toBe('admin')
-    expect(contraseñaInput.value).toBe('admin123')
+    expect(empresaInput.value).toBe('Empresa Cliente')
+    expect(usuarioInput.value).toBe('user_test')
+    expect(contraseñaInput.value).toBe('user123')
   })
 
   it('should handle form submission', async () => {
@@ -74,9 +74,9 @@ describe('LoginPage', () => {
     
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith({
-        empresa: 'Empresa Demo',
-        usuario: 'admin',
-        contraseña: 'admin123',
+        empresa: 'Empresa Cliente',
+        usuario: 'user_test',
+        contraseña: 'user123',
       })
     })
   })

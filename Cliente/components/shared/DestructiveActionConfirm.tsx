@@ -9,8 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/shared/Button";
+import { Input } from "@/components/shared/Input";
 import { Label } from "@/components/ui/label";
 import { AlertTriangle, Loader2 } from "lucide-react";
 
@@ -101,6 +101,7 @@ export function DestructiveActionConfirm({
             className="mt-2"
             disabled={isExecuting || isLoading}
             autoFocus
+            data-testid="shared-input-text-destructive-confirmation"
           />
           {inputValue && !isKeywordCorrect && (
             <p className="mt-2 text-sm text-muted-foreground">
@@ -114,6 +115,7 @@ export function DestructiveActionConfirm({
             variant="outline"
             onClick={handleCancel}
             disabled={isExecuting || isLoading}
+            data-testid="shared-button-cancel"
           >
             {cancelButtonText}
           </Button>
@@ -121,6 +123,7 @@ export function DestructiveActionConfirm({
             variant="destructive"
             onClick={handleConfirm}
             disabled={!isButtonEnabled}
+            data-testid="shared-button-confirm"
           >
             {isExecuting || isLoading ? (
               <>
