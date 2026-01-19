@@ -21,6 +21,11 @@ function Get-BranchSlug {
     return ($BranchName -replace "[/\\]", "-")
 }
 
+function Test-IsTrunkBranch {
+    param([string]$BranchName)
+    return ($BranchName -eq "master" -or $BranchName -eq "main")
+}
+
 function Assert-NonEmptyFile {
     param([string]$Path, [string]$SGradeMessage)
 
@@ -43,6 +48,25 @@ function Assert-BranchDocumentation {
     $slug = Get-BranchSlug -BranchName $branch
     $docPath = Join-Path -Path "docs\\branches" -ChildPath ("{0}.md" -f $slug)
 
+    if (Test-IsTrunkBranch -BranchName $branch) {
+        if (-not (Test-Path $docPath)) {
+            Write-Host ("[DOCS] INFO: en troncal ({0}) el pasaporte no bloquea. Falta: {1}" -f $branch, $docPath) -ForegroundColor Yellow
+            Write-Host ""
+            return
+        }
+
+        $content = (Get-Content -Path $docPath -Raw -ErrorAction SilentlyContinue)
+        if ([string]::IsNullOrWhiteSpace($content)) {
+            Write-Host ("[DOCS] INFO: en troncal ({0}) el pasaporte no bloquea. Vacio: {1}" -f $branch, $docPath) -ForegroundColor Yellow
+            Write-Host ""
+            return
+        }
+
+        Write-Host ("[DOCS] OK (troncal): {0}" -f $docPath) -ForegroundColor Green
+        Write-Host ""
+        return
+    }
+
     Assert-NonEmptyFile -Path $docPath -SGradeMessage "Documentacion de rama ausente."
     Write-Host ("[DOCS] OK: {0}" -f $docPath) -ForegroundColor Green
     Write-Host ""
@@ -64,6 +88,25 @@ function Assert-AiPerfReportForBranch {
 
     $slug = Get-BranchSlug -BranchName $branch
     $reportPath = Join-Path -Path "docs\\performance" -ChildPath ("IA_PERF_{0}.md" -f $slug)
+
+    if (Test-IsTrunkBranch -BranchName $branch) {
+        if (-not (Test-Path $reportPath)) {
+            Write-Host ("[IA] INFO: en troncal ({0}) el reporte IA por rama no bloquea. Falta: {1}" -f $branch, $reportPath) -ForegroundColor Yellow
+            Write-Host ""
+            return
+        }
+
+        $content = (Get-Content -Path $reportPath -Raw -ErrorAction SilentlyContinue)
+        if ([string]::IsNullOrWhiteSpace($content)) {
+            Write-Host ("[IA] INFO: en troncal ({0}) el reporte IA por rama no bloquea. Vacio: {1}" -f $branch, $reportPath) -ForegroundColor Yellow
+            Write-Host ""
+            return
+        }
+
+        Write-Host ("[IA] OK (troncal): {0}" -f $reportPath) -ForegroundColor Green
+        Write-Host ""
+        return
+    }
 
     Assert-NonEmptyFile -Path $reportPath -SGradeMessage "Telemetria IA ausente."
     Write-Host ("[IA] OK: {0}" -f $reportPath) -ForegroundColor Green

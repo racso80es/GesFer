@@ -28,4 +28,5 @@ Este archivo consolida la telemetría de desempeño de IA por rama/tarea. Es **o
 - `IA_PERF_feat-architectural-alignment-S-Plus.md` — Rama `feat/architectural-alignment-S-Plus` (canónico para el Juez)
 - `IA_PERF_feat-architectural-alignment.md` — Rama `feat/architectural-alignment-S-Plus` (alias humano)
 - `IA_PERF_architectural-alignment.md` — Rama `feat/architectural-alignment-S-Plus` (alias humano adicional)
+- `IA_PERF_chore-master-passport.md` — Rama `chore/master-passport` (pasaporte troncal + excepcion informativa en Juez)
 
