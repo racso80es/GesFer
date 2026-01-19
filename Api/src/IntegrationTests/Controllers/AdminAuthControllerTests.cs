@@ -1,5 +1,5 @@
 using FluentAssertions;
-using GesFer.Application.DTOs.Auth;
+using GesFer.Application.DTOs.Admin.Auth;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http.Json;
@@ -28,7 +28,7 @@ public class AdminAuthControllerTests
     public async Task Login_WithValidCredentials_ShouldReturnOk_WithAdminData()
     {
         // Arrange
-        var request = new AdminLoginRequestDto
+        var request = new AdminLoginRequest
         {
             Usuario = "admin",
             Contraseña = "admin123"
@@ -42,7 +42,7 @@ public class AdminAuthControllerTests
             $"El endpoint debería devolver 200 OK, pero devolvió {response.StatusCode}. " +
             $"Respuesta: {await response.Content.ReadAsStringAsync()}");
         
-        var loginResponse = await response.Content.ReadFromJsonAsync<AdminLoginResponseDto>();
+        var loginResponse = await response.Content.ReadFromJsonAsync<AdminLoginResponse>();
         loginResponse.Should().NotBeNull("La respuesta no debería ser null");
         loginResponse!.Username.Should().Be("admin");
         loginResponse.FirstName.Should().Be("Administrador");
@@ -67,7 +67,7 @@ public class AdminAuthControllerTests
     public async Task Login_WithInvalidUsername_ShouldReturnUnauthorized()
     {
         // Arrange
-        var request = new AdminLoginRequestDto
+        var request = new AdminLoginRequest
         {
             Usuario = "usuario_inexistente",
             Contraseña = "admin123"
@@ -87,7 +87,7 @@ public class AdminAuthControllerTests
     public async Task Login_WithInvalidPassword_ShouldReturnUnauthorized()
     {
         // Arrange
-        var request = new AdminLoginRequestDto
+        var request = new AdminLoginRequest
         {
             Usuario = "admin",
             Contraseña = "password_incorrecto"
@@ -107,7 +107,7 @@ public class AdminAuthControllerTests
     public async Task Login_WithEmptyUsername_ShouldReturnBadRequest()
     {
         // Arrange
-        var request = new AdminLoginRequestDto
+        var request = new AdminLoginRequest
         {
             Usuario = "",
             Contraseña = "admin123"
@@ -124,7 +124,7 @@ public class AdminAuthControllerTests
     public async Task Login_WithEmptyPassword_ShouldReturnBadRequest()
     {
         // Arrange
-        var request = new AdminLoginRequestDto
+        var request = new AdminLoginRequest
         {
             Usuario = "admin",
             Contraseña = ""
@@ -141,7 +141,7 @@ public class AdminAuthControllerTests
     public async Task Login_ResponseShouldContainCursorId()
     {
         // Arrange
-        var request = new AdminLoginRequestDto
+        var request = new AdminLoginRequest
         {
             Usuario = "admin",
             Contraseña = "admin123"
@@ -153,7 +153,7 @@ public class AdminAuthControllerTests
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         
-        var loginResponse = await response.Content.ReadFromJsonAsync<AdminLoginResponseDto>();
+        var loginResponse = await response.Content.ReadFromJsonAsync<AdminLoginResponse>();
         loginResponse.Should().NotBeNull();
         loginResponse!.CursorId.Should().NotBeNullOrEmpty("El CursorId debe estar presente en la respuesta");
         loginResponse.CursorId.Should().Be(loginResponse.UserId, "El CursorId debe ser igual al UserId");

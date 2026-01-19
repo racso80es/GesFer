@@ -8,15 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/error-message";
-import { User, Lock, Loader2, Shield, Building2 } from "lucide-react";
+import { User, Lock, Loader2, Shield } from "lucide-react";
 
-// Constante definitiva para autofill de credenciales administrativas
-// GUID de Empresa Admin: 550e8400-e29b-41d4-a716-446655440000
-const MOCK_ADMIN_CREDENTIALS = {
-  empresa: "Empresa Admin",
-  usuario: "admin",
-  contraseña: "admin123",
-} as const;
+// Autofill local (dev): credenciales administrativas
+const MOCK_ADMIN_CREDENTIALS = { usuario: "admin", contraseña: "admin123" } as const;
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -33,7 +28,6 @@ export default function AdminLoginPage() {
     try {
       // Usar el provider "admin" para autenticación administrativa
       const result = await signIn("admin", {
-        empresa: formData.empresa,
         usuario: formData.usuario,
         contraseña: formData.contraseña,
         redirect: false,
@@ -70,22 +64,6 @@ export default function AdminLoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="empresa">Empresa</Label>
-              <div className="relative">
-                <Building2 className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  id="empresa"
-                  type="text"
-                  placeholder="Empresa Admin"
-                  value={formData.empresa}
-                  onChange={(e) => setFormData({ ...formData, empresa: e.target.value })}
-                  className="pl-10"
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-            </div>
             <div className="space-y-2">
               <Label htmlFor="usuario">Usuario Administrativo</Label>
               <div className="relative">

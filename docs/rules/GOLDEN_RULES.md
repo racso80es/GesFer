@@ -197,4 +197,43 @@ Al cerrar una rama se debe generar un informe en `docs/performance/` evaluando:
 - Auditoría pre‑PR obligatoria en `docs/governance/audits/` con formato:
   - `YYYYMMDD_HHMM_[NOMBRE-RAMA]_CIERRE.md`
 
+---
+
+## 14) LEY DE INVARIANZA Y SOBERANÍA DE DOMINIO (Admin ↔ Cliente) — S+
+
+Esta Ley define una frontera **estructural y no negociable** entre los dominios **Admin** (identidad global) y **Cliente** (multi‑tenant).
+
+### Definiciones
+
+- **Dominio Admin (global)**:
+  - Rutas FE: `Cliente/app/(admin)/...` (ej. `/admin/*`)
+  - Endpoints: `Api/src/Api` bajo `api/admin/*`
+  - Contratos: DTOs/Admin Requests/Responses **propios** (no tenant)
+- **Dominio Cliente (tenant)**:
+  - Rutas FE: `Cliente/app/[locale]/...` y resto del producto (ej. `/dashboard`, `/empresas`, etc.)
+  - Endpoints: `api/*` no-admin (ej. `/api/auth/*`)
+  - Contratos: DTOs de login con semántica tenant (empresa)
+
+### Invariantes (prohibiciones explícitas)
+
+- **No herencia de contrato**:
+  - Prohibido que controladores/servicios Admin consuman DTOs del login Cliente (ej. `LoginRequestDto`).
+  - Obligatorio que Admin use contratos propios. `AdminLoginRequest` es el estándar de identidad global (no incluye empresa/tenant).
+- **No contaminación de estado/almacenamiento**:
+  - Prohibido que el dominio Admin lea/escriba el namespace de tenants (ej. `auth_user`, `auth_token`, cookies equivalentes).
+  - Si Admin requiere persistencia fuera de sesión, debe usar un **namespace propio** (prefijo `admin_*`).
+- **No semántica tenant en Admin**:
+  - Prohibido que el login Admin requiera/valide/propague `empresa`, `empresaId`, `companyId` o cualquier selector de tenant.
+- **No bypass por sesión genérica**:
+  - Prohibido que una sesión válida de Admin habilite rutas protegidas del dominio Cliente (y viceversa). La autorización debe validar **dominio + rol**.
+
+### Compartición permitida (solo infraestructura neutral)
+
+Únicamente se permite compartir entre dominios:
+
+- **Componentes UI puros** (`Cliente/components/shared/` o wrappers `components/ui/*`) y estilos.
+- **Utilidades neutrales** (helpers sin semántica de empresa/tenant/rol).
+
+Todo lo demás (DTOs, stores, guards, middleware, servicios de auth, rutas, validaciones) debe existir en **linajes separados** por dominio.
+
 

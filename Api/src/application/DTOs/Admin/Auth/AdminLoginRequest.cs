@@ -1,11 +1,11 @@
 using System.ComponentModel;
 
-namespace GesFer.Application.DTOs.Auth;
+namespace GesFer.Application.DTOs.Admin.Auth;
 
 /// <summary>
-/// DTO para el login administrativo (solo Usuario y Contraseña)
+/// Contrato estándar de identidad global (Admin): solo Usuario y Contraseña (sin tenant/empresa).
 /// </summary>
-public class AdminLoginRequestDto
+public class AdminLoginRequest
 {
     /// <summary>
     /// Nombre de usuario administrativo
@@ -13,7 +13,7 @@ public class AdminLoginRequestDto
     /// <example>admin</example>
     [DefaultValue("admin")]
     public string Usuario { get; set; } = "admin";
-    
+
     /// <summary>
     /// Contraseña del usuario administrativo
     /// </summary>
@@ -21,3 +21,4 @@ public class AdminLoginRequestDto
     [DefaultValue("admin123")]
     public string Contraseña { get; set; } = "admin123";
 }
+

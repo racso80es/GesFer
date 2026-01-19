@@ -50,11 +50,20 @@ class ApiClient {
     let token = this.accessToken;
     
     if (!token && typeof window !== "undefined") {
+      // Invariante de dominio:
+      // - En rutas Admin, NUNCA usar el token tenant (auth_token) por fallback.
+      //   El dominio Admin debe adjuntar explícitamente su token (NextAuth / accessToken).
+      const pathname = window.location?.pathname || "";
+      const isAdminRoute = pathname.startsWith("/admin");
+      if (isAdminRoute) {
+        token = undefined;
+      } else {
       // Intentar obtener el token de NextAuth session si está disponible
       // NextAuth almacena la sesión en cookies, pero podemos acceder al token desde el contexto
       // Para client components, necesitamos usar useSession de next-auth/react
       // Por ahora, intentamos localStorage como fallback
       token = localStorage.getItem("auth_token") || undefined;
+      }
     }
 
     if (token) {

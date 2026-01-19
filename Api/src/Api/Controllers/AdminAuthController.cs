@@ -1,4 +1,4 @@
-using GesFer.Application.DTOs.Auth;
+using GesFer.Application.DTOs.Admin.Auth;
 using GesFer.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,9 +40,9 @@ public class AdminAuthController : ControllerBase
     ///     }
     /// </remarks>
     [HttpPost("login")]
-    [ProducesResponseType(typeof(AdminLoginResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AdminLoginResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Login([FromBody] AdminLoginRequestDto request)
+    public async Task<IActionResult> Login([FromBody] AdminLoginRequest request)
     {
         try
         {
@@ -68,7 +68,7 @@ public class AdminAuthController : ControllerBase
                 userId: adminUser.Id
             );
 
-            var response = new AdminLoginResponseDto
+            var response = new AdminLoginResponse
             {
                 UserId = adminUser.Id.ToString(), // Convertir Guid a string para compatibilidad con JavaScript
                 CursorId = cursorId,

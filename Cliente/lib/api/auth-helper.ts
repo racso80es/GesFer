@@ -6,6 +6,8 @@ import { auth } from "@/auth";
  */
 export async function getAccessToken(): Promise<string | null> {
   const session = await auth();
+  // Invariante de dominio: el token Admin no debe “autenticar” dominio Cliente por accidente.
+  if (session?.user?.role === "Admin") return null;
   return (session as any)?.accessToken || null;
 }
 
@@ -15,6 +17,7 @@ export async function getAccessToken(): Promise<string | null> {
  */
 export async function getCursorId(): Promise<string | null> {
   const session = await auth();
+  if (session?.user?.role === "Admin") return null;
   return session?.user?.cursorId || null;
 }
 

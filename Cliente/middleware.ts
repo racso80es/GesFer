@@ -93,10 +93,16 @@ export default async function middleware(request: NextRequest) {
   
   // Función helper para verificar autenticación (NextAuth o cookies)
   const isAuthenticated = async (): Promise<boolean> => {
-    // Primero verificar NextAuth
+    // Primero verificar NextAuth (SOLO dominio Cliente)
     const session = await auth();
-    if (session) {
+    // Invariante de dominio:
+    // - Una sesión Admin (role: "Admin") NO autentica rutas del dominio Cliente.
+    // - Solo sesiones no-admin pueden autenticar el dominio Cliente.
+    if (session?.user?.role && session.user.role !== "Admin") {
       return true;
+    }
+    if (session) {
+      return false;
     }
     
     // Fallback: verificar cookie auth_user (para compatibilidad con AuthContext)
