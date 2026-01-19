@@ -49,18 +49,18 @@ import { API_URL, CLIENT_URL, DATABASE_CONFIG, DATABASE_CONNECTION_STRING, CACHE
 const response = await fetch(`${API_URL}/api/users`);
 
 // Acceder a la configuración completa
-console.log(appConfig.environment);
+const env = appConfig.environment;
 
 // Acceder a la configuración de base de datos
-console.log(DATABASE_CONFIG.server);
-console.log(DATABASE_CONFIG.port);
-console.log(DATABASE_CONNECTION_STRING);
+const dbServer = DATABASE_CONFIG.server;
+const dbPort = DATABASE_CONFIG.port;
+const dbConnectionString = DATABASE_CONNECTION_STRING;
 
 // Acceder a la configuración de caché
-console.log(CACHE_CONFIG.server);
-console.log(CACHE_CONFIG.port);
-console.log(CACHE_CONFIG.enabled);
-console.log(CACHE_URL);
+const cacheServer = CACHE_CONFIG.server;
+const cachePort = CACHE_CONFIG.port;
+const cacheEnabled = CACHE_CONFIG.enabled;
+const cacheUrl = CACHE_URL;
 ```
 
 ### En tests
@@ -69,10 +69,10 @@ console.log(CACHE_URL);
 import { TEST_API_URL, TEST_CLIENT_URL, TEST_DATABASE_CONFIG, TEST_DATABASE_CONNECTION_STRING, TEST_CACHE_CONFIG, TEST_CACHE_URL } from '@/lib/config.test';
 
 const apiClient = new ApiClient(request, TEST_API_URL);
-console.log(TEST_DATABASE_CONFIG.server);
-console.log(TEST_DATABASE_CONNECTION_STRING);
-console.log(TEST_CACHE_CONFIG.server);
-console.log(TEST_CACHE_URL);
+const testDbServer = TEST_DATABASE_CONFIG.server;
+const testDbConnectionString = TEST_DATABASE_CONNECTION_STRING;
+const testCacheServer = TEST_CACHE_CONFIG.server;
+const testCacheUrl = TEST_CACHE_URL;
 ```
 
 ## Variables de Entorno

@@ -73,16 +73,13 @@ export const authConfig: NextAuthConfig = {
       },
       async authorize(credentials) {
         if (!credentials?.usuario || !credentials?.contraseña) {
-          console.error("Admin authorize: Faltan credenciales (usuario o contraseña)");
           return null;
         }
 
         try {
           const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
           const loginUrl = `${apiUrl}/api/admin/auth/login`;
-          
-          console.log("Admin authorize: Intentando login en", loginUrl);
-          
+
           const response = await fetch(loginUrl, {
             method: "POST",
             headers: {
@@ -95,13 +92,10 @@ export const authConfig: NextAuthConfig = {
           });
 
           if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`Admin authorize: Error en respuesta (${response.status}):`, errorText);
             return null;
           }
 
           const data = await response.json();
-          console.log("Admin authorize: Login exitoso para", data.username);
 
           // Retornar el usuario administrativo con el token y cursorId
           return {
@@ -117,10 +111,6 @@ export const authConfig: NextAuthConfig = {
           };
         } catch (error) {
           console.error("Error en authorize (admin):", error);
-          if (error instanceof Error) {
-            console.error("Mensaje de error:", error.message);
-            console.error("Stack trace:", error.stack);
-          }
           return null;
         }
       },

@@ -70,7 +70,6 @@ class Program
                     catch (Exception ex)
                     {
                         // Ignorar errores al matar procesos (pueden no existir o no tener permisos)
-                        System.Diagnostics.Debug.WriteLine($"No se pudo matar proceso {processName}: {ex.Message}");
                     }
                 }
             }
@@ -85,7 +84,6 @@ class Program
         catch (Exception ex)
         {
             // No fallar si la limpieza falla, solo loguear
-            System.Diagnostics.Debug.WriteLine($"Error en limpieza de procesos: {ex.Message}");
         }
     }
 

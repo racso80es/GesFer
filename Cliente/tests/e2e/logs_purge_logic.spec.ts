@@ -77,10 +77,6 @@ test.describe('Logs Purge Logic - Backend Focus', () => {
     // Verificar que el mensaje contiene información útil
     expect(typeof purgeData.message).toBe('string');
     expect(purgeData.message.length).toBeGreaterThan(0);
-
-    console.log(`[TEST] Logs eliminados: ${purgeData.deletedCount}`);
-    console.log(`[TEST] Fecha límite utilizada: ${purgeData.dateLimit}`);
-    console.log(`[TEST] Mensaje: ${purgeData.message}`);
   });
 
   test('debe rechazar purga de logs de los últimos 7 días', async ({ request }) => {
@@ -124,8 +120,6 @@ test.describe('Logs Purge Logic - Backend Focus', () => {
     expect(errorData).toHaveProperty('message');
     expect(errorData.message).toContain('últimos 7 días');
     expect(errorData.message).toContain('7 días');
-
-    console.log(`[TEST] Error esperado recibido: ${errorData.message}`);
   });
 
   test('debe rechazar peticiones sin autenticación', async ({ request }) => {
@@ -182,7 +176,6 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
     } catch (e) {
       // Si no redirige automáticamente, intentar navegar manualmente
       const currentUrl = page.url();
-      console.log(`[TEST] URL actual después del login: ${currentUrl}`);
       if (currentUrl.includes('/admin/login')) {
         await page.goto(`${CLIENT_URL}/admin/dashboard`);
         await page.waitForLoadState('networkidle', { timeout: 10000 });
@@ -202,17 +195,14 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
     // Verificar que la página cargó correctamente (indicador de que el token está disponible)
     await expect(logsPage.logsTable).toBeVisible({ timeout: 10000 }).catch(() => {
       // Si la tabla no está visible, puede ser que no haya logs, pero la página debería cargar
-      console.log('[TEST] Tabla de logs no visible, pero continuando...');
     });
     
     // Paso 3: Verificar que el botón "Limpiar Historial" está visible (usar data-testid)
     const purgeButton = page.getByTestId('shared-button-purge-logs');
     await expect(purgeButton).toBeVisible({ timeout: 5000 });
-    console.log('[TEST] Botón "Limpiar Historial" encontrado');
     
     // Paso 4: Hacer clic en "Limpiar Historial"
     await purgeButton.click();
-    console.log('[TEST] Clic en botón realizado');
     await page.waitForTimeout(1000);
     
     // Paso 5: Verificar que el modal se abre (usar data-testid)
@@ -220,7 +210,6 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
     await expect(modalContainer).toBeVisible({ timeout: 10000 });
     const modalTitle = modalContainer.getByRole('heading', { name: /limpiar historial de logs/i });
     await expect(modalTitle).toBeVisible({ timeout: 5000 });
-    console.log('[TEST] Modal abierto correctamente');
     
     // Paso 6: Verificar que el selector de fecha está presente y tiene la restricción de mínimo (usar data-testid)
     const dateInput = page.getByTestId('shared-input-datetime-purge');
@@ -229,7 +218,6 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
     // Verificar que tiene el atributo max (restricción de 7 días)
     const maxDate = await dateInput.getAttribute('max');
     expect(maxDate).toBeTruthy();
-    console.log(`[TEST] Fecha máxima permitida: ${maxDate}`);
     
     // Paso 7: Seleccionar una fecha válida (más de 7 días atrás)
     const validDate = new Date();
@@ -257,11 +245,6 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
     page.on('console', (msg) => {
       const text = msg.text();
       consoleMessages.push(`${msg.type()}: ${text}`);
-      if (msg.type() === 'error') {
-        console.log(`[TEST] Console error: ${text}`);
-      } else if (text.includes('PurgeLogsModal') || text.includes('purga') || text.includes('AdminLogsPage')) {
-        console.log(`[TEST] Console ${msg.type()}: ${text}`);
-      }
     });
     
     // Escuchar todas las respuestas
@@ -272,9 +255,7 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
         purgeResponseStatus = response.status();
         try {
           purgeResponseData = await response.json();
-          console.log(`[TEST] Response interceptado: ${method} ${url} - Status: ${purgeResponseStatus}`);
         } catch (e) {
-          console.log(`[TEST] Response interceptado: ${method} ${url} - Status: ${purgeResponseStatus} (sin JSON)`);
         }
       }
     });
@@ -289,19 +270,14 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
         const url = response.url();
         const method = response.request().method();
         const matches = url.includes('/api/log') && method === 'DELETE';
-        if (matches) {
-          console.log(`[TEST] waitForResponse detectó: ${method} ${url}`);
-        }
         return matches;
       },
       { timeout: 20000 }
     ).catch((e) => {
-      console.log(`[TEST] waitForResponse timeout: ${e.message}`);
       return null;
     });
     
     await confirmButton.click();
-    console.log('[TEST] Clic en confirmar realizado');
     
     // Paso 10: Esperar a que se complete la operación
     const response = await responsePromise;
@@ -310,9 +286,7 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
       purgeResponseStatus = response.status();
       try {
         purgeResponseData = await response.json();
-        console.log(`[TEST] Response recibido: Status ${purgeResponseStatus}, Data:`, purgeResponseData);
       } catch (e) {
-        console.log(`[TEST] Response recibido: Status ${purgeResponseStatus} (sin JSON)`);
       }
     }
     
@@ -329,7 +303,6 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
       if (purgeResponseStatus === 200) {
         // Si es 200, el modal debería haberse cerrado
         expect(modalStillOpen).toBeFalsy();
-        console.log('[TEST] Purga exitosa (200), modal cerrado');
         
         // Verificar mensaje de éxito
         await page.waitForTimeout(1000);
@@ -337,16 +310,13 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
         const messageFound = await successMessage.isVisible({ timeout: 5000 }).catch(() => false);
         if (messageFound) {
           const messageText = await successMessage.textContent();
-          console.log(`[TEST] Mensaje de éxito: ${messageText}`);
         }
       } else {
         // Si es 400, puede haber un error en el modal
-        console.log('[TEST] Respuesta 400 - validación fallida');
       }
     } else {
       // Si no hay respuesta interceptada pero el modal se cerró, asumir éxito
       if (!modalStillOpen) {
-        console.log('[TEST] Modal cerrado sin respuesta interceptada - asumiendo éxito');
         purgeResponseStatus = 200;
       } else {
         // Verificar si hay un error visible (solo errores reales, no logs de debug)
@@ -366,14 +336,8 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
         
         // Si el modal sigue abierto y no hay error, verificar logs de consola
         const purgeLogs = consoleMessages.filter(msg => msg.includes('PurgeLogsModal'));
-        console.log(`[TEST] Total de mensajes de consola capturados: ${consoleMessages.length}`);
-        console.log(`[TEST] Mensajes del modal: ${purgeLogs.length}`);
         
         if (purgeLogs.length > 0) {
-          purgeLogs.forEach((log, idx) => {
-            console.log(`[TEST] Log ${idx + 1}: ${log.substring(0, 150)}`);
-          });
-          
           // Si hay un log que indica éxito (Response status: 200), asumir éxito
           const successLog = purgeLogs.find(msg => 
             msg.includes('Response status: 200') || 
@@ -382,14 +346,10 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
           );
           
           if (successLog) {
-            console.log('[TEST] Log indica éxito, esperando cierre del modal...');
             await page.waitForTimeout(5000);
             const finalCheck = await modalTitle.isVisible({ timeout: 2000 }).catch(() => false);
             if (!finalCheck) {
               purgeResponseStatus = 200;
-              console.log('[TEST] Modal cerrado después de verificar logs de éxito');
-            } else {
-              console.log('[TEST] Modal sigue abierto a pesar del log de éxito');
             }
           } else {
             // Verificar si hay logs de error
@@ -399,11 +359,8 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
               msg.includes('token')
             );
             if (errorLog) {
-              console.log(`[TEST] Log de error encontrado: ${errorLog.substring(0, 150)}`);
             }
           }
-        } else {
-          console.log('[TEST] No se capturaron logs del modal en consola');
         }
         
         if (!purgeResponseStatus) {
@@ -411,7 +368,6 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
           await page.waitForTimeout(5000);
           const finalModalCheck = await modalTitle.isVisible({ timeout: 2000 }).catch(() => false);
           if (!finalModalCheck) {
-            console.log('[TEST] Modal cerrado después de espera adicional - asumiendo éxito');
             purgeResponseStatus = 200;
           } else {
             throw new Error('No se pudo completar la purga. El modal sigue abierto y no se interceptó respuesta.');
@@ -425,13 +381,11 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
     
     if (purgeResponseStatus === 200 && purgeResponseData) {
       expect(purgeResponseData).toHaveProperty('deletedCount');
-      console.log(`[TEST] Logs eliminados: ${purgeResponseData.deletedCount}`);
     }
     
     // Paso 11: Verificar que el modal se cerró (indicador de éxito si status 200)
     if (purgeResponseStatus === 200) {
       await expect(modalContainer).not.toBeVisible({ timeout: 5000 });
-      console.log('[TEST] Modal cerrado correctamente después de purga exitosa');
       
       // Paso 12: Verificar que se muestra el mensaje de éxito
       await page.waitForTimeout(1000);
@@ -440,11 +394,9 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
       
       if (messageFound) {
         const messageText = await successMessage.textContent();
-        console.log(`[TEST] Mensaje de éxito encontrado: ${messageText}`);
         expect(messageText).toMatch(/eliminaron.*logs/i);
       } else {
         // Si no se encuentra el mensaje, verificar que al menos la operación fue exitosa
-        console.log('[TEST] Mensaje de éxito no visible, pero la operación fue exitosa (status 200)');
       }
     } else if (purgeResponseStatus === 400) {
       // Si es 400, puede haber un error - verificar si el modal muestra el error
@@ -452,10 +404,7 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
       const hasError = await errorMessage.isVisible({ timeout: 2000 }).catch(() => false);
       if (hasError) {
         const errorText = await errorMessage.textContent();
-        console.log(`[TEST] Error esperado en modal: ${errorText}`);
       }
     }
-    
-    console.log('[TEST] Flujo completo de purga desde la interfaz completado exitosamente');
   });
 });

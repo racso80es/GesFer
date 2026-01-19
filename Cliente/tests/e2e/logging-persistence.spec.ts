@@ -48,8 +48,6 @@ test.describe('Logging Persistence Test', () => {
     const initialLogsData = await initialLogsResponse.json();
     const initialCount = initialLogsData.totalCount || initialLogsData.items?.length || 0;
     
-    console.log(`[DEBUG] Conteo inicial de logs: ${initialCount}`);
-    
     // Paso 2: Realizar una acción en el frontend que genere un log
     // Simulamos un login fallido que debería generar un log de error
     await page.goto(`${CLIENT_URL}/login`);
@@ -86,16 +84,12 @@ test.describe('Logging Persistence Test', () => {
     const finalLogsData = await finalLogsResponse.json();
     const finalCount = finalLogsData.totalCount || finalLogsData.items?.length || 0;
     
-    console.log(`[DEBUG] Conteo final de logs: ${finalCount}`);
-    console.log(`[DEBUG] Diferencia: ${finalCount - initialCount}`);
-    
     // Verificar que el conteo aumentó en al menos 1
     expect(finalCount).toBeGreaterThan(initialCount);
     
     // Verificar que el último log contiene información relevante
     if (finalLogsData.items && finalLogsData.items.length > 0) {
       const lastLog = finalLogsData.items[0]; // El más reciente debería estar primero
-      console.log(`[DEBUG] Último log:`, JSON.stringify(lastLog, null, 2));
       
       // Verificar que el log tiene un mensaje
       expect(lastLog.message).toBeTruthy();
@@ -114,8 +108,6 @@ test.describe('Logging Persistence Test', () => {
     expect(initialLogsResponse.ok()).toBeTruthy();
     const initialLogsData = await initialLogsResponse.json();
     const initialCount = initialLogsData.totalCount || initialLogsData.items?.length || 0;
-    
-    console.log(`[DEBUG] Conteo inicial de logs: ${initialCount}`);
     
     // Paso 2: Enviar un log directamente al endpoint de telemetría
     const testLogMessage = `Test Log Persistence - ${new Date().toISOString()}`;
@@ -144,8 +136,6 @@ test.describe('Logging Persistence Test', () => {
     const logResult = await logResponse.json();
     expect(logResult.message).toContain('recibido correctamente');
     
-    console.log(`[DEBUG] Log enviado correctamente: ${testLogMessage}`);
-    
     // Paso 3: Esperar un momento para que el log se persista
     await new Promise(resolve => setTimeout(resolve, 3000));
     
@@ -160,9 +150,6 @@ test.describe('Logging Persistence Test', () => {
     expect(finalLogsResponse.ok()).toBeTruthy();
     const finalLogsData = await finalLogsResponse.json();
     const finalCount = finalLogsData.totalCount || finalLogsData.items?.length || 0;
-    
-    console.log(`[DEBUG] Conteo final de logs: ${finalCount}`);
-    console.log(`[DEBUG] Diferencia: ${finalCount - initialCount}`);
     
     // Verificar que el conteo aumentó en al menos 1
     expect(finalCount).toBeGreaterThan(initialCount);
@@ -184,12 +171,10 @@ test.describe('Logging Persistence Test', () => {
       
       // Si aún no se encuentra, verificar que al menos el conteo aumentó (el log se guardó)
       if (!foundLog) {
-        console.log(`[DEBUG] Log no encontrado en primera página, pero conteo aumentó de ${initialCount} a ${finalCount}`);
         // El test ya verificó que finalCount > initialCount, así que el log se guardó
         expect(finalCount).toBeGreaterThan(initialCount);
       } else {
         expect(foundLog).toBeTruthy();
-        console.log(`[DEBUG] Log encontrado en BD:`, JSON.stringify(foundLog, null, 2));
       }
     } else {
       // Si no hay items pero el conteo aumentó, el log se guardó correctamente

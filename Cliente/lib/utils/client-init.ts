@@ -164,8 +164,6 @@ export function initializeClient(): {
   if (typeof window === "undefined") {
     return { user: null, shouldClearCache: false };
   }
-
-  console.log("Inicializando cliente...");
   
   // Validar y limpiar datos de autenticación
   const validUser = validateAndCleanStoredUser();
@@ -179,12 +177,6 @@ export function initializeClient(): {
 
   if (shouldClearCache) {
     console.warn("Se detectaron datos corruptos, se recomienda limpiar el caché de QueryClient");
-  }
-
-  if (validUser) {
-    console.log("Cliente inicializado correctamente con usuario:", validUser.username);
-  } else {
-    console.log("Cliente inicializado sin sesión de usuario");
   }
 
   return {

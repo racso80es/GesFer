@@ -49,19 +49,25 @@ GesFer existe como una estructura de dos portales con responsabilidades no negoc
 
 Responsabilidades canónicas:
 
-- Alta y gestión de **empresas** (tenants).
+- Alta y gestión de **empresas** (instancias).
 - Gestión de **contratos marco** (estándares/condiciones globales que habilitan consistencia).
 - **Analítica de crecimiento** y visión global (orquestación, no operación de planta).
 
-### 3.2 Portal Tenant (Operativa Real)
+### 3.2 Portal Empresa (Operativa Real)
 
-**Propósito**: ejecutar la operación cotidiana en la empresa (tenant).
+**Propósito**: ejecutar la operación cotidiana en la empresa (instancia).
 
 Responsabilidades canónicas:
 
 - Gestión de **proveedores** (origen de compras) y **clientes** (destino de ventas).
 - Gestión de **stock por familias** y sus movimientos.
 - Gestión de **flujo de caja** vinculado a compras/ventas.
+
+### 3.3 Roles de Usuario
+
+- **Administrador Global (Nosotros)**: Gestión de la infraestructura y métricas de salud del ecosistema.
+- **Administrador de la Empresa**: Soberano absoluto de su instancia. Gestiona sus propios usuarios, grupos y asignación de derechos.
+- **Usuarios Operativos**: Perfiles (Planta, Caja, etc.) definidos y limitados por los permisos que su Administrador de la Empresa les otorgue.
 
 ---
 
@@ -70,7 +76,7 @@ Responsabilidades canónicas:
 Estas preguntas son obligatorias antes de implementar lógica de dominio o reglas:
 
 - ¿La propuesta refleja el flujo **compra → stock → venta** sin inventar un modelo alternativo?
-- ¿Está claro si cae en **Admin (global)** o en **Tenant (operativa)**?
+- ¿Está claro si cae en **Admin (global)** o en **Empresa (operativa)**?
 - ¿Se preserva el **pragmatismo de sector** (utilidad en planta) por encima de abstracciones técnicas?
 
 ---

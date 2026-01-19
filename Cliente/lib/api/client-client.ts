@@ -13,7 +13,9 @@ import { apiClient } from "./client";
  *   const api = useApiClient();
  *   
  *   useEffect(() => {
- *     api.get('/api/users').then(data => console.log(data));
+ *     api.get('/api/users').then((data) => {
+ *       // ... usar data
+ *     });
  *   }, []);
  * }
  * ```

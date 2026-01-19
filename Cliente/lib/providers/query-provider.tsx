@@ -22,7 +22,6 @@ function CacheCleaner() {
 
     // Si la inicialización detectó que se necesita limpiar caché, hacerlo ahora
     if (initResult?.shouldClearCache) {
-      console.log("Datos corruptos detectados durante inicialización, limpiando caché de QueryClient...");
       queryClient.clear();
       hasCleanedRef.current = true;
       return;
@@ -36,7 +35,6 @@ function CacheCleaner() {
       // Si hay datos pero no son válidos (fueron limpiados por initializeClient),
       // limpiar el caché también
       if ((token || user) && !authApi.getStoredUser()) {
-        console.log("Datos inválidos detectados, limpiando caché de QueryClient...");
         queryClient.clear();
         hasCleanedRef.current = true;
       }
@@ -81,7 +79,6 @@ export function QueryProvider({ children }: { children: ReactNode }) {
 
     // Si se detectaron datos corruptos durante la inicialización, limpiar el caché inmediatamente
     if (initResult?.shouldClearCache) {
-      console.log("Limpiando caché de QueryClient debido a datos corruptos detectados durante inicialización...");
       client.clear();
     }
 

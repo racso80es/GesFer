@@ -10,7 +10,6 @@ test.describe('Admin Logs - Verificación de 403', () => {
     // Verificar que los servicios estén disponibles
     try {
       const healthCheck = await request.get(`${API_URL}/api/health`);
-      console.log(`[TEST] API Health Check: ${healthCheck.status()}`);
     } catch (e) {
       console.warn(`[TEST] API no disponible en ${API_URL}, continuando de todas formas`);
     }
@@ -38,7 +37,6 @@ test.describe('Admin Logs - Verificación de 403', () => {
     page.on('response', async (response) => {
       if (response.url().includes('/api/admin/auth/login')) {
         loginResponseStatus = response.status();
-        console.log(`[TEST] Login response: ${loginResponseStatus}`);
       }
     });
     
@@ -55,7 +53,6 @@ test.describe('Admin Logs - Verificación de 403', () => {
     } catch (e) {
       // Si no redirige, verificar si hay error en la página
       const currentUrl = page.url();
-      console.log(`[TEST] URL actual después del login: ${currentUrl}`);
       
       // Verificar si hay mensaje de error visible
       const errorMessage = await page.locator('text=/error|invalid|incorrect/i').first().isVisible().catch(() => false);
@@ -66,7 +63,6 @@ test.describe('Admin Logs - Verificación de 403', () => {
       
       // Si estamos todavía en login, intentar navegar manualmente
       if (currentUrl.includes('/admin/login')) {
-        console.log('[TEST] Aún en login, intentando navegar manualmente al dashboard');
         await page.goto(`${CLIENT_URL}/admin/dashboard`);
         await page.waitForLoadState('networkidle', { timeout: 10000 });
       }
@@ -89,9 +85,7 @@ test.describe('Admin Logs - Verificación de 403', () => {
         if (!response.ok()) {
           const errorText = await response.text().catch(() => '');
           logsResponseError = errorText;
-          console.log(`[TEST] Respuesta de /api/log: ${logsResponseStatus} - ${errorText}`);
         } else {
-          console.log(`[TEST] ✅ Respuesta de /api/log: ${logsResponseStatus} OK`);
         }
       }
     });
@@ -105,7 +99,6 @@ test.describe('Admin Logs - Verificación de 403', () => {
     
     // Verificar que estamos en la página correcta
     const currentUrl = page.url();
-    console.log(`[TEST] URL actual: ${currentUrl}`);
     
     // Si estamos en login, significa que no se autenticó correctamente
     if (currentUrl.includes('/admin/login')) {
@@ -120,21 +113,15 @@ test.describe('Admin Logs - Verificación de 403', () => {
     
     // Verificar el estado de la respuesta
     if (logsResponseStatus === 403) {
-      console.log('[TEST] ❌ Error 403 Forbidden confirmado');
-      console.log('[TEST] Error:', logsResponseError);
       // El test debe fallar aquí para confirmar el problema
       expect(logsResponseStatus).not.toBe(403);
     } else if (logsResponseStatus === 200) {
-      console.log('[TEST] ✅ Acceso a logs exitoso (200 OK)');
       // Verificar que la tabla de logs se carga correctamente
       await expect(logsPage.logsTable).toBeVisible({ timeout: 15000 });
       
       // Verificar que los filtros se inicializaron correctamente
       const fromDateValue = await logsPage.fromDateInput.inputValue();
       const toDateValue = await logsPage.toDateInput.inputValue();
-      
-      console.log(`[TEST] Filtro "Desde": ${fromDateValue}`);
-      console.log(`[TEST] Filtro "Hasta": ${toDateValue}`);
       
       // Verificar que los filtros tienen valores (deben estar inicializados con fecha de hoy)
       expect(fromDateValue).not.toBe('');
@@ -147,16 +134,12 @@ test.describe('Admin Logs - Verificación de 403', () => {
       
       expect(fromDateValue).toContain(todayStart.getFullYear().toString());
       expect(fromDateValue).toContain('T00:00');
-      
-      console.log('[TEST] ✅ Filtros inicializados correctamente');
     } else if (logsResponseStatus === null) {
-      console.log('[TEST] ⚠️ No se detectó respuesta de /api/log, verificando que la página se cargó');
       // Si no hay respuesta, verificar que al menos la página se carga
       await expect(logsPage.title).toBeVisible({ timeout: 15000 });
       // El test pasa si la página se carga (puede que la petición aún no se haya hecho)
       expect(logsPage.title).toBeVisible();
     } else {
-      console.log(`[TEST] ⚠️ Estado inesperado: ${logsResponseStatus}`);
       // Verificar que la página se carga independientemente del estado
       await expect(logsPage.title).toBeVisible({ timeout: 15000 });
       // El test falla si hay un error diferente a 403

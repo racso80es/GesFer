@@ -201,29 +201,29 @@ Al cerrar una rama se debe generar un informe en `docs/performance/` evaluando:
 
 ## 14) LEY DE INVARIANZA Y SOBERANÍA DE DOMINIO (Admin ↔ Cliente) — S+
 
-Esta Ley define una frontera **estructural y no negociable** entre los dominios **Admin** (identidad global) y **Cliente** (multi‑tenant).
+Esta Ley define una frontera **estructural y no negociable** entre los dominios **Admin** (identidad global) y **Cliente** (multi‑empresa).
 
 ### Definiciones
 
 - **Dominio Admin (global)**:
   - Rutas FE: `Cliente/app/(admin)/...` (ej. `/admin/*`)
   - Endpoints: `Api/src/Api` bajo `api/admin/*`
-  - Contratos: DTOs/Admin Requests/Responses **propios** (no tenant)
-- **Dominio Cliente (tenant)**:
+  - Contratos: DTOs/Admin Requests/Responses **propios** (no empresa)
+- **Dominio Cliente (empresa)**:
   - Rutas FE: `Cliente/app/[locale]/...` y resto del producto (ej. `/dashboard`, `/empresas`, etc.)
   - Endpoints: `api/*` no-admin (ej. `/api/auth/*`)
-  - Contratos: DTOs de login con semántica tenant (empresa)
+  - Contratos: DTOs de login con semántica de empresa (instancia)
 
 ### Invariantes (prohibiciones explícitas)
 
 - **No herencia de contrato**:
   - Prohibido que controladores/servicios Admin consuman DTOs del login Cliente (ej. `LoginRequestDto`).
-  - Obligatorio que Admin use contratos propios. `AdminLoginRequest` es el estándar de identidad global (no incluye empresa/tenant).
+  - Obligatorio que Admin use contratos propios. `AdminLoginRequest` es el estándar de identidad global (no incluye selector de empresa).
 - **No contaminación de estado/almacenamiento**:
-  - Prohibido que el dominio Admin lea/escriba el namespace de tenants (ej. `auth_user`, `auth_token`, cookies equivalentes).
+  - Prohibido que el dominio Admin lea/escriba el namespace de empresa (ej. `auth_user`, `auth_token`, cookies equivalentes).
   - Si Admin requiere persistencia fuera de sesión, debe usar un **namespace propio** (prefijo `admin_*`).
-- **No semántica tenant en Admin**:
-  - Prohibido que el login Admin requiera/valide/propague `empresa`, `empresaId`, `companyId` o cualquier selector de tenant.
+- **No semántica de empresa en Admin**:
+  - Prohibido que el login Admin requiera/valide/propague `empresa`, `empresaId`, `companyId` o cualquier selector de empresa.
 - **No bypass por sesión genérica**:
   - Prohibido que una sesión válida de Admin habilite rutas protegidas del dominio Cliente (y viceversa). La autorización debe validar **dominio + rol**.
 
@@ -232,7 +232,7 @@ Esta Ley define una frontera **estructural y no negociable** entre los dominios 
 Únicamente se permite compartir entre dominios:
 
 - **Componentes UI puros** (`Cliente/components/shared/` o wrappers `components/ui/*`) y estilos.
-- **Utilidades neutrales** (helpers sin semántica de empresa/tenant/rol).
+- **Utilidades neutrales** (helpers sin semántica de empresa/rol).
 
 Todo lo demás (DTOs, stores, guards, middleware, servicios de auth, rutas, validaciones) debe existir en **linajes separados** por dominio.
 
@@ -243,5 +243,11 @@ Todo lo demás (DTOs, stores, guards, middleware, servicios de auth, rutas, vali
 - Toda propuesta técnica debe ser validada contra `docs/BUSINESS_DOMAIN.md`.
 - Queda prohibido implementar lógica de dominio de forma autónoma sin alineación explícita con el modelo de compra/venta de metales:
   - Compra minorista de pequeñas cantidades → Almacenamiento/Stock → Venta mayorista en grandes paquetes.
+
+---
+
+## 16) [REGLA: VALIDACIÓN DE ACCIÓN] — Validación granular y soberanía de permisos (S+)
+
+GesFer no impone jerarquías fijas. La responsabilidad del sistema es validar de forma granular (Acceso, Consulta, Edición, Modificación, Borrado) que el usuario posee el derecho requerido en su perfil para la acción solicitada. La gestión de estos derechos es potestad exclusiva de la empresa.
 
 
