@@ -49,6 +49,11 @@ public static class DbInitializer
             // Paso 2: Cargar datos iniciales desde JSON
             await SeedDataFromJsonAsync(context, services, logger);
 
+            // CRÍTICO: Evitar conflictos de tracking (Seeder puede haber dejado entidades en ChangeTracker)
+            // - Si 'admin' ya fue creado por JSON, lo leeremos desde DB sin duplicar instancias.
+            // - Si el seeder dejó una instancia Added/Unchanged en memoria, se elimina para evitar conflicto.
+            context.ChangeTracker.Clear();
+
             // CRÍTICO: Garantizar usuario admin de forma idempotente y atómica (especialmente en Testing)
             await EnsureAdminUserAsync(context, services, logger);
 
@@ -325,6 +330,29 @@ public static class DbInitializer
 
         async Task EnsureCoreAsync()
         {
+            // Guard: si el seeder ya añadió el admin al contexto (Added/Unchanged) pero aún no está en DB,
+            // no debemos intentar crear otra instancia y provocar conflicto de tracking.
+            var localAdmin = context.Users.Local.FirstOrDefault(u => u.Username == AdminUsername);
+            if (localAdmin != null)
+            {
+                // Normalizar campos mínimos sin crear nueva instancia
+                if (localAdmin.DeletedAt != null)
+                {
+                    localAdmin.DeletedAt = null;
+                    localAdmin.IsActive = true;
+                }
+                if (string.IsNullOrWhiteSpace(localAdmin.PasswordHash))
+                {
+                    localAdmin.PasswordHash = FixedAdminHash;
+                }
+                if (localAdmin.CompanyId == Guid.Empty || localAdmin.CompanyId == default(Guid))
+                {
+                    localAdmin.CompanyId = defaultCompanyId;
+                }
+                await context.SaveChangesAsync();
+                return;
+            }
+
             var admin = await context.Users
                 .IgnoreQueryFilters()
                 .Include(u => u.Company)
