@@ -27,6 +27,32 @@
         "Añadir una nota bajo Telemetría IA en `Tekton/Rules/GOLDEN_RULES.md`.",
         "Ejecutar `dotnet build \"Api/GesFer.sln\"`."
       ]
+    },
+    "Ámbito": {
+      "scope": "Tekton (foco contextual): delimitación técnica previa a toda ejecución, análisis o escritura.",
+      "definition": "Delimitación técnica de la tarea (API, Cliente, Infra, Cross). Se declara en la Fase 0 para enfocar la atención y reducir ruido.",
+      "invariants": [
+        "Debe declararse antes de cualquier análisis o escritura.",
+        "Debe delimitar explícitamente qué parte del proyecto se observará/modificará (API, Cliente, Infra, Cross)."
+      ],
+      "examples": [
+        "Ámbito: API (Api/src/Api)",
+        "Ámbito: Cliente (Cliente)",
+        "Ámbito: Infra (docker, scripts, pipelines)",
+        "Ámbito: Cross (cambios coordinados API + Cliente)"
+      ]
+    },
+    "Validación": {
+      "scope": "Tekton (verificación): proceso que produce evidencia de integridad dentro de un Ámbito.",
+      "definition": "Proceso de verificación (Compilación + Tests + Juez) que asegura la integridad de la Acción dentro de su Ámbito.",
+      "invariants": [
+        "Debe ser reproducible en el entorno oficial (Windows / PowerShell).",
+        "Debe aportar evidencia verificable (salida de build/tests y/o resultados del Juez)."
+      ],
+      "examples": [
+        "Compilación: `dotnet build \"Api/GesFer.sln\"`",
+        "Juez (pre-PR): `pwsh -File scripts/validate-pr.ps1`"
+      ]
     }
   }
 }

@@ -105,3 +105,9 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
 
 - Creación del diccionario de términos Tekton para unificación de lenguaje IA/Humano.
 
+---
+
+## 2026-01-20 — Integración de Fase 0 (Ámbito) en Tekton
+
+- Integración de Fase 0 (Ámbito) para optimización de contexto IA.
+

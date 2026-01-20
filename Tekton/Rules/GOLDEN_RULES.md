@@ -32,6 +32,13 @@ Si existe contradicción con cualquier otro documento, **este archivo prevalece*
 
 ---
 
+## 0.1) Ámbito — Declaración previa obligatoria (bloqueante, S+)
+
+- Regla:
+  - **Es obligatorio que Tekton declare el Ámbito antes de cualquier análisis o escritura. En Tareas Complejas, el Ámbito debe encabezar el IMPLEMENTATION_PLAN.json.**
+
+---
+
 ## 1) Soberanía y Puerta de Entrada
 
 - La **verdad absoluta** de comportamiento reside en:

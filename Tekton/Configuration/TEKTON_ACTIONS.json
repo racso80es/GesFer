@@ -1,5 +1,15 @@
 {
   "project": "GesFer",
+  "task_start_sequence": [
+    "Fase 0: Declaración de Ámbito"
+  ],
+  "task_phases": [
+    {
+      "phase": 0,
+      "name": "Fase 0: Declaración de Ámbito",
+      "description": "Tekton debe indicar explícitamente qué parte del proyecto va a observar (API, Cliente, Infra, Cross) antes de cualquier análisis o escritura."
+    }
+  ],
   "paths": {
     "api": "Api/src/Api",
     "client": "Cliente",
