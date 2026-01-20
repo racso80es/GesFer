@@ -125,7 +125,9 @@ function Write-TaeOutput {
 
 function Add-Error {
     param(
-        [hashtable]$Result,
+        # Nota: New-TaeResult devuelve un OrderedDictionary ([ordered]@{}).
+        # Usar IDictionary evita copias implícitas y permite mutar la referencia original.
+        [System.Collections.IDictionary]$Result,
         [string]$Category,
         [string]$Code,
         [string]$Message,
