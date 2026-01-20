@@ -34,4 +34,3 @@ Este manifiesto define los pilares no negociables que gobiernan el comportamient
 - Se prioriza la **utilidad en planta** (flujo real, velocidad operativa, claridad de uso) por encima de la abstracción técnica.
 - Toda decisión técnica debe poder justificarse con impacto directo en la operativa: **compras**, **stock por familias**, **ventas** y **flujo de caja**.
 
-

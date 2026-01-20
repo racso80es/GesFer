@@ -46,7 +46,7 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
 
 ## 2026-01-19 — Infraestructura S+ (Juez Modular + soberanía documental)
 
-- Se consolidó una **Puerta de Entrada**: `docs/MANIFESTO.md` + `docs/rules/GOLDEN_RULES.md`.
+- Se consolidó una **Puerta de Entrada**: `/Tekton/Configuration/MANIFESTO.md` + `/Tekton/Rules/GOLDEN_RULES.md`.
 - Se rearmó el **Juez Modular**:
   - bloqueo S‑Grade por falta de **pasaporte de rama**,
   - bloqueo S‑Grade por falta de **telemetría IA** (global + reporte por rama).
@@ -85,9 +85,17 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
 ## 2026-01-19 — Movimiento 12 (Sellado): consolidación de inteligencia + sincronización total
 
 - Se centralizó la inteligencia histórica de reportes `IA_PERF_*` en este `docs/EVOLUTION_LOG.md` como consciencia única.
-- Se definió DoD explícito de cierre: **local y nube como espejo** (ver `[DOD: REGLA DE SINCRONIZACIÓN]` en `docs/rules/GOLDEN_RULES.md`).
+- Se definió DoD explícito de cierre: **local y nube como espejo** (ver `[DOD: REGLA DE SINCRONIZACIÓN]` en `/Tekton/Rules/GOLDEN_RULES.md`).
 - Aprendizajes operativos consolidados:
   - PowerShell puede no soportar encadenamiento con `&&` (usar secuencias compatibles).
   - `dotnet build` puede fallar si existe un binario en uso (bloqueo por proceso activo); el cierre exige entorno limpio.
   - E2E puede fallar por servicios no disponibles; el Juez distingue advertencia de falla real cuando detecta `ECONNREFUSED`.
+
+---
+
+## 2026-01-20 — Infraestructura Tekton en directorio raíz `/Tekton`
+
+- Migración de infraestructura Tekton a directorio raíz `/Tekton` para estandarización de herramientas de IA.
+
+- Estandarización de protocolos v2.1 y abstracción de .cursorrules completada.
 

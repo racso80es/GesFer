@@ -22,7 +22,7 @@ Consolidar la consciencia del sistema y el empaquetado SaaS:
 - Documentación soberana:
   - `docs/EVOLUTION_LOG.md`
   - `docs/BUSINESS_DOMAIN.md`
-  - `docs/rules/GOLDEN_RULES.md`
+  - `Tekton/Rules/GOLDEN_RULES.md`
 - Telemetría IA:
   - Mantener artefactos obligatorios (`docs/performance/GLOBAL_IA_TRACKER.md` + template).
   - Generar `docs/performance/IA_PERF_feat-saas-structure-and-consolidation.md` para cumplimiento del Juez en esta rama.
@@ -40,7 +40,7 @@ Consolidar la consciencia del sistema y el empaquetado SaaS:
   - **Funcional** (Caja/Stock/Usuarios).
   - **Premium** (Analítica avanzada, multi‑sede, contratos marco).
   - Regla: la soberanía de la empresa está supeditada al **contrato de producto activo**.
-- `docs/rules/GOLDEN_RULES.md` incorpora la **[DOD: REGLA DE SINCRONIZACIÓN]** (local y nube como espejo).
+- `Tekton/Rules/GOLDEN_RULES.md` incorpora la **[DOD: REGLA DE SINCRONIZACIÓN]** (local y nube como espejo).
 - `scripts/validate-pr.ps1` ejecuta en **VERDE** (E2E puede quedar como advertencia si el entorno no expone servicios).
 - `master` queda actualizado y sincronizado con `origin/master` y el entorno local queda purgado de ramas temporales.
 

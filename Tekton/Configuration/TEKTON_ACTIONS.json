@@ -6,7 +6,8 @@
     "seeds": "Api/src/Infrastructure/Data/Seeds/demo-data.json",
     "tests": "Api/src/IntegrationTests"
   },
-  "manifesto": "docs/MANIFESTO.md",
-  "rules": "docs/rules/GOLDEN_RULES.md",
+  "manifesto": "Tekton/Configuration/MANIFESTO.md",
+  "rules": "Tekton/Rules/GOLDEN_RULES.md",
   "git_policy": "no_master_commit"
 }
+

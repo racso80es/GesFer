@@ -19,8 +19,8 @@ Este objetivo guía todas las acciones en esta rama. Cualquier cambio debe poder
 ### Análisis de reglas (fuentes activas y soberanía)
 
 - **Soberanía declarada / “fuente de reglas”**
-  - **`.cursorrules`**: declara soberanía de reglas en `docs/AUTOMATION_RULES.md` y pide consultar `TEKTON_MANIFEST.json`.
-  - **`TEKTON_MANIFEST.json`**: refuerza esa soberanía con `"rules": "docs/AUTOMATION_RULES.md"` y además define **política git** `"git_policy": "no_master_commit"` y **rutas canónicas** (`Api/src/Api`, `Cliente`, `Api/src/IntegrationTests`, seeds demo).
+- **`.cursorrules`**: declara soberanía de reglas y apunta a rutas canónicas bajo `/Tekton`.
+- **`Tekton/Configuration/TEKTON_ACTIONS.json`**: define **política git** `"git_policy": "no_master_commit"` y **rutas canónicas** (`Api/src/Api`, `Cliente`, `Api/src/IntegrationTests`, seeds demo).
 
 - **Reglas de automatización (agente)**
   - **`docs/AUTOMATION_RULES.md`**: **Regla de Oro “Circuit Breaker (3 Strikes)”** → si una corrección automática falla 3 veces con el mismo error, detenerse y generar `AUDIT_FAIL.md`.
@@ -68,7 +68,7 @@ Este objetivo guía todas las acciones en esta rama. Cualquier cambio debe poder
 ### Contradicciones detectadas (entre reglas y/o su aplicación)
 
 - **Soberanía de reglas (conflicto de “fuente de verdad”)**
-  - `.cursorrules` + `TEKTON_MANIFEST.json` apuntan a `docs/AUTOMATION_RULES.md` como soberano.
+- `.cursorrules` + `Tekton/Configuration/TEKTON_ACTIONS.json` apuntan a la Puerta de Entrada soberana en `/Tekton`.
   - `AI_GUIDELINES.md` se autodefine “Fuente de Verdad única”.
   - `DIAGNOSTICS.md` se declara “Reglas de Oro… ACTIVO”.
   - Resultado: hay **múltiples “constituciones”** sin jerarquía explícita entre ellas (excepto la afirmación unilateral de `AI_GUIDELINES.md`).
@@ -131,8 +131,8 @@ Este documento es **obligatorio** como referencia:
 ### Puerta de Entrada (soberanía)
 
 - `.cursorrules` fue sustituido para declarar explícitamente la Puerta de Entrada:
-  - Gobierno conductual: `docs/MANIFESTO.md`
-  - Leyes operativas: `docs/rules/GOLDEN_RULES.md`
+- Gobierno conductual: `Tekton/Configuration/MANIFESTO.md`
+- Leyes operativas: `Tekton/Rules/GOLDEN_RULES.md`
   - Enforcement: Juez Modular bloquea acciones sin `docs/branches/`
 
 ### Blindaje del Juez Modular — Check de Documentación Inicial

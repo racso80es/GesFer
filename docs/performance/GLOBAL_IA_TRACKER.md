@@ -30,7 +30,7 @@ Los reportes `IA_PERF_<rama>.md` existen para satisfacer el enforcement del Juez
 - **Regla**: al cierre, la inteligencia valiosa se consolida en `docs/EVOLUTION_LOG.md` y los reportes históricos redundantes pueden eliminarse para evitar fragmentación.
 - **Artefactos obligatorios por infraestructura** (no eliminables):
   - `docs/performance/GLOBAL_IA_TRACKER.md`
-  - `docs/performance/templates/IA_PERF_REPORT.md`
+  - `Tekton/Templates/IA_PERF_REPORT.md`
 
 ---
 

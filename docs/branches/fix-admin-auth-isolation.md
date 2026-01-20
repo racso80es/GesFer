@@ -15,7 +15,7 @@ Desacoplar el dominio **Admin** del dominio **Cliente (multi‑tenant)**, garant
 
 ## Ley aplicada
 
-Se aplica la **LEY DE INVARIANZA Y SOBERANÍA DE DOMINIO** (ver `docs/rules/GOLDEN_RULES.md`):
+Se aplica la **LEY DE INVARIANZA Y SOBERANÍA DE DOMINIO** (ver `Tekton/Rules/GOLDEN_RULES.md`):
 
 - Admin y Cliente son dominios **no heredables** en autenticación.
 - Lo único compartible entre dominios es **infraestructura neutral** (componentes UI puros, utilidades sin semántica de dominio).

@@ -18,8 +18,8 @@ Este cambio consolida soberanía documental del dominio de GesFer (sector recupe
 ## Archivos afectados
 
 - `docs/BUSINESS_DOMAIN.md` (nuevo)
-- `docs/MANIFESTO.md` (nuevo pilar)
-- `docs/rules/GOLDEN_RULES.md` (nueva ley)
+- `Tekton/Configuration/MANIFESTO.md` (nuevo pilar)
+- `Tekton/Rules/GOLDEN_RULES.md` (nueva ley)
 - `docs/branches/docs-conceptual-domain-context.md` (pasaporte de rama)
 - `docs/performance/IA_PERF_docs-conceptual-domain-context.md` (telemetría IA por rama)
 

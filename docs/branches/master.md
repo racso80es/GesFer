@@ -1,2 +1,2 @@
-Rama Troncal GesFer. Estado: S+. Gobernanza: docs/rules/GOLDEN_RULES.md y docs/MANIFESTO.md.
+Rama Troncal GesFer. Estado: S+. Gobernanza: Tekton/Rules/GOLDEN_RULES.md y Tekton/Configuration/MANIFESTO.md.
 

@@ -54,7 +54,7 @@ Describe el resultado final en 3-6 líneas, incluyendo:
 
 ## 4) Manifesto Alignment
 
-Evalúa alineación explícita con `docs/MANIFESTO.md`:
+Evalúa alineación explícita con `/Tekton/Configuration/MANIFESTO.md`:
 
 - **Soberanía de Racso**: `<OK/NO>` — evidencia
 - **Proactividad**: `<OK/NO>` — evidencia

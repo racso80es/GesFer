@@ -5,8 +5,8 @@
 Anclar el **Norte Conceptual del Dominio** de GesFer a partir de la visión de negocio de Racso, consolidando:
 
 - Un documento soberano de dominio: `docs/BUSINESS_DOMAIN.md`
-- Un pilar explícito en valores: **Pragmatismo de Sector** (`docs/MANIFESTO.md`)
-- Una ley bloqueante de alineación: **[INTEGRIDAD CONCEPTUAL]** (`docs/rules/GOLDEN_RULES.md`)
+- Un pilar explícito en valores: **Pragmatismo de Sector** (`Tekton/Configuration/MANIFESTO.md`)
+- Una ley bloqueante de alineación: **[INTEGRIDAD CONCEPTUAL]** (`Tekton/Rules/GOLDEN_RULES.md`)
 
 ## Visión de Negocio (Racso) — Resumen Operativo
 
@@ -24,12 +24,12 @@ Anclar el **Norte Conceptual del Dominio** de GesFer a partir de la visión de n
 ## Cambios realizados
 
 - `docs/BUSINESS_DOMAIN.md`: creado como Norte Conceptual del Dominio.
-- `docs/MANIFESTO.md`: añadido pilar **Pragmatismo de Sector**.
-- `docs/rules/GOLDEN_RULES.md`: añadida ley **[INTEGRIDAD CONCEPTUAL]**.
+- `Tekton/Configuration/MANIFESTO.md`: añadido pilar **Pragmatismo de Sector**.
+- `Tekton/Rules/GOLDEN_RULES.md`: añadida ley **[INTEGRIDAD CONCEPTUAL]**.
 
 ## Evidencia de cumplimiento (Juez Modular)
 
-- Pasaporte de rama (este documento) requerido por `docs/rules/GOLDEN_RULES.md`.
+- Pasaporte de rama (este documento) requerido por `Tekton/Rules/GOLDEN_RULES.md`.
 - Reporte IA por rama: `docs/performance/IA_PERF_docs-conceptual-domain-context.md`.
 
 ## Validación

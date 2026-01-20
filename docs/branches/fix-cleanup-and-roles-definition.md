@@ -11,7 +11,7 @@ Consolidar el modelo conceptual de roles sustituyendo la noción de “Tenant”
 
 ## Alcance
 
-- Documentación: `docs/BUSINESS_DOMAIN.md`, `docs/rules/GOLDEN_RULES.md`
+- Documentación: `docs/BUSINESS_DOMAIN.md`, `Tekton/Rules/GOLDEN_RULES.md`
 - Limpieza de ruido:
   - Frontend: `Cliente/` (runtime y tests si aplica)
   - Backend: `Api/` (especialmente zonas de login/telemetría si aplica)

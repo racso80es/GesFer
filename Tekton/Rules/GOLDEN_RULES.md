@@ -5,9 +5,17 @@ Este archivo es la **constitución operativa única** del repositorio. Absorbe y
 - `AI_GUIDELINES.md` (operativa IA/validación/UI/tests/commits)
 - `DIAGNOSTICS.md` (reglas de resiliencia de seeds/VOs/tests/logging)
 - `docs/AUTOMATION_RULES.md` (automatización: circuit breaker) — **ABSORBIDO**
-- `TEKTON_MANIFEST.json` (rutas canónicas y política git) — **ABSORBIDO**
+- `/Tekton/Configuration/TEKTON_ACTIONS.json` (rutas canónicas y política git) — **ABSORBIDO**
 
 Si existe contradicción con cualquier otro documento, **este archivo prevalece**.
+
+---
+
+## Metanorma — `.cursorrules` como puntero estático
+
+- `.cursorrules` es un **puntero transparente y estático** a este documento (`/Tekton/Rules/GOLDEN_RULES.md`).
+- `.cursorrules` **no** debe contener reglas propias.
+- Toda evolución metodológica, de enforcement o de gobierno de IA debe residir en **este** `GOLDEN_RULES.md`.
 
 ---
 
@@ -27,8 +35,8 @@ Si existe contradicción con cualquier otro documento, **este archivo prevalece*
 ## 1) Soberanía y Puerta de Entrada
 
 - La **verdad absoluta** de comportamiento reside en:
-  - `docs/MANIFESTO.md` (valores)
-  - `docs/rules/GOLDEN_RULES.md` (leyes operativas)
+  - `/Tekton/Configuration/MANIFESTO.md` (valores)
+  - `/Tekton/Rules/GOLDEN_RULES.md` (leyes operativas)
 - Cualquier “manual” o “guía” adicional debe considerarse **derivado**, nunca soberano.
 
 ---
@@ -68,7 +76,7 @@ Debido a que los nombres de rama pueden contener `/`, el archivo se deriva así:
 ### Template obligatorio
 
 - Template oficial de reportes:
-  - `docs/performance/templates/IA_PERF_REPORT.md`
+  - `/Tekton/Templates/IA_PERF_REPORT.md`
 
 ### Reporte por rama (bloqueante en Juez)
 
@@ -82,7 +90,7 @@ Al cerrar una rama se debe generar un informe en `docs/performance/` evaluando:
 - **Acierto al primer disparo**: cuántas acciones salieron correctas en el primer intento.
 - **Densidad de refactorización**: ratio de cambios estructurales vs cambios superficiales, y número de archivos tocados por unidad de objetivo.
 - **Fugas de contexto**: cuántas contradicciones/reglas dispersas permanecen, y si aparecen “constituciones paralelas”.
-- **Alineación con Manifiesto**: coherencia explícita con `docs/MANIFESTO.md` (Soberanía/Proactividad/Rigor).
+- **Alineación con Manifiesto**: coherencia explícita con `/Tekton/Configuration/MANIFESTO.md` (Soberanía/Proactividad/Rigor).
 
 ---
 
@@ -268,5 +276,4 @@ Una tarea **no se considera finalizada** hasta que se cumplan **ambas** condicio
   - `nothing to commit, working tree clean`
 - No deben existir ramas locales activas adicionales (solo `master`).
 - Se debe ejecutar `git remote prune origin` para eliminar referencias muertas.
-
 
