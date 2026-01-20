@@ -68,6 +68,8 @@ Debido a que los nombres de rama pueden contener `/`, el archivo se deriva así:
 
 ## 4) Telemetría IA (bloqueante por infraestructura)
 
+- Tekton debe usar la terminología definida en /Tekton/Configuration/DICTIONARY.json para sus reportes y mensajes de commit.
+
 ### Artefactos obligatorios
 
 - Debe existir y estar no vacío:

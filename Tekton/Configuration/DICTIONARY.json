@@ -1,0 +1,33 @@
+{
+  "project": "GesFer",
+  "dictionary": "Tekton Ontological Dictionary",
+  "language": "es-ES",
+  "version": "1.0.0",
+  "terms": {
+    "Tarea": {
+      "scope": "Tekton (operativa del agente sobre el repositorio GesFer): planificación, ejecución y reporte de un objetivo verificable.",
+      "definition": "Unidad de valor con un objetivo verificable (DoD) que agrupa una o más Acciones y produce evidencia (artefactos, cambios versionados y/o validaciones como build check). Una Tarea existe para entregar un resultado final, no para describir pasos.",
+      "invariants": [
+        "Debe tener un objetivo explícito y una condición de parada (DoD).",
+        "Puede abarcar múltiples archivos, comandos y commits, pero su éxito se mide por el resultado y evidencia."
+      ],
+      "examples": [
+        "Crear el diccionario ontológico de Tekton y reforzar su uso en Telemetría."
+      ]
+    },
+    "Acción": {
+      "scope": "Tekton (ejecución): operación atómica y registrable dentro del repositorio/entorno para avanzar una Tarea.",
+      "definition": "Paso atómico, ejecutable y registrable que cambia o valida el estado (p. ej. crear/editar un archivo, ejecutar un comando, correr un build check, crear una rama, realizar un commit). Una Acción es el “cómo” concreto; se reporta como evento de telemetría y debe ser reproducible.",
+      "invariants": [
+        "Debe ser observable: o modifica el estado versionado o produce evidencia (logs/salida).",
+        "Debe ser lo suficientemente pequeña como para ejecutarse y verificarse de forma independiente."
+      ],
+      "examples": [
+        "Crear `Tekton/Configuration/DICTIONARY.json`.",
+        "Añadir una nota bajo Telemetría IA en `Tekton/Rules/GOLDEN_RULES.md`.",
+        "Ejecutar `dotnet build \"Api/GesFer.sln\"`."
+      ]
+    }
+  }
+}
+

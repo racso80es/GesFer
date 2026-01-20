@@ -99,3 +99,9 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
 
 - Estandarización de protocolos v2.1 y abstracción de .cursorrules completada.
 
+---
+
+## 2026-01-20 — Diccionario ontológico Tekton (unificación de lenguaje IA/Humano)
+
+- Creación del diccionario de términos Tekton para unificación de lenguaje IA/Humano.
+
