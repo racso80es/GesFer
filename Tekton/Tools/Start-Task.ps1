@@ -1,5 +1,5 @@
 <#
-TAE — Start-Task.ps1
+TAE - Start-Task.ps1
 Contrato: docs/branches/feat-tekton-automation-engine/INIT.md
 
 Principios:
@@ -193,13 +193,13 @@ function Assert-CommandAvailable {
 }
 
 function Invoke-Git {
-    param([string[]]$Args)
-    $output = & git @Args 2>&1 | Out-String
+    param([string[]]$GitArgs)
+    $output = & git @GitArgs 2>&1 | Out-String
     $code = $LASTEXITCODE
     return [ordered]@{
         exitCode = $code
         output   = $output.TrimEnd()
-        args     = ($Args -join " ")
+        args     = ($GitArgs -join " ")
     }
 }
 
@@ -216,8 +216,9 @@ try {
     Assert-CommandAvailable -CommandName 'git' -FriendlyName 'Git'
     Assert-CommandAvailable -CommandName 'dotnet' -FriendlyName '.NET SDK (dotnet)'
 
-    $inside = Invoke-Git -Args @('rev-parse', '--is-inside-work-tree')
-    if ($inside.exitCode -ne 0 -or $inside.output -ne 'true') {
+    $inside = Invoke-Git -GitArgs @('rev-parse', '--is-inside-work-tree')
+    $insideOk = ($inside.exitCode -eq 0 -and $inside.output -match '(?m)^\s*true\s*$')
+    if (-not $insideOk) {
         $r = New-TaeResult -Ok $false -ExitCode 11 -SuggestedNextStep "Ejecuta el comando dentro del repositorio Git."
         Add-Error -Result $r -Category 'precondition' -Code 'NOT_A_REPO' -Message "No estás dentro de un repositorio Git válido." -Remediation "Navega a la raíz del repo y reintenta."
         Write-TaeOutput -Result $r
@@ -236,7 +237,7 @@ try {
     }
 
     if ($FailIfDirty) {
-        $st = Invoke-Git -Args @('status', '--porcelain')
+        $st = Invoke-Git -GitArgs @('status', '--porcelain')
         if ($st.exitCode -ne 0) {
             $exit = Classify-GitFailure -GitOutput $st.output
             $r = New-TaeResult -Ok $false -ExitCode $exit -SuggestedNextStep "Ejecuta: git status; revisa el estado y reintenta."
@@ -323,7 +324,7 @@ try {
     if (-not $NoFetch) {
         $args = @('fetch', $Remote)
         if (-not $NoPrune) { $args += '--prune' }
-        $fetch = Invoke-Git -Args $args
+        $fetch = Invoke-Git -GitArgs $args
         if ($fetch.exitCode -ne 0) {
             $exit = Classify-GitFailure -GitOutput $fetch.output
             $r = New-TaeResult -Ok $false -ExitCode $exit -SuggestedNextStep "Revisa conectividad/permisos con '$Remote' y reintenta."
@@ -333,7 +334,7 @@ try {
         }
     }
     if (-not $NoPrune) {
-        $pr = Invoke-Git -Args @('remote', 'prune', $Remote)
+        $pr = Invoke-Git -GitArgs @('remote', 'prune', $Remote)
         if ($pr.exitCode -ne 0) {
             $exit = Classify-GitFailure -GitOutput $pr.output
             $r = New-TaeResult -Ok $false -ExitCode $exit -SuggestedNextStep "Revisa conectividad/permisos con '$Remote' y reintenta."
@@ -344,7 +345,7 @@ try {
     }
 
     # Branch checkout/create
-    $existsLocal = (Invoke-Git -Args @('show-ref', '--verify', '--quiet', ("refs/heads/{0}" -f $Branch))).exitCode -eq 0
+    $existsLocal = (Invoke-Git -GitArgs @('show-ref', '--verify', '--quiet', ("refs/heads/{0}" -f $Branch))).exitCode -eq 0
     if ($existsLocal) {
         if (-not $ReuseIfExists) {
             $r = New-TaeResult -Ok $false -ExitCode 11 -SuggestedNextStep "Usa -ReuseIfExists para reusar la rama existente, o elige otro -Branch."
@@ -352,7 +353,7 @@ try {
             Write-TaeOutput -Result $r
             exit 11
         }
-        $co = Invoke-Git -Args @('checkout', $Branch)
+        $co = Invoke-Git -GitArgs @('checkout', $Branch)
         if ($co.exitCode -ne 0) {
             $exit = Classify-GitFailure -GitOutput $co.output
             $r = New-TaeResult -Ok $false -ExitCode $exit -SuggestedNextStep "Revisa errores de checkout y reintenta."
@@ -363,11 +364,11 @@ try {
     } else {
         # prefer: crear desde remote/base si existe
         $baseRef = ("{0}/{1}" -f $Remote, $BaseBranch)
-        $ck = Invoke-Git -Args @('show-ref', '--verify', '--quiet', ("refs/remotes/{0}" -f $baseRef))
+        $ck = Invoke-Git -GitArgs @('show-ref', '--verify', '--quiet', ("refs/remotes/{0}" -f $baseRef))
         if ($ck.exitCode -eq 0) {
-            $co = Invoke-Git -Args @('checkout', '-b', $Branch, $baseRef)
+            $co = Invoke-Git -GitArgs @('checkout', '-b', $Branch, $baseRef)
         } else {
-            $co = Invoke-Git -Args @('checkout', '-b', $Branch, $BaseBranch)
+            $co = Invoke-Git -GitArgs @('checkout', '-b', $Branch, $BaseBranch)
         }
         if ($co.exitCode -ne 0) {
             $exit = Classify-GitFailure -GitOutput $co.output
@@ -390,7 +391,7 @@ try {
                 "# {0}" -f $Branch
                 ""
                 "- Nombre: {0}" -f $Name
-                "- Ámbito: {0}" -f $Scope
+                "- Ambito: {0}" -f $Scope
                 "- Tipo: {0}" -f $Type
                 ""
                 "## INIT"
@@ -427,7 +428,7 @@ try {
             }
             if ([string]::IsNullOrWhiteSpace($tpl)) {
                 $tpl = @(
-                    "# IA PERF — {0}" -f $Branch
+                    "# IA PERF - {0}" -f $Branch
                     ""
                     "Plantilla mínima (template no disponible)."
                     ""

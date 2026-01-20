@@ -1,5 +1,5 @@
 <#
-TAE — Close-Task.ps1
+TAE - Close-Task.ps1
 Contrato: docs/branches/feat-tekton-automation-engine/INIT.md
 
 Modos:
@@ -163,13 +163,13 @@ function Assert-CommandAvailable {
 }
 
 function Invoke-Git {
-    param([string[]]$Args)
-    $output = & git @Args 2>&1 | Out-String
+    param([string[]]$GitArgs)
+    $output = & git @GitArgs 2>&1 | Out-String
     $code = $LASTEXITCODE
     return [ordered]@{
         exitCode = $code
         output   = $output.TrimEnd()
-        args     = ($Args -join " ")
+        args     = ($GitArgs -join " ")
     }
 }
 
@@ -200,8 +200,9 @@ try {
     Assert-CommandAvailable -CommandName 'git' -FriendlyName 'Git'
     Assert-CommandAvailable -CommandName 'dotnet' -FriendlyName '.NET SDK (dotnet)'
 
-    $inside = Invoke-Git -Args @('rev-parse', '--is-inside-work-tree')
-    if ($inside.exitCode -ne 0 -or $inside.output -ne 'true') {
+    $inside = Invoke-Git -GitArgs @('rev-parse', '--is-inside-work-tree')
+    $insideOk = ($inside.exitCode -eq 0 -and $inside.output -match '(?m)^\s*true\s*$')
+    if (-not $insideOk) {
         $r = New-TaeResult -Ok $false -ExitCode 11 -SuggestedNextStep "Ejecuta el comando dentro del repositorio Git."
         Add-Error -Result $r -Category 'precondition' -Code 'NOT_A_REPO' -Message "No estás dentro de un repositorio Git válido." -Remediation "Navega a la raíz del repo y reintenta."
         Write-TaeOutput -Result $r
@@ -219,7 +220,7 @@ try {
         }
     }
 
-    $branch = (Invoke-Git -Args @('branch', '--show-current')).output.Trim()
+    $branch = (Invoke-Git -GitArgs @('branch', '--show-current')).output.Trim()
     if ([string]::IsNullOrWhiteSpace($branch)) {
         $r = New-TaeResult -Ok $false -ExitCode 11 -SuggestedNextStep "Ejecuta: git checkout <rama> y reintenta."
         Add-Error -Result $r -Category 'precondition' -Code 'NO_CURRENT_BRANCH' -Message "No se pudo determinar la rama actual." -Remediation "Asegura una rama válida."
@@ -331,10 +332,10 @@ try {
         $auditPath = Join-Path -Path 'docs/governance/audits' -ChildPath ("{0}_{1}_CIERRE.md" -f $ts, $slug)
         if (-not (Test-Path -LiteralPath $auditPath)) {
             $content = @(
-                "# CIERRE — {0}" -f $branch
+                "# CIERRE - {0}" -f $branch
                 ""
                 "- Nombre: {0}" -f $Name
-                "- Ámbito: {0}" -f $Scope
+                "- Ambito: {0}" -f $Scope
                 "- Tipo: {0}" -f $Type
                 "- Fecha: {0}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm')
                 ""
@@ -350,7 +351,7 @@ try {
         }
 
         if ($Push) {
-            $push = Invoke-Git -Args @('push', '-u', $Remote, 'HEAD')
+            $push = Invoke-Git -GitArgs @('push', '-u', $Remote, 'HEAD')
             if ($push.exitCode -ne 0) {
                 $exit = Classify-GitFailure -GitOutput $push.output
                 $r = New-TaeResult -Ok $false -ExitCode $exit -SuggestedNextStep "Reautentica o revisa permisos en remoto y reintenta."
@@ -363,7 +364,7 @@ try {
 
     if ($doCleanup) {
         if ($RequireMerged) {
-            $merged = Invoke-Git -Args @('branch', '--merged', $BaseBranch)
+            $merged = Invoke-Git -GitArgs @('branch', '--merged', $BaseBranch)
             if ($merged.exitCode -ne 0) {
                 $exit = Classify-GitFailure -GitOutput $merged.output
                 $r = New-TaeResult -Ok $false -ExitCode $exit -SuggestedNextStep "Revisa estado de merge y reintenta."
@@ -379,7 +380,7 @@ try {
             }
         }
 
-        $co = Invoke-Git -Args @('checkout', $BaseBranch)
+        $co = Invoke-Git -GitArgs @('checkout', $BaseBranch)
         if ($co.exitCode -ne 0) {
             $exit = Classify-GitFailure -GitOutput $co.output
             $r = New-TaeResult -Ok $false -ExitCode $exit -SuggestedNextStep "Verifica base branch y reintenta."
@@ -388,7 +389,7 @@ try {
             exit $exit
         }
 
-        $pull = Invoke-Git -Args @('pull', '--ff-only', $Remote, $BaseBranch)
+        $pull = Invoke-Git -GitArgs @('pull', '--ff-only', $Remote, $BaseBranch)
         if ($pull.exitCode -ne 0) {
             $exit = Classify-GitFailure -GitOutput $pull.output
             $r = New-TaeResult -Ok $false -ExitCode $exit -SuggestedNextStep "Revisa divergencias; reintenta o resuelve manualmente."
@@ -398,7 +399,7 @@ try {
         }
 
         if ($DeleteLocalBranch) {
-            $del = Invoke-Git -Args @('branch', '-d', $branch)
+            $del = Invoke-Git -GitArgs @('branch', '-d', $branch)
             if ($del.exitCode -ne 0) {
                 $exit = Classify-GitFailure -GitOutput $del.output
                 $r = New-TaeResult -Ok $false -ExitCode $exit -SuggestedNextStep "Verifica si la rama está mergeada; si no, no se puede borrar con -d."
@@ -409,7 +410,7 @@ try {
         }
 
         if ($DeleteRemoteBranch) {
-            $delr = Invoke-Git -Args @('push', $Remote, '--delete', $branch)
+            $delr = Invoke-Git -GitArgs @('push', $Remote, '--delete', $branch)
             if ($delr.exitCode -ne 0) {
                 $exit = Classify-GitFailure -GitOutput $delr.output
                 $r = New-TaeResult -Ok $false -ExitCode $exit -SuggestedNextStep "Revisa permisos para borrar ramas remotas."
@@ -419,7 +420,7 @@ try {
             }
         }
 
-        $pr = Invoke-Git -Args @('remote', 'prune', $Remote)
+        $pr = Invoke-Git -GitArgs @('remote', 'prune', $Remote)
         if ($pr.exitCode -ne 0) {
             $exit = Classify-GitFailure -GitOutput $pr.output
             $r = New-TaeResult -Ok $false -ExitCode $exit -SuggestedNextStep "Revisa conectividad/permisos con '$Remote' y reintenta."
@@ -428,7 +429,7 @@ try {
             exit $exit
         }
 
-        $status = Invoke-Git -Args @('status')
+        $status = Invoke-Git -GitArgs @('status')
         if ($status.exitCode -ne 0) {
             $exit = Classify-GitFailure -GitOutput $status.output
             $r = New-TaeResult -Ok $false -ExitCode $exit -SuggestedNextStep "Ejecuta: git status (manual) y revisa."
