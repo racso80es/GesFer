@@ -39,11 +39,19 @@ public class JsonDataSeeder
         var currentDir = new DirectoryInfo(basePath);
         
         string? foundPath = null;
+
+        static bool HasAnySeedJson(string directoryPath)
+        {
+            // Nota: basta con que exista alguno; el resto se valida por cada método Seed*.
+            return File.Exists(Path.Combine(directoryPath, "master-data.json")) ||
+                   File.Exists(Path.Combine(directoryPath, "demo-data.json")) ||
+                   File.Exists(Path.Combine(directoryPath, "test-data.json"));
+        }
         
         // Estrategia de búsqueda mejorada:
         // 1. Buscar Data/Seeds/ en el directorio de salida (bin/Debug/net8.0/Data/Seeds o bin/Release/net8.0/Data/Seeds)
         var dataSeedsInOutput = Path.Combine(basePath, "Data", "Seeds");
-        if (Directory.Exists(dataSeedsInOutput))
+        if (Directory.Exists(dataSeedsInOutput) && HasAnySeedJson(dataSeedsInOutput))
         {
             foundPath = dataSeedsInOutput;
         }
@@ -52,7 +60,7 @@ public class JsonDataSeeder
             // 2. Buscar desde la raíz del proyecto (funciona desde consola, API y tests)
             // Estrategia: subir desde el directorio actual hasta encontrar GesFer.sln
             var searchDir = currentDir;
-            var maxDepth = 10; // Limitar la profundidad de búsqueda para evitar bucles infinitos
+            var maxDepth = 25; // Limitar la profundidad de búsqueda para evitar bucles infinitos
             var depth = 0;
             
             while (searchDir != null && foundPath == null && depth < maxDepth)
@@ -66,21 +74,41 @@ public class JsonDataSeeder
                 
                 if (hasSolution)
                 {
-                    // Encontramos la raíz del proyecto (o Api/), buscar Api/src/Infrastructure/Data/Seeds
-                    // Si GesFer.sln está en Api/, entonces searchDir ya está en la raíz
-                    var rootDir = File.Exists(solutionPathRoot) ? searchDir.FullName : searchDir.FullName;
-                    var projectSeedsPath = Path.Combine(rootDir, "Api", "src", "Infrastructure", "Data", "Seeds");
-                    if (Directory.Exists(projectSeedsPath))
+                    // Encontramos una solución. Soportar ambas topologías:
+                    // - Repo root: <root>/Api/GesFer.sln  -> seeds: <root>/Api/src/Infrastructure/Data/Seeds
+                    // - Api root:  <root>/GesFer.sln      -> seeds: <root>/src/Infrastructure/Data/Seeds
+                    var rootDir = searchDir.FullName;
+
+                    // 2.1 Seeds en repo root (topología habitual)
+                    var repoSeedsPath = Path.Combine(rootDir, "Api", "src", "Infrastructure", "Data", "Seeds");
+                    if (Directory.Exists(repoSeedsPath))
                     {
-                        foundPath = projectSeedsPath;
+                        foundPath = repoSeedsPath;
                         break;
                     }
-                    
-                    // También buscar en ubicación legacy
-                    var legacySeedsPath = Path.Combine(rootDir, "Api", "src", "Infrastructure", "Seeds");
-                    if (Directory.Exists(legacySeedsPath))
+
+                    // 2.2 Seeds cuando searchDir es Api/ (evitar duplicar "Api/Api")
+                    var apiRootSeedsPath = Path.Combine(rootDir, "src", "Infrastructure", "Data", "Seeds");
+                    if (Directory.Exists(apiRootSeedsPath))
                     {
-                        foundPath = legacySeedsPath;
+                        foundPath = apiRootSeedsPath;
+                        break;
+                    }
+
+                    // Legacy (repo root)
+                    var repoLegacySeedsPath = Path.Combine(rootDir, "Api", "src", "Infrastructure", "Seeds");
+                    if (Directory.Exists(repoLegacySeedsPath))
+                    {
+                        foundPath = repoLegacySeedsPath;
+                        _logger.LogWarning("Usando ubicación legacy de seeds: {Path}. Se recomienda migrar a Data/Seeds/", foundPath);
+                        break;
+                    }
+
+                    // Legacy (Api root)
+                    var apiRootLegacySeedsPath = Path.Combine(rootDir, "src", "Infrastructure", "Seeds");
+                    if (Directory.Exists(apiRootLegacySeedsPath))
+                    {
+                        foundPath = apiRootLegacySeedsPath;
                         _logger.LogWarning("Usando ubicación legacy de seeds: {Path}. Se recomienda migrar a Data/Seeds/", foundPath);
                         break;
                     }
@@ -93,12 +121,29 @@ public class JsonDataSeeder
                     foundPath = directApiSeedsPath;
                     break;
                 }
+
+                // Buscar directamente src/Infrastructure/Data/Seeds (cuando estamos ya dentro de Api/)
+                var directApiRootSeedsPath = Path.Combine(searchDir.FullName, "src", "Infrastructure", "Data", "Seeds");
+                if (Directory.Exists(directApiRootSeedsPath))
+                {
+                    foundPath = directApiRootSeedsPath;
+                    break;
+                }
                 
                 // Buscar directamente Api/src/Infrastructure/Seeds (legacy)
                 var directApiLegacySeedsPath = Path.Combine(searchDir.FullName, "Api", "src", "Infrastructure", "Seeds");
                 if (Directory.Exists(directApiLegacySeedsPath))
                 {
                     foundPath = directApiLegacySeedsPath;
+                    _logger.LogWarning("Usando ubicación legacy de seeds: {Path}. Se recomienda migrar a Data/Seeds/", foundPath);
+                    break;
+                }
+
+                // Buscar directamente src/Infrastructure/Seeds (legacy) cuando estamos ya dentro de Api/
+                var directApiRootLegacySeedsPath = Path.Combine(searchDir.FullName, "src", "Infrastructure", "Seeds");
+                if (Directory.Exists(directApiRootLegacySeedsPath))
+                {
+                    foundPath = directApiRootLegacySeedsPath;
                     _logger.LogWarning("Usando ubicación legacy de seeds: {Path}. Se recomienda migrar a Data/Seeds/", foundPath);
                     break;
                 }
@@ -121,6 +166,33 @@ public class JsonDataSeeder
                 }
                 
                 searchDir = searchDir.Parent;
+            }
+        }
+
+        // 3. Fallback explícito por CWD (dotnet test suele ejecutarse desde Api/ o repo root)
+        if (foundPath == null)
+        {
+            try
+            {
+                var cwd = Directory.GetCurrentDirectory();
+
+                var cwdRepoSeedsPath = Path.Combine(cwd, "Api", "src", "Infrastructure", "Data", "Seeds");
+                if (Directory.Exists(cwdRepoSeedsPath))
+                {
+                    foundPath = cwdRepoSeedsPath;
+                }
+                else
+                {
+                    var cwdApiRootSeedsPath = Path.Combine(cwd, "src", "Infrastructure", "Data", "Seeds");
+                    if (Directory.Exists(cwdApiRootSeedsPath))
+                    {
+                        foundPath = cwdApiRootSeedsPath;
+                    }
+                }
+            }
+            catch
+            {
+                // Ignorar: se mantiene foundPath null y se usará el fallback final.
             }
         }
         

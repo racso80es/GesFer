@@ -35,4 +35,12 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Copiar seeds JSON al output para que JsonDataSeeder los encuentre via AppContext.BaseDirectory -->
+    <Content Include="..\Infrastructure\Data\Seeds\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Data\Seeds\%(Filename)%(Extension)</TargetPath>
+    </Content>
+  </ItemGroup>
+
 </Project>
