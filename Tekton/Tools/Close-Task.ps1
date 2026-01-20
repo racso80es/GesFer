@@ -326,14 +326,14 @@ try {
     $hashApproved = ($approvedHash -eq $planHash)
 
     # Fast-Track: permitir aprobar un hash legacy (p.ej. generado con un AuditStamp previo),
-    # siempre que coincida con el plan calculado usando el último CIERRE existente para este slug.
+    # siempre que coincida con el plan calculado usando algún CIERRE existente para este slug.
     if (-not $hashApproved -and $doPrepare) {
         try {
-            $existingAudit = Get-ChildItem -LiteralPath 'docs/governance/audits' -Filter ("*_{0}_CIERRE.md" -f $slug) -ErrorAction SilentlyContinue |
-                Sort-Object Name -Descending |
-                Select-Object -First 1
+            $existingAudits = Get-ChildItem -LiteralPath 'docs/governance/audits' -Filter ("*_{0}_CIERRE.md" -f $slug) -ErrorAction SilentlyContinue |
+                Sort-Object Name -Descending
 
-            if ($null -ne $existingAudit -and $existingAudit.BaseName -match '^(\d{8}_\d{4})_') {
+            foreach ($a in $existingAudits) {
+                if ($a.BaseName -notmatch '^(\d{8}_\d{4})_') { continue }
                 $legacyStamp = $Matches[1]
                 $legacyAuditPath = Join-Path -Path 'docs/governance/audits' -ChildPath ("{0}_{1}_CIERRE.md" -f $legacyStamp, $slug)
                 $legacyAuditOp = ("OP|file|write|{0}" -f $legacyAuditPath)
@@ -346,6 +346,7 @@ try {
                 if ($approvedHash -eq $legacyPlanHash) {
                     $hashApproved = $true
                     Write-TaeLog -Checkpoint '[START]' -Message ("ApproveHash coincide con plan legacy (AuditStamp={0}). Continuando con AuditStamp solicitado." -f $legacyStamp)
+                    break
                 }
             }
         } catch {
