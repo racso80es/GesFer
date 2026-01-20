@@ -48,6 +48,9 @@ param(
     [ValidateNotNullOrEmpty()]
     [string]$ApproveHash,
 
+    [ValidatePattern('^\d{8}_\d{4}$')]
+    [string]$AuditStamp,
+
     [ValidateSet('Text', 'Json')]
     [string]$OutputFormat = 'Text',
 
@@ -237,15 +240,17 @@ try {
     $doCleanup = ($Mode -eq 'Cleanup' -or $Mode -eq 'All')
 
     if ($doPrepare) {
+        $resolvedAuditStamp = if ([string]::IsNullOrWhiteSpace($AuditStamp)) { (Get-Date -Format 'yyyyMMdd_HHmm') } else { $AuditStamp }
+
         if ($RunValidateCommit) { $plannedOps.Add("OP|ps1|run|scripts/validate-commit.ps1") }
         if ($RunValidatePr) { $plannedOps.Add("OP|ps1|run|scripts/validate-pr.ps1") }
         if ($Autocheck) { $plannedOps.Add("OP|validation|autocheck|AC-001") }
 
         Ensure-Directory -Path 'docs/governance/audits'
-        $ts = Get-Date -Format 'yyyyMMdd_HHmm'
-        $auditPath = Join-Path -Path 'docs/governance/audits' -ChildPath ("{0}_{1}_CIERRE.md" -f $ts, $slug)
+        $auditPath = Join-Path -Path 'docs/governance/audits' -ChildPath ("{0}_{1}_CIERRE.md" -f $resolvedAuditStamp, $slug)
         $plannedOps.Add(("OP|file|write|{0}" -f $auditPath))
         $artifacts.audit = $auditPath
+        $artifacts.auditStamp = $resolvedAuditStamp
 
         if ($Push) {
             $plannedOps.Add(("OP|git|push|remote={0};branch={1}" -f $Remote, $branch))
@@ -271,7 +276,12 @@ try {
 
     $planHash = Compute-PlanHash -Ops $plannedOps.ToArray()
 
-    $result = New-TaeResult -Ok $true -ExitCode 0 -SuggestedNextStep "Si quieres ejecutar, reintenta con: -PlanOnly:$false -ApproveHash $planHash" -Data @{
+    $next = "Si quieres ejecutar, reintenta con: -PlanOnly:$false -ApproveHash $planHash"
+    if ($doPrepare -and $artifacts.auditStamp) {
+        $next = "$next -AuditStamp $($artifacts.auditStamp)"
+    }
+
+    $result = New-TaeResult -Ok $true -ExitCode 0 -SuggestedNextStep $next -Data @{
         branchName = $branch
         branchSlug = $slug
         planHash   = $planHash
@@ -287,7 +297,11 @@ try {
     if ([string]::IsNullOrWhiteSpace($ApproveHash) -or $ApproveHash.ToUpperInvariant() -ne $planHash) {
         $result.ok = $false
         $result.exitCode = 10
-        $result.suggestedNextStep = "Vuelve a ejecutar con -ApproveHash $planHash (exacto)."
+        if ($doPrepare -and $artifacts.auditStamp) {
+            $result.suggestedNextStep = "Vuelve a ejecutar con -ApproveHash $planHash (exacto) -AuditStamp $($artifacts.auditStamp)."
+        } else {
+            $result.suggestedNextStep = "Vuelve a ejecutar con -ApproveHash $planHash (exacto)."
+        }
         Add-Error -Result $result -Category 'contract' -Code 'HASH_NOT_APPROVED' -Message "ApproveHash no coincide con el planHash calculado." -Remediation "Copia el planHash exacto y reintenta."
         Write-TaeOutput -Result $result
         exit 10
@@ -328,8 +342,8 @@ try {
 
         # Evidencia mínima de cierre (auditoría)
         Ensure-Directory -Path 'docs/governance/audits'
-        $ts = Get-Date -Format 'yyyyMMdd_HHmm'
-        $auditPath = Join-Path -Path 'docs/governance/audits' -ChildPath ("{0}_{1}_CIERRE.md" -f $ts, $slug)
+        $resolvedAuditStamp = if ([string]::IsNullOrWhiteSpace($AuditStamp)) { (Get-Date -Format 'yyyyMMdd_HHmm') } else { $AuditStamp }
+        $auditPath = Join-Path -Path 'docs/governance/audits' -ChildPath ("{0}_{1}_CIERRE.md" -f $resolvedAuditStamp, $slug)
         if (-not (Test-Path -LiteralPath $auditPath)) {
             $content = @(
                 "# CIERRE - {0}" -f $branch
