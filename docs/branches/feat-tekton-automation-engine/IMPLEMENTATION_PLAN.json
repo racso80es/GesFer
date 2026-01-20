@@ -1,0 +1,273 @@
+{
+  "plan": "TAE_IMPLEMENTATION_PLAN",
+  "version": "1.0.0",
+  "date": "2026-01-20",
+  "scope": {
+    "area": "INFRA/TEKTON",
+    "focusPaths": [
+      "Tekton/Tools/",
+      "Tekton/Configuration/"
+    ]
+  },
+  "constraints": {
+    "noScriptCodeWrittenInThisPhase": true,
+    "noConfigChangesInThisPhase": true,
+    "powerShellOnly": true,
+    "gitPolicy": "no_master_commit",
+    "goldenRulesPointerFile": ".cursorrules -> Tekton/Rules/GOLDEN_RULES.md",
+    "executionRequiresHashApproval": true
+  },
+  "goals": [
+    "Implementar Start-Task.ps1 y Close-Task.ps1 como herramientas TAE con contrato CLI estable.",
+    "Integrar disparadores de 'empezar tarea sencilla/normal/compleja' vía TEKTON_ACTIONS.json (sin comandos manuales).",
+    "Registrar el término 'Herramienta TAE' en DICTIONARY.json."
+  ],
+  "taeContract": {
+    "output": {
+      "defaultFormat": "Text",
+      "supportsJson": true,
+      "jsonHeartbeatFields": [
+        "engine",
+        "tool",
+        "version",
+        "ok",
+        "exitCode",
+        "name",
+        "scope",
+        "type",
+        "branchName",
+        "branchSlug",
+        "planOnly",
+        "planHash",
+        "approvedHash",
+        "plannedOps",
+        "artifacts",
+        "errors",
+        "warnings",
+        "suggestedNextStep"
+      ]
+    },
+    "exitCodes": {
+      "0": "OK",
+      "10": "INVALID_ARGUMENTS",
+      "11": "PRECONDITION_FAILED_OR_DEPENDENCY_MISSING",
+      "20": "GIT_ERROR_GENERIC",
+      "21": "GIT_CONFLICT",
+      "22": "GIT_AUTH_OR_PERMISSION",
+      "30": "VALIDATION_FAILED",
+      "40": "IO_ERROR",
+      "50": "UNEXPECTED_ERROR"
+    },
+    "hashGate": {
+      "algorithm": "SHA256",
+      "planOnlyDefault": true,
+      "approvalParameter": "ApproveHash",
+      "canonicalizationRule": "El plan se serializa a un texto canónico de líneas (no JSON) con orden estable; cada operación es una línea 'OP|<type>|<path>|<action>|<details>' ordenada lexicográficamente. El SHA256 se calcula sobre UTF-8 sin BOM.",
+      "reason": "Evitar inestabilidad de orden de propiedades JSON entre PowerShell y C#; garantizar hash reproducible cross-runtime."
+    }
+  },
+  "controlHashes": {
+    "policy": {
+      "algorithm": "SHA256",
+      "when": "Antes de ejecutar cambios reales y tras generarlos",
+      "rule": "El motor debe imprimir hashes 'before' y 'after' y exigir aprobación explícita del hash del plan antes de escribir/ejecutar."
+    },
+    "files": [
+      {
+        "path": "Tekton/Configuration/TEKTON_ACTIONS.json",
+        "action": "modify",
+        "beforeSha256": "728356CCCD2FE5A7718631BA5F5A89AD07D58275B62E7DB2120355B8E55F343C",
+        "afterSha256": "TBD_AFTER_CHANGE",
+        "approvalRequired": true
+      },
+      {
+        "path": "Tekton/Configuration/DICTIONARY.json",
+        "action": "modify",
+        "beforeSha256": "2C6F493756A6E8690A1EFB0B039B695EBCC4A9445C20BA81D9F31F775D950129",
+        "afterSha256": "TBD_AFTER_CHANGE",
+        "approvalRequired": true
+      },
+      {
+        "path": "Tekton/Tools/Start-Task.ps1",
+        "action": "create",
+        "beforeSha256": null,
+        "afterSha256": "TBD_AFTER_CREATION",
+        "approvalRequired": true
+      },
+      {
+        "path": "Tekton/Tools/Close-Task.ps1",
+        "action": "create",
+        "beforeSha256": null,
+        "afterSha256": "TBD_AFTER_CREATION",
+        "approvalRequired": true
+      },
+      {
+        "path": ".cursorrules",
+        "action": "mustNotChange",
+        "beforeSha256": "E55131F97FDB700C930ADF27916EF44FF4BF88F856B9F407AECBFF7AC6C2826B",
+        "afterSha256": "MUST_EQUAL_BEFORE",
+        "approvalRequired": true
+      }
+    ]
+  },
+  "design": {
+    "startTask": {
+      "scriptPath": "Tekton/Tools/Start-Task.ps1",
+      "responsibilities": [
+        "Validar dependencias (git, dotnet) y acceso a carpetas.",
+        "Validar estado Git (repo válido, working tree limpio si FailIfDirty).",
+        "Sincronizar referencias remotas (fetch/prune) salvo flags NoFetch/NoPrune.",
+        "Calcular branchSlug y asegurar artefactos S-Grade (docs + telemetría).",
+        "Generar plan de operaciones y planHash (hash gate).",
+        "Ejecutar el plan solo con ApproveHash coincidente."
+      ],
+      "dependencyChecks": [
+        "git --version",
+        "git rev-parse --is-inside-work-tree",
+        "dotnet --version",
+        "Test-Path y permisos de escritura para docs/branches y docs/performance"
+      ],
+      "plannedOpsModel": [
+        {
+          "op": "git.fetch",
+          "details": "git fetch <remote> --prune"
+        },
+        {
+          "op": "git.checkout_new_branch",
+          "details": "git checkout -b <branch> <remote>/<baseBranch> (o desde base local si aplica)"
+        },
+        {
+          "op": "file.ensure_nonempty",
+          "details": "docs/branches/<slug>.md"
+        },
+        {
+          "op": "file.ensure_nonempty",
+          "details": "docs/performance/GLOBAL_IA_TRACKER.md"
+        },
+        {
+          "op": "file.ensure_nonempty",
+          "details": "docs/performance/IA_PERF_<slug>.md"
+        }
+      ],
+      "errorClassification": [
+        {
+          "category": "dependency",
+          "exitCode": 11,
+          "suggestedNextStep": "Instala/expón en PATH git/dotnet y reintenta."
+        },
+        {
+          "category": "precondition",
+          "exitCode": 11,
+          "suggestedNextStep": "Ejecuta: git status; limpia/stash/commit y reintenta."
+        },
+        {
+          "category": "git_auth",
+          "exitCode": 22,
+          "suggestedNextStep": "Reautentica (credenciales/SSH) y reintenta."
+        }
+      ]
+    },
+    "closeTask": {
+      "scriptPath": "Tekton/Tools/Close-Task.ps1",
+      "modes": [
+        "Prepare",
+        "Cleanup",
+        "All"
+      ],
+      "responsibilities": {
+        "Prepare": [
+          "Validar dependencias y estado Git.",
+          "Ejecutar scripts de validación existentes (validate-commit / validate-pr) según flags.",
+          "Generar evidencias de cierre (auditoría y telemetría de cierre) sin merge directo a master.",
+          "Push a remoto si aplica."
+        ],
+        "Cleanup": [
+          "Detectar si la rama está mergeada en master (si RequireMerged).",
+          "Borrar rama local y opcionalmente remota.",
+          "Ejecutar git remote prune origin.",
+          "Confirmar DoD: solo master, limpio, up-to-date con origin/master."
+        ]
+      },
+      "validationIntegration": {
+        "validateCommit": "scripts/validate-commit.ps1",
+        "validatePr": "scripts/validate-pr.ps1",
+        "exitCodeOnFailure": 30,
+        "suggestedNextStep": "Ejecuta el script de validación indicado, corrige fallos y reintenta Close-Task."
+      },
+      "errorClassification": [
+        {
+          "category": "validation",
+          "exitCode": 30,
+          "suggestedNextStep": "Corrige el fallo del Juez y reintenta."
+        },
+        {
+          "category": "git_conflict",
+          "exitCode": 21,
+          "suggestedNextStep": "Resuelve conflictos en tu rama/PR antes de cerrar."
+        }
+      ]
+    }
+  },
+  "integration": {
+    "tektonActionsJsonUpdate": {
+      "file": "Tekton/Configuration/TEKTON_ACTIONS.json",
+      "intent": "Añadir definiciones de disparadores para tareas Sencilla/Normal/Compleja que invoquen Start-Task.ps1 en vez de comandos manuales.",
+      "proposedSchemaExtension": {
+        "tools": {
+          "tae": {
+            "start": {
+              "script": "Tekton/Tools/Start-Task.ps1",
+              "invocation": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File Tekton/Tools/Start-Task.ps1"
+            },
+            "close": {
+              "script": "Tekton/Tools/Close-Task.ps1",
+              "invocation": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File Tekton/Tools/Close-Task.ps1"
+            }
+          }
+        },
+        "taskTriggers": {
+          "startTask": {
+            "sencilla": {
+              "commandTemplate": "<tae.start> -Name '{Name}' -Scope '{Scope}' -Type 'Sencilla' -OutputFormat Json -PlanOnly"
+            },
+            "normal": {
+              "commandTemplate": "<tae.start> -Name '{Name}' -Scope '{Scope}' -Type 'Normal' -OutputFormat Json -PlanOnly"
+            },
+            "compleja": {
+              "commandTemplate": "<tae.start> -Name '{Name}' -Scope '{Scope}' -Type 'Compleja' -OutputFormat Json -PlanOnly"
+            }
+          }
+        }
+      },
+      "hashControl": {
+        "beforeSha256": "728356CCCD2FE5A7718631BA5F5A89AD07D58275B62E7DB2120355B8E55F343C",
+        "afterSha256": "TBD_AFTER_CHANGE"
+      }
+    },
+    "dictionaryUpdate": {
+      "file": "Tekton/Configuration/DICTIONARY.json",
+      "termToAdd": {
+        "key": "Herramienta TAE",
+        "scope": "Tekton (infra/automatización): interfaz estandarizada para operaciones repetitivas de Git y gobierno de tareas.",
+        "definition": "Interfaz de automatización estandarizada (CLI) para operaciones de infraestructura: iniciar/cerrar tareas, aplicar políticas Git, asegurar artefactos S‑Grade y producir salida JSON con códigos de error estables.",
+        "invariants": [
+          "Debe exponer parámetros explícitos y salida determinista.",
+          "Debe operar bajo hash gate (PlanOnly + ApproveHash).",
+          "Debe respetar Golden Rules (no_master_commit, docs de rama, telemetría IA)."
+        ],
+        "examples": [
+          "Start-Task.ps1 y Close-Task.ps1 como herramientas TAE."
+        ]
+      },
+      "hashControl": {
+        "beforeSha256": "2C6F493756A6E8690A1EFB0B039B695EBCC4A9445C20BA81D9F31F775D950129",
+        "afterSha256": "TBD_AFTER_CHANGE"
+      }
+    }
+  },
+  "deliverablesForApproval": [
+    "docs/branches/feat-tekton-automation-engine/INIT.md",
+    "docs/branches/feat-tekton-automation-engine/IMPLEMENTATION_PLAN.json"
+  ]
+}
+

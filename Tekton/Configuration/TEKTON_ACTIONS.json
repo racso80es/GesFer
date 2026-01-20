@@ -18,6 +18,31 @@
   },
   "manifesto": "Tekton/Configuration/MANIFESTO.md",
   "rules": "Tekton/Rules/GOLDEN_RULES.md",
-  "git_policy": "no_master_commit"
+  "git_policy": "no_master_commit",
+  "tools": {
+    "tae": {
+      "start": {
+        "script": "Tekton/Tools/Start-Task.ps1",
+        "invocation": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File Tekton/Tools/Start-Task.ps1"
+      },
+      "close": {
+        "script": "Tekton/Tools/Close-Task.ps1",
+        "invocation": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File Tekton/Tools/Close-Task.ps1"
+      }
+    }
+  },
+  "task_triggers": {
+    "start_task": {
+      "sencilla": {
+        "commandTemplate": "<tae.start> -Name \"{Name}\" -Scope \"{Scope}\" -Type \"Sencilla\" -OutputFormat Json -PlanOnly"
+      },
+      "normal": {
+        "commandTemplate": "<tae.start> -Name \"{Name}\" -Scope \"{Scope}\" -Type \"Normal\" -OutputFormat Json -PlanOnly"
+      },
+      "compleja": {
+        "commandTemplate": "<tae.start> -Name \"{Name}\" -Scope \"{Scope}\" -Type \"Compleja\" -OutputFormat Json -PlanOnly"
+      }
+    }
+  }
 }
 

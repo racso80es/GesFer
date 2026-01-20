@@ -28,6 +28,18 @@
         "Ejecutar `dotnet build \"Api/GesFer.sln\"`."
       ]
     },
+    "Herramienta TAE": {
+      "scope": "Tekton (infra/automatización): interfaz estandarizada para operaciones repetitivas de Git y gobierno de tareas.",
+      "definition": "Interfaz de automatización estandarizada (CLI) para operaciones de infraestructura: iniciar/cerrar tareas, aplicar políticas Git, asegurar artefactos S‑Grade y producir salida JSON con códigos de error estables.",
+      "invariants": [
+        "Debe exponer parámetros explícitos y salida determinista.",
+        "Debe operar bajo hash gate (PlanOnly + ApproveHash).",
+        "Debe respetar Golden Rules (no_master_commit, docs de rama, telemetría IA)."
+      ],
+      "examples": [
+        "Start-Task.ps1 y Close-Task.ps1 como herramientas TAE."
+      ]
+    },
     "Ámbito": {
       "scope": "Tekton (foco contextual): delimitación técnica previa a toda ejecución, análisis o escritura.",
       "definition": "Delimitación técnica de la tarea (API, Cliente, Infra, Cross). Se declara en la Fase 0 para enfocar la atención y reducir ruido.",
