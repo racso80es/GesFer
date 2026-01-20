@@ -46,3 +46,8 @@ Los reportes `IA_PERF_<rama>.md` existen para satisfacer el enforcement del Juez
   - **Acción**: eliminación de ruido/instrumentación temporal + consolidación de roles (Administrador Global/Empresa/Operativos) y regla de validación granular de acción.
   - **Commit**: `8b9af0d3e7812c6bbe935e7a020b7bf928e834c8`
 
+- **2026-01-20** — `feat/reorganize-tekton-core`
+  - **Resultado**: VERDE (build + puntero `.cursorrules` + centralización Tekton).
+  - **Acción**: migración a `/Tekton` (Rules/Configuration/Templates) + `.cursorrules` como puntero estático a Golden Rules.
+  - **Commit**: `58a5642f993043df38ebcda666d9de131383854e`
+
