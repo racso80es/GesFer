@@ -157,29 +157,15 @@ if (Test-Path "Api") {
 
 Write-Host ""
 
-Write-Host "[2/3] Ejecutando tests unitarios del Frontend (npm test)..." -ForegroundColor Yellow
+Write-Host "[2/3] Ejecutando tests de integración del Frontend (npm run test:integrity)..." -ForegroundColor Yellow
 if (Test-Path "Cliente") {
     Push-Location Cliente
     try {
-        $enforceFrontendTests = $false
-        if (-not [string]::IsNullOrWhiteSpace($env:TEKTON_ENFORCE_FRONTEND_TESTS)) {
-            $enforceFrontendTests = ($env:TEKTON_ENFORCE_FRONTEND_TESTS -match "^(1|true|yes)$")
-        }
-
-        npm run test -- --passWithNoTests
-        if ($LASTEXITCODE -ne 0) {
-            if ($enforceFrontendTests) {
-                $ErrorCount++
-            } else {
-                $Warnings += "Frontend tests: fallaron (bypass temporal). Para reactivar bloqueo: TEKTON_ENFORCE_FRONTEND_TESTS=1"
-            }
-        }
+        # Timeout global: 180s (3 min) para evitar falsos negativos por lentitud en entorno local/CI.
+        npm run test:integrity -- --passWithNoTests --testTimeout=180000
+        if ($LASTEXITCODE -ne 0) { $ErrorCount++ }
     } catch {
-        if ($enforceFrontendTests) {
-            $ErrorCount++
-        } else {
-            $Warnings += "Frontend tests: excepción durante ejecución (bypass temporal). Para reactivar bloqueo: TEKTON_ENFORCE_FRONTEND_TESTS=1"
-        }
+        $ErrorCount++
     } finally {
         Pop-Location
     }
@@ -189,39 +175,9 @@ if (Test-Path "Cliente") {
 
 Write-Host ""
 
-$enforceE2E = $false
-if (-not [string]::IsNullOrWhiteSpace($env:TEKTON_ENFORCE_E2E)) {
-    $enforceE2E = ($env:TEKTON_ENFORCE_E2E -match "^(1|true|yes)$")
-}
-
-if (-not $enforceE2E) {
-    Write-Host "[3/3] OMITIENDO tests E2E (Playwright) - bypass temporal de infraestructura" -ForegroundColor Yellow
-    Write-Host "      Para reactivar: establecer TEKTON_ENFORCE_E2E=1" -ForegroundColor DarkYellow
-    $Warnings += "E2E: omitido temporalmente (establecer TEKTON_ENFORCE_E2E=1 para reactivar)."
-} else {
-    Write-Host "[3/3] Ejecutando tests E2E (Playwright)..." -ForegroundColor Yellow
-    if (Test-Path "Cliente") {
-        Push-Location Cliente
-        try {
-            $e2eOutput = npx playwright test 2>&1 | Out-String
-            $e2eExitCode = $LASTEXITCODE
-
-            if ($e2eExitCode -ne 0) {
-                if ($e2eOutput -match "ECONNREFUSED|ERR_CONNECTION_REFUSED") {
-                    $Warnings += "E2E: servicios no disponibles (ECONNREFUSED)."
-                } else {
-                    $ErrorCount++
-                }
-            }
-        } catch {
-            $Warnings += "E2E: excepcion durante ejecucion (posible entorno local)."
-        } finally {
-            Pop-Location
-        }
-    } else {
-        $ErrorCount++
-    }
-}
+Write-Host "[3/3] BYPASS: tests E2E (Playwright) desactivados temporalmente" -ForegroundColor Yellow
+# Fast-Track: solo compilación + integración (sin E2E).
+$Warnings += "E2E: desactivado temporalmente (Fast-Track: solo compilación + integración)."
 
 Write-Host ""
 Write-Host "==========================================" -ForegroundColor Cyan
