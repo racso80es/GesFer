@@ -158,16 +158,74 @@ if (Test-Path "Api") {
 Write-Host ""
 
 Write-Host "[2/3] Ejecutando tests de integración del Frontend (npm run test:integrity)..." -ForegroundColor Yellow
+
+# Función local para levantar el entorno
+function Start-TestEnvironment {
+    Write-Host "[DOCKER] Levantando entorno de pruebas (Backend + DB)..." -ForegroundColor Yellow
+    docker compose -f docker-compose.test.yml up -d --build
+    if ($LASTEXITCODE -ne 0) {
+        throw "Error al levantar docker-compose"
+    }
+
+    Write-Host "[DOCKER] Esperando a que la API esté lista (Health Check)..." -ForegroundColor Yellow
+    $retryCount = 0
+    $maxRetries = 60 # 60 intentos * 2s = 120s max
+    $healthy = $false
+
+    while (-not $healthy -and $retryCount -lt $maxRetries) {
+        try {
+            $resp = Invoke-WebRequest -Uri "http://localhost:5001/api/health" -Method Get -UseBasicParsing -ErrorAction SilentlyContinue
+            if ($resp.StatusCode -eq 200) {
+                $healthy = $true
+                Write-Host "[DOCKER] API saludable y lista!" -ForegroundColor Green
+            }
+        } catch {
+            # Ignorar error y reintentar
+        }
+
+        if (-not $healthy) {
+            Start-Sleep -Seconds 2
+            $retryCount++
+            if ($retryCount % 5 -eq 0) { Write-Host "." -NoNewline }
+        }
+    }
+
+    if (-not $healthy) {
+        docker compose -f docker-compose.test.yml logs
+        throw "Timeout esperando a que la API esté lista"
+    }
+}
+
+# Función local para bajar el entorno
+function Stop-TestEnvironment {
+    Write-Host "[DOCKER] Bajando entorno de pruebas..." -ForegroundColor Yellow
+    docker compose -f docker-compose.test.yml down -v
+}
+
 if (Test-Path "Cliente") {
-    Push-Location Cliente
     try {
-        # Timeout global: 180s (3 min) para evitar falsos negativos por lentitud en entorno local/CI.
-        npm run test:integrity -- --passWithNoTests --testTimeout=180000
-        if ($LASTEXITCODE -ne 0) { $ErrorCount++ }
+        # 1. Levantar entorno
+        Start-TestEnvironment
+
+        # 2. Configurar variable de entorno para que Jest use el puerto 5001
+        $env:API_URL = "http://localhost:5001"
+
+        # 3. Ejecutar tests
+        Push-Location Cliente
+        try {
+            # Timeout global: 180s (3 min) para evitar falsos negativos por lentitud en entorno local/CI.
+            npm run test:integrity -- --passWithNoTests --testTimeout=180000
+            if ($LASTEXITCODE -ne 0) { $ErrorCount++ }
+        } finally {
+            Pop-Location
+        }
     } catch {
+        Write-Host ("ERROR en fase de integración: {0}" -f $_) -ForegroundColor Red
         $ErrorCount++
     } finally {
-        Pop-Location
+        # 4. Asegurar limpieza del entorno
+        Stop-TestEnvironment
+        $env:API_URL = $null
     }
 } else {
     $ErrorCount++
