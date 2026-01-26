@@ -1,5 +1,6 @@
 using GesFer.Admin.Api;
 using GesFer.Product.Back.src.Infrastructure.Data;
+using Serilog.Sinks.MySQL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

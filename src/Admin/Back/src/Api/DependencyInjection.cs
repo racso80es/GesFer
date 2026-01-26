@@ -1,4 +1,3 @@
-using GesFer.Admin.Infrastructure.Data;
 using GesFer.Admin.Infrastructure.Services;
 using GesFer.Product.Back.src.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
