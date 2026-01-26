@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
-using GesFer.Infrastructure.Data;
-using GesFer.Infrastructure.Services;
+using GesFer.Product.Back.src.Infrastructure.Data;
+using GesFer.Product.Back.src.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
@@ -151,7 +151,7 @@ public class MenuService
 
         // 2. Verificar que la API compila
         Console.WriteLine("[2/9] Verificando compilación de la API...");
-        var apiProjectPath = Path.Combine(_logService.GetRootPath(), "Api", "src", "Api", "GesFer.Api.csproj");
+        var apiProjectPath = Path.Combine(_logService.GetRootPath(), "src", "Product", "Back", "src", "Api", "GesFer.Api.csproj");
         
         if (!File.Exists(apiProjectPath))
         {
@@ -616,7 +616,7 @@ public class MenuService
     }
 
     /// <summary>
-    /// Muestra el menú de seeds
+    /// Muestra el menú de seeds con selector de ámbito
     /// </summary>
     private async Task<bool> ExecuteSeedsMenuAsync()
     {
@@ -625,32 +625,63 @@ public class MenuService
         Console.WriteLine("   Ejecución de Seeds");
         Console.WriteLine("========================================");
         Console.WriteLine();
-        Console.WriteLine("  1. Ejecutar datos maestros");
-        Console.WriteLine("  2. Ejecutar datos de muestra");
-        Console.WriteLine("  3. Ejecutar datos de prueba");
-        Console.WriteLine("  4. Ejecutar todos los seeds");
+        Console.WriteLine("Seleccione el ámbito:");
+        Console.WriteLine("  1. Shared (datos compartidos)");
+        Console.WriteLine("  2. Admin (datos administrativos)");
+        Console.WriteLine("  3. Product (datos de producto)");
+        Console.WriteLine("  4. All (todos los ámbitos)");
         Console.WriteLine("  5. Volver al menú principal");
         Console.WriteLine();
-        Console.Write("Opción: ");
+        Console.Write("Ámbito: ");
 
-        if (int.TryParse(Console.ReadLine(), out int option))
+        if (!int.TryParse(Console.ReadLine(), out int scopeOption) || scopeOption < 1 || scopeOption > 5)
         {
-            switch (option)
-            {
-                case 1:
-                    await _seedService.ExecuteMasterDataAsync();
-                    break;
-                case 2:
-                    await _seedService.ExecuteSampleDataAsync();
-                    break;
-                case 3:
-                    await _seedService.ExecuteTestDataAsync();
-                    break;
-                case 4:
-                    await _seedService.ExecuteAllSeedsAsync();
-                    break;
-            }
+            Console.WriteLine("Opción no válida.");
+            Console.WriteLine("Presione cualquier tecla para continuar...");
+            Console.ReadKey();
+            return true;
         }
+
+        if (scopeOption == 5)
+        {
+            return true;
+        }
+
+        var scope = scopeOption switch
+        {
+            1 => SeedService.SeedScope.Shared,
+            2 => SeedService.SeedScope.Admin,
+            3 => SeedService.SeedScope.Product,
+            4 => SeedService.SeedScope.All,
+            _ => SeedService.SeedScope.All
+        };
+
+        Console.WriteLine();
+        Console.WriteLine("Seleccione el nivel:");
+        Console.WriteLine("  1. Master (datos maestros)");
+        Console.WriteLine("  2. Demo (datos de demostración)");
+        Console.WriteLine("  3. Test (datos de prueba)");
+        Console.WriteLine();
+        Console.Write("Nivel: ");
+
+        if (!int.TryParse(Console.ReadLine(), out int levelOption) || levelOption < 1 || levelOption > 3)
+        {
+            Console.WriteLine("Opción no válida.");
+            Console.WriteLine("Presione cualquier tecla para continuar...");
+            Console.ReadKey();
+            return true;
+        }
+
+        var level = levelOption switch
+        {
+            1 => SeedService.SeedLevel.Master,
+            2 => SeedService.SeedLevel.Demo,
+            3 => SeedService.SeedLevel.Test,
+            _ => SeedService.SeedLevel.Master
+        };
+
+        Console.WriteLine();
+        await _seedService.ExecuteSeedAsync(scope, level);
 
         Console.WriteLine();
         Console.WriteLine("Presione cualquier tecla para continuar...");

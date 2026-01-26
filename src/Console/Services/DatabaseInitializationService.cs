@@ -1,5 +1,5 @@
-using GesFer.Infrastructure.Data;
-using GesFer.Infrastructure.Services;
+using GesFer.Product.Back.src.Infrastructure.Data;
+using GesFer.Product.Back.src.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -71,7 +71,7 @@ public class DatabaseInitializationService
             
             var baseDir = AppDomain.CurrentDomain.BaseDirectory;
             var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
-            var apiPath = Path.Combine(rootPath, "Api", "src", "Api");
+            var apiPath = Path.Combine(rootPath, "src", "Product", "Back", "src", "Api");
 
             if (!Directory.Exists(apiPath))
             {

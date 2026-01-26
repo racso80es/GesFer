@@ -25,9 +25,9 @@ public class GoldenRulesComplianceService
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
         _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
         _stateFilePath = Path.Combine(_rootPath, ".golden-rules-state.json");
-        _entitiesPath = Path.Combine(_rootPath, "Api", "src", "Domain", "Entities");
-        _seedsPath = Path.Combine(_rootPath, "Api", "src");
-        _testsPath = Path.Combine(_rootPath, "Api", "src", "IntegrationTests");
+        _entitiesPath = Path.Combine(_rootPath, "src", "Product", "Back", "src", "domain", "Entities");
+        _seedsPath = Path.Combine(_rootPath, "src", "Product", "Back", "src");
+        _testsPath = Path.Combine(_rootPath, "src", "Product", "Back", "src", "IntegrationTests");
     }
 
     /// <summary>
@@ -377,7 +377,7 @@ public class GoldenRulesComplianceService
     private async Task<bool> CheckSeedsSyncAsync(string entityName, List<string> properties)
     {
         // Buscar en SetupService.SeedInitialDataAsync
-        var setupServicePath = Path.Combine(_seedsPath, "Api", "Services", "SetupService.cs");
+        var setupServicePath = Path.Combine(_seedsPath, "Product", "Back", "src", "Api", "Services", "SetupService.cs");
         if (File.Exists(setupServicePath))
         {
             var content = await File.ReadAllTextAsync(setupServicePath);

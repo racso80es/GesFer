@@ -149,8 +149,8 @@ public class MigrationService
     {
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
         var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
-        var apiPath = Path.GetFullPath(Path.Combine(rootPath, "Api", "src", "Api"));
-        var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "Api", "src", "Infrastructure"));
+        var apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "src", "Api"));
+        var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "src", "Infrastructure"));
         var migrationsPath = Path.Combine(infrastructurePath, "Migrations");
 
         _logService.WriteLog($"Verificando migraciones en: {migrationsPath}");
@@ -253,8 +253,8 @@ public class MigrationService
 
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
         var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
-        var apiPath = Path.GetFullPath(Path.Combine(rootPath, "Api", "src", "Api"));
-        var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "Api", "src", "Infrastructure"));
+        var apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "src", "Api"));
+        var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "src", "Infrastructure"));
 
         var projectPath = Path.Combine(infrastructurePath, "GesFer.Infrastructure.csproj");
         var startupProjectPath = Path.Combine(apiPath, "GesFer.Api.csproj");
@@ -477,8 +477,8 @@ public class MigrationService
             // Obtener rutas
             var baseDir = AppDomain.CurrentDomain.BaseDirectory;
             var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
-            var apiPath = Path.GetFullPath(Path.Combine(rootPath, "Api", "src", "Api"));
-            var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "Api", "src", "Infrastructure"));
+            var apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "src", "Api"));
+            var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "src", "Infrastructure"));
             var migrationsPath = Path.Combine(infrastructurePath, "Migrations");
 
             result.Messages.Add($"Ruta de migraciones: {migrationsPath}");

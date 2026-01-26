@@ -16,7 +16,7 @@ public class DockerService
         _logService = logService;
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
         var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
-        _apiPath = Path.GetFullPath(Path.Combine(rootPath, "Api"));
+        _apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back"));
     }
 
     /// <summary>
