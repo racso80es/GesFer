@@ -76,16 +76,26 @@ public class JsonDataSeeder
                 
                 if (hasSolution)
                 {
-                    // Encontramos una solución. Soportar ambas topologías:
-                    // - Repo root: <root>/Api/GesFer.sln  -> seeds: <root>/Api/src/Infrastructure/Data/Seeds
-                    // - Api root:  <root>/GesFer.sln      -> seeds: <root>/src/Infrastructure/Data/Seeds
+                    // Encontramos una solución. Soportar topologías:
+                    // - Repo root: <root>/src/Product/Back/GesFer.sln  -> seeds: <root>/src/Product/Back/src/Infrastructure/Data/Seeds
+                    // - Product root:  <root>/GesFer.sln      -> seeds: <root>/src/Infrastructure/Data/Seeds
+                    // - Legacy: <root>/Api/GesFer.sln  -> seeds: <root>/Api/src/Infrastructure/Data/Seeds
                     var rootDir = searchDir.FullName;
 
-                    // 2.1 Seeds en repo root (topología habitual)
-                    var repoSeedsPath = Path.Combine(rootDir, "Api", "src", "Infrastructure", "Data", "Seeds");
+                    // 2.1 Seeds en repo root (topología habitual - nueva estructura)
+                    var repoSeedsPath = Path.Combine(rootDir, "src", "Product", "Back", "src", "Infrastructure", "Data", "Seeds");
                     if (Directory.Exists(repoSeedsPath))
                     {
                         foundPath = repoSeedsPath;
+                        break;
+                    }
+                    
+                    // Legacy: Seeds en Api/src/Infrastructure/Data/Seeds (compatibilidad temporal)
+                    var repoApiSeedsPath = Path.Combine(rootDir, "Api", "src", "Infrastructure", "Data", "Seeds");
+                    if (Directory.Exists(repoApiSeedsPath))
+                    {
+                        foundPath = repoApiSeedsPath;
+                        _logger.LogWarning("Usando ubicación legacy de seeds: {Path}. Se recomienda migrar a src/Product/Back/src/Infrastructure/Data/Seeds/", foundPath);
                         break;
                     }
 
@@ -127,9 +137,9 @@ public class JsonDataSeeder
                 
                 // Buscar directamente src/Product/Back/src/Infrastructure/Data/Seeds desde cualquier punto
                 var directProductSeedsPath = Path.Combine(searchDir.FullName, "src", "Product", "Back", "src", "Infrastructure", "Data", "Seeds");
-                if (Directory.Exists(directApiSeedsPath))
+                if (Directory.Exists(directProductSeedsPath))
                 {
-                    foundPath = directApiSeedsPath;
+                    foundPath = directProductSeedsPath;
                     break;
                 }
 
