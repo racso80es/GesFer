@@ -20,7 +20,8 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@shared/*": ["../../Shared/Front/*"]
+      "@shared/*": ["../../Shared/Front/*"],
+      "@shared/types/*": ["../../Shared/Front/lib/types/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

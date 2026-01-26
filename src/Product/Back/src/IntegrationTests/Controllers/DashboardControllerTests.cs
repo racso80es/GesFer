@@ -1,6 +1,6 @@
 using FluentAssertions;
 using GesFer.Application.DTOs.Admin;
-using GesFer.Domain.Entities;
+using GesFer.Product.Back.Domain.Entities;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

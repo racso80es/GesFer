@@ -1,6 +1,6 @@
 using GesFer.Shared.Back.Domain.Common;
 
-namespace GesFer.Domain.Entities;
+namespace GesFer.Product.Back.Domain.Entities;
 
 /// <summary>
 /// Entidad que representa una tarifa (de compra o venta)

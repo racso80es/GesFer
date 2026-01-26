@@ -1,4 +1,7 @@
-using GesFer.Domain.Entities;
+using GesFer.Product.Back.Domain.Entities;
+using GesFer.Shared.Back.Domain.Entities;
+using GesFer.Shared.Back.Domain.Common;
+using GesFer.Admin.Back.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -71,12 +74,12 @@ public class ApplicationDbContext : DbContext
     private void ConfigureSequentialGuids(ModelBuilder modelBuilder)
     {
         var entityTypes = modelBuilder.Model.GetEntityTypes()
-            .Where(e => typeof(Domain.Common.BaseEntity).IsAssignableFrom(e.ClrType));
+            .Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType));
 
         foreach (var entityType in entityTypes)
         {
             // Buscar la propiedad Id de tipo Guid
-            var idProperty = entityType.FindProperty(nameof(Domain.Common.BaseEntity.Id));
+            var idProperty = entityType.FindProperty(nameof(BaseEntity.Id));
             
             if (idProperty != null && idProperty.ClrType == typeof(Guid))
             {
@@ -94,12 +97,12 @@ public class ApplicationDbContext : DbContext
     private void ConfigureSoftDelete(ModelBuilder modelBuilder)
     {
         var entityTypes = modelBuilder.Model.GetEntityTypes()
-            .Where(e => typeof(Domain.Common.BaseEntity).IsAssignableFrom(e.ClrType));
+            .Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType));
 
         foreach (var entityType in entityTypes)
         {
             var parameter = Expression.Parameter(entityType.ClrType, "e");
-            var property = Expression.Property(parameter, nameof(Domain.Common.BaseEntity.DeletedAt));
+            var property = Expression.Property(parameter, nameof(BaseEntity.DeletedAt));
             var nullConstant = Expression.Constant(null, typeof(DateTime?));
             var condition = Expression.Equal(property, nullConstant);
             var lambda = Expression.Lambda(condition, parameter);
@@ -159,7 +162,7 @@ public class ApplicationDbContext : DbContext
     /// </summary>
     private void UpdateAuditFields()
     {
-        var entries = ChangeTracker.Entries<Domain.Common.BaseEntity>();
+        var entries = ChangeTracker.Entries<BaseEntity>();
 
         foreach (var entry in entries)
         {

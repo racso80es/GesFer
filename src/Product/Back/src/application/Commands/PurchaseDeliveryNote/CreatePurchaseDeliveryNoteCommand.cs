@@ -1,5 +1,5 @@
 using GesFer.Application.Common.Interfaces;
-using GesFer.Domain.Entities;
+using GesFer.Product.Back.Domain.Entities;
 
 namespace GesFer.Application.Commands.PurchaseDeliveryNote;
 

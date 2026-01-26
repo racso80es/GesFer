@@ -1,7 +1,7 @@
 using GesFer.Application.Commands.PurchaseDeliveryNote;
 using GesFer.Application.Common.Interfaces;
-using GesFer.Domain.Entities;
-using GesFer.Domain.Services;
+using GesFer.Product.Back.Domain.Entities;
+using GesFer.Product.Back.Domain.Services;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

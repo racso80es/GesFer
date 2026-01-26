@@ -1,6 +1,6 @@
-using GesFer.Domain.Entities;
+using GesFer.Product.Back.Domain.Entities;
 
-namespace GesFer.Domain.Services;
+namespace GesFer.Product.Back.Domain.Services;
 
 /// <summary>
 /// Servicio de dominio para gestión de stock

@@ -1,7 +1,7 @@
 using GesFer.Application.Commands.State;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.State;
-using GesFer.Domain.Entities;
+using GesFer.Shared.Back.Domain.Entities;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

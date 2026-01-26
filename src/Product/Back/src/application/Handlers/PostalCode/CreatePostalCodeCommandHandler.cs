@@ -1,7 +1,7 @@
 using GesFer.Application.Commands.PostalCode;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.PostalCode;
-using GesFer.Domain.Entities;
+using GesFer.Shared.Back.Domain.Entities;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

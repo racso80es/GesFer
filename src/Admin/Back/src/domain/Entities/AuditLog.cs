@@ -1,6 +1,6 @@
 using GesFer.Shared.Back.Domain.Common;
 
-namespace GesFer.Domain.Entities;
+namespace GesFer.Admin.Back.Domain.Entities;
 
 /// <summary>
 /// Entidad para registrar logs de auditoría del sistema administrativo

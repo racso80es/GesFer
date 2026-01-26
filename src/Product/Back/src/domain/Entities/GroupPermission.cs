@@ -1,6 +1,6 @@
 using GesFer.Shared.Back.Domain.Common;
 
-namespace GesFer.Domain.Entities;
+namespace GesFer.Product.Back.Domain.Entities;
 
 /// <summary>
 /// Tabla de relación Many-to-Many entre Group y Permission

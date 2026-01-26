@@ -1,7 +1,7 @@
 using GesFer.Shared.Back.Domain.Common;
 using GesFer.Shared.Back.Domain.ValueObjects;
 
-namespace GesFer.Domain.Entities;
+namespace GesFer.Product.Back.Domain.Entities;
 
 /// <summary>
 /// Entidad que representa una empresa (Tenant) en el sistema multi-tenant

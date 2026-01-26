@@ -1,4 +1,4 @@
-using GesFer.Domain.Entities;
+using GesFer.Product.Back.Domain.Entities;
 using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
 using BCrypt.Net;

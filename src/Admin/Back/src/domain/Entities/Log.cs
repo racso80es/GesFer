@@ -1,4 +1,4 @@
-namespace GesFer.Domain.Entities;
+namespace GesFer.Admin.Back.Domain.Entities;
 
 /// <summary>
 /// Entidad que representa un log del sistema.

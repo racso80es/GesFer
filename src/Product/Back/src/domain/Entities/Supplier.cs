@@ -1,6 +1,7 @@
 using GesFer.Shared.Back.Domain.Common;
+using GesFer.Shared.Back.Domain.Entities;
 
-namespace GesFer.Domain.Entities;
+namespace GesFer.Product.Back.Domain.Entities;
 
 /// <summary>
 /// Entidad que representa un proveedor
@@ -24,10 +25,10 @@ public class Supplier : BaseEntity
     // Navegación
     public Company Company { get; set; } = null!;
     public Tariff? BuyTariff { get; set; }
-    public PostalCode? PostalCode { get; set; }
-    public City? City { get; set; }
-    public State? State { get; set; }
-    public Country? Country { get; set; }
+    public GesFer.Shared.Back.Domain.Entities.PostalCode? PostalCode { get; set; }
+    public GesFer.Shared.Back.Domain.Entities.City? City { get; set; }
+    public GesFer.Shared.Back.Domain.Entities.State? State { get; set; }
+    public GesFer.Shared.Back.Domain.Entities.Country? Country { get; set; }
     public ICollection<PurchaseDeliveryNote> PurchaseDeliveryNotes { get; set; } = new List<PurchaseDeliveryNote>();
 }
 

@@ -121,27 +121,7 @@ export interface UpdateCustomer {
   isActive: boolean;
 }
 
-// Tipos para Country
-export interface Country {
-  id: string;
-  name: string;
-  code?: string;
-  languageId: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt?: string;
-}
-
-// Tipos para City
-export interface City {
-  id: string;
-  stateId: string;
-  name: string;
-  postalCode?: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt?: string;
-}
+// Tipos para Country y City movidos a @shared/lib/types/api
 
 // Tipos para Company
 export interface Company {
