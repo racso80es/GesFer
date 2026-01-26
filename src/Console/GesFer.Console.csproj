@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Api\src\Infrastructure\GesFer.Infrastructure.csproj" />
+    <ProjectReference Include="..\Product\Back\src\Infrastructure\GesFer.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

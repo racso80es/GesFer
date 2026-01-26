@@ -35,7 +35,7 @@ public class CreateCityCommandHandler : ICommandHandler<CreateCityCommand, CityD
         if (existingCity != null)
             throw new InvalidOperationException($"Ya existe una ciudad con el nombre '{command.Dto.Name}' en esta provincia");
 
-        var city = new GesFer.Domain.Entities.City
+        var city = new GesFer.Shared.Back.Domain.Entities.City
         {
             StateId = command.Dto.StateId,
             Name = command.Dto.Name,

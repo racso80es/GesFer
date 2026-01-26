@@ -1,4 +1,4 @@
-namespace GesFer.Domain.Common;
+namespace GesFer.Shared.Back.Domain.Common;
 
 /// <summary>
 /// Clase base para todas las entidades del dominio.
@@ -26,4 +26,3 @@ public abstract class BaseEntity
     /// </summary>
     public bool IsDeleted => DeletedAt.HasValue;
 }
-

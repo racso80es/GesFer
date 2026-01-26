@@ -34,7 +34,7 @@ public class CreateStateCommandHandler : ICommandHandler<CreateStateCommand, Sta
         if (existingState != null)
             throw new InvalidOperationException($"Ya existe una provincia con el nombre '{command.Dto.Name}' en este país");
 
-        var state = new GesFer.Domain.Entities.State
+        var state = new GesFer.Shared.Back.Domain.Entities.State
         {
             CountryId = command.Dto.CountryId,
             Name = command.Dto.Name,

@@ -1,7 +1,7 @@
 using GesFer.Application.Commands.User;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.User;
-using GesFer.Domain.ValueObjects;
+using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,5 @@
-using GesFer.Domain.Common;
-using GesFer.Domain.ValueObjects;
+using GesFer.Shared.Back.Domain.Common;
+using GesFer.Shared.Back.Domain.ValueObjects;
 
 namespace GesFer.Domain.Entities;
 
@@ -22,11 +22,11 @@ public class Company : BaseEntity
     public Guid? LanguageId { get; set; }
 
     // Navegación
-    public PostalCode? PostalCode { get; set; }
-    public City? City { get; set; }
-    public State? State { get; set; }
-    public Country? Country { get; set; }
-    public Language? Language { get; set; }
+    public GesFer.Shared.Back.Domain.Entities.PostalCode? PostalCode { get; set; }
+    public GesFer.Shared.Back.Domain.Entities.City? City { get; set; }
+    public GesFer.Shared.Back.Domain.Entities.State? State { get; set; }
+    public GesFer.Shared.Back.Domain.Entities.Country? Country { get; set; }
+    public GesFer.Shared.Back.Domain.Entities.Language? Language { get; set; }
     public ICollection<User> Users { get; set; } = new List<User>();
     public ICollection<Family> Families { get; set; } = new List<Family>();
     public ICollection<Article> Articles { get; set; } = new List<Article>();

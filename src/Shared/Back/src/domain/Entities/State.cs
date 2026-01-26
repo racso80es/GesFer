@@ -1,6 +1,6 @@
-using GesFer.Domain.Common;
+using GesFer.Shared.Back.Domain.Common;
 
-namespace GesFer.Domain.Entities;
+namespace GesFer.Shared.Back.Domain.Entities;
 
 /// <summary>
 /// Entidad que representa una provincia/estado
@@ -15,4 +15,3 @@ public class State : BaseEntity
     public Country Country { get; set; } = null!;
     public ICollection<City> Cities { get; set; } = new List<City>();
 }
-

@@ -1,6 +1,6 @@
-using GesFer.Domain.Common;
+using GesFer.Shared.Back.Domain.Common;
 
-namespace GesFer.Domain.Entities;
+namespace GesFer.Shared.Back.Domain.Entities;
 
 /// <summary>
 /// Entidad que representa un código postal
@@ -13,4 +13,3 @@ public class PostalCode : BaseEntity
     // Navegación
     public City City { get; set; } = null!;
 }
-

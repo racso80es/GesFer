@@ -1,7 +1,7 @@
 using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
 using GesFer.Domain.Entities;
-using GesFer.Domain.ValueObjects;
+using GesFer.Shared.Back.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

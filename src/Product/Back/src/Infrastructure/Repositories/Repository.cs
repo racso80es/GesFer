@@ -1,4 +1,4 @@
-using GesFer.Domain.Common;
+using GesFer.Shared.Back.Domain.Common;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;

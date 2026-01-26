@@ -2,7 +2,7 @@ using GesFer.Application.Commands.Company;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Company;
 using GesFer.Domain.Entities;
-using GesFer.Domain.ValueObjects;
+using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

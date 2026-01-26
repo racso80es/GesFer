@@ -1,6 +1,6 @@
-using GesFer.Domain.Common;
+using GesFer.Shared.Back.Domain.Common;
 
-namespace GesFer.Domain.Entities;
+namespace GesFer.Shared.Back.Domain.Entities;
 
 /// <summary>
 /// Idioma maestro del sistema.
@@ -12,12 +12,6 @@ public class Language : BaseEntity
     public string? Description { get; set; }
 
     // Navegación inversa opcional
+    // Nota: Las referencias a Company y User se manejan en Product mediante navegación inversa
     public ICollection<Country> Countries { get; set; } = new List<Country>();
-    public ICollection<Company> Companies { get; set; } = new List<Company>();
-    public ICollection<User> Users { get; set; } = new List<User>();
 }
-
-
-
-
-

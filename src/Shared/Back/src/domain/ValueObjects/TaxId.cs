@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace GesFer.Domain.ValueObjects;
+namespace GesFer.Shared.Back.Domain.ValueObjects;
 
 /// <summary>
 /// Value Object inmutable para representar un identificador fiscal español (CIF/NIF/NIE).

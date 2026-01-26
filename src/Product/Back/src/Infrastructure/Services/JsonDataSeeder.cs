@@ -1,5 +1,5 @@
 using GesFer.Domain.Entities;
-using GesFer.Domain.ValueObjects;
+using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
