@@ -17,7 +17,7 @@ param(
     [string]$Name,
 
     [Parameter(Mandatory = $true)]
-    [ValidateSet('Api', 'Cliente', 'Infra', 'Cross', 'Tekton')]
+    [ValidateSet('Product', 'Admin', 'Shared', 'Infra', 'Cross', 'Tekton')]
     [string]$Scope,
 
     [Parameter(Mandatory = $true)]

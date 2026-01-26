@@ -11,7 +11,7 @@ REM Guardar la ruta raíz del proyecto
 set "ROOT_DIR=%~dp0"
 
 REM Cambiar al directorio del proyecto de consola
-cd /d "%ROOT_DIR%GesFer.Console"
+cd /d "%ROOT_DIR%src\Console"
 
 REM Compilar el proyecto
 echo [1/2] Compilando proyecto...
@@ -27,7 +27,7 @@ echo.
 REM Ejecutar el ejecutable
 echo [2/2] Ejecutando aplicación...
 echo.
-set "EXE_PATH=%ROOT_DIR%GesFer.Console\bin\Release\net8.0\GesFer.Console.exe"
+set "EXE_PATH=%ROOT_DIR%src\Console\bin\Release\net8.0\GesFer.Console.exe"
 if exist "!EXE_PATH!" (
     "!EXE_PATH!"
 ) else (

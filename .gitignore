@@ -34,20 +34,33 @@ temp_*.txt# Carpetas temporales de compilación .NET (todos los proyectos)
 *.runtimeconfig
 
 # Archivos de configuración de producción y sensibles
-# API
-Api/src/Api/appsettings.Production.json
-Api/src/Api/appsettings.Development.json
-!Api/src/Api/appsettings.Development.json.example
-Api/src/Api/**/appsettings.Production.json
-Api/src/Api/**/appsettings.Development.json
+# Product Backend
+src/Product/Back/src/Api/appsettings.Production.json
+src/Product/Back/src/Api/appsettings.Development.json
+!src/Product/Back/src/Api/appsettings.Development.json.example
+src/Product/Back/src/Api/**/appsettings.Production.json
+src/Product/Back/src/Api/**/appsettings.Development.json
 
-# Cliente
-Cliente/config/production.json
-Cliente/config/local.json
-Cliente/.env
-Cliente/.env.local
-Cliente/.env.production
-Cliente/.env.production.local# Archivos de secretos y variables de entorno
+# Admin Backend
+src/Admin/Back/src/Api/appsettings.Production.json
+src/Admin/Back/src/Api/appsettings.Development.json
+!src/Admin/Back/src/Api/appsettings.Development.json.example
+src/Admin/Back/src/Api/**/appsettings.Production.json
+src/Admin/Back/src/Api/**/appsettings.Development.json
+
+# Product Frontend
+src/Product/Front/config/production.json
+src/Product/Front/config/local.json
+src/Product/Front/.env
+src/Product/Front/.env.local
+src/Product/Front/.env.production
+src/Product/Front/.env.production.local
+
+# Admin Frontend
+src/Admin/Front/.env
+src/Admin/Front/.env.local
+src/Admin/Front/.env.production
+src/Admin/Front/.env.production.local# Archivos de secretos y variables de entorno
 *.secrets.json
 *.secrets
 .env
@@ -85,8 +98,10 @@ undo_002
 /.vs
 
 # Reportes y resultados de tests
-Cliente/test-results/
-Cliente/playwright-report/
+src/Product/Front/test-results/
+src/Product/Front/playwright-report/
+src/Admin/Front/test-results/
+src/Admin/Front/playwright-report/
 **/test-results/
 **/playwright-report/
 *.webm

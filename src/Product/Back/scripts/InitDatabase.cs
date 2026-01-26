@@ -10,13 +10,13 @@ class Program
 {
     static void Main(string[] args)
     {
-        // Obtener la ruta correcta al directorio de la API
+        // Obtener la ruta correcta al directorio de la API Product
         var currentDir = Directory.GetCurrentDirectory();
         var apiPath = Path.Combine(currentDir, "..", "src", "Api");
         if (!Directory.Exists(apiPath))
         {
             // Si no existe, intentar desde la raíz del proyecto
-            apiPath = Path.Combine(currentDir, "..", "..", "src", "Api");
+            apiPath = Path.Combine(currentDir, "..", "..", "..", "src", "Product", "Back", "src", "Api");
         }
         
         var configuration = new ConfigurationBuilder()

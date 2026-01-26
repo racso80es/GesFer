@@ -109,7 +109,7 @@ public class IntegrityValidationService
         // 3. Validar Cliente (Next.js)
         Console.WriteLine("[3/4] Validando Cliente (Next.js)...");
         var clientResult = await ValidateClientAsync();
-        result.Checks["Cliente"] = clientResult;
+        result.Checks["ProductFront"] = clientResult;
         if (!clientResult)
         {
             result.Errors.Add("Cliente: Servidor Next.js no responde o hay errores de compilación");

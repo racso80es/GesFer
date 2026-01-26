@@ -68,10 +68,11 @@ public class JsonDataSeeder
             {
                 depth++;
                 
-                // Buscar GesFer.sln en la raíz o en Api/GesFer.sln
+                // Buscar GesFer.sln en la raíz, src/Product/Back/GesFer.sln o Api/GesFer.sln (legacy)
                 var solutionPathRoot = Path.Combine(searchDir.FullName, "GesFer.sln");
-                var solutionPathApi = Path.Combine(searchDir.FullName, "Api", "GesFer.sln");
-                var hasSolution = File.Exists(solutionPathRoot) || File.Exists(solutionPathApi);
+                var solutionPathProduct = Path.Combine(searchDir.FullName, "src", "Product", "Back", "GesFer.sln");
+                var solutionPathApi = Path.Combine(searchDir.FullName, "Api", "GesFer.sln"); // Legacy
+                var hasSolution = File.Exists(solutionPathRoot) || File.Exists(solutionPathProduct) || File.Exists(solutionPathApi);
                 
                 if (hasSolution)
                 {
@@ -96,11 +97,20 @@ public class JsonDataSeeder
                         break;
                     }
 
-                    // Legacy (repo root)
+                    // Legacy (repo root) - Mantener para compatibilidad temporal con estructura Api/
                     var repoLegacySeedsPath = Path.Combine(rootDir, "Api", "src", "Infrastructure", "Seeds");
                     if (Directory.Exists(repoLegacySeedsPath))
                     {
                         foundPath = repoLegacySeedsPath;
+                        _logger.LogWarning("Usando ubicación legacy de seeds: {Path}. Se recomienda migrar a src/Product/Back/src/Infrastructure/Data/Seeds/", foundPath);
+                        break;
+                    }
+                    
+                    // Legacy (repo root) - Mantener para compatibilidad temporal con estructura Product/Back sin Data/
+                    var repoLegacySeedsPath2 = Path.Combine(rootDir, "src", "Product", "Back", "src", "Infrastructure", "Seeds");
+                    if (Directory.Exists(repoLegacySeedsPath2))
+                    {
+                        foundPath = repoLegacySeedsPath2;
                         _logger.LogWarning("Usando ubicación legacy de seeds: {Path}. Se recomienda migrar a Data/Seeds/", foundPath);
                         break;
                     }
@@ -115,8 +125,8 @@ public class JsonDataSeeder
                     }
                 }
                 
-                // Buscar directamente Api/src/Infrastructure/Data/Seeds desde cualquier punto
-                var directApiSeedsPath = Path.Combine(searchDir.FullName, "Api", "src", "Infrastructure", "Data", "Seeds");
+                // Buscar directamente src/Product/Back/src/Infrastructure/Data/Seeds desde cualquier punto
+                var directProductSeedsPath = Path.Combine(searchDir.FullName, "src", "Product", "Back", "src", "Infrastructure", "Data", "Seeds");
                 if (Directory.Exists(directApiSeedsPath))
                 {
                     foundPath = directApiSeedsPath;
@@ -131,11 +141,20 @@ public class JsonDataSeeder
                     break;
                 }
                 
-                // Buscar directamente Api/src/Infrastructure/Seeds (legacy)
+                // Legacy: Buscar Api/src/Infrastructure/Seeds (compatibilidad temporal)
                 var directApiLegacySeedsPath = Path.Combine(searchDir.FullName, "Api", "src", "Infrastructure", "Seeds");
                 if (Directory.Exists(directApiLegacySeedsPath))
                 {
                     foundPath = directApiLegacySeedsPath;
+                    _logger.LogWarning("Usando ubicación legacy de seeds: {Path}. Se recomienda migrar a src/Product/Back/src/Infrastructure/Data/Seeds/", foundPath);
+                    break;
+                }
+                
+                // Legacy: Buscar src/Product/Back/src/Infrastructure/Seeds (compatibilidad temporal)
+                var directProductLegacySeedsPath = Path.Combine(searchDir.FullName, "src", "Product", "Back", "src", "Infrastructure", "Seeds");
+                if (Directory.Exists(directProductLegacySeedsPath))
+                {
+                    foundPath = directProductLegacySeedsPath;
                     _logger.LogWarning("Usando ubicación legacy de seeds: {Path}. Se recomienda migrar a Data/Seeds/", foundPath);
                     break;
                 }
@@ -177,7 +196,7 @@ public class JsonDataSeeder
             {
                 var cwd = Directory.GetCurrentDirectory();
 
-                var cwdRepoSeedsPath = Path.Combine(cwd, "Api", "src", "Infrastructure", "Data", "Seeds");
+                var cwdRepoSeedsPath = Path.Combine(cwd, "src", "Product", "Back", "src", "Infrastructure", "Data", "Seeds");
                 if (Directory.Exists(cwdRepoSeedsPath))
                 {
                     foundPath = cwdRepoSeedsPath;

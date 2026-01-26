@@ -21,12 +21,12 @@ class Program
                         args.Contains("--full", StringComparer.OrdinalIgnoreCase) ||
                         args.Contains("--complete", StringComparer.OrdinalIgnoreCase);
 
-        // Buscar appsettings.json en la carpeta de la API
+        // Buscar appsettings.json en la carpeta de la API Product
         var currentDir = Directory.GetCurrentDirectory();
-        var apiPath = Path.Combine(currentDir, "..", "..", "Api");
+        var apiPath = Path.Combine(currentDir, "..", "..", "..", "src", "Api");
         if (!Directory.Exists(apiPath))
         {
-            apiPath = Path.Combine(currentDir, "..", "Api");
+            apiPath = Path.Combine(currentDir, "..", "..", "..", "..", "src", "Product", "Back", "src", "Api");
         }
         if (!Directory.Exists(apiPath))
         {
