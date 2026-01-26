@@ -16,8 +16,8 @@ public class DockerService
         _logService = logService;
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
         var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
-        // docker-compose.yml está en la raíz del proyecto, no en Product/Back
-        _apiPath = rootPath;
+        // docker-compose.yml está en src/Product/Back/
+        _apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back"));
     }
 
     /// <summary>
