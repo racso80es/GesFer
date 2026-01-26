@@ -2,7 +2,7 @@
 
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { MainLayout } from "@/components/layout/main-layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
 import { useAuth } from "@/contexts/auth-context";
 import { Users, Building2, Package, TrendingUp } from "lucide-react";
 import { useTranslations } from 'next-intl';

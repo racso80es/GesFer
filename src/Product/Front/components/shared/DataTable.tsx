@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/lib/utils/cn";
-import { Button } from "./Button";
+import { cn } from "@shared/lib/utils/cn";
+import { Button } from "@shared/components/shared/Button";
 
 export interface DataTableColumn<T> {
   /**

@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Input as ShadcnInput, type InputProps as ShadcnInputProps } from "@/components/ui/input";
-import { cn } from "@/lib/utils/cn";
+import { Input as ShadcnInput, type InputProps as ShadcnInputProps } from "@shared/components/ui/input";
+import { cn } from "@shared/lib/utils/cn";
 
 export interface InputProps extends ShadcnInputProps {
   /**

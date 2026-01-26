@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@/components/shared/Button";
+import { Button } from "@shared/components/shared/Button";
 import { Menu } from "lucide-react";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@shared/lib/utils/cn";
 import { Sidebar } from "./Sidebar";
 import { useSidebar } from "@/contexts/sidebar-context";
 

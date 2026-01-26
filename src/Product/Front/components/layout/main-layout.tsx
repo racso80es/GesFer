@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Button } from "@/components/shared/Button";
+import { Button } from "@shared/components/shared/Button";
 import {
   LayoutDashboard,
   Users,
@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@shared/lib/utils/cn";
 import { useTranslations, useLocale } from 'next-intl';
 
 interface MainLayoutProps {
