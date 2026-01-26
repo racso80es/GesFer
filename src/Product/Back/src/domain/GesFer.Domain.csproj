@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)..\..\..\..\Shared\Back\src\domain\GesFer.Shared.Back.Domain\GesFer.Shared.Back.Domain.csproj" />
     <ProjectReference Include="..\..\..\..\Shared\Back\src\domain\GesFer.Shared.Back.Domain\GesFer.Shared.Back.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\Shared\Back\GesFer.Shared.Back.Domain.csproj" />
   </ItemGroup>
 
 </Project>
