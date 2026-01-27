@@ -105,3 +105,4 @@ src/Admin/Front/playwright-report/
 **/test-results/
 **/playwright-report/
 *.webm
+/src/Shared/Back/.vs
