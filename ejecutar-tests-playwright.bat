@@ -29,35 +29,35 @@ REM 1. Verificar que los servicios esten iniciados
 echo [1/3] Verificando servicios...
 echo [1/3] Verificando servicios... >> "!logFile!"
 
-REM Verificar puerto 3000 (Cliente)
-echo    Verificando puerto 3000 (Cliente)... >> "!logFile!"
+REM Verificar puerto 3000 (Frontend Product)
+echo    Verificando puerto 3000 (Frontend Product)... >> "!logFile!"
 netstat -ano | findstr ":3000" | findstr "LISTENING" >nul
 if errorlevel 1 (
-    echo ERROR: El servicio Cliente no esta corriendo en el puerto 3000 >> "!logFile!"
-    echo ERROR: El servicio Cliente no esta corriendo en el puerto 3000
+    echo ERROR: El servicio Frontend Product no esta corriendo en el puerto 3000 >> "!logFile!"
+    echo ERROR: El servicio Frontend Product no esta corriendo en el puerto 3000
     echo. >> "!logFile!"
     echo Por favor, ejecuta ejecutar-servicios.bat para iniciar los servicios. >> "!logFile!"
     echo Por favor, ejecuta ejecutar-servicios.bat para iniciar los servicios.
     pause
     exit /b 1
 )
-echo    OK: Cliente esta corriendo en el puerto 3000 >> "!logFile!"
-echo    OK: Cliente esta corriendo en el puerto 3000
+echo    OK: Frontend Product esta corriendo en el puerto 3000 >> "!logFile!"
+echo    OK: Frontend Product esta corriendo en el puerto 3000
 
-REM Verificar puerto 5000 (API)
-echo    Verificando puerto 5000 (API)... >> "!logFile!"
+REM Verificar puerto 5000 (API Product)
+echo    Verificando puerto 5000 (API Product)... >> "!logFile!"
 netstat -ano | findstr ":5000" | findstr "LISTENING" >nul
 if errorlevel 1 (
-    echo ERROR: El servicio API no esta corriendo en el puerto 5000 >> "!logFile!"
-    echo ERROR: El servicio API no esta corriendo en el puerto 5000
+    echo ERROR: El servicio API Product no esta corriendo en el puerto 5000 >> "!logFile!"
+    echo ERROR: El servicio API Product no esta corriendo en el puerto 5000
     echo. >> "!logFile!"
     echo Por favor, ejecuta ejecutar-servicios.bat para iniciar los servicios. >> "!logFile!"
     echo Por favor, ejecuta ejecutar-servicios.bat para iniciar los servicios.
     pause
     exit /b 1
 )
-echo    OK: API esta corriendo en el puerto 5000 >> "!logFile!"
-echo    OK: API esta corriendo en el puerto 5000
+echo    OK: API Product esta corriendo en el puerto 5000 >> "!logFile!"
+echo    OK: API Product esta corriendo en el puerto 5000
 echo. >> "!logFile!"
 echo.
 
@@ -65,18 +65,18 @@ REM 2. Verificar rutas y dependencias
 echo [2/3] Verificando rutas y dependencias...
 echo [2/3] Verificando rutas y dependencias... >> "!logFile!"
 
-set "clientePath=%~dp0Cliente"
+set "productFrontPath=%~dp0src\Product\Front"
 
-if not exist "!clientePath!\package.json" (
-    echo ERROR: No se encontro el proyecto del Cliente >> "!logFile!"
-    echo ERROR: No se encontro el proyecto del Cliente
+if not exist "!productFrontPath!\package.json" (
+    echo ERROR: No se encontro el proyecto del Frontend Product >> "!logFile!"
+    echo ERROR: No se encontro el proyecto del Frontend Product
     pause
     exit /b 1
 )
 
-if not exist "!clientePath!\node_modules" (
-    echo ERROR: node_modules no encontrado. Ejecuta 'npm install' en el directorio Cliente >> "!logFile!"
-    echo ERROR: node_modules no encontrado. Ejecuta 'npm install' en el directorio Cliente
+if not exist "!productFrontPath!\node_modules" (
+    echo ERROR: node_modules no encontrado. Ejecuta 'npm install' en el directorio Frontend Product >> "!logFile!"
+    echo ERROR: node_modules no encontrado. Ejecuta 'npm install' en el directorio Frontend Product
     pause
     exit /b 1
 )
@@ -94,7 +94,7 @@ echo TESTS DE PLAYWRIGHT >> "!logFile!"
 echo ======================================== >> "!logFile!"
 echo. >> "!logFile!"
 
-cd /d "!clientePath!"
+cd /d "!productFrontPath!"
 
 REM Ejecutar tests y redirigir salida al log
 echo Ejecutando tests de Playwright... >> "!logFile!"
@@ -136,4 +136,3 @@ echo.
 
 pause
 exit /b !testExitCode!
-

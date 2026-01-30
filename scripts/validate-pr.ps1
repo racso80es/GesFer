@@ -141,17 +141,40 @@ $ErrorCount = 0
 $Warnings = @()
 
 Write-Host "[1/3] Compilando Backend (dotnet build)..." -ForegroundColor Yellow
-if (Test-Path "Api") {
-    Push-Location Api
+
+# Compilar Product Backend
+if (Test-Path "src/Product/Back/Api") {
+    Write-Host "  > Compilando Product Backend..." -ForegroundColor Gray
     try {
-        dotnet build --no-restore
-        if ($LASTEXITCODE -ne 0) { $ErrorCount++ }
+        dotnet build src/Product/Back/Api/GesFer.Api.csproj --no-restore
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "ERROR: Falló compilación de Product Backend" -ForegroundColor Red
+            $ErrorCount++
+        }
     } catch {
+        Write-Host "ERROR: Excepción al compilar Product Backend" -ForegroundColor Red
         $ErrorCount++
-    } finally {
-        Pop-Location
     }
 } else {
+    Write-Host "ERROR: No se encuentra ruta src/Product/Back/Api" -ForegroundColor Red
+    $ErrorCount++
+}
+
+# Compilar Admin Backend
+if (Test-Path "src/Admin/Back/Api") {
+    Write-Host "  > Compilando Admin Backend..." -ForegroundColor Gray
+    try {
+        dotnet build src/Admin/Back/Api/GesFer.Admin.Api.csproj --no-restore
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "ERROR: Falló compilación de Admin Backend" -ForegroundColor Red
+            $ErrorCount++
+        }
+    } catch {
+        Write-Host "ERROR: Excepción al compilar Admin Backend" -ForegroundColor Red
+        $ErrorCount++
+    }
+} else {
+    Write-Host "ERROR: No se encuentra ruta src/Admin/Back/Api" -ForegroundColor Red
     $ErrorCount++
 }
 
@@ -167,33 +190,34 @@ function Start-TestEnvironment {
         throw "Error al levantar docker-compose"
     }
 
-    Write-Host "[DOCKER] Esperando a que la API esté lista (Health Check)..." -ForegroundColor Yellow
+    Write-Host "[DOCKER] Esperando a que las APIs estén listas (Health Check)..." -ForegroundColor Yellow
     $retryCount = 0
-    $maxRetries = 60 # 60 intentos * 2s = 120s max
-    $healthy = $false
+    $maxRetries = 90 # Aumentado tiempo de espera
+    $productHealthy = $false
+    # Admin Health Check opcional por ahora si no tiene endpoint health
+    $adminHealthy = $true
 
-    while (-not $healthy -and $retryCount -lt $maxRetries) {
+    while (-not ($productHealthy -and $adminHealthy) -and $retryCount -lt $maxRetries) {
         try {
             $resp = Invoke-WebRequest -Uri "http://localhost:5001/api/health" -Method Get -UseBasicParsing -ErrorAction SilentlyContinue
             if ($resp.StatusCode -eq 200) {
-                $healthy = $true
-                Write-Host "[DOCKER] API saludable y lista!" -ForegroundColor Green
+                $productHealthy = $true
             }
-        } catch {
-            # Ignorar error y reintentar
-        }
+        } catch { }
 
-        if (-not $healthy) {
+        if (-not ($productHealthy -and $adminHealthy)) {
             Start-Sleep -Seconds 2
             $retryCount++
             if ($retryCount % 5 -eq 0) { Write-Host "." -NoNewline }
         }
     }
 
-    if (-not $healthy) {
+    if (-not $productHealthy) {
         docker compose -f docker-compose.test.yml logs
-        throw "Timeout esperando a que la API esté lista"
+        throw "Timeout esperando a que Product API esté lista"
     }
+
+    Write-Host "[DOCKER] Entorno saludable y listo!" -ForegroundColor Green
 }
 
 # Función local para bajar el entorno
@@ -202,7 +226,7 @@ function Stop-TestEnvironment {
     docker compose -f docker-compose.test.yml down -v
 }
 
-if (Test-Path "Cliente") {
+if (Test-Path "src/Product/Front") {
     try {
         # 1. Levantar entorno
         Start-TestEnvironment
@@ -210,8 +234,9 @@ if (Test-Path "Cliente") {
         # 2. Configurar variable de entorno para que Jest use el puerto 5001
         $env:API_URL = "http://localhost:5001"
 
-        # 3. Ejecutar tests
-        Push-Location Cliente
+        # 3. Ejecutar tests Product Front
+        Write-Host "  > Testeando Product Frontend..." -ForegroundColor Gray
+        Push-Location "src/Product/Front"
         try {
             # Timeout global: 180s (3 min) para evitar falsos negativos por lentitud en entorno local/CI.
             npm run test:integrity -- --passWithNoTests --testTimeout=180000
@@ -228,6 +253,7 @@ if (Test-Path "Cliente") {
         $env:API_URL = $null
     }
 } else {
+    Write-Host "ERROR: No se encuentra ruta src/Product/Front" -ForegroundColor Red
     $ErrorCount++
 }
 

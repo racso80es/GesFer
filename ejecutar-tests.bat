@@ -22,8 +22,8 @@ REM 1. Verificar rutas
 echo [1/3] Verificando rutas...
 echo [1/3] Verificando rutas... >> "!logFile!"
 
-set "apiTestsPath=%~dp0Api\src\IntegrationTests"
-set "clientePath=%~dp0Cliente"
+set "apiTestsPath=%~dp0src\Product\Back\src\IntegrationTests"
+set "productFrontPath=%~dp0src\Product\Front"
 
 if not exist "!apiTestsPath!\GesFer.IntegrationTests.csproj" (
     echo ERROR: No se encontro el proyecto de tests de la API >> "!logFile!"
@@ -32,9 +32,9 @@ if not exist "!apiTestsPath!\GesFer.IntegrationTests.csproj" (
     exit /b 1
 )
 
-if not exist "!clientePath!\package.json" (
-    echo ERROR: No se encontro el proyecto del Cliente >> "!logFile!"
-    echo ERROR: No se encontro el proyecto del Cliente
+if not exist "!productFrontPath!\package.json" (
+    echo ERROR: No se encontro el proyecto del Frontend Product >> "!logFile!"
+    echo ERROR: No se encontro el proyecto del Frontend Product
     pause
     exit /b 1
 )
@@ -44,15 +44,15 @@ echo    Rutas verificadas >> "!logFile!"
 echo. >> "!logFile!"
 echo.
 
-REM 2. Ejecutar tests del Cliente
-echo [2/3] Ejecutando tests del Cliente...
-echo [2/3] Ejecutando tests del Cliente... >> "!logFile!"
+REM 2. Ejecutar tests del Frontend Product
+echo [2/3] Ejecutando tests del Frontend Product...
+echo [2/3] Ejecutando tests del Frontend Product... >> "!logFile!"
 echo ======================================== >> "!logFile!"
-echo TESTS DEL CLIENTE >> "!logFile!"
+echo TESTS DEL FRONTEND PRODUCT >> "!logFile!"
 echo ======================================== >> "!logFile!"
 echo. >> "!logFile!"
 
-cd /d "!clientePath!"
+cd /d "!productFrontPath!"
 
 REM Verificar que node_modules existe
 if not exist "node_modules" (
@@ -60,28 +60,28 @@ if not exist "node_modules" (
     echo    Instalando dependencias... >> "!logFile!"
     call npm install >> "!logFile!" 2>&1
     if errorlevel 1 (
-        echo ERROR: Fallo la instalacion de dependencias del Cliente >> "!logFile!"
-        echo ERROR: Fallo la instalacion de dependencias del Cliente
+        echo ERROR: Fallo la instalacion de dependencias del Frontend Product >> "!logFile!"
+        echo ERROR: Fallo la instalacion de dependencias del Frontend Product
         cd /d "%~dp0"
         pause
         exit /b 1
     )
 )
 
-REM Ejecutar todos los tests del cliente (incluyendo integridad)
+REM Ejecutar todos los tests del frontend (incluyendo integridad)
 echo    Ejecutando todos los tests (incluyendo integridad)...
 echo    Ejecutando todos los tests (incluyendo integridad)... >> "!logFile!"
 echo. >> "!logFile!"
 
 call npm run test:all >> "!logFile!" 2>&1
-set "clienteTestResult=!errorlevel!"
+set "frontendTestResult=!errorlevel!"
 
-if !clienteTestResult! equ 0 (
-    echo    Tests del Cliente: EXITOSOS
-    echo    Tests del Cliente: EXITOSOS >> "!logFile!"
+if !frontendTestResult! equ 0 (
+    echo    Tests del Frontend Product: EXITOSOS
+    echo    Tests del Frontend Product: EXITOSOS >> "!logFile!"
 ) else (
-    echo    Tests del Cliente: FALLIDOS (codigo: !clienteTestResult!)
-    echo    Tests del Cliente: FALLIDOS (codigo: !clienteTestResult!) >> "!logFile!"
+    echo    Tests del Frontend Product: FALLIDOS (codigo: !frontendTestResult!)
+    echo    Tests del Frontend Product: FALLIDOS (codigo: !frontendTestResult!) >> "!logFile!"
 )
 
 echo. >> "!logFile!"
@@ -140,12 +140,12 @@ echo ======================================== >> "!logFile!"
 echo Fecha de finalizacion: %date% %time% >> "!logFile!"
 echo. >> "!logFile!"
 
-if !clienteTestResult! equ 0 (
-    echo Tests del Cliente: EXITOSOS
-    echo Tests del Cliente: EXITOSOS >> "!logFile!"
+if !frontendTestResult! equ 0 (
+    echo Tests del Frontend Product: EXITOSOS
+    echo Tests del Frontend Product: EXITOSOS >> "!logFile!"
 ) else (
-    echo Tests del Cliente: FALLIDOS
-    echo Tests del Cliente: FALLIDOS >> "!logFile!"
+    echo Tests del Frontend Product: FALLIDOS
+    echo Tests del Frontend Product: FALLIDOS >> "!logFile!"
 )
 
 if !apiTestResult! equ 0 (
@@ -162,7 +162,7 @@ echo Log completo guardado en: !logFile! >> "!logFile!"
 echo.
 
 REM Determinar codigo de salida
-if !clienteTestResult! neq 0 exit /b !clienteTestResult!
+if !frontendTestResult! neq 0 exit /b !frontendTestResult!
 if !apiTestResult! neq 0 exit /b !apiTestResult!
 
 echo Todos los tests se ejecutaron correctamente.
