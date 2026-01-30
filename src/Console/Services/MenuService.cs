@@ -264,7 +264,10 @@ public class MenuService
         // 3. Eliminar contenedores
         Console.WriteLine("[3/9] Limpiando contenedores existentes...");
         var rmResult = await _removeContainersCommand.HandleAsync(new RemoveContainersInput());
-        foreach(var l in rmResult.Logs) Console.WriteLine(l);
+        if (rmResult?.Logs != null)
+        {
+            foreach(var l in rmResult.Logs) Console.WriteLine(l);
+        }
         Console.WriteLine();
 
         // 4. Crear contenedores
@@ -863,12 +866,12 @@ public class MenuService
         var result = cmdResult.Data; // Accessing data
 
         // Print Logs
-        foreach (var log in cmdResult.Logs)
+        if (cmdResult?.Logs != null)
         {
-             // SquashMigrationsCommand puts messages in Logs (well, in Messages list in Data? No, I updated it to use AddLog)
-             // Wait, I updated SquashMigrationsCommand to use AddLog AND I removed Messages list from DTO? No.
-             // Let's check SquashMigrationsCommand logic I wrote.
-             Console.WriteLine(log);
+            foreach (var log in cmdResult.Logs)
+            {
+                Console.WriteLine(log);
+            }
         }
 
         Console.WriteLine();
