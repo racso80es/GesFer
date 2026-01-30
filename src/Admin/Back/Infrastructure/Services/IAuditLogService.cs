@@ -1,4 +1,4 @@
-namespace GesFer.Admin.Infrastructure.Services;
+namespace MyCompany.SysAdmin.Infrastructure.Services;
 
 /// <summary>
 /// Servicio para registrar logs de auditoría administrativa

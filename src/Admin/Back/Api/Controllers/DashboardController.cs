@@ -1,5 +1,6 @@
-using GesFer.Admin.Infrastructure.Services;
-using GesFer.Product.Back.src.Infrastructure.Data;
+
+using MyCompany.SysAdmin.Infrastructure.Services;
+using GesFer.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

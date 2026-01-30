@@ -95,6 +95,12 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
                             errorNumbersToAdd: null);
                     });
             }, ServiceLifetime.Scoped);
+
+            // Mockear la dependencia de AdminApi para que no intente conectar
+            services.AddHttpClient("AdminApi", client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:5010"); // Dummy URL
+            });
         });
 
         builder.UseEnvironment("Testing");

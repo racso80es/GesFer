@@ -424,9 +424,9 @@ public class SetupService : ISetupService
             var sevillaCity = sevillaState != null ? await context.Cities.FirstOrDefaultAsync(c => c.Name == "Sevilla" && c.StateId == sevillaState.Id) : null;
             var sevillaPostalCode = sevillaCity != null ? await context.PostalCodes.FirstOrDefaultAsync(pc => pc.Code == "41001" && pc.CityId == sevillaCity.Id) : null;
 
-            var suppliers = new List<Domain.Entities.Supplier>
+            var suppliers = new List<GesFer.Product.Back.Domain.Entities.Supplier>
             {
-                new Domain.Entities.Supplier
+                new GesFer.Product.Back.Domain.Entities.Supplier
                 {
                     Id = Guid.Parse("aaaaaaaa-1111-1111-1111-111111111111"),
                     CompanyId = companyId,
@@ -442,7 +442,7 @@ public class SetupService : ISetupService
                     CreatedAt = DateTime.UtcNow,
                     IsActive = true
                 },
-                new Domain.Entities.Supplier
+                new GesFer.Product.Back.Domain.Entities.Supplier
                 {
                     Id = Guid.Parse("bbbbbbbb-2222-2222-2222-222222222222"),
                     CompanyId = companyId,
@@ -458,7 +458,7 @@ public class SetupService : ISetupService
                     CreatedAt = DateTime.UtcNow,
                     IsActive = true
                 },
-                new Domain.Entities.Supplier
+                new GesFer.Product.Back.Domain.Entities.Supplier
                 {
                     Id = Guid.Parse("cccccccc-3333-3333-3333-333333333333"),
                     CompanyId = companyId,
@@ -512,9 +512,9 @@ public class SetupService : ISetupService
             var malagaCity = malagaState != null ? await context.Cities.FirstOrDefaultAsync(c => c.Name == "Málaga" && c.StateId == malagaState.Id) : null;
             var malagaPostalCode = malagaCity != null ? await context.PostalCodes.FirstOrDefaultAsync(pc => pc.Code == "29001" && pc.CityId == malagaCity.Id) : null;
 
-            var customers = new List<Domain.Entities.Customer>
+            var customers = new List<GesFer.Product.Back.Domain.Entities.Customer>
             {
-                new Domain.Entities.Customer
+                new GesFer.Product.Back.Domain.Entities.Customer
                 {
                     Id = Guid.Parse("dddddddd-1111-1111-1111-111111111111"),
                     CompanyId = companyId,
@@ -530,7 +530,7 @@ public class SetupService : ISetupService
                     CreatedAt = DateTime.UtcNow,
                     IsActive = true
                 },
-                new Domain.Entities.Customer
+                new GesFer.Product.Back.Domain.Entities.Customer
                 {
                     Id = Guid.Parse("eeeeeeee-2222-2222-2222-222222222222"),
                     CompanyId = companyId,
@@ -546,7 +546,7 @@ public class SetupService : ISetupService
                     CreatedAt = DateTime.UtcNow,
                     IsActive = true
                 },
-                new Domain.Entities.Customer
+                new GesFer.Product.Back.Domain.Entities.Customer
                 {
                     Id = Guid.Parse("ffffffff-3333-3333-3333-333333333333"),
                     CompanyId = companyId,

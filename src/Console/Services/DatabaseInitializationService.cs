@@ -1,5 +1,6 @@
-using GesFer.Product.Back.src.Infrastructure.Data;
-using GesFer.Product.Back.src.Infrastructure.Services;
+using GesFer.Infrastructure.Data;
+using GesFer.Infrastructure.Services;
+using MyCompany.SysAdmin.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -109,6 +110,23 @@ public class DatabaseInitializationService
                     });
             });
 
+            // Configurar AdminDbContext para Admin
+            services.AddDbContext<AdminDbContext>(options =>
+            {
+                options.UseMySql(
+                    connectionString,
+                    new MySqlServerVersion(new Version(8, 0, 0)),
+                    mysqlOptions =>
+                    {
+                        mysqlOptions.EnableStringComparisonTranslations();
+                        mysqlOptions.EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null);
+                        mysqlOptions.MigrationsHistoryTable("__EFMigrationsHistory_Admin");
+                    });
+            });
+
             // Configurar HostEnvironment como Development
             services.AddSingleton<IHostEnvironment>(new DevelopmentHostEnvironment());
 
@@ -151,6 +169,7 @@ public class DatabaseInitializationService
                 var scope = serviceProvider.CreateScope();
                 var scopedServices = scope.ServiceProvider;
                 var context = scopedServices.GetRequiredService<ApplicationDbContext>();
+                var adminContext = scopedServices.GetRequiredService<AdminDbContext>();
                 var logger = scopedServices.GetRequiredService<ILogger<DatabaseInitializationService>>();
 
                 // Paso 2: Eliminar base de datos para empezar de 0
@@ -206,20 +225,29 @@ public class DatabaseInitializationService
                     var migrationsBefore = await context.Database.GetAppliedMigrationsAsync();
                     var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
                     
-                    // Usar DbInitializer para aplicar migraciones y seeding
-                    // Forzamos isDevelopment=true para que siempre ejecute en la consola
+                    // 1. Inicializar contexto de Product (esto creará la BD si no existe y aplicará migraciones de Product)
                     await DbInitializer.InitializeAsync(serviceProvider, isDevelopment: true);
                     
+                    // 2. Aplicar migraciones de Admin
+                    _logService.WriteLog("Aplicando migraciones de Admin...");
+                    await adminContext.Database.MigrateAsync();
+
                     // Capturar información de migraciones aplicadas
                     var migrationsAfter = await context.Database.GetAppliedMigrationsAsync();
                     var appliedMigrations = migrationsAfter.Except(migrationsBefore).ToList();
                     
                     if (appliedMigrations.Any())
                     {
-                        result.Information.Add($"✓ Migraciones aplicadas: {string.Join(", ", appliedMigrations)}");
+                        result.Information.Add($"✓ Migraciones Product aplicadas: {string.Join(", ", appliedMigrations)}");
                     }
                     
-                    _logService.WriteLog("Inicialización de base de datos completada usando DbInitializer");
+                    var adminMigrations = await adminContext.Database.GetAppliedMigrationsAsync();
+                    if (adminMigrations.Any())
+                    {
+                        result.Information.Add($"✓ Migraciones Admin aplicadas: {string.Join(", ", adminMigrations)}");
+                    }
+
+                    _logService.WriteLog("Inicialización de base de datos completada (Product + Admin)");
                 }
                 catch (Exception ex)
                 {
@@ -270,7 +298,8 @@ public class DatabaseInitializationService
                         var groupPermissionCount = await context.GroupPermissions.CountAsync();
                         if (groupPermissionCount > 0) seedInfo.Add($"  • {groupPermissionCount} GroupPermission(s)");
                         
-                        var adminUserCount = await context.AdminUsers.CountAsync();
+                        // Usar AdminContext para AdminUsers
+                        var adminUserCount = await adminContext.AdminUsers.CountAsync();
                         if (adminUserCount > 0) seedInfo.Add($"  • {adminUserCount} AdminUser(s)");
                         
                         var companyCount = await context.Companies.CountAsync();

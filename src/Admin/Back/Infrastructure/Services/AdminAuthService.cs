@@ -1,18 +1,18 @@
 using GesFer.Admin.Back.Domain.Entities;
-using GesFer.Product.Back.src.Infrastructure.Data;
+using MyCompany.SysAdmin.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
 
-namespace GesFer.Admin.Infrastructure.Services;
+namespace MyCompany.SysAdmin.Infrastructure.Services;
 
 /// <summary>
 /// Servicio de autenticación para usuarios administrativos
 /// </summary>
 public class AdminAuthService : IAdminAuthService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly AdminDbContext _context;
 
-    public AdminAuthService(ApplicationDbContext context)
+    public AdminAuthService(AdminDbContext context)
     {
         _context = context;
     }

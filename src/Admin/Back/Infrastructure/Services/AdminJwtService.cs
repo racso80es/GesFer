@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace GesFer.Admin.Infrastructure.Services;
+namespace MyCompany.SysAdmin.Infrastructure.Services;
 
 /// <summary>
 /// Servicio para generar tokens JWT administrativos con claim role: Admin
