@@ -29,4 +29,9 @@
     <ProjectReference Include="..\Admin\Back\Infrastructure\GesFer.Admin.Infra.csproj" />
   </ItemGroup>
 
+  <!-- KAIZEN: Force kill previous instance to avoid MSB3027 file lock errors on Windows -->
+  <Target Name="ForceKillRunningProcess" BeforeTargets="Build" Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <Exec Command="taskkill /F /IM GesFer.Console.exe" ContinueOnError="true" IgnoreExitCode="true" />
+  </Target>
+
 </Project>
