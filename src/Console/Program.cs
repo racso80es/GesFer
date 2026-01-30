@@ -1,3 +1,4 @@
+using GesFer.ConsoleApp.Commands;
 using GesFer.ConsoleApp.Services;
 using System;
 using System.Linq;
@@ -98,14 +99,41 @@ class Program
         // Crear instancia del servicio de log
         var logService = new LogService();
 
-        // Crear instancias de los servicios
-        var dockerService = new DockerService(logService);
-        var migrationService = new MigrationService(logService);
-        var seedService = new SeedService(logService);
+        // Crear instancias de los comandos y servicios
+        // Docker Commands
+        var checkDockerCommand = new CheckDockerCommand(logService);
+        var removeContainersCommand = new RemoveContainersCommand(logService);
+        var createContainersCommand = new CreateContainersCommand(logService);
+        var waitMySqlReadyCommand = new WaitMySqlReadyCommand(logService);
+
+        // Migration Commands
+        var applyMigrationsCommand = new ApplyMigrationsCommand(logService);
+        var createInitialMigrationCommand = new CreateInitialMigrationCommand(logService);
+        var squashMigrationsCommand = new SquashMigrationsCommand(logService);
+        var ensureEfToolCommand = new EnsureEfToolCommand(logService);
+
+        // Other Commands
+        var seedCommand = new SeedCommand(logService);
+        var initializeDatabaseCommand = new InitializeDatabaseCommand(logService);
+
+        // Services (Legacy/Not refactored yet)
         var integrityValidationService = new IntegrityValidationService(logService);
         var goldenRulesService = new GoldenRulesComplianceService(logService);
-        var databaseInitializationService = new DatabaseInitializationService(dockerService, logService);
-        var menuService = new MenuService(dockerService, migrationService, seedService, integrityValidationService, goldenRulesService, databaseInitializationService, logService);
+
+        var menuService = new MenuService(
+            checkDockerCommand,
+            removeContainersCommand,
+            createContainersCommand,
+            waitMySqlReadyCommand,
+            applyMigrationsCommand,
+            createInitialMigrationCommand,
+            squashMigrationsCommand,
+            ensureEfToolCommand,
+            seedCommand,
+            initializeDatabaseCommand,
+            integrityValidationService,
+            goldenRulesService,
+            logService);
 
         // Si se pasa el argumento "--validate" o "-v", ejecutar validaci?n de integridad autom?ticamente
         if (args.Length > 0 && (args[0] == "--validate" || args[0] == "-v"))
@@ -184,7 +212,8 @@ class Program
         {
             try
             {
-                var result = await databaseInitializationService.ExecuteStep8Async();
+                var cmdResult = await initializeDatabaseCommand.HandleAsync(new GesFer.ConsoleApp.Commands.Dtos.InitializeDatabaseInput());
+                var result = cmdResult.Data;
                 
                 Console.WriteLine();
                 Console.WriteLine("========================================");
@@ -201,13 +230,13 @@ class Program
                     Console.WriteLine();
                     foreach (var info in result.Information)
                     {
-                        if (info.Contains("?"))
+                        if (info.Contains("?") || info.Contains("✓"))
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine($"  {info}");
                             Console.ResetColor();
                         }
-                        else if (info.Contains("?"))
+                        else if (info.Contains("?") || info.Contains("⚠"))
                         {
                             Console.ForegroundColor = ConsoleColor.Yellow;
                             Console.WriteLine($"  {info}");
