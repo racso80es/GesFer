@@ -172,7 +172,8 @@ public class MenuService
 
         // 2. Verificar que la API compila
         Console.WriteLine("[2/9] Verificando compilación de la API...");
-        var apiProjectPath = Path.Combine(_logService.GetRootPath(), "src", "Product", "Back", "src", "Api", "GesFer.Api.csproj");
+        // Ruta corregida: _logService.GetRootPath() es la raíz del repo, luego src/Product/Back/Api
+        var apiProjectPath = Path.Combine(_logService.GetRootPath(), "src", "Product", "Back", "Api", "GesFer.Api.csproj");
         
         if (!File.Exists(apiProjectPath))
         {

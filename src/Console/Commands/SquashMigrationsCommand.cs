@@ -34,9 +34,10 @@ public class SquashMigrationsCommand : ICommandHandler<SquashMigrationsInput, Mi
         {
             // Obtener rutas
             var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
-            var apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "src", "Api"));
-            var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "src", "Infrastructure"));
+            // Ir 5 niveles arriba para llegar a la raíz del repositorio
+            var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+            var apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "Api"));
+            var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "Infrastructure"));
             var migrationsPath = Path.Combine(infrastructurePath, "Migrations");
 
             result.AddLog($"Ruta de migraciones: {migrationsPath}");

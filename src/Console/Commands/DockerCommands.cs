@@ -67,7 +67,8 @@ public class RemoveContainersCommand : ICommandHandler<RemoveContainersInput, bo
     {
         _logService = logService;
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        _apiPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
+        // Ir 5 niveles arriba para llegar a la raíz del repositorio
+        _apiPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
     }
 
     public async Task<CommandResult<bool>> HandleAsync(RemoveContainersInput input)
@@ -163,7 +164,8 @@ public class CreateContainersCommand : ICommandHandler<CreateContainersInput, bo
     {
         _logService = logService;
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        _apiPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
+        // Ir 5 niveles arriba para llegar a la raíz del repositorio
+        _apiPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
     }
 
     public async Task<CommandResult<bool>> HandleAsync(CreateContainersInput input)

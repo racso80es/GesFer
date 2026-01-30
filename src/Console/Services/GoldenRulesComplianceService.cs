@@ -23,11 +23,12 @@ public class GoldenRulesComplianceService
     {
         _logService = logService;
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
+        // Ir 5 niveles arriba para llegar a la raíz del repositorio
+        _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
         _stateFilePath = Path.Combine(_rootPath, ".golden-rules-state.json");
-        _entitiesPath = Path.Combine(_rootPath, "src", "Product", "Back", "src", "domain", "Entities");
-        _seedsPath = Path.Combine(_rootPath, "src", "Product", "Back", "src");
-        _testsPath = Path.Combine(_rootPath, "src", "Product", "Back", "src", "IntegrationTests");
+        _entitiesPath = Path.Combine(_rootPath, "src", "Product", "Back", "domain", "Entities");
+        _seedsPath = Path.Combine(_rootPath, "src"); // Simplificado para usar rutas relativas desde src
+        _testsPath = Path.Combine(_rootPath, "src", "Product", "Back", "IntegrationTests");
     }
 
     /// <summary>
@@ -377,7 +378,8 @@ public class GoldenRulesComplianceService
     private async Task<bool> CheckSeedsSyncAsync(string entityName, List<string> properties)
     {
         // Buscar en SetupService.SeedInitialDataAsync
-        var setupServicePath = Path.Combine(_seedsPath, "Product", "Back", "src", "Api", "Services", "SetupService.cs");
+        // Ruta corregida: src/Product/Back/Api/Services/SetupService.cs
+        var setupServicePath = Path.Combine(_seedsPath, "Product", "Back", "Api", "Services", "SetupService.cs");
         if (File.Exists(setupServicePath))
         {
             var content = await File.ReadAllTextAsync(setupServicePath);
@@ -391,7 +393,8 @@ public class GoldenRulesComplianceService
         }
 
         // Buscar en MasterDataSeeder
-        var masterSeederPath = Path.Combine(_seedsPath, "Infrastructure", "Services", "MasterDataSeeder.cs");
+        // Ruta corregida: src/Product/Back/Infrastructure/Services/MasterDataSeeder.cs
+        var masterSeederPath = Path.Combine(_seedsPath, "Product", "Back", "Infrastructure", "Services", "MasterDataSeeder.cs");
         if (File.Exists(masterSeederPath))
         {
             var content = await File.ReadAllTextAsync(masterSeederPath);

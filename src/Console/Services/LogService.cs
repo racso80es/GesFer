@@ -15,7 +15,8 @@ public class LogService
     public LogService()
     {
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
+        // Ir 5 niveles arriba para llegar a la raíz del repositorio (desde bin/Debug/net8.0/win-x64)
+        _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
         var logDir = Path.Combine(_rootPath, "logs");
         
         if (!Directory.Exists(logDir))
