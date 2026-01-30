@@ -27,9 +27,10 @@ public class ApplyMigrationsCommand : ICommandHandler<ApplyMigrationsInput, bool
         _logService.WriteLog("Aplicando migraciones a la base de datos...");
 
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
-        var apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "src", "Api"));
-        var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "src", "Infrastructure"));
+        // Ir 5 niveles arriba para llegar a la raíz del repositorio
+        var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+        var apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "Api"));
+        var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "Infrastructure"));
 
         var projectPath = Path.Combine(infrastructurePath, "GesFer.Infrastructure.csproj");
         var startupProjectPath = Path.Combine(apiPath, "GesFer.Api.csproj");

@@ -46,8 +46,9 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             _logService.WriteLog("Configurando servicios...");
             
             var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
-            var apiPath = Path.Combine(rootPath, "src", "Product", "Back", "src", "Api");
+            // Ir 5 niveles arriba para llegar a la raíz del repositorio
+            var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+            var apiPath = Path.Combine(rootPath, "src", "Product", "Back", "Api");
 
             if (!Directory.Exists(apiPath))
             {

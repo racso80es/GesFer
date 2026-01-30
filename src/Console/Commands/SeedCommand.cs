@@ -23,7 +23,8 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
     {
         _logService = logService;
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
+        // Ir 5 niveles arriba para llegar a la raíz del repositorio
+        _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
     }
 
     public async Task<CommandResult<bool>> HandleAsync(SeedCommandInput command)
@@ -158,9 +159,9 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
     {
         var services = new ServiceCollection();
 
-        // Configuración - Usar Product/Back/src/Api
+        // Configuración - Usar Product/Back/Api
         var configuration = new ConfigurationBuilder()
-            .SetBasePath(Path.Combine(_rootPath, "src", "Product", "Back", "src", "Api"))
+            .SetBasePath(Path.Combine(_rootPath, "src", "Product", "Back", "Api"))
             .AddJsonFile("appsettings.json", optional: true)
             .AddJsonFile("appsettings.Development.json", optional: true)
             .AddEnvironmentVariables()
