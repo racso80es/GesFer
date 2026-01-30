@@ -1,19 +1,19 @@
 using GesFer.Admin.Back.Domain.Entities;
-using GesFer.Product.Back.src.Infrastructure.Data;
+using MyCompany.SysAdmin.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace GesFer.Admin.Infrastructure.Services;
+namespace MyCompany.SysAdmin.Infrastructure.Services;
 
 /// <summary>
 /// Servicio para registrar logs de auditoría administrativa
 /// </summary>
 public class AuditLogService : IAuditLogService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly AdminDbContext _context;
     private readonly ILogger<AuditLogService> _logger;
 
-    public AuditLogService(ApplicationDbContext context, ILogger<AuditLogService> logger)
+    public AuditLogService(AdminDbContext context, ILogger<AuditLogService> logger)
     {
         _context = context;
         _logger = logger;

@@ -1,5 +1,7 @@
-using GesFer.Admin.Back.Domain.Entities;
-using GesFer.Product.Back.src.Infrastructure.Data;
+
+
+
+using MyCompany.SysAdmin.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +16,11 @@ namespace GesFer.Admin.Api.Controllers;
 [Authorize(Policy = "AdminOnly")] // Requiere rol Admin
 public class LogController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly AdminDbContext _context;
     private readonly ILogger<LogController> _logger;
 
     public LogController(
-        ApplicationDbContext context,
+        AdminDbContext context,
         ILogger<LogController> logger)
     {
         _context = context;

@@ -1,5 +1,7 @@
-using GesFer.Admin.Infrastructure.Services;
-using GesFer.Product.Back.src.Infrastructure.Data;
+
+using MyCompany.SysAdmin.Infrastructure.Services;
+using MyCompany.SysAdmin.Infrastructure.Data;
+using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
 
@@ -21,7 +23,31 @@ public static class DependencyInjection
 
         var isDevelopment = environment?.IsDevelopment() ?? false;
 
-        // Usar ApplicationDbContext de Product (compartido)
+        // 1. Contexto de Admin (Escritura de Logs, Audit, AdminUsers)
+        services.AddDbContext<AdminDbContext>((serviceProvider, options) =>
+        {
+            options.UseMySql(
+                connectionString,
+                new MySqlServerVersion(new Version(8, 0, 0)),
+                mysqlOptions =>
+                {
+                    mysqlOptions.EnableStringComparisonTranslations();
+                    mysqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null);
+                    // Usar tabla de historial de migraciones separada
+                    mysqlOptions.MigrationsHistoryTable("__EFMigrationsHistory_Admin");
+                });
+
+            if (isDevelopment)
+            {
+                options.EnableSensitiveDataLogging();
+                options.EnableDetailedErrors();
+            }
+        });
+
+        // 2. Contexto de Product (Solo lectura para Dashboard)
         services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
         {
             options.UseMySql(
@@ -35,12 +61,6 @@ public static class DependencyInjection
                         maxRetryDelay: TimeSpan.FromSeconds(30),
                         errorNumbersToAdd: null);
                 });
-
-            if (isDevelopment)
-            {
-                options.EnableSensitiveDataLogging();
-                options.EnableDetailedErrors();
-            }
         });
 
         // Servicios de infraestructura Admin

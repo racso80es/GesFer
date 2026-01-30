@@ -1,8 +1,9 @@
-version: '3.8'
+# Docker Compose para entorno de pruebas de integración (Backend + DB)
+# Se levantan servicios mínimos necesarios para validar PRs.
 
 services:
-  # Base de datos MySQL para tests E2E
-  db-test:
+  # Base de datos MySQL Compartida para Tests
+  gesfer-test-db:
     image: mysql:8.0
     container_name: gesfer_test_db
     restart: unless-stopped
@@ -13,41 +14,60 @@ services:
       - --max_allowed_packet=256M
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: GesFerTestDb
-      MYSQL_USER: testuser
-      MYSQL_PASSWORD: testpassword
+      MYSQL_DATABASE: ScrapDb
+      MYSQL_USER: scrapuser
+      MYSQL_PASSWORD: scrappassword
       TZ: UTC
     ports:
-      - "3307:3306"  # Puerto diferente al de desarrollo (3306) para evitar conflictos
-    # Sin volumen persistente - MySQL será efímero y se reseteará en cada docker-compose down
+      - "3307:3306" # Puerto alternativo para no chocar con desarrollo (3306)
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
-      interval: 10s
-      timeout: 5s
+      interval: 5s
+      timeout: 3s
       retries: 5
-      start_period: 30s
+      start_period: 10s
     networks:
       - gesfer_test_network
 
-  # API para tests E2E
-  api-test:
+  # Product API Test
+  gesfer-product-api-test:
     build:
-      context: ./Api
-      dockerfile: Dockerfile.test
-    container_name: gesfer_test_api
+      context: .
+      dockerfile: src/Product/Back/Dockerfile
+    container_name: gesfer_product_api_test
     restart: unless-stopped
-    environment:
-      ASPNETCORE_ENVIRONMENT: Testing
-      ASPNETCORE_URLS: http://+:5000
-      ConnectionStrings__DefaultConnection: "Server=db-test;Port=3306;Database=GesFerTestDb;User=testuser;Password=testpassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;"
-      JwtSettings__SecretKey: "YourSuperSecretKeyThatShouldBeAtLeast32CharactersLong!"
-      JwtSettings__Issuer: "GesFerApi"
-      JwtSettings__Audience: "GesFerClient"
-      JwtSettings__ExpirationMinutes: "60"
     ports:
-      - "5001:5000"  # Puerto diferente al de desarrollo para evitar conflictos
+      - "5001:5000" # Usamos 5001 para que los scripts existentes funcionen, aunque internamente escucha en 5000
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Testing
+      - ASPNETCORE_URLS=http://+:5000
+      # Conectar a la DB de test en la red interna
+      - ConnectionStrings__DefaultConnection=Server=gesfer-test-db;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;
+      # Apuntar a Admin API Test (si se levanta, sino mockear o dejar fallar graceful)
+      - AdminApi__BaseUrl=http://gesfer-admin-api-test:5010
+      - Database__AutoRunMigrations=true
     depends_on:
-      db-test:
+      gesfer-test-db:
+        condition: service_healthy
+    networks:
+      - gesfer_test_network
+
+  # Admin API Test
+  gesfer-admin-api-test:
+    build:
+      context: .
+      dockerfile: src/Admin/Back/Dockerfile
+    container_name: gesfer_admin_api_test
+    restart: unless-stopped
+    ports:
+      - "5011:5010" # Puerto alternativo
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Testing
+      - ASPNETCORE_URLS=http://+:5010
+      - ConnectionStrings__DefaultConnection=Server=gesfer-test-db;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;
+      - Database__AutoRunMigrations=true
+    depends_on:
+      gesfer-test-db:
         condition: service_healthy
     networks:
       - gesfer_test_network

@@ -19,11 +19,14 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="8.0.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Product\Back\src\Infrastructure\GesFer.Infrastructure.csproj" />
+    <ProjectReference Include="..\Product\Back\Infrastructure\GesFer.Infrastructure.csproj" />
+    <ProjectReference Include="..\Admin\Back\Infrastructure\GesFer.Admin.Infra.csproj" />
   </ItemGroup>
 
 </Project>

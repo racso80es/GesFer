@@ -1,5 +1,5 @@
-using GesFer.Product.Back.src.Infrastructure.Data;
-using GesFer.Product.Back.src.Infrastructure.Services;
+using GesFer.Infrastructure.Data;
+using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

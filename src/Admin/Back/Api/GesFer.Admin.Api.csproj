@@ -19,11 +19,13 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
     <PackageReference Include="Serilog.Sinks.Async" Version="2.0.0" />
     <PackageReference Include="Serilog.Sinks.MySQL" Version="5.0.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\application\GesFer.Admin.Application.csproj" />
-    <ProjectReference Include="..\Infrastructure\GesFer.Admin.Infrastructure.csproj" />
+    <ProjectReference Include="..\Infrastructure\GesFer.Admin.Infra.csproj" />
+    <ProjectReference Include="..\..\..\Product\Back\Infrastructure\GesFer.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

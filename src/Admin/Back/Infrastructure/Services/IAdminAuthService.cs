@@ -1,6 +1,6 @@
 using GesFer.Admin.Back.Domain.Entities;
 
-namespace GesFer.Admin.Infrastructure.Services;
+namespace MyCompany.SysAdmin.Infrastructure.Services;
 
 /// <summary>
 /// Servicio de autenticación para usuarios administrativos
