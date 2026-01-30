@@ -1,29 +1,25 @@
-using System.Diagnostics;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+using GesFer.ConsoleApp.Commands.Base;
+using GesFer.ConsoleApp.Commands.Dtos;
+using GesFer.ConsoleApp.Services;
 
-namespace GesFer.ConsoleApp.Services;
+namespace GesFer.ConsoleApp.Commands;
 
-/// <summary>
-/// Servicio para gestionar contenedores Docker
-/// </summary>
-public class DockerService
+public class CheckDockerCommand : ICommandHandler<CheckDockerInput, bool>
 {
-    private readonly string _apiPath;
     private readonly LogService _logService;
 
-    public DockerService(LogService logService)
+    public CheckDockerCommand(LogService logService)
     {
         _logService = logService;
-        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        // docker-compose.yml ahora está en la raíz del repo
-        _apiPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
     }
 
-    /// <summary>
-    /// Verifica si Docker está corriendo
-    /// </summary>
-    public async Task<bool> IsDockerRunningAsync()
+    public async Task<CommandResult<bool>> HandleAsync(CheckDockerInput input)
     {
+        var result = new CommandResult<bool>();
         try
         {
             var processInfo = new ProcessStartInfo
@@ -39,24 +35,47 @@ public class DockerService
             using var process = Process.Start(processInfo);
             if (process == null)
             {
-                return false;
+                result.Success = false;
+                result.Data = false;
+                result.Message = "Could not start docker process";
+                return result;
             }
 
             await process.WaitForExitAsync();
-            return process.ExitCode == 0;
+
+            result.Success = process.ExitCode == 0;
+            result.Data = result.Success;
+            result.Message = result.Success ? "Docker is running" : "Docker is not running";
+            return result;
         }
         catch
         {
-            return false;
+            result.Success = false;
+            result.Data = false;
+            result.Message = "Exception checking docker";
+            return result;
         }
     }
+}
 
-    /// <summary>
-    /// Elimina contenedores Docker existentes
-    /// </summary>
-    public async Task<bool> RemoveContainersAsync()
+public class RemoveContainersCommand : ICommandHandler<RemoveContainersInput, bool>
+{
+    private readonly LogService _logService;
+    private readonly string _apiPath;
+
+    public RemoveContainersCommand(LogService logService)
     {
-        Console.WriteLine("Limpiando contenedores existentes...");
+        _logService = logService;
+        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+        _apiPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
+    }
+
+    public async Task<CommandResult<bool>> HandleAsync(RemoveContainersInput input)
+    {
+        var result = new CommandResult<bool>();
+        result.Data = false;
+
+        result.AddLog("Limpiando contenedores existentes...");
         _logService.WriteLog("Limpiando contenedores existentes...");
 
         try
@@ -79,9 +98,12 @@ public class DockerService
             if (process == null)
             {
                 var errorMsg = "No se pudo iniciar docker-compose";
-                Console.WriteLine($"    ERROR: {errorMsg}");
+                result.AddLog($"    ERROR: {errorMsg}");
+                result.Errors.Add(errorMsg);
                 _logService.WriteError(errorMsg);
-                return false;
+                result.Success = false;
+                result.Message = errorMsg;
+                return result;
             }
 
             var outputTask = process.StandardOutput.ReadToEndAsync();
@@ -101,32 +123,55 @@ public class DockerService
 
             if (process.ExitCode == 0)
             {
-                Console.WriteLine("    ✓ Contenedores eliminados");
+                result.AddLog("    ✓ Contenedores eliminados");
                 _logService.WriteLog("Contenedores eliminados correctamente");
-                return true;
+                result.Success = true;
+                result.Data = true;
+                result.Message = "Contenedores eliminados.";
             }
             else
             {
-                Console.WriteLine("    ⚠ No se pudieron detener contenedores (puede que no existan)");
+                result.AddLog("    ⚠ No se pudieron detener contenedores (puede que no existan)");
                 _logService.WriteLog("No se pudieron detener contenedores (puede que no existan)");
-                return true; // No es un error crítico si no hay contenedores
+                // Not critical error
+                result.Success = true;
+                result.Data = true;
+                result.Message = "Contenedores no encontrados o ya detenidos.";
             }
+            return result;
         }
         catch (Exception ex)
         {
             var errorMsg = $"Excepción al eliminar contenedores: {ex.Message}";
-            Console.WriteLine($"    ERROR: {ex.Message}");
+            result.AddLog($"    ERROR: {ex.Message}");
+            result.Errors.Add(errorMsg);
             _logService.WriteError(errorMsg, ex);
-            return false;
+
+            result.Success = false;
+            result.Message = errorMsg;
+            return result;
         }
     }
+}
 
-    /// <summary>
-    /// Crea contenedores Docker
-    /// </summary>
-    public async Task<bool> CreateContainersAsync()
+public class CreateContainersCommand : ICommandHandler<CreateContainersInput, bool>
+{
+    private readonly LogService _logService;
+    private readonly string _apiPath;
+
+    public CreateContainersCommand(LogService logService)
     {
-        Console.WriteLine("Creando contenedores Docker...");
+        _logService = logService;
+        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+        _apiPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
+    }
+
+    public async Task<CommandResult<bool>> HandleAsync(CreateContainersInput input)
+    {
+        var result = new CommandResult<bool>();
+        result.Data = false;
+
+        result.AddLog("Creando contenedores Docker...");
         _logService.WriteLog("Creando contenedores Docker...");
 
         try
@@ -149,9 +194,13 @@ public class DockerService
             if (process == null)
             {
                 var errorMsg = "No se pudo iniciar docker-compose";
-                Console.WriteLine($"    ERROR: {errorMsg}");
+                result.AddLog($"    ERROR: {errorMsg}");
+                result.Errors.Add(errorMsg);
                 _logService.WriteError(errorMsg);
-                return false;
+
+                result.Success = false;
+                result.Message = errorMsg;
+                return result;
             }
 
             var outputTask = process.StandardOutput.ReadToEndAsync();
@@ -171,32 +220,53 @@ public class DockerService
 
             if (process.ExitCode == 0)
             {
-                Console.WriteLine("    ✓ Contenedores creados");
+                result.AddLog("    ✓ Contenedores creados");
                 _logService.WriteLog("Contenedores creados correctamente");
-                return true;
+                result.Success = true;
+                result.Data = true;
+                result.Message = "Contenedores creados.";
             }
             else
             {
-                Console.WriteLine("    ERROR: No se pudieron crear los contenedores");
+                result.AddLog("    ERROR: No se pudieron crear los contenedores");
                 _logService.WriteError("No se pudieron crear los contenedores");
-                return false;
+                result.Success = false;
+                result.Message = "Fallo al crear contenedores.";
             }
+            return result;
         }
         catch (Exception ex)
         {
             var errorMsg = $"Excepción al crear contenedores: {ex.Message}";
-            Console.WriteLine($"    ERROR: {ex.Message}");
+            result.AddLog($"    ERROR: {ex.Message}");
+            result.Errors.Add(errorMsg);
             _logService.WriteError(errorMsg, ex);
-            return false;
+
+            result.Success = false;
+            result.Message = errorMsg;
+            return result;
         }
     }
+}
 
-    /// <summary>
-    /// Espera a que MySQL esté listo
-    /// </summary>
-    public async Task<bool> WaitForMySqlReadyAsync(int maxAttempts = 30, int delaySeconds = 2)
+public class WaitMySqlReadyCommand : ICommandHandler<WaitMySqlInput, bool>
+{
+    private readonly LogService _logService;
+
+    public WaitMySqlReadyCommand(LogService logService)
     {
-        Console.WriteLine("Esperando a que MySQL esté listo...");
+        _logService = logService;
+    }
+
+    public async Task<CommandResult<bool>> HandleAsync(WaitMySqlInput input)
+    {
+        var result = new CommandResult<bool>();
+        result.Data = false;
+
+        int maxAttempts = 30;
+        int delaySeconds = 2;
+
+        result.AddLog("Esperando a que MySQL esté listo...");
         _logService.WriteLog($"Esperando a que MySQL esté listo (máximo {maxAttempts} intentos)...");
 
         for (int attempt = 1; attempt <= maxAttempts; attempt++)
@@ -226,11 +296,15 @@ public class DockerService
 
                     if (process.ExitCode == 0)
                     {
-                        Console.WriteLine("    ✓ MySQL está listo");
+                        result.AddLog("    ✓ MySQL está listo");
                         _logService.WriteLog($"MySQL está listo después de {attempt} intentos");
                         // Esperar un poco más para asegurar que MySQL esté completamente listo
                         await Task.Delay(TimeSpan.FromSeconds(5));
-                        return true;
+
+                        result.Success = true;
+                        result.Data = true;
+                        result.Message = "MySQL ready.";
+                        return result;
                     }
                     else
                     {
@@ -245,19 +319,22 @@ public class DockerService
             catch (Exception ex)
             {
                 _logService.WriteLog($"Excepción en intento {attempt}: {ex.Message}");
-                // Continuar intentando
             }
 
             if (attempt < maxAttempts)
             {
-                Console.WriteLine($"    Intento {attempt}/{maxAttempts}...");
+                result.AddLog($"    Intento {attempt}/{maxAttempts}...");
                 await Task.Delay(TimeSpan.FromSeconds(delaySeconds));
             }
         }
 
         var errorMsg = $"MySQL no está listo después de {maxAttempts} intentos";
-        Console.WriteLine($"    ERROR: {errorMsg}");
+        result.AddLog($"    ERROR: {errorMsg}");
+        result.Errors.Add(errorMsg);
         _logService.WriteError(errorMsg);
-        return false;
+
+        result.Success = false;
+        result.Message = errorMsg;
+        return result;
     }
 }

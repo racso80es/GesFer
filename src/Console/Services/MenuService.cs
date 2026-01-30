@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using GesFer.ConsoleApp.Commands;
+using GesFer.ConsoleApp.Commands.Dtos;
 using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -17,29 +19,47 @@ namespace GesFer.ConsoleApp.Services;
 /// </summary>
 public class MenuService
 {
-    private readonly DockerService _dockerService;
-    private readonly MigrationService _migrationService;
-    private readonly SeedService _seedService;
+    private readonly CheckDockerCommand _checkDockerCommand;
+    private readonly RemoveContainersCommand _removeContainersCommand;
+    private readonly CreateContainersCommand _createContainersCommand;
+    private readonly WaitMySqlReadyCommand _waitMySqlReadyCommand;
+    private readonly ApplyMigrationsCommand _applyMigrationsCommand;
+    private readonly CreateInitialMigrationCommand _createInitialMigrationCommand;
+    private readonly SquashMigrationsCommand _squashMigrationsCommand;
+    private readonly EnsureEfToolCommand _ensureEfToolCommand;
+    private readonly SeedCommand _seedCommand;
+    private readonly InitializeDatabaseCommand _initializeDatabaseCommand;
     private readonly IntegrityValidationService _integrityValidationService;
     private readonly GoldenRulesComplianceService _goldenRulesService;
-    private readonly DatabaseInitializationService _databaseInitializationService;
     private readonly LogService _logService;
 
     public MenuService(
-        DockerService dockerService,
-        MigrationService migrationService,
-        SeedService seedService,
+        CheckDockerCommand checkDockerCommand,
+        RemoveContainersCommand removeContainersCommand,
+        CreateContainersCommand createContainersCommand,
+        WaitMySqlReadyCommand waitMySqlReadyCommand,
+        ApplyMigrationsCommand applyMigrationsCommand,
+        CreateInitialMigrationCommand createInitialMigrationCommand,
+        SquashMigrationsCommand squashMigrationsCommand,
+        EnsureEfToolCommand ensureEfToolCommand,
+        SeedCommand seedCommand,
+        InitializeDatabaseCommand initializeDatabaseCommand,
         IntegrityValidationService integrityValidationService,
         GoldenRulesComplianceService goldenRulesService,
-        DatabaseInitializationService databaseInitializationService,
         LogService logService)
     {
-        _dockerService = dockerService;
-        _migrationService = migrationService;
-        _seedService = seedService;
+        _checkDockerCommand = checkDockerCommand;
+        _removeContainersCommand = removeContainersCommand;
+        _createContainersCommand = createContainersCommand;
+        _waitMySqlReadyCommand = waitMySqlReadyCommand;
+        _applyMigrationsCommand = applyMigrationsCommand;
+        _createInitialMigrationCommand = createInitialMigrationCommand;
+        _squashMigrationsCommand = squashMigrationsCommand;
+        _ensureEfToolCommand = ensureEfToolCommand;
+        _seedCommand = seedCommand;
+        _initializeDatabaseCommand = initializeDatabaseCommand;
         _integrityValidationService = integrityValidationService;
         _goldenRulesService = goldenRulesService;
-        _databaseInitializationService = databaseInitializationService;
         _logService = logService;
     }
 
@@ -139,7 +159,8 @@ public class MenuService
 
         // 1. Verificar Docker
         Console.WriteLine("[1/9] Verificando Docker...");
-        if (!await _dockerService.IsDockerRunningAsync())
+        var dockerCheck = await _checkDockerCommand.HandleAsync(new CheckDockerInput());
+        if (!dockerCheck.Success || !dockerCheck.Data)
         {
             Console.WriteLine("ERROR: Docker no está corriendo. Por favor, inicia Docker Desktop.");
             Console.WriteLine("Presione cualquier tecla para continuar...");
@@ -242,12 +263,16 @@ public class MenuService
 
         // 3. Eliminar contenedores
         Console.WriteLine("[3/9] Limpiando contenedores existentes...");
-        await _dockerService.RemoveContainersAsync();
+        var rmResult = await _removeContainersCommand.HandleAsync(new RemoveContainersInput());
+        foreach(var l in rmResult.Logs) Console.WriteLine(l);
         Console.WriteLine();
 
         // 4. Crear contenedores
         Console.WriteLine("[4/9] Creando contenedores Docker...");
-        if (!await _dockerService.CreateContainersAsync())
+        var createResult = await _createContainersCommand.HandleAsync(new CreateContainersInput());
+        foreach(var l in createResult.Logs) Console.WriteLine(l);
+
+        if (!createResult.Success)
         {
             Console.WriteLine("ERROR: No se pudieron crear los contenedores");
             Console.WriteLine("Presione cualquier tecla para continuar...");
@@ -258,7 +283,10 @@ public class MenuService
 
         // 5. Esperar MySQL
         Console.WriteLine("[5/9] Esperando a que MySQL esté listo...");
-        if (!await _dockerService.WaitForMySqlReadyAsync())
+        var waitResult = await _waitMySqlReadyCommand.HandleAsync(new WaitMySqlInput());
+        foreach(var l in waitResult.Logs) Console.WriteLine(l);
+
+        if (!waitResult.Success)
         {
             Console.WriteLine("ERROR: MySQL no está listo");
             Console.WriteLine("Presione cualquier tecla para continuar...");
@@ -269,31 +297,37 @@ public class MenuService
 
         // 6. Verificar/Instalar dotnet-ef
         Console.WriteLine("[6/9] Verificando herramienta dotnet-ef...");
-        if (!await _migrationService.IsEfToolInstalledAsync())
+        var efToolResult = await _ensureEfToolCommand.HandleAsync(new EnsureEfToolInput());
+        foreach (var log in efToolResult.Logs) Console.WriteLine(log);
+
+        if (!efToolResult.Success || !efToolResult.Data)
         {
-            if (!await _migrationService.InstallEfToolAsync())
-            {
-                Console.WriteLine("ERROR: No se pudo instalar dotnet-ef");
-                Console.WriteLine("Presione cualquier tecla para continuar...");
-                SafeReadKey();
-                return true;
-            }
-        }
-        else
-        {
-            Console.WriteLine("    ✓ Herramienta dotnet-ef encontrada");
+            Console.WriteLine("ERROR: No se pudo verificar/instalar dotnet-ef");
+            Console.WriteLine("Presione cualquier tecla para continuar...");
+            SafeReadKey();
+            return true;
         }
         Console.WriteLine();
 
         // 7. Crear migraciones si no existen
         Console.WriteLine("[7/9] Verificando migraciones...");
-        await _migrationService.CreateInitialMigrationIfNeededAsync();
+        var initMigResult = await _createInitialMigrationCommand.HandleAsync(new CreateInitialMigrationInput());
+        foreach (var log in initMigResult.Logs) Console.WriteLine(log);
+
+        if (!initMigResult.Success)
+        {
+             // Logged in command, but we should probably stop if strict?
+             // Original code didn't return if CreateInitialMigration failed, it just printed error.
+             // But if migration fails, Apply will fail.
+        }
         Console.WriteLine();
 
-        // 8. Aplicar migraciones y ejecutar seeds usando DatabaseInitializationService
+        // 8. Aplicar migraciones y ejecutar seeds usando DatabaseInitializationService (Command)
         Console.WriteLine("[8/9] Aplicando migraciones y cargando datos iniciales desde JSON...");
-        var step8Result = await _databaseInitializationService.ExecuteStep8Async();
-        
+        var initCmdResult = await _initializeDatabaseCommand.HandleAsync(new InitializeDatabaseInput());
+        var step8Result = initCmdResult.Data;
+        foreach(var l in initCmdResult.Logs) Console.WriteLine(l);
+
         // Mostrar información del proceso de forma visual
         Console.WriteLine();
         if (step8Result.Information.Any())
@@ -435,7 +469,9 @@ public class MenuService
         Console.WriteLine($"Log: {_logService.GetLogFilePath()}");
         Console.WriteLine();
         
-        var result = await _databaseInitializationService.ExecuteStep8Async();
+        var initCmdResult = await _initializeDatabaseCommand.HandleAsync(new InitializeDatabaseInput());
+        var result = initCmdResult.Data;
+        foreach(var l in initCmdResult.Logs) Console.WriteLine(l);
         
         Console.WriteLine();
         Console.WriteLine("========================================");
@@ -557,14 +593,18 @@ public class MenuService
             switch (option)
             {
                 case 1:
-                    await _dockerService.RemoveContainersAsync();
+                    var r1 = await _removeContainersCommand.HandleAsync(new RemoveContainersInput());
+                    foreach(var l in r1.Logs) Console.WriteLine(l);
                     break;
                 case 2:
-                    await _dockerService.CreateContainersAsync();
+                    var r2 = await _createContainersCommand.HandleAsync(new CreateContainersInput());
+                    foreach(var l in r2.Logs) Console.WriteLine(l);
                     break;
                 case 3:
-                    await _dockerService.RemoveContainersAsync();
-                    await _dockerService.CreateContainersAsync();
+                    var r3a = await _removeContainersCommand.HandleAsync(new RemoveContainersInput());
+                    foreach(var l in r3a.Logs) Console.WriteLine(l);
+                    var r3b = await _createContainersCommand.HandleAsync(new CreateContainersInput());
+                    foreach(var l in r3b.Logs) Console.WriteLine(l);
                     break;
             }
         }
@@ -597,14 +637,18 @@ public class MenuService
             switch (option)
             {
                 case 1:
-                    await _migrationService.CreateInitialMigrationIfNeededAsync();
+                    var r1 = await _createInitialMigrationCommand.HandleAsync(new CreateInitialMigrationInput());
+                    foreach(var l in r1.Logs) Console.WriteLine(l);
                     break;
                 case 2:
-                    await _migrationService.ApplyMigrationsAsync();
+                    var r2 = await _applyMigrationsCommand.HandleAsync(new ApplyMigrationsInput());
+                    foreach(var l in r2.Logs) Console.WriteLine(l);
                     break;
                 case 3:
-                    await _migrationService.CreateInitialMigrationIfNeededAsync();
-                    await _migrationService.ApplyMigrationsAsync();
+                    var r3a = await _createInitialMigrationCommand.HandleAsync(new CreateInitialMigrationInput());
+                    foreach(var l in r3a.Logs) Console.WriteLine(l);
+                    var r3b = await _applyMigrationsCommand.HandleAsync(new ApplyMigrationsInput());
+                    foreach(var l in r3b.Logs) Console.WriteLine(l);
                     break;
             }
         }
@@ -649,11 +693,11 @@ public class MenuService
 
         var scope = scopeOption switch
         {
-            1 => SeedService.SeedScope.Shared,
-            2 => SeedService.SeedScope.Admin,
-            3 => SeedService.SeedScope.Product,
-            4 => SeedService.SeedScope.All,
-            _ => SeedService.SeedScope.All
+            1 => SeedScope.Shared,
+            2 => SeedScope.Admin,
+            3 => SeedScope.Product,
+            4 => SeedScope.All,
+            _ => SeedScope.All
         };
 
         Console.WriteLine();
@@ -674,14 +718,37 @@ public class MenuService
 
         var level = levelOption switch
         {
-            1 => SeedService.SeedLevel.Master,
-            2 => SeedService.SeedLevel.Demo,
-            3 => SeedService.SeedLevel.Test,
-            _ => SeedService.SeedLevel.Master
+            1 => SeedLevel.Master,
+            2 => SeedLevel.Demo,
+            3 => SeedLevel.Test,
+            _ => SeedLevel.Master
         };
 
         Console.WriteLine();
-        await _seedService.ExecuteSeedAsync(scope, level);
+
+        var input = new SeedCommandInput { Scope = scope, Level = level };
+        var result = await _seedCommand.HandleAsync(input);
+
+        // Imprimir logs devueltos por el comando
+        foreach (var log in result.Logs)
+        {
+            Console.WriteLine(log);
+        }
+
+        if (result.Success)
+        {
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(result.Message);
+            Console.ResetColor();
+        }
+        else
+        {
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Error: {result.Message}");
+            Console.ResetColor();
+        }
 
         Console.WriteLine();
         Console.WriteLine("Presione cualquier tecla para continuar...");
@@ -792,11 +859,21 @@ public class MenuService
         Console.WriteLine("Ejecutando squash de migraciones...");
         Console.WriteLine();
 
-        var result = await _migrationService.SquashMigrationsAsync();
+        var cmdResult = await _squashMigrationsCommand.HandleAsync(new SquashMigrationsInput());
+        var result = cmdResult.Data; // Accessing data
+
+        // Print Logs
+        foreach (var log in cmdResult.Logs)
+        {
+             // SquashMigrationsCommand puts messages in Logs (well, in Messages list in Data? No, I updated it to use AddLog)
+             // Wait, I updated SquashMigrationsCommand to use AddLog AND I removed Messages list from DTO? No.
+             // Let's check SquashMigrationsCommand logic I wrote.
+             Console.WriteLine(log);
+        }
 
         Console.WriteLine();
         Console.WriteLine("========================================");
-        if (result.Success)
+        if (cmdResult.Success && result != null)
         {
             Console.WriteLine("   ✓ Squash de migraciones completado");
             Console.WriteLine("========================================");
@@ -850,15 +927,11 @@ public class MenuService
             Console.WriteLine("   ✗ Squash de migraciones falló");
             Console.WriteLine("========================================");
             Console.WriteLine();
-            Console.WriteLine($"Error: {result.ErrorMessage}");
+            Console.WriteLine($"Error: {cmdResult.Message}");
         }
 
-        Console.WriteLine();
-        Console.WriteLine("Mensajes del proceso:");
-        foreach (var message in result.Messages)
-        {
-            Console.WriteLine($"  {message}");
-        }
+        // Original code printed result.Messages. My Command puts them in Logs.
+        // So printing Logs (above) covers it.
 
         Console.WriteLine();
         Console.WriteLine($"Log completo disponible en: {_logService.GetLogFilePath()}");

@@ -1,73 +1,48 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using GesFer.ConsoleApp.Commands.Base;
+using GesFer.ConsoleApp.Commands.Dtos;
+using GesFer.ConsoleApp.Services;
 using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
-using MyCompany.SysAdmin.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MyCompany.SysAdmin.Infrastructure.Data;
 using Pomelo.EntityFrameworkCore.MySql;
 
-namespace GesFer.ConsoleApp.Services;
+namespace GesFer.ConsoleApp.Commands;
 
-/// <summary>
-/// Servicio para ejecutar el punto 8 de la opción 1: Aplicar migraciones y cargar datos iniciales
-/// </summary>
-public class DatabaseInitializationService
+public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput, InitializationResultData>
 {
-    private readonly DockerService _dockerService;
     private readonly LogService _logService;
 
-    public DatabaseInitializationService(DockerService dockerService, LogService logService)
+    public InitializeDatabaseCommand(LogService logService)
     {
-        _dockerService = dockerService;
         _logService = logService;
     }
 
-    /// <summary>
-    /// Resultado de la inicialización de base de datos
-    /// </summary>
-    public class InitializationResult
+    public async Task<CommandResult<InitializationResultData>> HandleAsync(InitializeDatabaseInput input)
     {
-        /// <summary>
-        /// Estado del resultado: "ok" o "ko"
-        /// </summary>
-        public string Status { get; set; } = "ko";
+        var result = new CommandResult<InitializationResultData>();
+        result.Data = new InitializationResultData();
 
-        /// <summary>
-        /// Lista de información relevante sobre el proceso
-        /// </summary>
-        public List<string> Information { get; set; } = new List<string>();
+        // Add "Inicialización de base de datos" to info/logs?
+        result.Data.Information.Add("Inicialización de base de datos");
+        // result.AddLog("Inicialización de base de datos"); // Calling code usually prints title.
 
-        /// <summary>
-        /// Lista de errores si los hay
-        /// </summary>
-        public List<string> Errors { get; set; } = new List<string>();
-
-        /// <summary>
-        /// Mensaje resumen
-        /// </summary>
-        public string Message { get; set; } = string.Empty;
-    }
-
-    /// <summary>
-    /// Ejecuta el punto 8 de la opción 1: Aplicar migraciones y cargar datos iniciales
-    /// Asegura que cada ejecución empiece de 0 eliminando la base de datos, creando estructura y añadiendo datos
-    /// </summary>
-    public async Task<InitializationResult> ExecuteStep8Async()
-    {
-        var result = new InitializationResult();
-        result.Information.Add("Inicialización de base de datos");
         _logService.WriteLog("========================================");
         _logService.WriteLog("Ejecutando inicialización de base de datos");
         _logService.WriteLog("========================================");
 
         try
         {
-            // Se asume que Docker y MySQL están correctamente configurados y funcionando
-            // Paso 1: Configurar servicios y contexto de base de datos
-            // (No se muestra en la información, solo se ejecuta)
             _logService.WriteLog("Configurando servicios...");
             
             var baseDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -76,14 +51,21 @@ public class DatabaseInitializationService
 
             if (!Directory.Exists(apiPath))
             {
-                result.Status = "ko";
-                result.Errors.Add($"No se encontró la ruta de la API: {apiPath}");
-                result.Message = "Ruta de API no encontrada";
-                _logService.WriteError($"Ruta de API no encontrada: {apiPath}");
+                result.Data.Status = "ko";
+                var errorMsg = $"No se encontró la ruta de la API: {apiPath}";
+                result.Data.Errors.Add(errorMsg);
+                result.Data.Message = "Ruta de API no encontrada";
+
+                result.AddLog($"ERROR: {errorMsg}");
+                result.Errors.Add(errorMsg);
+                _logService.WriteError(errorMsg);
+
+                result.Success = false;
+                result.Message = result.Data.Message;
                 return result;
             }
 
-            // Configurar servicios igual que la API
+            // Configurar servicios
             var services = new ServiceCollection();
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(apiPath)
@@ -110,7 +92,6 @@ public class DatabaseInitializationService
                     });
             });
 
-            // Configurar AdminDbContext para Admin
             services.AddDbContext<AdminDbContext>(options =>
             {
                 options.UseMySql(
@@ -127,12 +108,10 @@ public class DatabaseInitializationService
                     });
             });
 
-            // Configurar HostEnvironment como Development
             services.AddSingleton<IHostEnvironment>(new DevelopmentHostEnvironment());
 
             services.AddLogging(builder =>
             {
-                // Configurar logging sin mostrar etiquetas "info:" en consola
                 builder.AddSimpleConsole(options =>
                 {
                     options.IncludeScopes = false;
@@ -141,22 +120,18 @@ public class DatabaseInitializationService
                     options.UseUtcTimestamp = false;
                     options.ColorBehavior = Microsoft.Extensions.Logging.Console.LoggerColorBehavior.Disabled;
                 });
-                // Filtrar los mensajes de Entity Framework y otros que muestran "info:"
                 builder.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
                 builder.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
                 builder.AddFilter("Microsoft.EntityFrameworkCore.Migrations", LogLevel.Warning);
-                // Filtrar el warning esperado de DbInitializer sobre conexión a BD (es normal cuando la BD no existe aún)
                 builder.AddFilter((category, level) =>
                 {
-                    // Si es DbInitializer, solo mostrar errores
                     if (category == "DbInitializer")
                     {
                         return level >= LogLevel.Error;
                     }
-                    // Para otros, seguir el nivel mínimo
                     return level >= LogLevel.Warning;
                 });
-                builder.SetMinimumLevel(LogLevel.Warning); // Solo mostrar warnings y errores en consola
+                builder.SetMinimumLevel(LogLevel.Warning);
             });
 
             services.AddScoped<JsonDataSeeder>();
@@ -170,15 +145,12 @@ public class DatabaseInitializationService
                 var scopedServices = scope.ServiceProvider;
                 var context = scopedServices.GetRequiredService<ApplicationDbContext>();
                 var adminContext = scopedServices.GetRequiredService<AdminDbContext>();
-                var logger = scopedServices.GetRequiredService<ILogger<DatabaseInitializationService>>();
+                var logger = scopedServices.GetRequiredService<ILogger<InitializeDatabaseCommand>>();
 
-                // Paso 2: Eliminar base de datos para empezar de 0
-                // (No se muestra en la información, solo se ejecuta)
                 _logService.WriteLog("Eliminando base de datos para empezar de 0...");
                 
                 try
                 {
-                    // Verificar si podemos conectar
                     if (await context.Database.CanConnectAsync())
                     {
                         logger.LogInformation("Eliminando base de datos completamente...");
@@ -195,10 +167,8 @@ public class DatabaseInitializationService
                     logger.LogWarning(ex, "No se pudo eliminar la base de datos, intentando eliminar manualmente...");
                     _logService.WriteError("Error al eliminar base de datos", ex);
                     
-                    // Intentar eliminar manualmente usando SQL directo
                     try
                     {
-                        // Conectar sin especificar base de datos
                         var connectionStringWithoutDb = connectionString.Replace("Database=ScrapDb;", "");
                         using var tempContext = new ApplicationDbContext(
                             new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -212,39 +182,35 @@ public class DatabaseInitializationService
                     catch (Exception fallbackEx)
                     {
                         logger.LogWarning(fallbackEx, "No se pudo recrear la base de datos manualmente, continuando...");
-                        // Continuar de todas formas, las migraciones pueden manejar esto
                     }
                 }
 
-                // Paso 3: Aplicar migraciones y cargar datos usando DbInitializer
                 _logService.WriteLog("Aplicando migraciones y cargando datos iniciales...");
                 
                 try
                 {
-                    // Capturar información de migraciones antes de aplicar
                     var migrationsBefore = await context.Database.GetAppliedMigrationsAsync();
-                    var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
                     
-                    // 1. Inicializar contexto de Product (esto creará la BD si no existe y aplicará migraciones de Product)
                     await DbInitializer.InitializeAsync(serviceProvider, isDevelopment: true);
                     
-                    // 2. Aplicar migraciones de Admin
                     _logService.WriteLog("Aplicando migraciones de Admin...");
                     await adminContext.Database.MigrateAsync();
 
-                    // Capturar información de migraciones aplicadas
                     var migrationsAfter = await context.Database.GetAppliedMigrationsAsync();
                     var appliedMigrations = migrationsAfter.Except(migrationsBefore).ToList();
                     
                     if (appliedMigrations.Any())
                     {
-                        result.Information.Add($"✓ Migraciones Product aplicadas: {string.Join(", ", appliedMigrations)}");
+                        var info = $"✓ Migraciones Product aplicadas: {string.Join(", ", appliedMigrations)}";
+                        result.Data.Information.Add(info);
+                        // result.AddLog(info); // Let caller decide via Data.Information
                     }
                     
                     var adminMigrations = await adminContext.Database.GetAppliedMigrationsAsync();
                     if (adminMigrations.Any())
                     {
-                        result.Information.Add($"✓ Migraciones Admin aplicadas: {string.Join(", ", adminMigrations)}");
+                        var info = $"✓ Migraciones Admin aplicadas: {string.Join(", ", adminMigrations)}";
+                        result.Data.Information.Add(info);
                     }
 
                     _logService.WriteLog("Inicialización de base de datos completada (Product + Admin)");
@@ -252,22 +218,26 @@ public class DatabaseInitializationService
                 catch (Exception ex)
                 {
                     var errorMsg = $"Error al inicializar base de datos: {ex.Message}";
-                    result.Status = "ko";
-                    result.Errors.Add(errorMsg);
-                    result.Message = errorMsg;
+                    result.Data.Status = "ko";
+                    result.Data.Errors.Add(errorMsg);
+                    result.Data.Message = errorMsg;
                     _logService.WriteError(errorMsg, ex);
                     logger.LogError(ex, errorMsg);
+
+                    result.AddLog($"ERROR: {errorMsg}");
+                    result.Errors.Add(errorMsg);
+
+                    result.Success = false;
+                    result.Message = errorMsg;
                     return result;
                 }
 
-                // Paso 4: Verificar que las tablas se crearon correctamente y obtener información de seeds
                 _logService.WriteLog("Verificando estructura de base de datos y datos cargados...");
                 
                 try
                 {
                     if (await context.Database.CanConnectAsync())
                     {
-                        // Obtener lista de tablas
                         var tableNames = new List<string>();
                         using var command = context.Database.GetDbConnection().CreateCommand();
                         command.CommandText = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'ScrapDb' ORDER BY table_name;";
@@ -279,11 +249,10 @@ public class DatabaseInitializationService
                         }
                         context.Database.CloseConnection();
                         
-                        result.Information.Add($"✓ Base de datos verificada: {tableNames.Count} tablas creadas");
-                        result.Information.Add($"  Tablas: {string.Join(", ", tableNames)}");
+                        result.Data.Information.Add($"✓ Base de datos verificada: {tableNames.Count} tablas creadas");
+                        result.Data.Information.Add($"  Tablas: {string.Join(", ", tableNames)}");
                         _logService.WriteLog($"Base de datos verificada: {tableNames.Count} tablas");
                         
-                        // Obtener información de seeds cargados
                         var seedInfo = new List<string>();
                         
                         var languageCount = await context.Languages.CountAsync();
@@ -298,7 +267,6 @@ public class DatabaseInitializationService
                         var groupPermissionCount = await context.GroupPermissions.CountAsync();
                         if (groupPermissionCount > 0) seedInfo.Add($"  • {groupPermissionCount} GroupPermission(s)");
                         
-                        // Usar AdminContext para AdminUsers
                         var adminUserCount = await adminContext.AdminUsers.CountAsync();
                         if (adminUserCount > 0) seedInfo.Add($"  • {adminUserCount} AdminUser(s)");
                         
@@ -322,40 +290,43 @@ public class DatabaseInitializationService
                         
                         if (seedInfo.Any())
                         {
-                            result.Information.Add($"✓ Seeds cargados:");
-                            result.Information.AddRange(seedInfo);
+                            result.Data.Information.Add($"✓ Seeds cargados:");
+                            result.Data.Information.AddRange(seedInfo);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     _logService.WriteError("Error al verificar estructura y datos", ex);
-                    // No es crítico, continuar
                 }
             }
 
-            // Si llegamos aquí, todo fue exitoso
-            result.Status = "ok";
-            result.Message = "Inicialización de base de datos completada exitosamente";
+            result.Data.Status = "ok";
+            result.Data.Message = "Inicialización de base de datos completada exitosamente";
             _logService.WriteLog("========================================");
             _logService.WriteLog("Punto 8 completado exitosamente");
             _logService.WriteLog("========================================");
 
+            result.Success = true;
+            result.Message = result.Data.Message;
             return result;
         }
         catch (Exception ex)
         {
-            result.Status = "ko";
-            result.Errors.Add($"Error inesperado: {ex.Message}");
-            result.Message = $"Error durante la inicialización: {ex.Message}";
+            var errorMsg = $"Error inesperado: {ex.Message}";
+            result.Data.Status = "ko";
+            result.Data.Errors.Add(errorMsg);
+            result.Data.Message = $"Error durante la inicialización: {ex.Message}";
             _logService.WriteError("Error inesperado durante el punto 8", ex);
+
+            result.AddLog($"ERROR: {errorMsg}");
+            result.Errors.Add(errorMsg);
+            result.Success = false;
+            result.Message = errorMsg;
             return result;
         }
     }
 
-    /// <summary>
-    /// Implementación simple de IHostEnvironment para Development
-    /// </summary>
     private class DevelopmentHostEnvironment : IHostEnvironment
     {
         public string EnvironmentName { get; set; } = "Development";
