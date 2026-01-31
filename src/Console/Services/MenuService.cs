@@ -274,9 +274,9 @@ public class MenuService
         // 4. Crear contenedores
         Console.WriteLine("[4/9] Creando contenedores Docker...");
         var createResult = await _createContainersCommand.HandleAsync(new CreateContainersInput());
-        foreach(var l in createResult.Logs) Console.WriteLine(l);
+        foreach(var l in createResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
 
-        if (!createResult.Success)
+        if (createResult == null || !createResult.Success)
         {
             Console.WriteLine("ERROR: No se pudieron crear los contenedores");
             Console.WriteLine("Presione cualquier tecla para continuar...");
@@ -288,9 +288,9 @@ public class MenuService
         // 5. Esperar MySQL
         Console.WriteLine("[5/9] Esperando a que MySQL esté listo...");
         var waitResult = await _waitMySqlReadyCommand.HandleAsync(new WaitMySqlInput());
-        foreach(var l in waitResult.Logs) Console.WriteLine(l);
+        foreach(var l in waitResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
 
-        if (!waitResult.Success)
+        if (waitResult == null || !waitResult.Success)
         {
             Console.WriteLine("ERROR: MySQL no está listo");
             Console.WriteLine("Presione cualquier tecla para continuar...");
@@ -302,9 +302,9 @@ public class MenuService
         // 6. Verificar/Instalar dotnet-ef
         Console.WriteLine("[6/9] Verificando herramienta dotnet-ef...");
         var efToolResult = await _ensureEfToolCommand.HandleAsync(new EnsureEfToolInput());
-        foreach (var log in efToolResult.Logs) Console.WriteLine(log);
+        foreach (var log in efToolResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(log);
 
-        if (!efToolResult.Success || !efToolResult.Data)
+        if (efToolResult == null || !efToolResult.Success || !efToolResult.Data)
         {
             Console.WriteLine("ERROR: No se pudo verificar/instalar dotnet-ef");
             Console.WriteLine("Presione cualquier tecla para continuar...");
@@ -316,25 +316,30 @@ public class MenuService
         // 7. Crear migraciones si no existen
         Console.WriteLine("[7/9] Verificando migraciones...");
         var initMigResult = await _createInitialMigrationCommand.HandleAsync(new CreateInitialMigrationInput());
-        foreach (var log in initMigResult.Logs) Console.WriteLine(log);
+        foreach (var log in initMigResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(log);
 
-        if (!initMigResult.Success)
+        if (initMigResult == null || !initMigResult.Success)
         {
              // Logged in command, but we should probably stop if strict?
-             // Original code didn't return if CreateInitialMigration failed, it just printed error.
-             // But if migration fails, Apply will fail.
         }
         Console.WriteLine();
 
         // 8. Aplicar migraciones y ejecutar seeds usando DatabaseInitializationService (Command)
         Console.WriteLine("[8/9] Aplicando migraciones y cargando datos iniciales desde JSON...");
         var initCmdResult = await _initializeDatabaseCommand.HandleAsync(new InitializeDatabaseInput());
+
+        if (initCmdResult == null || initCmdResult.Data == null)
+        {
+             Console.WriteLine("ERROR: Fallo crítico al inicializar base de datos (resultado nulo).");
+             return true;
+        }
+
         var step8Result = initCmdResult.Data;
-        foreach(var l in initCmdResult.Logs) Console.WriteLine(l);
+        foreach(var l in initCmdResult.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
 
         // Mostrar información del proceso de forma visual
         Console.WriteLine();
-        if (step8Result.Information.Any())
+        if (step8Result.Information != null && step8Result.Information.Any())
         {
             foreach (var info in step8Result.Information)
             {
@@ -474,8 +479,15 @@ public class MenuService
         Console.WriteLine();
         
         var initCmdResult = await _initializeDatabaseCommand.HandleAsync(new InitializeDatabaseInput());
+
+        if (initCmdResult == null || initCmdResult.Data == null)
+        {
+             Console.WriteLine("ERROR: El comando devolvió null.");
+             return false;
+        }
+
         var result = initCmdResult.Data;
-        foreach(var l in initCmdResult.Logs) Console.WriteLine(l);
+        foreach(var l in initCmdResult.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
         
         Console.WriteLine();
         Console.WriteLine("========================================");
@@ -598,17 +610,17 @@ public class MenuService
             {
                 case 1:
                     var r1 = await _removeContainersCommand.HandleAsync(new RemoveContainersInput());
-                    foreach(var l in r1.Logs) Console.WriteLine(l);
+                    foreach(var l in r1?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
                     break;
                 case 2:
                     var r2 = await _createContainersCommand.HandleAsync(new CreateContainersInput());
-                    foreach(var l in r2.Logs) Console.WriteLine(l);
+                    foreach(var l in r2?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
                     break;
                 case 3:
                     var r3a = await _removeContainersCommand.HandleAsync(new RemoveContainersInput());
-                    foreach(var l in r3a.Logs) Console.WriteLine(l);
+                    foreach(var l in r3a?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
                     var r3b = await _createContainersCommand.HandleAsync(new CreateContainersInput());
-                    foreach(var l in r3b.Logs) Console.WriteLine(l);
+                    foreach(var l in r3b?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
                     break;
             }
         }
@@ -642,17 +654,17 @@ public class MenuService
             {
                 case 1:
                     var r1 = await _createInitialMigrationCommand.HandleAsync(new CreateInitialMigrationInput());
-                    foreach(var l in r1.Logs) Console.WriteLine(l);
+                    foreach(var l in r1?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
                     break;
                 case 2:
                     var r2 = await _applyMigrationsCommand.HandleAsync(new ApplyMigrationsInput());
-                    foreach(var l in r2.Logs) Console.WriteLine(l);
+                    foreach(var l in r2?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
                     break;
                 case 3:
                     var r3a = await _createInitialMigrationCommand.HandleAsync(new CreateInitialMigrationInput());
-                    foreach(var l in r3a.Logs) Console.WriteLine(l);
+                    foreach(var l in r3a?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
                     var r3b = await _applyMigrationsCommand.HandleAsync(new ApplyMigrationsInput());
-                    foreach(var l in r3b.Logs) Console.WriteLine(l);
+                    foreach(var l in r3b?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
                     break;
             }
         }
@@ -864,15 +876,19 @@ public class MenuService
         Console.WriteLine();
 
         var cmdResult = await _squashMigrationsCommand.HandleAsync(new SquashMigrationsInput());
+
+        if (cmdResult == null)
+        {
+            Console.WriteLine("ERROR: El comando devolvió null.");
+            return true;
+        }
+
         var result = cmdResult.Data; // Accessing data
 
         // Print Logs
-        if (cmdResult?.Logs != null)
+        foreach (var log in cmdResult.Logs ?? Enumerable.Empty<string>())
         {
-            foreach (var log in cmdResult.Logs)
-            {
-                Console.WriteLine(log);
-            }
+            Console.WriteLine(log);
         }
 
         Console.WriteLine();

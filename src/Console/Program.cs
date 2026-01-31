@@ -213,10 +213,11 @@ class Program
             try
             {
                 var cmdResult = await initializeDatabaseCommand.HandleAsync(new GesFer.ConsoleApp.Commands.Dtos.InitializeDatabaseInput());
-                if (cmdResult == null)
+                if (cmdResult == null || cmdResult.Data == null)
                 {
-                     Console.WriteLine("Error: El comando devolvió null.");
+                     Console.WriteLine("Error: El comando o sus datos devolvieron null.");
                      Environment.Exit(1);
+                     return;
                 }
                 var result = cmdResult.Data;
                 
