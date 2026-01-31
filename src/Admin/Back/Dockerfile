@@ -6,9 +6,9 @@ EXPOSE 5011
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["src/Admin/Back/Api/GesFer.Admin.Api.csproj", "src/Admin/Back/Api/"]
-COPY ["src/Admin/Back/application/GesFer.Admin.Application/GesFer.Admin.Application.csproj", "src/Admin/Back/application/GesFer.Admin.Application/"]
-COPY ["src/Admin/Back/domain/GesFer.Admin.Domain/GesFer.Admin.Domain.csproj", "src/Admin/Back/domain/GesFer.Admin.Domain/"]
-COPY ["src/Admin/Back/Infrastructure/GesFer.Admin.Infrastructure/GesFer.Admin.Infrastructure.csproj", "src/Admin/Back/Infrastructure/GesFer.Admin.Infrastructure/"]
+COPY ["src/Admin/Back/application/GesFer.Admin.Application.csproj", "src/Admin/Back/application/"]
+COPY ["src/Admin/Back/domain/GesFer.Admin.Domain.csproj", "src/Admin/Back/domain/"]
+COPY ["src/Admin/Back/Infrastructure/GesFer.Admin.Infra.csproj", "src/Admin/Back/Infrastructure/"]
 COPY ["src/Product/Back/Infrastructure/GesFer.Infrastructure.csproj", "src/Product/Back/Infrastructure/"]
 COPY ["src/Product/Back/domain/GesFer.Domain.csproj", "src/Product/Back/domain/"]
 COPY ["src/Shared/Back/GesFer.Shared.Back.Domain.csproj", "src/Shared/Back/"]
