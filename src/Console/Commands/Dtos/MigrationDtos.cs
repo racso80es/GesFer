@@ -1,21 +1,23 @@
+using GesFer.ConsoleApp.Commands.Base;
+
 namespace GesFer.ConsoleApp.Commands.Dtos;
 
-public class ApplyMigrationsInput
+public class ApplyMigrationsInput : CommandInputBase
 {
     // No arguments needed currently
 }
 
-public class CreateInitialMigrationInput
+public class CreateInitialMigrationInput : CommandInputBase
 {
     // No arguments needed currently
 }
 
-public class SquashMigrationsInput
+public class SquashMigrationsInput : CommandInputBase
 {
     // No arguments needed currently
 }
 
-public class EnsureEfToolInput
+public class EnsureEfToolInput : CommandInputBase
 {
     // No arguments needed currently
 }

@@ -32,18 +32,22 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
     {
         var result = new CommandResult<InitializationResultData>();
         result.Data = new InitializationResultData();
+        var isDetailed = input.LogDetail == LogLevelDetail.Detailed;
 
         // Add "Inicialización de base de datos" to info/logs?
         result.Data.Information.Add("Inicialización de base de datos");
         // result.AddLog("Inicialización de base de datos"); // Calling code usually prints title.
 
-        _logService.WriteLog("========================================");
-        _logService.WriteLog("Ejecutando inicialización de base de datos");
-        _logService.WriteLog("========================================");
+        if (isDetailed)
+        {
+            _logService.WriteLog("========================================");
+            _logService.WriteLog("Ejecutando inicialización de base de datos");
+            _logService.WriteLog("========================================");
+        }
 
         try
         {
-            _logService.WriteLog("Configurando servicios...");
+            if (isDetailed) _logService.WriteLog("Configurando servicios...");
             
             var baseDir = AppDomain.CurrentDomain.BaseDirectory;
             // Ir 5 niveles arriba para llegar a la raíz del repositorio
@@ -148,19 +152,19 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                 var adminContext = scopedServices.GetRequiredService<AdminDbContext>();
                 var logger = scopedServices.GetRequiredService<ILogger<InitializeDatabaseCommand>>();
 
-                _logService.WriteLog("Eliminando base de datos para empezar de 0...");
+                if (isDetailed) _logService.WriteLog("Eliminando base de datos para empezar de 0...");
                 
                 try
                 {
                     if (await context.Database.CanConnectAsync())
                     {
-                        logger.LogInformation("Eliminando base de datos completamente...");
+                        if (isDetailed) logger.LogInformation("Eliminando base de datos completamente...");
                         await context.Database.EnsureDeletedAsync();
-                        logger.LogInformation("Base de datos eliminada completamente");
+                        if (isDetailed) logger.LogInformation("Base de datos eliminada completamente");
                     }
                     else
                     {
-                        logger.LogInformation("La base de datos no existe o no se puede conectar, continuando...");
+                        if (isDetailed) logger.LogInformation("La base de datos no existe o no se puede conectar, continuando...");
                     }
                 }
                 catch (Exception ex)
@@ -186,7 +190,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     }
                 }
 
-                _logService.WriteLog("Aplicando migraciones y cargando datos iniciales...");
+                if (isDetailed) _logService.WriteLog("Aplicando migraciones y cargando datos iniciales...");
                 
                 try
                 {
@@ -194,13 +198,13 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     
                     await DbInitializer.InitializeAsync(serviceProvider, isDevelopment: true);
                     
-                    _logService.WriteLog("Aplicando migraciones de Admin...");
+                    if (isDetailed) _logService.WriteLog("Aplicando migraciones de Admin...");
                     await adminContext.Database.MigrateAsync();
 
                     var migrationsAfter = await context.Database.GetAppliedMigrationsAsync();
                     var appliedMigrations = migrationsAfter.Except(migrationsBefore).ToList();
                     
-                    if (appliedMigrations.Any())
+                    if (appliedMigrations.Any() && isDetailed)
                     {
                         var info = $"✓ Migraciones Product aplicadas: {string.Join(", ", appliedMigrations)}";
                         result.Data.Information.Add(info);
@@ -208,13 +212,13 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     }
                     
                     var adminMigrations = await adminContext.Database.GetAppliedMigrationsAsync();
-                    if (adminMigrations.Any())
+                    if (adminMigrations.Any() && isDetailed)
                     {
                         var info = $"✓ Migraciones Admin aplicadas: {string.Join(", ", adminMigrations)}";
                         result.Data.Information.Add(info);
                     }
 
-                    _logService.WriteLog("Inicialización de base de datos completada (Product + Admin)");
+                    if (isDetailed) _logService.WriteLog("Inicialización de base de datos completada (Product + Admin)");
                 }
                 catch (Exception ex)
                 {
@@ -233,7 +237,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     return result;
                 }
 
-                _logService.WriteLog("Verificando estructura de base de datos y datos cargados...");
+                if (isDetailed) _logService.WriteLog("Verificando estructura de base de datos y datos cargados...");
                 
                 try
                 {
@@ -250,49 +254,55 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                         }
                         context.Database.CloseConnection();
                         
-                        result.Data.Information.Add($"✓ Base de datos verificada: {tableNames.Count} tablas creadas");
-                        result.Data.Information.Add($"  Tablas: {string.Join(", ", tableNames)}");
-                        _logService.WriteLog($"Base de datos verificada: {tableNames.Count} tablas");
-                        
-                        var seedInfo = new List<string>();
-                        
-                        var languageCount = await context.Languages.CountAsync();
-                        if (languageCount > 0) seedInfo.Add($"  • {languageCount} Language(s)");
-                        
-                        var permissionCount = await context.Permissions.CountAsync();
-                        if (permissionCount > 0) seedInfo.Add($"  • {permissionCount} Permission(s)");
-                        
-                        var groupCount = await context.Groups.CountAsync();
-                        if (groupCount > 0) seedInfo.Add($"  • {groupCount} Group(s)");
-                        
-                        var groupPermissionCount = await context.GroupPermissions.CountAsync();
-                        if (groupPermissionCount > 0) seedInfo.Add($"  • {groupPermissionCount} GroupPermission(s)");
-                        
-                        var adminUserCount = await adminContext.AdminUsers.CountAsync();
-                        if (adminUserCount > 0) seedInfo.Add($"  • {adminUserCount} AdminUser(s)");
-                        
-                        var companyCount = await context.Companies.CountAsync();
-                        if (companyCount > 0) seedInfo.Add($"  • {companyCount} Company(ies)");
-                        
-                        var userCount = await context.Users.CountAsync();
-                        if (userCount > 0) seedInfo.Add($"  • {userCount} User(s)");
-                        
-                        var userGroupCount = await context.UserGroups.CountAsync();
-                        if (userGroupCount > 0) seedInfo.Add($"  • {userGroupCount} UserGroup(s)");
-                        
-                        var userPermissionCount = await context.UserPermissions.CountAsync();
-                        if (userPermissionCount > 0) seedInfo.Add($"  • {userPermissionCount} UserPermission(s)");
-                        
-                        var supplierCount = await context.Suppliers.CountAsync();
-                        if (supplierCount > 0) seedInfo.Add($"  • {supplierCount} Supplier(s)");
-                        
-                        var customerCount = await context.Customers.CountAsync();
-                        if (customerCount > 0) seedInfo.Add($"  • {customerCount} Customer(s)");
-                        
-                        if (seedInfo.Any())
+                        if (isDetailed)
                         {
-                            result.Data.Information.Add($"✓ Seeds cargados:");
-                            result.Data.Information.AddRange(seedInfo);
+                            result.Data.Information.Add($"✓ Base de datos verificada: {tableNames.Count} tablas creadas");
+                            result.Data.Information.Add($"  Tablas: {string.Join(", ", tableNames)}");
+                            _logService.WriteLog($"Base de datos verificada: {tableNames.Count} tablas");
+                        }
+                        
+                        if (isDetailed)
+                        {
+                            var seedInfo = new List<string>();
+
+                            var languageCount = await context.Languages.CountAsync();
+                            if (languageCount > 0) seedInfo.Add($"  • {languageCount} Language(s)");
+
+                            var permissionCount = await context.Permissions.CountAsync();
+                            if (permissionCount > 0) seedInfo.Add($"  • {permissionCount} Permission(s)");
+
+                            var groupCount = await context.Groups.CountAsync();
+                            if (groupCount > 0) seedInfo.Add($"  • {groupCount} Group(s)");
+
+                            var groupPermissionCount = await context.GroupPermissions.CountAsync();
+                            if (groupPermissionCount > 0) seedInfo.Add($"  • {groupPermissionCount} GroupPermission(s)");
+
+                            var adminUserCount = await adminContext.AdminUsers.CountAsync();
+                            if (adminUserCount > 0) seedInfo.Add($"  • {adminUserCount} AdminUser(s)");
+
+                            var companyCount = await context.Companies.CountAsync();
+                            if (companyCount > 0) seedInfo.Add($"  • {companyCount} Company(ies)");
+
+                            var userCount = await context.Users.CountAsync();
+                            if (userCount > 0) seedInfo.Add($"  • {userCount} User(s)");
+
+                            var userGroupCount = await context.UserGroups.CountAsync();
+                            if (userGroupCount > 0) seedInfo.Add($"  • {userGroupCount} UserGroup(s)");
+
+                            var userPermissionCount = await context.UserPermissions.CountAsync();
+                            if (userPermissionCount > 0) seedInfo.Add($"  • {userPermissionCount} UserPermission(s)");
+
+                            var supplierCount = await context.Suppliers.CountAsync();
+                            if (supplierCount > 0) seedInfo.Add($"  • {supplierCount} Supplier(s)");
+
+                            var customerCount = await context.Customers.CountAsync();
+                            if (customerCount > 0) seedInfo.Add($"  • {customerCount} Customer(s)");
+
+                            if (seedInfo.Any())
+                            {
+                                result.Data.Information.Add($"✓ Seeds cargados:");
+                                result.Data.Information.AddRange(seedInfo);
+                            }
                         }
                     }
                 }
@@ -304,9 +314,12 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
 
             result.Data.Status = "ok";
             result.Data.Message = "Inicialización de base de datos completada exitosamente";
-            _logService.WriteLog("========================================");
-            _logService.WriteLog("Punto 8 completado exitosamente");
-            _logService.WriteLog("========================================");
+            if (isDetailed)
+            {
+                _logService.WriteLog("========================================");
+                _logService.WriteLog("Punto 8 completado exitosamente");
+                _logService.WriteLog("========================================");
+            }
 
             result.Success = true;
             result.Message = result.Data.Message;
