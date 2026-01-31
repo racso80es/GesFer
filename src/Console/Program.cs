@@ -68,7 +68,7 @@ class Program
                             killedCount++;
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         // Ignorar errores al matar procesos (pueden no existir o no tener permisos)
                     }
@@ -82,7 +82,7 @@ class Program
                 System.Threading.Thread.Sleep(500);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // No fallar si la limpieza falla, solo loguear
         }
@@ -213,6 +213,11 @@ class Program
             try
             {
                 var cmdResult = await initializeDatabaseCommand.HandleAsync(new GesFer.ConsoleApp.Commands.Dtos.InitializeDatabaseInput());
+                if (cmdResult == null)
+                {
+                     Console.WriteLine("Error: El comando devolvió null.");
+                     Environment.Exit(1);
+                }
                 var result = cmdResult.Data;
                 
                 Console.WriteLine();

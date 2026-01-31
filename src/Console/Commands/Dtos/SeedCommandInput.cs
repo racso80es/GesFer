@@ -1,3 +1,5 @@
+using GesFer.ConsoleApp.Commands.Base;
+
 namespace GesFer.ConsoleApp.Commands.Dtos;
 
 public enum SeedScope
@@ -15,7 +17,7 @@ public enum SeedLevel
     Test = 3
 }
 
-public class SeedCommandInput
+public class SeedCommandInput : CommandInputBase
 {
     public SeedScope Scope { get; set; }
     public SeedLevel Level { get; set; }

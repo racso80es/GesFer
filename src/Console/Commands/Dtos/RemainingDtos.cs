@@ -1,14 +1,16 @@
+using GesFer.ConsoleApp.Commands.Base;
+
 namespace GesFer.ConsoleApp.Commands.Dtos;
 
-public class CheckDockerInput { }
+public class CheckDockerInput : CommandInputBase { }
 
-public class RemoveContainersInput { }
+public class RemoveContainersInput : CommandInputBase { }
 
-public class CreateContainersInput { }
+public class CreateContainersInput : CommandInputBase { }
 
-public class WaitMySqlInput { }
+public class WaitMySqlInput : CommandInputBase { }
 
-public class InitializeDatabaseInput { }
+public class InitializeDatabaseInput : CommandInputBase { }
 
 public class InitializationResultData
 {
@@ -18,7 +20,7 @@ public class InitializationResultData
     public string Message { get; set; } = string.Empty;
 }
 
-public class ValidateIntegrityInput { }
+public class ValidateIntegrityInput : CommandInputBase { }
 
 public class IntegrityValidationResultData
 {
@@ -28,7 +30,7 @@ public class IntegrityValidationResultData
     // Add other fields from IntegrityValidationResult if needed
 }
 
-public class EnforceGoldenRulesInput
+public class EnforceGoldenRulesInput : CommandInputBase
 {
     public bool ForceFullCheck { get; set; }
 }
