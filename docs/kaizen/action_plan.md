@@ -7,16 +7,16 @@ Este documento rastrea las acciones de mejora continua identificadas y su estado
 | Prioridad | Tarea | Estado | Origen |
 |-----------|-------|--------|--------|
 | **Alta** | Crear `GesFer.sln` global en la raíz | Pendiente | Día 1 |
-| **Media** | Eliminar warnings en `GesFer.Console` | Pendiente | Día 1 |
+| **Media** | Eliminar warnings en `GesFer.Console` | **En Progreso** | Día 1 |
 | Baja | Crear scripts de inicio cross-platform (`.sh`/`.ps1`) para reemplazar `.bat` | Pendiente | Día 1 |
 | Baja | Investigar warnings en `GesFer.Infrastructure` | Pendiente | Día 1 |
 
-## Acciones en Progreso (Día 1)
+## Acciones en Progreso (Día 3)
 
-1.  **Unificación de Solución:**
-    *   Generar `GesFer.sln`.
-    *   Agregar todos los proyectos `.csproj` de `src/`.
+1.  **Estabilidad de Console:**
+    *   Corregir `Program.cs` (Null checks en `InitializeDatabaseInput`).
+    *   Corregir `MenuService.cs` (Null checks en logs y resultados).
 
-2.  **Clean Code (Console):**
-    *   Corregir `Program.cs` (Variables no usadas, Null checks).
-    *   Corregir `MenuService.cs` (Null checks en logs).
+## Histórico de Completados
+
+*   **Día 2:** Solucionado error de compilación `Duplicate Attribute` en `GesFer.Admin.Api`.
