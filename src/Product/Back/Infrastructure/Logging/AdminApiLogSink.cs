@@ -37,9 +37,8 @@ public class AdminApiLogSink : ILogEventSink
 
                 if (logPublisher != null)
                 {
-                    // Agregamos el 'await' necesario. 
-                    // PublishLog debe ser una Task (Task PublishLog)
-                    await logPublisher.PublishLog(level, message, exception, properties);
+                    // No await needed as PublishLog is now fire-and-forget (void)
+                    logPublisher.PublishLog(level, message, exception, properties);
                 }
             }
             catch

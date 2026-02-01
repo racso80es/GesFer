@@ -22,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\application\GesFer.Application.csproj" />
-    <ProjectReference Include="..\..\src\domain\GesFer.Domain.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure\GesFer.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\application\GesFer.Application.csproj" />
+    <ProjectReference Include="..\..\domain\GesFer.Domain.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\GesFer.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
