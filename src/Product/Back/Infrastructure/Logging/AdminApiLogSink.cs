@@ -20,53 +20,32 @@ public class AdminApiLogSink : ILogEventSink
 
     public void Emit(LogEvent logEvent)
     {
-        // Fire and Forget: no esperamos el resultado
+        // Capturamos los datos necesarios fuera del Task.Run para evitar problemas 
+        // de acceso a objetos que Serilog pueda reciclar/liberar.
+        var level = logEvent.Level.ToString();
+        var message = logEvent.RenderMessage();
+        var exception = logEvent.Exception;
+        var properties = logEvent.Properties.ToDictionary(p => p.Key, p => p.Value.ToString() as object);
+
+        // Fire and Forget: Delegamos a un hilo del pool para no bloquear el hilo principal de Product
         _ = Task.Run(async () =>
         {
             try
             {
-                // Crear un scope para obtener AsyncLogPublisher
                 using var scope = _serviceProvider.CreateScope();
                 var logPublisher = scope.ServiceProvider.GetService<IAsyncLogPublisher>();
 
-                if (logPublisher == null)
+                if (logPublisher != null)
                 {
-                    // Si no está disponible, simplemente ignorar (no fallar)
-                    return;
+                    // Agregamos el 'await' necesario. 
+                    // PublishLog debe ser una Task (Task PublishLog)
+                    await logPublisher.PublishLog(level, message, exception, properties);
                 }
-
-                // Convertir LogEventLevel a string
-                var level = logEvent.Level switch
-                {
-                    LogEventLevel.Verbose => "Debug",
-                    LogEventLevel.Debug => "Debug",
-                    LogEventLevel.Information => "Information",
-                    LogEventLevel.Warning => "Warning",
-                    LogEventLevel.Error => "Error",
-                    LogEventLevel.Fatal => "Fatal",
-                    _ => "Information"
-                };
-
-                // Obtener el mensaje renderizado
-                var message = logEvent.RenderMessage();
-
-                // Obtener la excepción si existe
-                Exception? exception = logEvent.Exception;
-
-                // Convertir propiedades a Dictionary
-                var properties = new Dictionary<string, object>();
-                foreach (var property in logEvent.Properties)
-                {
-                    properties[property.Key] = property.Value.ToString();
-                }
-
-                // Publicar el log de forma asíncrona
-                logPublisher.PublishLog(level, message, exception, properties);
             }
             catch
             {
-                // Ignorar errores silenciosamente para no interrumpir el flujo principal
-                // El sistema debe funcionar aunque Admin API no esté disponible
+                // Resiliencia S+: El fallo en el envío no debe afectar a Product.
+                // Opcional: Podrías escribir en un log de emergencia local o consola.
             }
         });
     }

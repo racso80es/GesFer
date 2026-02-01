@@ -14,7 +14,8 @@ public interface IAsyncLogPublisher
     /// <param name="message">Mensaje del log</param>
     /// <param name="exception">Excepción opcional</param>
     /// <param name="properties">Propiedades adicionales del log</param>
-    void PublishLog(string level, string message, Exception? exception = null, Dictionary<string, object>? properties = null);
+    // En src/Product/Back/Infrastructure/Logging/IAsyncLogPublisher.cs
+    Task PublishLog(string level, string message, Exception? exception, Dictionary<string, object> properties);
 
     /// <summary>
     /// Publica un log de auditoría de forma asíncrona (fire and forget)

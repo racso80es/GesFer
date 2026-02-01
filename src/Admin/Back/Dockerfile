@@ -14,7 +14,7 @@ COPY ["src/Product/Back/domain/GesFer.Domain.csproj", "src/Product/Back/domain/"
 COPY ["src/Shared/Back/GesFer.Shared.Back.Domain.csproj", "src/Shared/Back/"]
 RUN dotnet restore "src/Admin/Back/Api/GesFer.Admin.Api.csproj"
 COPY . .
-WORKDIR "/src/src/Admin/Back/Api"
+WORKDIR "/src/Admin/Back/Api"
 RUN dotnet build "GesFer.Admin.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish

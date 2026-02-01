@@ -87,7 +87,7 @@ public class TelemetryController : ControllerBase
             }
 
             // Enviar log a Admin API mediante AsyncLogPublisher (Fire and Forget)
-            _logPublisher.PublishLog(level, logDto.Message, exception, properties);
+            await _logPublisher.PublishLog(level, logDto.Message, exception, properties);
 
             return Ok(new { message = "Log recibido correctamente" });
         }
