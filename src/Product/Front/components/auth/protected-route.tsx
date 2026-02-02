@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Loading } from "@shared/components/ui/loading";
+import { Loading } from "@/components/ui/loading";
 import { useTranslations } from 'next-intl';
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@shared/components/ui/button";
-import { Input } from "@shared/components/ui/input";
-import { Label } from "@shared/components/ui/label";
-import { ErrorMessage } from "@shared/components/ui/error-message";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ErrorMessage } from "@/components/ui/error-message";
 import type { User, CreateUser, UpdateUser } from "@/lib/types/api";
 import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from 'next-intl';

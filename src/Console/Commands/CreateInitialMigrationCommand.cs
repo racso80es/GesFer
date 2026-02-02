@@ -22,9 +22,7 @@ public class CreateInitialMigrationCommand : ICommandHandler<CreateInitialMigrat
         var result = new CommandResult<bool>();
         result.Data = false;
 
-        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        // Ir 5 niveles arriba para llegar a la raíz del repositorio
-        var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+        var rootPath = _logService.GetRootPath();
         var apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "Api"));
         var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "Infrastructure"));
         var migrationsPath = Path.Combine(infrastructurePath, "Migrations");

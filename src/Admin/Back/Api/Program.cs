@@ -114,6 +114,9 @@ try
     // Configurar inyección de dependencias
     builder.Services.AddApplicationServices(builder.Configuration, builder.Environment);
 
+    // Healthchecks
+    builder.Services.AddHealthChecks();
+
     // Configurar autenticación JWT (misma configuración que Product)
     var jwtSecretKey = builder.Configuration["JwtSettings:SecretKey"] 
         ?? throw new InvalidOperationException("JwtSettings:SecretKey no está configurado");
@@ -182,6 +185,7 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
+    app.MapHealthChecks("/health");
     app.MapControllers();
 
     Log.Information("Aplicación GesFer Admin API iniciada correctamente");

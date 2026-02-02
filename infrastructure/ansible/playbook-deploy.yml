@@ -1,0 +1,25 @@
+---
+- name: Deploy GesFer Application
+  hosts: webservers
+  become: yes
+
+  vars:
+    # Ansistrano Configuration
+    ansistrano_deploy_to: "/var/www/gesfer"
+    ansistrano_deploy_via: git
+    ansistrano_git_repo: https://github.com/racso80es/GesFer.git
+    ansistrano_git_branch: "{{ branch | default('master') }}"
+    ansistrano_keep_releases: 3
+
+    # Hooks: Execute Build & Test after code update, before Symlink switch
+    ansistrano_after_update_tasks_file: "{{ playbook_dir }}/tasks/build_and_test.yml"
+
+    # Application Defaults (Override in Inventory or Semaphore)
+    env_mysql_password: "scrappassword"
+    env_auth_secret: "change_in_production"
+    env_product_api_url: "http://gesfer-product-front:3000"
+    env_admin_api_url: "http://gesfer-admin-front:3001"
+    env_aspnetcore_environment: "Production"
+
+  roles:
+    - { role: cbruno.ansistrano-deploy }

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { Button } from '@shared/components/shared/Button';
+import { Button } from '@/components/shared/Button';
 
 describe('Shared Button Component (Admin)', () => {
   it('should render button with text', () => {

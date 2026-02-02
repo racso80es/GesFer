@@ -29,7 +29,7 @@ public class CreateCompanyCommandHandlerTests
         var createDto = new CreateCompanyDto
         {
             Name = "Test Company",
-            TaxId = "B12345678",
+            TaxId = "B12345674",
             Address = "Test Address 123",
             Phone = "+34 123 456 789",
             Email = "test@example.com"
@@ -43,7 +43,7 @@ public class CreateCompanyCommandHandlerTests
         // Assert
         result.Should().NotBeNull();
         result.Name.Should().Be("Test Company");
-        result.TaxId.Should().Be("B12345678");
+        result.TaxId.Should().Be("B12345674");
         result.Address.Should().Be("Test Address 123");
         result.Phone.Should().Be("+34 123 456 789");
         result.Email.Should().Be("test@example.com");
@@ -68,7 +68,7 @@ public class CreateCompanyCommandHandlerTests
         using var context = new ApplicationDbContext(options);
         
         // Crear una empresa existente
-        var existingCompany = new Company
+        var existingCompany = new GesFer.Product.Back.Domain.Entities.Company
         {
             Name = "Existing Company",
             Address = "Existing Address",
@@ -115,7 +115,7 @@ public class CreateCompanyCommandHandlerTests
 
         // Act & Assert
         // Email.Create() debería lanzar una excepción para un email inválido
-        await Assert.ThrowsAsync<Exception>(
+        await Assert.ThrowsAsync<ArgumentException>(
             async () => await handler.HandleAsync(command));
     }
 

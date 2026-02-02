@@ -26,6 +26,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@tanstack/react-query'],
   },
+  output: "standalone",
 };
 
 module.exports = withNextIntl(nextConfig);

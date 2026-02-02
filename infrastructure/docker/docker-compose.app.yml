@@ -1,0 +1,102 @@
+services:
+  # Product API
+  gesfer-product-api:
+    build:
+      context: ../../
+      dockerfile: src/Product/Back/Dockerfile
+    container_name: gesfer_product_api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Server=gesfer-db;Port=3306;Database=ScrapDb;User=scrapuser;Password=${MYSQL_PASSWORD:-scrappassword};CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;
+      - AdminApi__BaseUrl=http://gesfer-admin-api:5010
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - gesfer_network
+
+  # Admin API
+  gesfer-admin-api:
+    build:
+      context: ../../
+      dockerfile: src/Admin/Back/Dockerfile
+    container_name: gesfer_admin_api
+    restart: unless-stopped
+    ports:
+      - "5010:5010"
+      - "5011:5011"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5010
+      - ConnectionStrings__DefaultConnection=Server=gesfer-db;Port=3306;Database=ScrapDb;User=scrapuser;Password=${MYSQL_PASSWORD:-scrappassword};CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5010/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - gesfer_network
+
+  # Product Frontend
+  gesfer-product-front:
+    build:
+      context: ../../
+      dockerfile: src/Product/Front/Dockerfile
+    container_name: gesfer_product_front
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_PRODUCT_API_URL:-http://localhost:5000}
+      - API_URL=http://gesfer-product-api:5000
+      - AUTH_SECRET=${AUTH_SECRET}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--spider", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      gesfer-product-api:
+        condition: service_healthy
+    networks:
+      - gesfer_network
+
+  # Admin Frontend
+  gesfer-admin-front:
+    build:
+      context: ../../
+      dockerfile: src/Admin/Front/Dockerfile
+    container_name: gesfer_admin_front
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_ADMIN_API_URL:-http://localhost:5010}
+      - ADMIN_API_URL=http://gesfer-admin-api:5010
+      - AUTH_SECRET=${AUTH_SECRET}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--spider", "http://localhost:3001"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      gesfer-admin-api:
+        condition: service_healthy
+    networks:
+      - gesfer_network
+
+networks:
+  gesfer_network:
+    name: gesfer_network
+    external: true

@@ -3,20 +3,19 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
-import { Input } from "@shared/components/ui/input";
-import { Label } from "@shared/components/ui/label";
-import { Button } from "@shared/components/ui/button";
-import { ErrorMessage } from "@shared/components/ui/error-message";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { ErrorMessage } from "@/components/ui/error-message";
 import { Building2, User, Lock, Loader2 } from "lucide-react";
 import { useTranslations } from 'next-intl';
 
-// Constante definitiva para autofill de credenciales de admin
-// GUID de Empresa Admin: 550e8400-e29b-41d4-a716-446655440000
-const MOCK_ADMIN_CREDENTIALS = {
-  empresa: "Empresa Admin",
-  usuario: "admin",
-  contraseña: "admin123",
+// Constante definitiva para autofill de credenciales de cliente
+const MOCK_CLIENT_CREDENTIALS = {
+  empresa: "Empresa Cliente",
+  usuario: "user_test",
+  contraseña: "user123",
 } as const;
 
 export default function LoginPage() {
@@ -24,7 +23,7 @@ export default function LoginPage() {
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const t = useTranslations('auth');
   // Contexto ADMIN: Autocompletado para login de admin
-  const [formData, setFormData] = useState(MOCK_ADMIN_CREDENTIALS);
+  const [formData, setFormData] = useState<{ empresa: string; usuario: string; contraseña: string }>({ ...MOCK_CLIENT_CREDENTIALS });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [forceShowForm, setForceShowForm] = useState(false);
