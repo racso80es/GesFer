@@ -63,15 +63,15 @@
 
 ## 🚫 Scripts SQL - Estado Final
 
-### Archivos SQL Existentes (LEGACY)
+### Archivos SQL (ELIMINADOS)
 
-Los siguientes archivos **existen pero NO se usan** en código activo:
+Los siguientes archivos **han sido eliminados** del repositorio:
 
-1. `Api/scripts/master-data.sql` - **LEGACY - NO USADO**
-2. `Api/scripts/sample-data.sql` - **LEGACY - NO USADO**
-3. `Api/scripts/test-data.sql` - **LEGACY - NO USADO**
-4. `Api/scripts/seed-data.sql` - **LEGACY - NO USADO**
-5. `Api/scripts/seed-all-data.sql` - **LEGACY - NO USADO**
+1. `src/Product/Back/scripts/master-data.sql`
+2. `src/Product/Back/scripts/sample-data.sql`
+3. `src/Product/Back/scripts/test-data.sql`
+4. `src/Product/Back/scripts/seed-data.sql`
+5. `src/Product/Back/scripts/seed-all-data.sql`
 
 ### Búsqueda de Referencias Activas
 

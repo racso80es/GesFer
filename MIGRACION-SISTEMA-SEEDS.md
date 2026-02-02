@@ -16,7 +16,7 @@
   - Requería ejecución manual
 
 ### ✅ Sistema Nuevo (JSON - ACTIVO)
-- **Ubicación:** `Api/src/Infrastructure/Data/Seeds/`
+- **Ubicación:** `src/Product/Back/Infrastructure/Data/Seeds/`
 - **Archivos:** `master-data.json`, `demo-data.json`, `test-data.json`
 - **Uso:** Archivos JSON procesados por `JsonDataSeeder` usando `System.Text.Json`
 - **Ventajas:**
@@ -75,28 +75,27 @@
 
 ## 🚫 Scripts SQL - Estado
 
-### Scripts SQL Identificados (LEGACY - NO SE USAN)
+### Scripts SQL (ELIMINADOS)
 
-Los siguientes archivos SQL **existen pero NO se usan** en el código activo:
+Los scripts SQL de inserción han sido **eliminados físicamente** del repositorio:
 
-1. `Api/scripts/master-data.sql` - **LEGACY**
-2. `Api/scripts/sample-data.sql` - **LEGACY**
-3. `Api/scripts/test-data.sql` - **LEGACY**
-4. `Api/scripts/seed-data.sql` - **LEGACY**
-5. `Api/scripts/seed-all-data.sql` - **LEGACY**
+1. `src/Product/Back/scripts/master-data.sql` (anteriormente `Api/scripts/...`)
+2. `src/Product/Back/scripts/sample-data.sql`
+3. `src/Product/Back/scripts/test-data.sql`
+4. `src/Product/Back/scripts/seed-data.sql`
+5. `src/Product/Back/scripts/seed-all-data.sql`
 
 ### Verificación de Uso
 
 ✅ **NO se encontraron referencias activas a scripts SQL en:**
 - `GesFer.Console/Services/SeedService.cs` - ✅ Actualizado a JSON
 - `GesFer.Console/Services/MenuService.cs` - ✅ Usa DbInitializer
-- `Api/src/Api/Program.cs` - ✅ Usa DbInitializer
-- `Api/src/Infrastructure/Data/DbInitializer.cs` - ✅ Solo usa JSON
+- `src/Product/Back/Api/Program.cs` - ✅ Usa DbInitializer
+- `src/Product/Back/Infrastructure/Data/DbInitializer.cs` - ✅ Solo usa JSON
 
-⚠️ **Referencias encontradas (solo en documentación/comentarios):**
-- `Api/scripts/*.ps1` - Scripts PowerShell que mencionan SQL (legacy)
-- `Api/TEST-LOGIN.md` - Documentación que menciona SQL (legacy)
-- `Api/scripts/README-DATOS-INICIALES.md` - Documentación legacy
+⚠️ **Referencias históricas:**
+- `src/Product/Back/scripts/*.ps1` - Scripts PowerShell que mencionan SQL (legacy)
+- `src/Product/Back/TEST-LOGIN.md` - Documentación que menciona SQL (legacy)
 - Varios archivos `.md` con referencias históricas
 
 ## ✅ Verificación Final
@@ -117,21 +116,19 @@ Los siguientes archivos SQL **existen pero NO se usan** en el código activo:
 1. ✅ `GesFer.Console/Services/SeedService.cs` - **REESCRITO COMPLETAMENTE**
 2. ✅ `GesFer.Console/Services/MenuService.cs` - **ACTUALIZADO** (opción 1)
 3. ✅ `GesFer.Console/GesFer.Console.csproj` - **ACTUALIZADO** (referencias)
-4. ✅ `Api/src/Infrastructure/Data/DbInitializer.cs` - **NUEVO**
-5. ✅ `Api/src/Api/Program.cs` - **YA ACTUALIZADO** (anteriormente)
-6. ✅ `Api/src/Infrastructure/Services/JsonDataSeeder.cs` - **YA ACTUALIZADO** (anteriormente)
+4. ✅ `src/Product/Back/Infrastructure/Data/DbInitializer.cs` - **NUEVO**
+5. ✅ `src/Product/Back/Api/Program.cs` - **YA ACTUALIZADO** (anteriormente)
+6. ✅ `src/Product/Back/Infrastructure/Services/JsonDataSeeder.cs` - **YA ACTUALIZADO** (anteriormente)
 
 ## 📝 Notas Importantes
 
 ### Scripts SQL Legacy
-- Los scripts SQL en `Api/scripts/*.sql` **NO se eliminan** por ahora
-- Se mantienen por compatibilidad/historial
-- **NO se usan** en el código activo
-- Se pueden eliminar en el futuro cuando se confirme que no son necesarios
+- Los scripts SQL han sido **eliminados**.
+- Si se requiere consultarlos, deben recuperarse del historial de Git.
 
 ### Migración de Datos
 Si tienes datos en scripts SQL que quieres migrar a JSON:
-1. Abre el script SQL correspondiente
+1. Recupera el script SQL del historial de Git.
 2. Extrae los datos INSERT
 3. Convierte a formato JSON siguiendo el formato de `master-data.json` o `demo-data.json`
 4. Añade al archivo JSON correspondiente en `Data/Seeds/`

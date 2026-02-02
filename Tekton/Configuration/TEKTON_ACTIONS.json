@@ -11,10 +11,10 @@
     }
   ],
   "paths": {
-    "api": "Api/src/Api",
+    "api": "src/Product/Back/Api",
     "client": "Cliente",
-    "seeds": "Api/src/Infrastructure/Data/Seeds/demo-data.json",
-    "tests": "Api/src/IntegrationTests"
+    "seeds": "src/Product/Back/Infrastructure/Data/Seeds/demo-data.json",
+    "tests": "src/Product/Back/IntegrationTests"
   },
   "manifesto": "Tekton/Configuration/MANIFESTO.md",
   "rules": "Tekton/Rules/GOLDEN_RULES.md",
