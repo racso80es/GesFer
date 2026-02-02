@@ -38,7 +38,7 @@ public class AsyncLogPublisher : IAsyncLogPublisher
     /// <summary>
     /// Publica un log de forma asíncrona (fire and forget)
     /// </summary>
-    public void PublishLog(string level, string message, Exception? exception = null, Dictionary<string, object>? properties = null)
+    public async Task PublishLog(string level, string message, Exception? exception = null, Dictionary<string, object>? properties = null)
     {
         // Fire and Forget: no esperamos el resultado
         _ = Task.Run(async () =>
