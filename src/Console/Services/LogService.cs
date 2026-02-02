@@ -12,11 +12,19 @@ public class LogService
     private readonly string _rootPath;
     private readonly object _lockObject = new object();
 
-    public LogService()
+    public LogService(string? rootPath = null)
     {
-        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        // Ir 5 niveles arriba para llegar a la raíz del repositorio (desde bin/Debug/net8.0/win-x64)
-        _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+        if (string.IsNullOrEmpty(rootPath))
+        {
+            var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            // Ir 5 niveles arriba para llegar a la raíz del repositorio (desde bin/Debug/net8.0/win-x64)
+            _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+        }
+        else
+        {
+            _rootPath = rootPath;
+        }
+
         var logDir = Path.Combine(_rootPath, "logs");
         
         if (!Directory.Exists(logDir))

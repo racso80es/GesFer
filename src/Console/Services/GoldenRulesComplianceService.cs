@@ -22,9 +22,7 @@ public class GoldenRulesComplianceService
     public GoldenRulesComplianceService(LogService logService)
     {
         _logService = logService;
-        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        // Ir 5 niveles arriba para llegar a la raíz del repositorio
-        _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+        _rootPath = _logService.GetRootPath();
         _stateFilePath = Path.Combine(_rootPath, ".golden-rules-state.json");
         _entitiesPath = Path.Combine(_rootPath, "src", "Product", "Back", "domain", "Entities");
         _seedsPath = Path.Combine(_rootPath, "src"); // Simplificado para usar rutas relativas desde src

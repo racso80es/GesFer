@@ -22,9 +22,7 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
     public SeedCommand(LogService logService)
     {
         _logService = logService;
-        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        // Ir 5 niveles arriba para llegar a la raíz del repositorio
-        _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+        _rootPath = _logService.GetRootPath();
     }
 
     public async Task<CommandResult<bool>> HandleAsync(SeedCommandInput command)

@@ -19,8 +19,7 @@ public class IntegrityValidationService
     public IntegrityValidationService(LogService logService)
     {
         _logService = logService;
-        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        _rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
+        _rootPath = _logService.GetRootPath();
         _validationStatePath = Path.Combine(_rootPath, ".validation-state.json");
         _httpClient = new HttpClient
         {
@@ -272,7 +271,7 @@ public class IntegrityValidationService
             _logService.WriteProcessOutput("docker ps", output, false);
 
             // Verificar contenedores esperados
-            var expectedContainers = new[] { "gesfer_api_db", "gesfer_api_memcached", "gesfer_api_adminer" };
+            var expectedContainers = new[] { "gesfer_db", "gesfer_api_cache", "gesfer_api_adminer" };
             var runningContainers = new List<string>();
 
             foreach (var line in output.Split(new[] { Environment.NewLine, "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
@@ -498,7 +497,7 @@ public class IntegrityValidationService
             var processInfo = new ProcessStartInfo
             {
                 FileName = "docker",
-                Arguments = "exec gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb -e \"SELECT COUNT(*) as total FROM Companies WHERE Id IS NOT NULL LIMIT 1;\" --skip-column-names",
+                Arguments = "exec gesfer_db mysql -u scrapuser -pscrappassword ScrapDb -e \"SELECT COUNT(*) as total FROM Companies WHERE Id IS NOT NULL LIMIT 1;\" --skip-column-names",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -552,7 +551,7 @@ public class IntegrityValidationService
             var processInfo = new ProcessStartInfo
             {
                 FileName = "docker",
-                Arguments = "exec gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb -e \"SELECT COUNT(*) as total FROM AdminUsers WHERE IsActive = 1 AND DeletedAt IS NULL;\" --skip-column-names",
+                Arguments = "exec gesfer_db mysql -u scrapuser -pscrappassword ScrapDb -e \"SELECT COUNT(*) as total FROM AdminUsers WHERE IsActive = 1 AND DeletedAt IS NULL;\" --skip-column-names",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -599,7 +598,7 @@ public class IntegrityValidationService
                     var adminUserInfo = new ProcessStartInfo
                     {
                         FileName = "docker",
-                        Arguments = "exec gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb -e \"SELECT Username FROM AdminUsers WHERE Username = 'admin' AND IsActive = 1 AND DeletedAt IS NULL LIMIT 1;\" --skip-column-names",
+                        Arguments = "exec gesfer_db mysql -u scrapuser -pscrappassword ScrapDb -e \"SELECT Username FROM AdminUsers WHERE Username = 'admin' AND IsActive = 1 AND DeletedAt IS NULL LIMIT 1;\" --skip-column-names",
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
                         UseShellExecute = false,

@@ -26,9 +26,7 @@ public class ApplyMigrationsCommand : ICommandHandler<ApplyMigrationsInput, bool
         result.AddLog("    Aplicando migraciones a la base de datos...");
         _logService.WriteLog("Aplicando migraciones a la base de datos...");
 
-        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        // Ir 5 niveles arriba para llegar a la raíz del repositorio
-        var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+        var rootPath = _logService.GetRootPath();
         var apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "Api"));
         var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "Infrastructure"));
 

@@ -66,9 +66,7 @@ public class RemoveContainersCommand : ICommandHandler<RemoveContainersInput, bo
     public RemoveContainersCommand(LogService logService)
     {
         _logService = logService;
-        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        // Ir 5 niveles arriba para llegar a la raíz del repositorio
-        _apiPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+        _apiPath = _logService.GetRootPath();
     }
 
     public async Task<CommandResult<bool>> HandleAsync(RemoveContainersInput input)
@@ -163,9 +161,7 @@ public class CreateContainersCommand : ICommandHandler<CreateContainersInput, bo
     public CreateContainersCommand(LogService logService)
     {
         _logService = logService;
-        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        // Ir 5 niveles arriba para llegar a la raíz del repositorio
-        _apiPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+        _apiPath = _logService.GetRootPath();
     }
 
     public async Task<CommandResult<bool>> HandleAsync(CreateContainersInput input)
@@ -278,7 +274,7 @@ public class WaitMySqlReadyCommand : ICommandHandler<WaitMySqlInput, bool>
                 var processInfo = new ProcessStartInfo
                 {
                     FileName = "docker",
-                    Arguments = "exec gesfer_api_db mysqladmin ping -h localhost -u root -prootpassword",
+                    Arguments = "exec gesfer_db mysqladmin ping -h localhost -u root -prootpassword",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
