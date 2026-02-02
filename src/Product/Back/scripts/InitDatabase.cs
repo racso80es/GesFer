@@ -8,7 +8,7 @@ namespace InitDatabase;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         // Obtener la ruta correcta al directorio de la API Product
         var currentDir = Directory.GetCurrentDirectory();

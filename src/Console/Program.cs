@@ -296,6 +296,20 @@ class Program
             }
         }
 
+        // Si se pasan argumentos pero ninguno coincide, mostrar ayuda y salir
+        if (args.Length > 0)
+        {
+            Console.WriteLine("Uso: GesFer.Console [opcion]");
+            Console.WriteLine("Opciones:");
+            Console.WriteLine("  1, -i, --initialize       Inicialización completa");
+            Console.WriteLine("  2                         Inicialización de base de datos");
+            Console.WriteLine("  3, --golden-rules         Verificar reglas de oro");
+            Console.WriteLine("  8, --step8                Ejecutar paso 8");
+            Console.WriteLine("  -v, --validate            Validar ecosistema");
+            Environment.Exit(1);
+            return;
+        }
+
         // Modo interactivo (sin argumentos)
         bool continueRunning = true;
 

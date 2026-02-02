@@ -1,7 +1,7 @@
 using FluentAssertions;
 using GesFer.Admin.Back.Domain.Entities;
-using GesFer.Admin.Infrastructure.Services;
-using GesFer.Infrastructure.Data;
+using MyCompany.SysAdmin.Infrastructure.Services;
+using MyCompany.SysAdmin.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -25,11 +25,11 @@ public class AuditLogServiceTests
     public async Task LogActionAsync_WithValidData_ShouldCreateAuditLog()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<AdminDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        using var context = new ApplicationDbContext(options);
+        using var context = new AdminDbContext(options);
         var service = new AuditLogService(context, _loggerMock.Object);
 
         var cursorId = Guid.NewGuid().ToString();
@@ -60,11 +60,11 @@ public class AuditLogServiceTests
     public async Task LogActionAsync_WithAdditionalData_ShouldSaveAdditionalData()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<AdminDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        using var context = new ApplicationDbContext(options);
+        using var context = new AdminDbContext(options);
         var service = new AuditLogService(context, _loggerMock.Object);
 
         var cursorId = Guid.NewGuid().ToString();
@@ -90,11 +90,11 @@ public class AuditLogServiceTests
     {
         // Arrange
         // Crear un contexto que falle al guardar
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<AdminDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        using var context = new ApplicationDbContext(options);
+        using var context = new AdminDbContext(options);
         
         // Simular un error cerrando el contexto antes de usar el servicio
         await context.DisposeAsync();
@@ -127,11 +127,11 @@ public class AuditLogServiceTests
     public async Task LogActionAsync_MultipleLogs_ShouldCreateMultipleAuditLogs()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<AdminDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        using var context = new ApplicationDbContext(options);
+        using var context = new AdminDbContext(options);
         var service = new AuditLogService(context, _loggerMock.Object);
 
         var cursorId = Guid.NewGuid().ToString();
