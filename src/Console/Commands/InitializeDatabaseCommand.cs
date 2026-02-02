@@ -49,9 +49,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
         {
             if (isDetailed) _logService.WriteLog("Configurando servicios...");
             
-            var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            // Ir 5 niveles arriba para llegar a la raíz del repositorio
-            var rootPath = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+            var rootPath = _logService.GetRootPath();
             var apiPath = Path.Combine(rootPath, "src", "Product", "Back", "Api");
 
             if (!Directory.Exists(apiPath))
@@ -113,7 +111,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     });
             });
 
-            services.AddSingleton<IHostEnvironment>(new DevelopmentHostEnvironment());
+            services.AddSingleton<IHostEnvironment>(new DevelopmentHostEnvironment(apiPath));
 
             services.AddLogging(builder =>
             {
@@ -343,9 +341,15 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
 
     private class DevelopmentHostEnvironment : IHostEnvironment
     {
+        public DevelopmentHostEnvironment(string contentRootPath)
+        {
+            ContentRootPath = contentRootPath;
+            ContentRootFileProvider = new PhysicalFileProvider(contentRootPath);
+        }
+
         public string EnvironmentName { get; set; } = "Development";
         public string ApplicationName { get; set; } = "GesFer.Console";
-        public string ContentRootPath { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
-        public IFileProvider ContentRootFileProvider { get; set; } = new PhysicalFileProvider(AppDomain.CurrentDomain.BaseDirectory);
+        public string ContentRootPath { get; set; }
+        public IFileProvider ContentRootFileProvider { get; set; }
     }
 }
