@@ -111,3 +111,11 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
 
 - Integración de Fase 0 (Ámbito) para optimización de contexto IA.
 
+---
+
+## 2026-01-20 — Inicio de Fase de Infraestructura Profesional (S+ Grade)
+
+- **Hito:** Definición de arquitectura de despliegue inmutable basada en Ansistrano + Docker Compose segregado.
+- **Decisión:** Separación estricta de ciclo de vida entre **Persistencia** (Infrastructure) y **Aplicación** (Release).
+- **Protocolo:** Adopción de "Atomic Releases" con validación de salud obligatoria antes del switch de tráfico (Symlink).
+- **Registro:** Plan de acción detallado en `docs/infrastructure/PLAN_DE_ACCION.md`.

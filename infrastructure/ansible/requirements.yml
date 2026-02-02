@@ -1,0 +1,5 @@
+roles:
+  - name: cbruno.ansistrano-deploy
+    version: 3.7.0
+  - name: cbruno.ansistrano-rollback
+    version: 3.6.0

@@ -1,0 +1,18 @@
+- name: Generate .env configuration
+  template:
+    src: .env.j2
+    dest: "{{ ansistrano_release_path.stdout }}/.env"
+
+- name: Ensure Docker Network exists
+  shell: docker network inspect gesfer_network >/dev/null 2>&1 || docker network create gesfer_network
+  ignore_errors: yes
+
+- name: Build Application Stack
+  shell: docker compose -f infrastructure/docker/docker-compose.app.yml build
+  args:
+    chdir: "{{ ansistrano_release_path.stdout }}"
+
+- name: Start Application Stack (with Healthcheck Wait)
+  shell: docker compose -f infrastructure/docker/docker-compose.app.yml up -d --wait
+  args:
+    chdir: "{{ ansistrano_release_path.stdout }}"

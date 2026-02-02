@@ -88,6 +88,9 @@ builder.Services.AddCors(options =>
 // Configurar inyección de dependencias
 builder.Services.AddApplicationServices(builder.Configuration, builder.Environment);
 
+// Healthchecks
+builder.Services.AddHealthChecks();
+
 // Configurar autenticación JWT
 var jwtSecretKey = builder.Configuration["JwtSettings:SecretKey"] 
     ?? throw new InvalidOperationException("JwtSettings:SecretKey no está configurado");
@@ -214,6 +217,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+    app.MapHealthChecks("/health");
     app.MapControllers();
 
     Log.Information("Aplicación GesFer API iniciada correctamente");
