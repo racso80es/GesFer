@@ -24,7 +24,7 @@
       ],
       "examples": [
         "Crear `Tekton/Configuration/DICTIONARY.json`.",
-        "Añadir una nota bajo Telemetría IA en `Tekton/Rules/GOLDEN_RULES.md`.",
+        "Añadir una nota bajo Telemetría IA en `docs/agents/rol_rendimiento.md`.",
         "Ejecutar `dotnet build \"Api/GesFer.sln\"`."
       ]
     },
@@ -34,7 +34,7 @@
       "invariants": [
         "Debe exponer parámetros explícitos y salida determinista.",
         "Debe operar bajo hash gate (PlanOnly + ApproveHash).",
-        "Debe respetar Golden Rules (no_master_commit, docs de rama, telemetría IA)."
+        "Debe respetar la Constitución (AGENTS.md) (no_master_commit, docs de rama, telemetría IA)."
       ],
       "examples": [
         "Start-Task.ps1 y Close-Task.ps1 como herramientas TAE."

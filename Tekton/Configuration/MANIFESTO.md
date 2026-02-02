@@ -344,18 +344,19 @@ La consola (`src/Console`) permite seleccionar:
 ### 9.1) Documentos Soberanos
 
 - **`/Tekton/Configuration/MANIFESTO.md`** (este documento): Valores y arquitectura.
-- **`/Tekton/Rules/GOLDEN_RULES.md`**: Leyes operativas y reglas de enforcement.
+- **`AGENTS.md`**: Constitución Operativa y Sistema de Roles (reemplaza a GOLDEN RULES).
 
 ### 9.2) Documentos Derivados
 
 - `docs/branches/<rama>.md`: Documentación de rama (obligatoria).
 - `docs/Output/LEGACY-REFERENCES-FOUND.md`: Reporte de auditoría Zero-Legacy Policy.
 - `src/Utils/Data/Seeds/README.md`: Documentación de taxonomía de seeds.
+- `docs/agents/*.md`: Definiciones de Roles Modulares.
 
 ### 9.3) Precedencia
 
 Si existe contradicción entre documentos, **prevalece**:
-1. `GOLDEN_RULES.md` (leyes operativas)
+1. `AGENTS.md` (y sus roles asociados en `docs/agents/`)
 2. `MANIFESTO.md` (este documento, valores y arquitectura)
 3. Documentos derivados (documentación de rama, reportes)
 
