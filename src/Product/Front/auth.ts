@@ -63,58 +63,6 @@ export const authConfig: NextAuthConfig = {
         }
       },
     }),
-    // Provider para usuarios administrativos
-    CredentialsProvider({
-      id: "admin",
-      name: "Admin",
-      credentials: {
-        usuario: { label: "Usuario", type: "text" },
-        contraseña: { label: "Contraseña", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.usuario || !credentials?.contraseña) {
-          return null;
-        }
-
-        try {
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-          const loginUrl = `${apiUrl}/api/admin/auth/login`;
-
-          const response = await fetch(loginUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              usuario: credentials.usuario,
-              contraseña: credentials.contraseña,
-            }),
-          });
-
-          if (!response.ok) {
-            return null;
-          }
-
-          const data = await response.json();
-
-          // Retornar el usuario administrativo con el token y cursorId
-          return {
-            id: data.cursorId, // Usar cursorId como id
-            cursorId: data.cursorId,
-            userId: data.userId,
-            username: data.username,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            role: data.role || "Admin", // Rol administrativo
-            accessToken: data.token, // Guardar el token JWT con claim role: Admin
-          };
-        } catch (error) {
-          console.error("Error en authorize (admin):", error);
-          return null;
-        }
-      },
-    }),
   ],
   callbacks: {
     /**

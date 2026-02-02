@@ -67,6 +67,42 @@ services:
     networks:
       - gesfer_network
 
+  # Product Frontend
+  gesfer-product-front:
+    build:
+      context: .
+      dockerfile: src/Product/Front/Dockerfile
+    container_name: gesfer_product_front
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+      - API_URL=http://gesfer-product-api:5000
+      - AUTH_SECRET=your-secret-key-change-in-production
+    depends_on:
+      - gesfer-product-api
+    networks:
+      - gesfer_network
+
+  # Admin Frontend
+  gesfer-admin-front:
+    build:
+      context: .
+      dockerfile: src/Admin/Front/Dockerfile
+    container_name: gesfer_admin_front
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5010
+      - ADMIN_API_URL=http://gesfer-admin-api:5010
+      - AUTH_SECRET=your-secret-key-change-in-production
+    depends_on:
+      - gesfer-admin-api
+    networks:
+      - gesfer_network
+
   # Caché Memcached
   cache:
     image: memcached:alpine

@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
-import { Loading } from "@shared/components/ui/loading";
-import { ErrorMessage } from "@shared/components/ui/error-message";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loading } from "@/components/ui/loading";
+import { ErrorMessage } from "@/components/ui/error-message";
 import { Building2, Users, Package, Truck, ShoppingCart, Activity } from "lucide-react";
 
 interface DashboardSummary {
@@ -29,7 +29,7 @@ export default function AdminDashboardPage() {
         setIsLoading(true);
         setError(null);
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
         const token = (session as any)?.accessToken;
 
         if (!token) {
