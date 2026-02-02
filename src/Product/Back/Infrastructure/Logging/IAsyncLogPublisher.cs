@@ -14,7 +14,7 @@ public interface IAsyncLogPublisher
     /// <param name="message">Mensaje del log</param>
     /// <param name="exception">Excepción opcional</param>
     /// <param name="properties">Propiedades adicionales del log</param>
-    void PublishLog(string level, string message, Exception? exception, Dictionary<string, object> properties);
+    Task PublishLog(string level, string message, Exception? exception, Dictionary<string, object> properties);
 
     /// <summary>
     /// Publica un log de auditoría de forma asíncrona (fire and forget)
@@ -25,5 +25,5 @@ public interface IAsyncLogPublisher
     /// <param name="httpMethod">Método HTTP</param>
     /// <param name="path">Ruta del endpoint</param>
     /// <param name="additionalData">Datos adicionales</param>
-    void PublishAuditLog(string cursorId, string username, string action, string httpMethod, string path, string? additionalData = null);
+    Task PublishAuditLog(string cursorId, string username, string action, string httpMethod, string path, string? additionalData = null);
 }
