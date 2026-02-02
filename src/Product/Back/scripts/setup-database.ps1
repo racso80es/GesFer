@@ -53,12 +53,12 @@ Write-Host "4. Información sobre datos iniciales..." -ForegroundColor Yellow
 Write-Host "   ℹ Los datos ahora se cargan desde archivos JSON" -ForegroundColor Cyan
 Write-Host "   ℹ Los datos se cargan automáticamente al iniciar la API" -ForegroundColor Cyan
 Write-Host "   ℹ O mediante el endpoint: POST /api/setup/initialize" -ForegroundColor Cyan
-Write-Host "   ℹ Archivos JSON en: Api/src/Infrastructure/Seeds/" -ForegroundColor Cyan
+Write-Host "   ℹ Archivos JSON en: src/Product/Back/Infrastructure/Data/Seeds/" -ForegroundColor Cyan
 
 Write-Host ""
 Write-Host "5. Para cargar los datos, puedes:" -ForegroundColor Yellow
 Write-Host "   - Iniciar la API (F5 en Visual Studio)" -ForegroundColor White
-Write-Host "   - O ejecutar: dotnet run --project Api/src/Api" -ForegroundColor White
+Write-Host "   - O ejecutar: dotnet run --project src/Product/Back/Api" -ForegroundColor White
 Write-Host "   - O llamar al endpoint: POST http://localhost:5000/api/setup/initialize" -ForegroundColor White
 
 Write-Host ""

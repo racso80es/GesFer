@@ -10,7 +10,7 @@ El sistema ha migrado de scripts SQL a archivos JSON para una gestión más prof
 
 Los datos iniciales están organizados en archivos JSON ubicados en:
 ```
-Api/src/Infrastructure/Data/Seeds/
+src/Product/Back/Infrastructure/Data/Seeds/
 ```
 
 ### Archivos Disponibles
@@ -58,9 +58,9 @@ Los datos se cargan automáticamente mediante:
 
 ## Cómo Añadir Nuevos Datos
 
-1. **Datos maestros** → Editar `Api/src/Infrastructure/Data/Seeds/master-data.json`
-2. **Datos de muestra** → Editar `Api/src/Infrastructure/Data/Seeds/demo-data.json`
-3. **Datos de prueba** → Editar `Api/src/Infrastructure/Data/Seeds/test-data.json`
+1. **Datos maestros** → Editar `src/Product/Back/Infrastructure/Data/Seeds/master-data.json`
+2. **Datos de muestra** → Editar `src/Product/Back/Infrastructure/Data/Seeds/demo-data.json`
+3. **Datos de prueba** → Editar `src/Product/Back/Infrastructure/Data/Seeds/test-data.json`
 
 **IMPORTANTE**: No edites el código C# para añadir datos. Usa los archivos JSON.
 
@@ -72,24 +72,24 @@ Después de la inicialización, puedes usar estas credenciales:
 - **Usuario**: admin
 - **Contraseña**: admin123
 
-## Scripts SQL (DEPRECADOS)
+## Scripts SQL (ELIMINADOS)
 
-Los scripts SQL de inserción (`master-data.sql`, `seed-data.sql`, `sample-data.sql`, etc.) han sido eliminados.
+Los scripts SQL de inserción (`master-data.sql`, `seed-data.sql`, `sample-data.sql`, etc.) han sido eliminados físicamente del repositorio.
 
 El sistema ahora usa exclusivamente archivos JSON para la gestión de datos iniciales.
 
 ## Migración desde Scripts SQL
 
-Si necesitas migrar datos desde scripts SQL antiguos:
+Si necesitas recuperar y migrar datos desde scripts SQL antiguos:
 
-1. Abre el script SQL antiguo
-2. Identifica los datos a migrar
-3. Añádelos al archivo JSON correspondiente (`master-data.json`, `demo-data.json` o `test-data.json`)
-4. Ejecuta la opción 1 de la consola o reinicia la API en Development
+1. Busca el script SQL en el historial de Git.
+2. Identifica los datos a migrar.
+3. Añádelos al archivo JSON correspondiente (`master-data.json`, `demo-data.json` o `test-data.json`).
+4. Ejecuta la opción 1 de la consola o reinicia la API en Development.
 
 ## Documentación Técnica
 
 Para más detalles sobre el sistema de seeding, consulta:
-- `Api/src/Infrastructure/Services/JsonDataSeeder.cs` - Lógica de carga desde JSON
-- `Api/src/Infrastructure/Data/DbInitializer.cs` - Orquestación de migraciones y seeding
-- `Api/src/Infrastructure/Data/Seeds/README.md` - Estructura de los archivos JSON
+- `src/Product/Back/Infrastructure/Services/JsonDataSeeder.cs` - Lógica de carga desde JSON
+- `src/Product/Back/Infrastructure/Data/DbInitializer.cs` - Orquestación de migraciones y seeding
+- `src/Product/Back/Infrastructure/Data/Seeds/README.md` - Estructura de los archivos JSON
