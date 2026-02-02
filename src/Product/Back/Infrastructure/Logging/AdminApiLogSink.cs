@@ -28,7 +28,7 @@ public class AdminApiLogSink : ILogEventSink
         var properties = logEvent.Properties.ToDictionary(p => p.Key, p => p.Value.ToString() as object);
 
         // Fire and Forget: Delegamos a un hilo del pool para no bloquear el hilo principal de Product
-        _ = Task.Run(async () =>
+        _ = Task.Run(() =>
         {
             try
             {
