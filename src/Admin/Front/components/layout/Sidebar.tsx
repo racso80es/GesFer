@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Button } from "@shared/components/shared/Button";
+import { Button } from "@/components/shared/Button";
 import {
   LayoutDashboard,
   LogOut,
@@ -13,7 +13,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@shared/lib/utils/cn";
+import { cn } from "@/lib/utils/cn";
 import { useSidebar } from "@/contexts/sidebar-context";
 
 interface SidebarProps {

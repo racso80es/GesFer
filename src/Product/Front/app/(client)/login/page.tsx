@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
-import { Input } from "@shared/components/shared/Input";
-import { Label } from "@shared/components/ui/label";
-import { Button } from "@shared/components/shared/Button";
-import { ErrorMessage } from "@shared/components/ui/error-message";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/shared/Input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/shared/Button";
+import { ErrorMessage } from "@/components/ui/error-message";
 import { Building2, User, Lock, Loader2 } from "lucide-react";
 import { useTranslations } from 'next-intl';
 
@@ -24,7 +24,7 @@ export default function LoginPage() {
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const t = useTranslations('auth');
   // Contexto CLIENTE: Autocompletado para login de cliente
-  const [formData, setFormData] = useState(MOCK_CLIENT_CREDENTIALS);
+  const [formData, setFormData] = useState<{ empresa: string; usuario: string; contraseña: string }>({ ...MOCK_CLIENT_CREDENTIALS });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 

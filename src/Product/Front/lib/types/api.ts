@@ -121,7 +121,7 @@ export interface UpdateCustomer {
   isActive: boolean;
 }
 
-// Tipos para Country y City movidos a @shared/lib/types/api
+// Tipos para Country y City movidos a @/lib/types/api
 
 // Tipos para Company
 export interface Company {

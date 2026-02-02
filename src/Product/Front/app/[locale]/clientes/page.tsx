@@ -2,17 +2,17 @@
 
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { MainLayout } from "@/components/layout/main-layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
-import { Button } from "@shared/components/ui/button";
-import { Loading } from "@shared/components/ui/loading";
-import { ErrorMessage } from "@shared/components/ui/error-message";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Loading } from "@/components/ui/loading";
+import { ErrorMessage } from "@/components/ui/error-message";
 import { useQuery } from "@tanstack/react-query";
 import { customersApi } from "@/lib/api/customers";
 import { useAuth } from "@/contexts/auth-context";
 import { Plus, Edit, Trash2, Building2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslations, useLocale } from 'next-intl';
-import { DestructiveActionConfirm } from "@shared/components/shared/DestructiveActionConfirm";
+import { DestructiveActionConfirm } from "@/components/shared/DestructiveActionConfirm";
 
 export default function ClientesPage() {
   const { user } = useAuth();
