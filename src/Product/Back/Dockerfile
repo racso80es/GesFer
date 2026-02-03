@@ -16,6 +16,7 @@ WORKDIR "/src/src/Product/Back/Api"
 RUN dotnet build "GesFer.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
+WORKDIR "/src/src/Product/Back/Api"
 RUN dotnet publish "GesFer.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
