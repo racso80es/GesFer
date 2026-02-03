@@ -66,20 +66,31 @@ public class DashboardController : ControllerBase
                 GeneratedAt = DateTime.UtcNow
             };
 
-            // Registrar log de auditoría con el Cursor ID
-            await _auditLogService.LogActionAsync(
-                cursorId: cursorId,
-                username: username,
-                action: "GetDashboardSummary",
-                httpMethod: HttpContext.Request.Method,
-                path: HttpContext.Request.Path,
-                additionalData: System.Text.Json.JsonSerializer.Serialize(new
+            // Registrar log de auditoría con el Cursor ID (Fire and Forget)
+            // No bloqueamos la respuesta del dashboard por el log
+            _ = Task.Run(async () =>
+            {
+                try
                 {
-                    TotalCompanies = summary.TotalCompanies,
-                    TotalUsers = summary.TotalUsers,
-                    ActiveUsers = summary.ActiveUsers
-                })
-            );
+                    await _auditLogService.LogActionAsync(
+                        cursorId: cursorId,
+                        username: username,
+                        action: "GetDashboardSummary",
+                        httpMethod: HttpContext.Request.Method,
+                        path: HttpContext.Request.Path,
+                        additionalData: System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            TotalCompanies = summary.TotalCompanies,
+                            TotalUsers = summary.TotalUsers,
+                            ActiveUsers = summary.ActiveUsers
+                        })
+                    );
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error al registrar audit log en background");
+                }
+            });
 
             return Ok(summary);
         }
