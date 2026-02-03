@@ -27,25 +27,23 @@ public class AdminApiLogSink : ILogEventSink
         var exception = logEvent.Exception;
         var properties = logEvent.Properties.ToDictionary(p => p.Key, p => p.Value.ToString() as object);
 
-        // Fire and Forget: Delegamos a un hilo del pool para no bloquear el hilo principal de Product
-        _ = Task.Run(() =>
+        // Fire and Forget: Delegamos la publicación.
+        // Nota: IAsyncLogPublisher.PublishLog ya implementa Task.Run internamente,
+        // por lo que no necesitamos envolverlo aquí nuevamente (doble dispatch).
+        try
         {
-            try
-            {
-                using var scope = _serviceProvider.CreateScope();
-                var logPublisher = scope.ServiceProvider.GetService<IAsyncLogPublisher>();
+            using var scope = _serviceProvider.CreateScope();
+            var logPublisher = scope.ServiceProvider.GetService<IAsyncLogPublisher>();
 
-                if (logPublisher != null)
-                {
-                    // No await needed as PublishLog is now fire-and-forget (void)
-                    logPublisher.PublishLog(level, message, exception, properties);
-                }
-            }
-            catch
+            if (logPublisher != null)
             {
-                // Resiliencia S+: El fallo en el envío no debe afectar a Product.
-                // Opcional: Podrías escribir en un log de emergencia local o consola.
+                // PublishLog es void y maneja su propia asincronía
+                logPublisher.PublishLog(level, message, exception, properties);
             }
-        });
+        }
+        catch
+        {
+            // Resiliencia S+: El fallo en el envío no debe afectar a Product.
+        }
     }
 }
