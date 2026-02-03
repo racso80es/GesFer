@@ -131,10 +131,11 @@ public class ApplicationDbContext : DbContext
                     // MySQL usa utf8mb4_unicode_ci por defecto si se configura en el servidor
                     // Pero podemos forzarlo aquí también para propiedades sin configuración explícita
                     // No establecemos varchar sin longitud, solo si hay HasMaxLength configurado
-                    if (property.GetMaxLength().HasValue)
+                    var maxLength = property.GetMaxLength();
+                    if (maxLength.HasValue)
                     {
                         // Si tiene MaxLength, usar varchar con esa longitud
-                        property.SetColumnType($"varchar({property.GetMaxLength().Value})");
+                        property.SetColumnType($"varchar({maxLength.Value})");
                     }
                     // Si no tiene MaxLength y no tiene tipo explícito, dejar que EF Core use su configuración por defecto
                 }
