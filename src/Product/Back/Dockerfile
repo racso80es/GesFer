@@ -11,7 +11,9 @@ COPY ["src/Product/Back/domain/GesFer.Domain.csproj", "Product/Back/domain/"]
 COPY ["src/Product/Back/Infrastructure/GesFer.Infrastructure.csproj", "Product/Back/Infrastructure/"]
 COPY ["src/Shared/Back/GesFer.Shared.Back.Domain.csproj", "Shared/Back/"]
 RUN dotnet restore "Product/Back/Api/GesFer.Api.csproj"
-COPY . .
+# Copy only the project source folders to avoid unexpected context layout
+COPY src/Product/Back/ ./Product/Back/
+COPY src/Shared/Back/ ./Shared/Back/
 WORKDIR "/src/Product/Back/Api"
 RUN dotnet build "GesFer.Api.csproj" -c Release -o /app/build
 
