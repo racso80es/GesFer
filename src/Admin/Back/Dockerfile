@@ -5,20 +5,20 @@ EXPOSE 5011
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["src/Admin/Back/Api/GesFer.Admin.Api.csproj", "src/Admin/Back/Api/"]
-COPY ["src/Admin/Back/application/GesFer.Admin.Application.csproj", "src/Admin/Back/application/"]
-COPY ["src/Admin/Back/domain/GesFer.Admin.Domain.csproj", "src/Admin/Back/domain/"]
-COPY ["src/Admin/Back/Infrastructure/GesFer.Admin.Infra.csproj", "src/Admin/Back/Infrastructure/"]
-COPY ["src/Product/Back/Infrastructure/GesFer.Infrastructure.csproj", "src/Product/Back/Infrastructure/"]
-COPY ["src/Product/Back/domain/GesFer.Domain.csproj", "src/Product/Back/domain/"]
-COPY ["src/Shared/Back/GesFer.Shared.Back.Domain.csproj", "src/Shared/Back/"]
-RUN dotnet restore "src/Admin/Back/Api/GesFer.Admin.Api.csproj"
+COPY ["src/Admin/Back/Api/GesFer.Admin.Api.csproj", "Admin/Back/Api/"]
+COPY ["src/Admin/Back/application/GesFer.Admin.Application.csproj", "Admin/Back/application/"]
+COPY ["src/Admin/Back/domain/GesFer.Admin.Domain.csproj", "Admin/Back/domain/"]
+COPY ["src/Admin/Back/Infrastructure/GesFer.Admin.Infra.csproj", "Admin/Back/Infrastructure/"]
+COPY ["src/Product/Back/Infrastructure/GesFer.Infrastructure.csproj", "Product/Back/Infrastructure/"]
+COPY ["src/Product/Back/domain/GesFer.Domain.csproj", "Product/Back/domain/"]
+COPY ["src/Shared/Back/GesFer.Shared.Back.Domain.csproj", "Shared/Back/"]
+RUN dotnet restore "Admin/Back/Api/GesFer.Admin.Api.csproj"
 COPY . .
-WORKDIR "/src/src/Admin/Back/Api"
+WORKDIR "/src/Admin/Back/Api"
 RUN dotnet build "GesFer.Admin.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-WORKDIR "/src/src/Admin/Back/Api"
+WORKDIR "/src/Admin/Back/Api"
 RUN dotnet publish "GesFer.Admin.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
