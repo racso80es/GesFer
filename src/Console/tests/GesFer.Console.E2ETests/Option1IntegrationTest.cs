@@ -37,6 +37,7 @@ public class Option1IntegrationTest
         _output.WriteLine($"Log file: {logService.GetLogFilePath()}");
 
         var checkDockerCommand = new CheckDockerCommand(logService);
+        var checkDockerComposeCommand = new CheckDockerComposeCommand(logService);
         var removeContainersCommand = new RemoveContainersCommand(logService);
         var createContainersCommand = new CreateContainersCommand(logService);
         var waitMySqlReadyCommand = new WaitMySqlReadyCommand(logService);
@@ -51,6 +52,7 @@ public class Option1IntegrationTest
 
         var menuService = new MenuService(
             checkDockerCommand,
+            checkDockerComposeCommand,
             removeContainersCommand,
             createContainersCommand,
             waitMySqlReadyCommand,

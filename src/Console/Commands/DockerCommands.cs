@@ -58,6 +58,56 @@ public class CheckDockerCommand : ICommandHandler<CheckDockerInput, bool>
     }
 }
 
+public class CheckDockerComposeCommand : ICommandHandler<CheckDockerComposeInput, bool>
+{
+    private readonly LogService _logService;
+
+    public CheckDockerComposeCommand(LogService logService)
+    {
+        _logService = logService;
+    }
+
+    public async Task<CommandResult<bool>> HandleAsync(CheckDockerComposeInput input)
+    {
+        var result = new CommandResult<bool>();
+        try
+        {
+            var processInfo = new ProcessStartInfo
+            {
+                FileName = "docker-compose",
+                Arguments = "version",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = Process.Start(processInfo);
+            if (process == null)
+            {
+                result.Success = false;
+                result.Data = false;
+                result.Message = "Could not start docker-compose process";
+                return result;
+            }
+
+            await process.WaitForExitAsync();
+
+            result.Success = process.ExitCode == 0;
+            result.Data = result.Success;
+            result.Message = result.Success ? "Docker Compose is available" : "Docker Compose is not available";
+            return result;
+        }
+        catch
+        {
+            result.Success = false;
+            result.Data = false;
+            result.Message = "Exception checking docker-compose";
+            return result;
+        }
+    }
+}
+
 public class RemoveContainersCommand : ICommandHandler<RemoveContainersInput, bool>
 {
     private readonly LogService _logService;

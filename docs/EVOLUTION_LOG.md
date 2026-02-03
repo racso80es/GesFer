@@ -27,5 +27,13 @@
 - **Unit Tests:** ✅ 100% Pasados (Product y Admin).
 - **Integration Tests:** ⚠️ Parcialmente recuperados (Infraestructura resiliente implementada, aunque persisten fallos lógicos específicos que requieren iteraciones adicionales).
 
+## Registro de Cambios - Día 6 (Kaizen Robustez Console)
+
+### 1. Robustez en Consola (User Experience)
+- **Acción:** Implementación de verificación explícita de `docker-compose`.
+- **Problema:** La aplicación de consola fallaba con excepciones no controladas en entornos donde `docker` estaba presente pero `docker-compose` no (común en ciertos runners de CI o instalaciones parciales en Windows).
+- **Solución:** Se creó `CheckDockerComposeCommand` y se integró en el flujo de inicialización (`MenuService`). Ahora la aplicación verifica proactivamente la herramienta antes de intentar usarla, informando al usuario claramente.
+- **Validación:** Verificado mediante tests E2E que ahora reportan el error de forma controlada en lugar de caer.
+
 ---
 *Autor: Agente Tekton (Kaizen Executor)*

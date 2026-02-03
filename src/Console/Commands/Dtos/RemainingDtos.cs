@@ -4,6 +4,8 @@ namespace GesFer.ConsoleApp.Commands.Dtos;
 
 public class CheckDockerInput : CommandInputBase { }
 
+public class CheckDockerComposeInput : CommandInputBase { }
+
 public class RemoveContainersInput : CommandInputBase { }
 
 public class CreateContainersInput : CommandInputBase { }
