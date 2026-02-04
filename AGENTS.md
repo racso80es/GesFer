@@ -42,6 +42,7 @@ Selecciona el rol más específico posible. Si dudas, activa **Arquitecto**.
 | **[RENDIMIENTO]**| Cierre tarea, Logs, Docker, Queries lentas. | Cargar [`docs/agents/rol_rendimiento.md`](./docs/agents/rol_rendimiento.md). Generar métricas. |
 | **[AUDITOR-FRONT]** | Auditoría, Accesibilidad, Lint, Frontend. | Cargar [`docs/agents/rol_auditor_front.md`](./docs/agents/rol_auditor_front.md). Generar reporte. |
 | **[AUDITOR-BACK]** | Auditoría, Backend, C#, Arquitectura, DbContext. | Cargar [`docs/agents/rol_auditor_back.md`](./docs/agents/rol_auditor_back.md). Generar reporte. |
+| **[KNOWLEDGE-ARCH]** | Documentación, Docs, Markdown, Guías, Conocimiento, Rutas. | Cargar [`docs/agents/rol_knowledge_architect.md`](./docs/agents/rol_knowledge_architect.md). Validar SSOT. |
 
 ---
 
