@@ -10,7 +10,8 @@ COPY src/Product/Front/package.json src/Product/Front/package-lock.json* ./src/P
 
 # Install dependencies
 WORKDIR /app/src/Product/Front
-RUN npm ci
+# Aumentar timeout de npm a 60 s
+RUN npm ci --fetch-timeout=60000
 
 # Rebuild the source code only when needed
 FROM base AS builder
