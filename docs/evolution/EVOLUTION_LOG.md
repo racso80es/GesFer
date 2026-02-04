@@ -1,70 +1,135 @@
-# EVOLUTION_LOG.md
+# EVOLUTION LOG — GesFer (Consciencia del Sistema)
 
-## Registro de Cambios - 2026-02-03 (Kaizen Fase 2)
+Este archivo registra **hitos de evolución** del producto y su gobierno (dominio, roles, reglas, empaquetado SaaS), de forma cronológica y trazable.
 
-### 1. Limpieza de Tests (Kaizen Clean)
-- **Acción:** Eliminación de archivos boilerplate `UnitTest1.cs` en `GesFer.Product.UnitTests` y `GesFer.Admin.UnitTests`.
-- **Mejora:** Se eliminaron los falsos positivos que inflaban las métricas de éxito sin probar nada real.
-- **Implementación:** Se añadió `CreateUserCommandHandlerTests` en `GesFer.Product.UnitTests` con cobertura real de escenarios de éxito y fallo para la creación de usuarios.
-
-### 2. Calidad de Código (Async Fixes)
-- **Acción:** Refactorización de `AdminApiLogSink.cs` y `DashboardController.cs`.
-- **Mejora:** Eliminación de advertencias de compilación relacionadas con llamadas asíncronas no esperadas ("Fire-and-Forget").
-- **Detalle:** Se implementó correctamente el patrón `Task.Run` para asegurar que el logging no bloquee el hilo principal de ejecución, manteniendo la estabilidad del sistema.
-
-### 3. Infraestructura de Tests de Integración (Critical Fix)
-- **Acción:** Modificación de `IntegrationTestWebAppFactory` en `GesFer.IntegrationTests`.
-- **Problema:** Fallo crítico en CI/Sandbox debido a la imposibilidad de montar volúmenes con Testcontainers (`DockerApiException`).
-- **Solución:** Implementación de un mecanismo de **Fallback a InMemoryDatabase**. Si Docker falla al iniciar, el sistema cambia automáticamente a base de datos en memoria para permitir que los tests de lógica de controladores continúen ejecutándose, aunque con menor fidelidad de infraestructura.
-- **Estado:** Los tests de integración ahora intentan usar Docker pero no fallan catastróficamente si el entorno es hostil.
-
-### 4. Cobertura E2E
-- **Acción:** Inclusión del proyecto `GesFer.Console.E2ETests` en la solución `GesFer.sln`.
-- **Mejora:** Ahora los tests de extremo a extremo de la consola son parte del ciclo de construcción y prueba estándar.
-
-### Estado Actual
-- **Compilación:** ✅ Exitosa (0 Warnings).
-- **Unit Tests:** ✅ 100% Pasados (Product y Admin).
-- **Integration Tests:** ⚠️ Parcialmente recuperados (Infraestructura resiliente implementada, aunque persisten fallos lógicos específicos que requieren iteraciones adicionales).
-
-## Registro de Cambios - Día 6 (Kaizen Robustez Console)
-
-### 1. Robustez en Consola (User Experience)
-- **Acción:** Implementación de verificación explícita de `docker-compose`.
-- **Problema:** La aplicación de consola fallaba con excepciones no controladas en entornos donde `docker` estaba presente pero `docker-compose` no (común en ciertos runners de CI o instalaciones parciales en Windows).
-- **Solución:** Se creó `CheckDockerComposeCommand` y se integró en el flujo de inicialización (`MenuService`). Ahora la aplicación verifica proactivamente la herramienta antes de intentar usarla, informando al usuario claramente.
-- **Validación:** Verificado mediante tests E2E que ahora reportan el error de forma controlada en lugar de caer.
+> Regla: este log no reemplaza `docs/CHANGELOG.md`; aquí se registran decisiones estructurales y de soberanía.
 
 ---
-*Autor: Agente Tekton (Kaizen Executor)*
 
-## 2026-02-03 — Unificación de Biblioteca UI (Shared Domain Isolation)
+## KPIs de Salud (4) — Norte de control
 
-- **Hito:** Refactorización masiva para eliminar duplicidad de componentes UI.
-- **Acción:**
-    - Se eliminaron las copias locales de `src/Product/Front/components/ui` y `src/Admin/Front/components/ui`.
-    - Se redirigieron todas las referencias hacia `src/Shared/Front` mediante el alias `@shared`.
-    - Se aisló el dominio `Shared` eliminando dependencias de alias de aplicación (`@/lib/utils/cn` -> `../../lib/utils/cn`).
-- **Mejora:** Reducción de deuda técnica crítica (DRY), consistencia visual garantizada y aislamiento real de componentes compartidos.
-- **Deuda Pendiente:** Mover tests unitarios de UI desde Product hacia Shared (actualmente Product ejecuta tests sobre componentes importados de Shared).
+Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es medir **soberanía**, **operabilidad**, **seguridad de permisos** y **capacidad de venta/contratación**.
 
-## Registro de Cambios - 2026-02-04 (Kaizen Fase Operativa)
+### 1) Aislamiento de Dominio
 
-### 1. Centralización de Invariante Shared (Generación de IDs)
-- **Acción:** Movimiento y refactorización de lógica de generación de GUIDs (`SequentialGuidValueGenerator`) desde `Product` hacia `Shared`.
-- **Mejora:** Cumplimiento estricto de arquitectura. La lógica transversal de identidad ahora reside en `Shared.Back.Domain.Services` y es consumida por `Product` y `Admin` sin duplicidad ni dependencias cruzadas.
-- **Implementación:** Refactorización de `SequentialGuidValueGenerator` para eliminar dependencia de `ApplicationDbContext` y usar `IInfrastructure<IServiceProvider>`.
+- **Definición**: frontera estructural Admin (global) ↔ Empresa (operativa) sin contaminación de contratos, estado o semántica.
+- **Señales**:
+  - No hay DTOs compartidos indebidos entre dominios.
+  - Persistencia/cookies/storage segregados por namespace (ej. `admin_*` vs empresa).
+  - Guardas/servicios de auth separados por dominio.
 
-### 2. Limpieza de Legacy Seeder (JsonDataSeeder)
-- **Acción:** Eliminación de lógica de búsqueda de rutas legacy en `JsonDataSeeder`.
-- **Mejora:** Reducción de deuda técnica y ruido cognitivo. Se impone la ubicación canónica `src/Product/Back/Infrastructure/Data/Seeds/`.
-- **Detalle:** Se eliminó el soporte para rutas obsoletas (`Api/`, `Seeds/` en raíz) y se simplificó la resolución de paths.
+### 2) Latencia de Operación
 
-### 3. Estandarización de Namespace Admin (Consistencia)
-- **Acción:** Corrección de namespace en `AdminDbContext` y consumidores.
-- **Antes:** `MyCompany.SysAdmin.Infrastructure.Data` (Legacy).
-- **Ahora:** `GesFer.Admin.Infrastructure.Data`.
-- **Mejora:** Consistencia estructural y profesionalización del código base en el dominio Admin.
+- **Definición**: fricción temporal para completar operaciones de planta (compra/venta, caja, stock) con consistencia.
+- **Señales**:
+  - Operaciones críticas ejecutables con mínimo número de pasos.
+  - Validaciones y feedback rápidos (sin esperas y sin re-trabajo por reglas ocultas).
+  - Ausencia de bloqueos recurrentes por tooling/entorno.
 
-### Estado Actual
-- **Compilación:** ✅ Exitosa (0 Warnings).
+### 3) Integridad de Derechos
+
+- **Definición**: el sistema valida de forma granular que el usuario posee el derecho requerido para cada acción; la empresa define y asigna derechos.
+- **Señales**:
+  - Controles de autorización por acción (acceso/consulta/edición/modificación/borrado).
+  - No existen “bypasses” por sesión genérica o por dominio incorrecto.
+  - Auditoría y trazabilidad de rechazos por falta de derecho.
+
+### 4) Agilidad de Contratación
+
+- **Definición**: capacidad de habilitar y gobernar el producto por contrato activo (tiers), con cambios de alcance controlados y sin reingeniería.
+- **Señales**:
+  - Tiers explícitos (Demo/Funcional/Premium) sin alterar el dominio.
+  - Soberanía de empresa condicionada al contrato de producto activo.
+  - Contratos marco como habilitadores (especialmente en Premium).
+
+---
+
+## 2026-01-19 — Infraestructura S+ (Juez Modular + soberanía documental)
+
+- Se consolidó una **Puerta de Entrada**: `/Tekton/Configuration/MANIFESTO.md` + `/Tekton/Rules/GOLDEN_RULES.md`.
+- Se rearmó el **Juez Modular**:
+  - bloqueo S‑Grade por falta de **pasaporte de rama**,
+  - bloqueo S‑Grade por falta de **telemetría IA** (global + reporte por rama).
+- Se absorbió fragmentación documental, reduciendo “constituciones paralelas” y dejando una jerarquía explícita.
+- Se ejecutó Kaizen real como prueba de infraestructura:
+  - eliminación de `confirm()` nativo en el cliente (fuera de `node_modules`),
+  - refuerzo de contrato de componentes `shared/` con `data-testid`.
+- Aprendizaje operativo: ante limitaciones de tooling (ej. `rg` no disponible), se debe usar alternativa reproducible (ej. `git grep`) sin degradar trazabilidad.
+- Aprendizaje recurrente: crear **pasaporte** + `IA_PERF_<rama>.md` al inicio evita bloqueos tempranos del Juez.
+
+---
+
+## 2026-01-19 — Aislamiento Admin ↔ Empresa (Ley de Invariancia)
+
+- Se definió una frontera **no negociable** entre:
+  - **Admin (global)**: identidad global, sin semántica de empresa.
+  - **Empresa (operativa)**: multi‑empresa; operación real (planta, caja, stock).
+- Se explicitó el set de prohibiciones: no herencia de contrato, no contaminación de almacenamiento, no semántica de empresa en Admin, no bypass por sesión genérica.
+
+---
+
+## 2026-01-19 — Soberanía de roles y validación granular
+
+- Se consolidó el modelo conceptual: **Administrador Global** / **Administrador de la Empresa** / **Usuarios Operativos**.
+- Se definió la responsabilidad del sistema: **validación granular de acción** por derecho requerido; la empresa es soberana en la gestión de permisos.
+
+---
+
+## 2026-01-19 — Tiers SaaS (Demo / Funcional / Premium) en el Norte Conceptual
+
+- Se incorporó al Norte Conceptual (`docs/BUSINESS_DOMAIN.md`) el empaquetado SaaS del producto en **Demo**, **Funcional** y **Premium**.
+- Se añadió la regla: la soberanía operativa de la empresa está supeditada al **contrato de producto activo** (tier).
+
+---
+
+## 2026-01-19 — Movimiento 12 (Sellado): consolidación de inteligencia + sincronización total
+
+- Se centralizó la inteligencia histórica de reportes `IA_PERF_*` en este `docs/EVOLUTION_LOG.md` como consciencia única.
+- Se definió DoD explícito de cierre: **local y nube como espejo** (ver `[DOD: REGLA DE SINCRONIZACIÓN]` en `/Tekton/Rules/GOLDEN_RULES.md`).
+- Aprendizajes operativos consolidados:
+  - PowerShell puede no soportar encadenamiento con `&&` (usar secuencias compatibles).
+  - `dotnet build` puede fallar si existe un binario en uso (bloqueo por proceso activo); el cierre exige entorno limpio.
+  - E2E puede fallar por servicios no disponibles; el Juez distingue advertencia de falla real cuando detecta `ECONNREFUSED`.
+
+---
+
+## 2026-01-20 — Infraestructura Tekton en directorio raíz `/Tekton`
+
+- Migración de infraestructura Tekton a directorio raíz `/Tekton` para estandarización de herramientas de IA.
+
+- Estandarización de protocolos v2.1 y abstracción de .cursorrules completada.
+
+---
+
+## 2026-01-20 — Diccionario ontológico Tekton (unificación de lenguaje IA/Humano)
+
+- Creación del diccionario de términos Tekton para unificación de lenguaje IA/Humano.
+
+---
+
+## 2026-01-20 — Integración de Fase 0 (Ámbito) en Tekton
+
+- Integración de Fase 0 (Ámbito) para optimización de contexto IA.
+
+---
+
+## 2026-01-20 — Inicio de Fase de Infraestructura Profesional (S+ Grade)
+
+- **Hito:** Definición de arquitectura de despliegue inmutable basada en Ansistrano + Docker Compose segregado.
+- **Decisión:** Separación estricta de ciclo de vida entre **Persistencia** (Infrastructure) y **Aplicación** (Release).
+- **Protocolo:** Adopción de "Atomic Releases" con validación de salud obligatoria antes del switch de tráfico (Symlink).
+- **Registro:** Plan de acción detallado en `docs/infrastructure/PLAN_DE_ACCION.md`.
+
+## Registro de Cambios - Día 7 (Kaizen UI Unification)
+
+### 1. Unificación de UI Library (Kaizen-01)
+- **Acción:** Eliminación de código duplicado en Frontend (Product y Admin).
+- **Problema:** Existían 3 copias idénticas de componentes UI (Shared, Product, Admin), violando Single Source of Truth.
+- **Solución:**
+    - Refactorización de `Shared` para usar imports relativos (Autonomía).
+    - Eliminación de carpetas `ui` y `shared` en `Product` y `Admin`.
+    - Actualización masiva de imports a `@shared/...`.
+    - Configuración de `tsconfig` y `next.config` en Product/Admin para resolver módulos de Shared correctamente.
+- **Validación:**
+    - Build de Product y Admin exitoso.
+    - Tests de Product exitosos (114 tests pasados).
