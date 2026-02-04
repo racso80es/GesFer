@@ -47,3 +47,24 @@
     - Se aisló el dominio `Shared` eliminando dependencias de alias de aplicación (`@/lib/utils/cn` -> `../../lib/utils/cn`).
 - **Mejora:** Reducción de deuda técnica crítica (DRY), consistencia visual garantizada y aislamiento real de componentes compartidos.
 - **Deuda Pendiente:** Mover tests unitarios de UI desde Product hacia Shared (actualmente Product ejecuta tests sobre componentes importados de Shared).
+
+## Registro de Cambios - 2026-02-04 (Kaizen Fase Operativa)
+
+### 1. Centralización de Invariante Shared (Generación de IDs)
+- **Acción:** Movimiento y refactorización de lógica de generación de GUIDs (`SequentialGuidValueGenerator`) desde `Product` hacia `Shared`.
+- **Mejora:** Cumplimiento estricto de arquitectura. La lógica transversal de identidad ahora reside en `Shared.Back.Domain.Services` y es consumida por `Product` y `Admin` sin duplicidad ni dependencias cruzadas.
+- **Implementación:** Refactorización de `SequentialGuidValueGenerator` para eliminar dependencia de `ApplicationDbContext` y usar `IInfrastructure<IServiceProvider>`.
+
+### 2. Limpieza de Legacy Seeder (JsonDataSeeder)
+- **Acción:** Eliminación de lógica de búsqueda de rutas legacy en `JsonDataSeeder`.
+- **Mejora:** Reducción de deuda técnica y ruido cognitivo. Se impone la ubicación canónica `src/Product/Back/Infrastructure/Data/Seeds/`.
+- **Detalle:** Se eliminó el soporte para rutas obsoletas (`Api/`, `Seeds/` en raíz) y se simplificó la resolución de paths.
+
+### 3. Estandarización de Namespace Admin (Consistencia)
+- **Acción:** Corrección de namespace en `AdminDbContext` y consumidores.
+- **Antes:** `MyCompany.SysAdmin.Infrastructure.Data` (Legacy).
+- **Ahora:** `GesFer.Admin.Infrastructure.Data`.
+- **Mejora:** Consistencia estructural y profesionalización del código base en el dominio Admin.
+
+### Estado Actual
+- **Compilación:** ✅ Exitosa (0 Warnings).

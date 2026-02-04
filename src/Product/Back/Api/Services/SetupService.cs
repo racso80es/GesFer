@@ -1,6 +1,7 @@
 using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Entities;
 using GesFer.Infrastructure.Data;
+using GesFer.Shared.Back.Domain.Services;
 using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;

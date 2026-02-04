@@ -1,0 +1,16 @@
+src/Console/Commands/SeedCommand.cs:        // TODO: Refactorizar JsonDataSeeder para soportar la nueva taxonomía si es necesario
+grep: src/Console/tests/GesFer.Console.E2ETests/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.dll: binary file matches
+grep: src/Console/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.dll: binary file matches
+src/Console/Services/IntegrityValidationService.cs:            Console.WriteLine("   ✓ TODO VERDE - Ecosistema Validado");
+src/Console/Services/IntegrityValidationService.cs:            _logService.WriteLog("Validación completada: TODO VERDE");
+src/Shared/Front/components/ui/overlay-fix.tsx:      // CRÍTICO: Buscar TODOS los overlays, incluso si no tienen las clases exactas
+grep: src/Admin/Back/tests/GesFer.Admin.UnitTests/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.dll: binary file matches
+grep: src/Admin/Back/Api/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll: binary file matches
+grep: src/Admin/Back/Api/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.dll: binary file matches
+grep: src/Product/Back/Infrastructure/SeedRunner/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.dll: binary file matches
+grep: src/Product/Back/scripts/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.dll: binary file matches
+grep: src/Product/Back/tests/GesFer.Product.UnitTests/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.dll: binary file matches
+grep: src/Product/Back/IntegrationTests/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll: binary file matches
+grep: src/Product/Back/IntegrationTests/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.dll: binary file matches
+grep: src/Product/Back/Api/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll: binary file matches
+grep: src/Product/Back/Api/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.dll: binary file matches
