@@ -15,19 +15,13 @@ namespace GesFer.IntegrationTests;
 
 public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TProgram>, IAsyncLifetime where TProgram : class
 {
-    private readonly MySqlContainer _mySqlContainer;
+    private MySqlContainer? _mySqlContainer;
     private bool _useInMemory = false;
     private string? _connectionString;
     private readonly object _connectionStringLock = new object();
 
     public IntegrationTestWebAppFactory()
     {
-        _mySqlContainer = new MySqlBuilder("mysql:8.0")
-            .WithDatabase("GesFerTestDb")
-            .WithUsername("testuser")
-            .WithPassword("testpassword")
-            .WithEnvironment("MYSQL_ROOT_PASSWORD", "rootpassword")
-            .Build();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -69,6 +63,13 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
     {
         try
         {
+            _mySqlContainer = new MySqlBuilder("mysql:8.0")
+                .WithDatabase("GesFerTestDb")
+                .WithUsername("testuser")
+                .WithPassword("testpassword")
+                .WithEnvironment("MYSQL_ROOT_PASSWORD", "rootpassword")
+                .Build();
+
             await _mySqlContainer.StartAsync();
             lock (_connectionStringLock) _connectionString = _mySqlContainer.GetConnectionString();
 
@@ -77,9 +78,11 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
             await context.Database.EnsureCreatedAsync();
             await DbInitializer.InitializeAsync(Services, false);
         }
-        catch
+        catch (Exception ex)
         {
+            Console.Error.WriteLine($"[IntegrationTestWebAppFactory] Docker container failed to start. Switching to InMemory. Error: {ex.Message}");
             _useInMemory = true;
+
             using var scope = Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             await context.Database.EnsureCreatedAsync();
@@ -89,7 +92,17 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
 
     public new async Task DisposeAsync()
     {
-        await _mySqlContainer.DisposeAsync();
+        try
+        {
+            if (_mySqlContainer != null)
+            {
+                await _mySqlContainer.DisposeAsync();
+            }
+        }
+        catch
+        {
+            // Ignore disposal errors if container failed to start
+        }
         await base.DisposeAsync();
     }
 }

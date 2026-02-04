@@ -68,6 +68,9 @@ public class DashboardController : ControllerBase
 
             // Registrar log de auditoría con el Cursor ID (Fire and Forget)
             // No bloqueamos la respuesta del dashboard por el log
+            var method = HttpContext.Request.Method;
+            var path = HttpContext.Request.Path;
+
             _ = Task.Run(async () =>
             {
                 try
@@ -76,8 +79,8 @@ public class DashboardController : ControllerBase
                         cursorId: cursorId,
                         username: username,
                         action: "GetDashboardSummary",
-                        httpMethod: HttpContext.Request.Method,
-                        path: HttpContext.Request.Path,
+                        httpMethod: method,
+                        path: path,
                         additionalData: System.Text.Json.JsonSerializer.Serialize(new
                         {
                             TotalCompanies = summary.TotalCompanies,
