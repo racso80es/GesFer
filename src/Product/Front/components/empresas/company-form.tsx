@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ErrorMessage } from "@/components/ui/error-message";
+import { Button } from "@shared/components/ui/button";
+import { Input } from "@shared/components/ui/input";
+import { Label } from "@shared/components/ui/label";
+import { ErrorMessage } from "@shared/components/ui/error-message";
 import type { Company, CreateCompany, UpdateCompany } from "@/lib/types/api";
 import { useTranslations } from 'next-intl';
 
@@ -132,7 +132,7 @@ export function CompanyForm({
             id="name"
             data-test-id="company-form-name"
             value={formData.name}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, name: e.target.value })
             }
             disabled={isLoading}
@@ -149,7 +149,7 @@ export function CompanyForm({
             id="taxId"
             data-test-id="company-form-taxId"
             value={formData.taxId || ""}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, taxId: e.target.value || undefined })
             }
             disabled={isLoading}
@@ -162,7 +162,7 @@ export function CompanyForm({
             id="phone"
             type="tel"
             value={formData.phone || ""}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, phone: e.target.value || undefined })
             }
             disabled={isLoading}
@@ -176,7 +176,7 @@ export function CompanyForm({
             data-test-id="company-form-email"
             type="email"
             value={formData.email || ""}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, email: e.target.value || undefined })
             }
             disabled={isLoading}
@@ -193,7 +193,7 @@ export function CompanyForm({
           <Input
             id="address"
             value={formData.address}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, address: e.target.value })
             }
             disabled={isLoading}
@@ -235,7 +235,7 @@ export function CompanyForm({
               type="checkbox"
               id="isActive"
               checked={(formData as UpdateCompany).isActive}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setFormData({
                   ...formData,
                   isActive: e.target.checked,

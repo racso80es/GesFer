@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
 import { Loading } from "@shared/components/ui/loading";
 import { ErrorMessage } from "@shared/components/ui/error-message";
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/components/ui/button";
 import { FileText, Trash2 } from "lucide-react";
 
 interface Log {

@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Button } from "@/components/shared/Button";
+import { Button } from "@shared/components/shared/Button";
 import {
   LayoutDashboard,
   Users,

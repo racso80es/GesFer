@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ErrorMessage } from "@/components/ui/error-message";
+import { Button } from "@shared/components/ui/button";
+import { Input } from "@shared/components/ui/input";
+import { Label } from "@shared/components/ui/label";
+import { ErrorMessage } from "@shared/components/ui/error-message";
 import type { User, CreateUser, UpdateUser } from "@/lib/types/api";
 import { useAuth } from "@/contexts/auth-context";
 import { useTranslations } from 'next-intl';
@@ -194,7 +194,7 @@ export function UserForm({
             id="username"
             data-test-id="user-form-username"
             value={formData.username}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, username: e.target.value })
             }
             disabled={isLoading}
@@ -213,7 +213,7 @@ export function UserForm({
             id="password"
             type="password"
             value={formData.password || ""}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, password: e.target.value })
             }
             disabled={isLoading}
@@ -232,7 +232,7 @@ export function UserForm({
           <Input
             id="firstName"
             value={formData.firstName}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, firstName: e.target.value })
             }
             disabled={isLoading}
@@ -250,7 +250,7 @@ export function UserForm({
           <Input
             id="lastName"
             value={formData.lastName}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, lastName: e.target.value })
             }
             disabled={isLoading}
@@ -268,7 +268,7 @@ export function UserForm({
             data-test-id="user-form-email"
             type="email"
             value={formData.email || ""}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, email: e.target.value || undefined })
             }
             disabled={isLoading}
@@ -284,7 +284,7 @@ export function UserForm({
             id="phone"
             type="tel"
             value={formData.phone || ""}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, phone: e.target.value || undefined })
             }
             disabled={isLoading}
@@ -296,7 +296,7 @@ export function UserForm({
           <Input
             id="address"
             value={formData.address || ""}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, address: e.target.value || undefined })
             }
             disabled={isLoading}
@@ -334,7 +334,7 @@ export function UserForm({
               type="checkbox"
               id="isActive"
               checked={(formData as UpdateUser).isActive}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setFormData({
                   ...formData,
                   isActive: e.target.checked,

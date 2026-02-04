@@ -37,3 +37,13 @@
 
 ---
 *Autor: Agente Tekton (Kaizen Executor)*
+
+## 2026-02-03 — Unificación de Biblioteca UI (Shared Domain Isolation)
+
+- **Hito:** Refactorización masiva para eliminar duplicidad de componentes UI.
+- **Acción:**
+    - Se eliminaron las copias locales de `src/Product/Front/components/ui` y `src/Admin/Front/components/ui`.
+    - Se redirigieron todas las referencias hacia `src/Shared/Front` mediante el alias `@shared`.
+    - Se aisló el dominio `Shared` eliminando dependencias de alias de aplicación (`@/lib/utils/cn` -> `../../lib/utils/cn`).
+- **Mejora:** Reducción de deuda técnica crítica (DRY), consistencia visual garantizada y aislamiento real de componentes compartidos.
+- **Deuda Pendiente:** Mover tests unitarios de UI desde Product hacia Shared (actualmente Product ejecuta tests sobre componentes importados de Shared).

@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import "../globals.css";
 import { QueryProvider } from "@/lib/providers/query-provider";
 import { AuthProvider } from "@/contexts/auth-context";
-import { OverlayFix } from "@/components/ui/overlay-fix";
+import { OverlayFix } from "@shared/components/ui/overlay-fix";
 import { locales } from "@/i18n";
 
 const inter = Inter({ subsets: ["latin"] });

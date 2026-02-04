@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { SessionProvider, useSession } from "next-auth/react";
-import { Loading } from "@/components/ui/loading";
+import { Loading } from "@shared/components/ui/loading";
 import { AdminLayout as AdminLayoutComponent } from "@/components/layout/admin-layout";
 import { SidebarProvider } from "@/contexts/sidebar-context";
 

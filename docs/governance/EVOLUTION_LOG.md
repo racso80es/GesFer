@@ -119,3 +119,17 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
 - **Decisión:** Separación estricta de ciclo de vida entre **Persistencia** (Infrastructure) y **Aplicación** (Release).
 - **Protocolo:** Adopción de "Atomic Releases" con validación de salud obligatoria antes del switch de tráfico (Symlink).
 - **Registro:** Plan de acción detallado en `docs/infrastructure/PLAN_DE_ACCION.md`.
+
+## Registro de Cambios - Día 7 (Kaizen UI Unification)
+
+### 1. Unificación de UI Library (Kaizen-01)
+- **Acción:** Eliminación de código duplicado en Frontend (Product y Admin).
+- **Problema:** Existían 3 copias idénticas de componentes UI (Shared, Product, Admin), violando Single Source of Truth.
+- **Solución:**
+    - Refactorización de `Shared` para usar imports relativos (Autonomía).
+    - Eliminación de carpetas `ui` y `shared` en `Product` y `Admin`.
+    - Actualización masiva de imports a `@shared/...`.
+    - Configuración de `tsconfig` y `next.config` en Product/Admin para resolver módulos de Shared correctamente.
+- **Validación:**
+    - Build de Product y Admin exitoso.
+    - Tests de Product exitosos (114 tests pasados).
