@@ -18,7 +18,9 @@ WORKDIR /app
 COPY src/Admin/Front/ ./src/Admin/Front/
 COPY src/Shared/Front/ ./src/Shared/Front/
 WORKDIR /app/src/Admin/Front
-COPY --from=deps /app/src/Admin/Front/node_modules ./node_modules
+# Place dependencies at /app/node_modules so shared components (in /app/src/Shared/Front)
+# can resolve external modules during Next.js build
+COPY --from=deps /app/src/Admin/Front/node_modules /app/node_modules
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
