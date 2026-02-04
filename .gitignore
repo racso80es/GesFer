@@ -106,3 +106,4 @@ src/Admin/Front/playwright-report/
 **/playwright-report/
 *.webm
 /src/Shared/Back/.vs
+/node_modules
