@@ -7,6 +7,7 @@ using GesFer.ConsoleApp.Commands.Base;
 using GesFer.ConsoleApp.Commands.Dtos;
 using GesFer.ConsoleApp.Services;
 using GesFer.Infrastructure.Data;
+using GesFer.Shared.Back.Domain.Services;
 using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MyCompany.SysAdmin.Infrastructure.Data;
+using GesFer.Admin.Infrastructure.Data;
 using Pomelo.EntityFrameworkCore.MySql;
 
 namespace GesFer.ConsoleApp.Commands;

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GesFer.Infrastructure.Data;
+namespace GesFer.Shared.Back.Domain.Services;
 
 /// <summary>
 /// ValueGenerator personalizado de EF Core para generar GUIDs secuenciales automáticamente.
@@ -36,21 +36,17 @@ public class SequentialGuidValueGenerator : ValueGenerator<Guid>
     /// </summary>
     private ISequentialGuidGenerator GetGuidGenerator(EntityEntry entry)
     {
-        // Intentar obtener el ServiceProvider desde el DbContext usando IInfrastructure<IServiceProvider>
-        if (entry.Context is ApplicationDbContext dbContext)
+        // Intentar obtener el ServiceProvider desde el DbContext de forma genérica
+        var infrastructure = entry.Context.Database as IInfrastructure<IServiceProvider>;
+        if (infrastructure != null)
         {
-            // Acceder al ServiceProvider a través de IInfrastructure<IServiceProvider>
-            var infrastructure = dbContext.Database as Microsoft.EntityFrameworkCore.Infrastructure.IInfrastructure<IServiceProvider>;
-            if (infrastructure != null)
+            var serviceProvider = infrastructure.Instance;
+            if (serviceProvider != null)
             {
-                var serviceProvider = infrastructure.Instance;
-                if (serviceProvider != null)
+                var generator = serviceProvider.GetService<ISequentialGuidGenerator>();
+                if (generator != null)
                 {
-                    var generator = serviceProvider.GetService<ISequentialGuidGenerator>();
-                    if (generator != null)
-                    {
-                        return generator;
-                    }
+                    return generator;
                 }
             }
         }

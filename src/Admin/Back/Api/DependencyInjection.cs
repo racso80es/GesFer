@@ -1,7 +1,8 @@
 
 using MyCompany.SysAdmin.Infrastructure.Services;
-using MyCompany.SysAdmin.Infrastructure.Data;
+using GesFer.Admin.Infrastructure.Data;
 using GesFer.Infrastructure.Data;
+using GesFer.Shared.Back.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
 
@@ -67,6 +68,9 @@ public static class DependencyInjection
         services.AddScoped<IAdminAuthService, AdminAuthService>();
         services.AddScoped<IAdminJwtService, AdminJwtService>();
         services.AddScoped<IAuditLogService, AuditLogService>();
+
+        // Servicios Shared
+        services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
 
         return services;
     }

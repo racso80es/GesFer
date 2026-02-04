@@ -1,5 +1,5 @@
 using GesFer.Admin.Back.Domain.Entities;
-using MyCompany.SysAdmin.Infrastructure.Data;
+using GesFer.Admin.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

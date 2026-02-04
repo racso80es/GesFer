@@ -1,7 +1,7 @@
 
 
 
-using MyCompany.SysAdmin.Infrastructure.Data;
+using GesFer.Admin.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

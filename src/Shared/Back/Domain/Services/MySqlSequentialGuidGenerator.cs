@@ -1,4 +1,4 @@
-namespace GesFer.Infrastructure.Data;
+namespace GesFer.Shared.Back.Domain.Services;
 
 /// <summary>
 /// Generador de GUIDs secuenciales optimizado para MySQL.

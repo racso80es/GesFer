@@ -1,10 +1,11 @@
 using GesFer.Admin.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Common;
+using GesFer.Shared.Back.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System.Linq.Expressions;
 
-namespace MyCompany.SysAdmin.Infrastructure.Data;
+namespace GesFer.Admin.Infrastructure.Data;
 
 public class AdminDbContext : DbContext
 {
@@ -45,8 +46,9 @@ public class AdminDbContext : DbContext
             var idProperty = entityType.FindProperty(nameof(BaseEntity.Id));
             if (idProperty != null && idProperty.ClrType == typeof(Guid))
             {
-                // Usar SequentialGuidValueGenerator estándar de EF Core si no tenemos el custom
-                idProperty.SetValueGeneratorFactory((property, entityType) => new SequentialGuidValueGenerator());
+                // Usar SequentialGuidValueGenerator personalizado
+                idProperty.SetValueGeneratorFactory((property, entityType) => new GesFer.Shared.Back.Domain.Services.SequentialGuidValueGenerator());
+                idProperty.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAdd;
             }
         }
     }

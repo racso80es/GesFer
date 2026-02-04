@@ -5,6 +5,7 @@ using GesFer.ConsoleApp.Commands.Base;
 using GesFer.ConsoleApp.Commands.Dtos;
 using GesFer.ConsoleApp.Services;
 using GesFer.Infrastructure.Data;
+using GesFer.Shared.Back.Domain.Services;
 using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -121,28 +122,9 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
 
     private async Task<bool> ExecuteSeedForScopeAsync(JsonDataSeeder seeder, SeedScope scope, SeedLevel level)
     {
-        // Por ahora, usar los métodos existentes de JsonDataSeeder
-        // TODO: Refactorizar JsonDataSeeder para soportar la nueva taxonomía si es necesario
-        // Nota: El código original usaba switch en Level, ignorando Scope en la llamada a JsonDataSeeder porque JsonDataSeeder no parece soportar Scope explícito aún, o lo maneja internamente.
-        // El código original era:
-        /*
-        return level switch
-        {
-            SeedLevel.Master => (await seeder.SeedMasterDataAsync()).Loaded,
-            SeedLevel.Demo => (await seeder.SeedDemoDataAsync()).Loaded,
-            SeedLevel.Test => await Task.Run(async () => { await seeder.SeedTestDataAsync(); return true; }),
-            _ => false
-        };
-        */
-        // Sin embargo, JsonDataSeeder (del Product context) probablemente carga todo lo que encuentra en los paths.
-        // El SeedService original tenía lógica para GetSeedFilePath pero NO la usaba en ExecuteSeedForScopeAsync.
-        // Solo la definía (GetSeedFilePath) pero no veo dónde se usaba en el código que leí de SeedService.cs.
-        // Ah, `GetSeedFilePath` era private y unused en el snippet que leí?
-        // Revisando `read_file` de `SeedService.cs`:
-        // GetSeedFilePath se define pero NO se llama en ExecuteSeedForScopeAsync.
-        // JsonDataSeeder se configura en CreateServiceProvider -> Services.AddScoped<JsonDataSeeder>();
-        // JsonDataSeeder debe tener su propia lógica de path.
-        // Voy a asumir que llamar a los métodos de JsonDataSeeder es correcto tal como estaba.
+        // Nota: JsonDataSeeder gestiona la carga de datos para Product y Shared.
+        // Los datos de Admin (AdminUsers) se gestionan separadamente.
+        // Se mantiene la estructura agnóstica de llamada.
 
         return level switch
         {

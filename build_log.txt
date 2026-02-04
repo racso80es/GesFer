@@ -1,0 +1,58 @@
+
+Welcome to .NET 10.0!
+---------------------
+SDK Version: 10.0.100
+
+----------------
+Installed an ASP.NET Core HTTPS development certificate.
+To trust the certificate, run 'dotnet dev-certs https --trust'
+Learn about HTTPS: https://aka.ms/dotnet-https
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+  Determining projects to restore...
+  Restored /app/src/Product/Back/application/GesFer.Application.csproj (in 9.12 sec).
+  Restored /app/src/Admin/Back/tests/GesFer.Admin.UnitTests/GesFer.Admin.UnitTests.csproj (in 10.15 sec).
+  Restored /app/src/Product/Back/Infrastructure/GesFer.Infrastructure.csproj (in 10.4 sec).
+  Restored /app/src/Product/Back/Api/GesFer.Api.csproj (in 143 ms).
+  Restored /app/src/Product/Back/Infrastructure/SeedRunner/GesFer.SeedRunner.csproj (in 829 ms).
+  Restored /app/src/Console/GesFer.Console.csproj (in 18 ms).
+  Restored /app/src/Admin/Back/domain/GesFer.Admin.Domain.csproj (in 5 ms).
+  Restored /app/src/Admin/Back/application/GesFer.Admin.Application.csproj (in 2 ms).
+  Restored /app/src/Admin/Back/Infrastructure/GesFer.Admin.Infra.csproj (in 51 ms).
+  Restored /app/src/Shared/Back/GesFer.Shared.Back.Domain.csproj (in 1 ms).
+  Restored /app/src/Product/Back/tests/GesFer.Product.UnitTests/GesFer.Product.UnitTests.csproj (in 10 ms).
+  Restored /app/src/Admin/Back/Api/GesFer.Admin.Api.csproj (in 11.3 sec).
+  Restored /app/src/Product/Back/scripts/GenerateHash/GenerateHash.csproj (in 9 ms).
+  Restored /app/src/Product/Back/domain/GesFer.Domain.csproj (in 6 ms).
+  Restored /app/src/Product/Back/scripts/InitDatabase.csproj (in 1.51 sec).
+  Restored /app/src/Console/tests/GesFer.Console.E2ETests/GesFer.Console.E2ETests.csproj (in 3.78 sec).
+  Restored /app/src/Product/Back/IntegrationTests/GesFer.IntegrationTests.csproj (in 5.22 sec).
+  GesFer.Admin.Application -> /app/src/Admin/Back/application/bin/Debug/net8.0/GesFer.Admin.Application.dll
+  GesFer.Shared.Back.Domain -> /app/src/Shared/Back/bin/Debug/net8.0/GesFer.Shared.Back.Domain.dll
+  GenerateHash -> /app/src/Product/Back/scripts/GenerateHash/bin/Debug/net8.0/GenerateHash.dll
+  GesFer.Admin.Domain -> /app/src/Admin/Back/domain/bin/Debug/net8.0/GesFer.Admin.Domain.dll
+  GesFer.Domain -> /app/src/Product/Back/domain/bin/Debug/net8.0/GesFer.Domain.dll
+  GesFer.Admin.Infra -> /app/src/Admin/Back/Infrastructure/bin/Debug/net8.0/GesFer.Admin.Infra.dll
+  GesFer.Infrastructure -> /app/src/Product/Back/Infrastructure/bin/Debug/net8.0/GesFer.Infrastructure.dll
+  GesFer.SeedRunner -> /app/src/Product/Back/Infrastructure/SeedRunner/bin/Debug/net8.0/GesFer.SeedRunner.dll
+  InitDatabase -> /app/src/Product/Back/scripts/bin/Debug/net8.0/InitDatabase.dll
+  GesFer.Application -> /app/src/Product/Back/application/bin/Debug/net8.0/GesFer.Application.dll
+  GesFer.Api -> /app/src/Product/Back/Api/bin/Debug/net8.0/GesFer.Api.dll
+  GesFer.Product.UnitTests -> /app/src/Product/Back/tests/GesFer.Product.UnitTests/bin/Debug/net8.0/GesFer.Product.UnitTests.dll
+  GesFer.IntegrationTests -> /app/src/Product/Back/IntegrationTests/bin/Debug/net8.0/GesFer.IntegrationTests.dll
+  GesFer.Console -> /app/src/Console/bin/Debug/net8.0/GesFer.Console.dll
+  GesFer.Admin.UnitTests -> /app/src/Admin/Back/tests/GesFer.Admin.UnitTests/bin/Debug/net8.0/GesFer.Admin.UnitTests.dll
+  GesFer.Admin.Api -> /app/src/Admin/Back/Api/bin/Debug/net8.0/GesFer.Admin.Api.dll
+  GesFer.Console.E2ETests -> /app/src/Console/tests/GesFer.Console.E2ETests/bin/Debug/net8.0/GesFer.Console.E2ETests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:43.92

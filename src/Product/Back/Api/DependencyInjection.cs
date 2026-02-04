@@ -5,6 +5,7 @@ using GesFer.Application.Handlers.PurchaseDeliveryNote;
 using GesFer.Application.Handlers.SalesDeliveryNote;
 using GesFer.Product.Back.Domain.Services;
 using GesFer.Infrastructure.Data;
+using GesFer.Shared.Back.Domain.Services;
 using GesFer.Infrastructure.Repositories;
 using GesFer.Infrastructure.Services;
 using GesFer.Infrastructure.Logging;
