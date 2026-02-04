@@ -35,6 +35,7 @@ Selecciona el rol más específico posible. Si dudas, activa **Arquitecto**.
 | ROL | DISPARADORES (IF...) | ACCIÓN (THEN...) |
 | :--- | :--- | :--- |
 | **[ARQUITECTO]** | Estructura, Carpetas, Nombres, Dependencias, DDD, Capas. | Cargar [`docs/agents/rol_arquitecto.md`](./docs/agents/rol_arquitecto.md). Validar Invarianza. |
+| **[FRONT-ARCH]** | React, Next.js, Tailwind, Componentes, UI, Hooks. | Cargar [`docs/agents/rol_front_architect.md`](./docs/agents/rol_front_architect.md). Validar Atomicidad. |
 | **[TEKTON]** | Código (`.cs`, `.ts`), Fix, Feature, Refactor, Comandos. | Cargar [`docs/agents/rol_tekton_dev.md`](./docs/agents/rol_tekton_dev.md). Ejecutar Kaizen. |
 | **[SEGURIDAD]** | Auth, Login, Seeds, Inputs, Forms, Delete, Reset. | Cargar [`docs/agents/rol_seguridad.md`](./docs/agents/rol_seguridad.md). Auditar input/output. |
 | **[JUEZ]** | Pre-Commit, Pre-Push, Review, Docs, Tests. | Cargar [`docs/agents/rol_juez_qa.md`](./docs/agents/rol_juez_qa.md). Bloquear si falta evidencia. |
