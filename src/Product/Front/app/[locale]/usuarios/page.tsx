@@ -2,10 +2,10 @@
 
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { MainLayout } from "@/components/layout/main-layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Loading } from "@/components/ui/loading";
-import { ErrorMessage } from "@/components/ui/error-message";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Loading } from "@shared/components/ui/loading";
+import { ErrorMessage } from "@shared/components/ui/error-message";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogClose,
-} from "@/components/ui/dialog";
+} from "@shared/components/ui/dialog";
 import { UserForm } from "@/components/usuarios/user-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { usersApi } from "@/lib/api/users";
@@ -23,7 +23,7 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import type { User, CreateUser, UpdateUser } from "@/lib/types/api";
-import { DestructiveActionConfirm } from "@/components/shared/DestructiveActionConfirm";
+import { DestructiveActionConfirm } from "@shared/components/shared/DestructiveActionConfirm";
 
 // Mapeo de languageId (Guids) a códigos de idioma
 const languageIdToCode: Record<string, string> = {
@@ -355,7 +355,7 @@ export default function UsuariosPage() {
           {/* Modal Editar Usuario */}
           <Dialog
             open={!!editingUser}
-            onOpenChange={(open) => !open && setEditingUser(null)}
+            onOpenChange={(open: boolean) => !open && setEditingUser(null)}
           >
             <DialogContent data-testid="usuarios-edit-modal">
               <DialogClose onClose={() => setEditingUser(null)} />

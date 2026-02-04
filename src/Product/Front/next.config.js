@@ -27,6 +27,11 @@ const nextConfig = {
     optimizePackageImports: ['@tanstack/react-query'],
   },
   output: "standalone",
+  webpack: (config) => {
+    // Permitir que los archivos en Shared encuentren las dependencias instaladas en Product
+    config.resolve.modules.push(__dirname + "/node_modules");
+    return config;
+  },
 };
 
 module.exports = withNextIntl(nextConfig);

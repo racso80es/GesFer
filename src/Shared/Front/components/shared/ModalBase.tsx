@@ -9,9 +9,9 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog";
+} from "../ui/dialog";
 import { Button } from "./Button";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "../../lib/utils/cn";
 
 export interface ModalBaseProps {
   /**

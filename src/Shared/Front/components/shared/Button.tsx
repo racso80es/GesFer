@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Button as ShadcnButton, type ButtonProps as ShadcnButtonProps } from "@/components/ui/button";
-import { cn } from "@/lib/utils/cn";
+import { Button as ShadcnButton, type ButtonProps as ShadcnButtonProps } from "../ui/button";
+import { cn } from "../../lib/utils/cn";
 
 export interface ButtonProps extends ShadcnButtonProps {
   /**

@@ -21,10 +21,25 @@
     "paths": {
       "@/*": ["./*"],
       "@shared/*": ["../../Shared/Front/*"],
-      "@shared/types/*": ["../../Shared/Front/lib/types/*"]
-    }
+      "@shared/types/*": ["../../Shared/Front/lib/types/*"],
+      "class-variance-authority": ["./node_modules/class-variance-authority"],
+      "clsx": ["./node_modules/clsx"],
+      "tailwind-merge": ["./node_modules/tailwind-merge"],
+      "lucide-react": ["./node_modules/lucide-react"],
+      "zod": ["./node_modules/zod"],
+      "react": ["./node_modules/@types/react"],
+      "react-dom": ["./node_modules/@types/react-dom"]
+    },
+    "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "../../Shared/Front/**/*.ts",
+    "../../Shared/Front/**/*.tsx"
+  ],
   "exclude": ["node_modules"]
 }
 

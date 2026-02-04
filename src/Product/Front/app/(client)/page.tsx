@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Loading } from "@/components/ui/loading";
+import { Loading } from "@shared/components/ui/loading";
 import { useTranslations } from 'next-intl';
 
 export default function Home() {

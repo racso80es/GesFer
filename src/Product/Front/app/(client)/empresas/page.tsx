@@ -2,11 +2,11 @@
 
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { MainLayout } from "@/components/layout/main-layout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/shared/Button";
-import { Loading } from "@/components/ui/loading";
-import { ErrorMessage } from "@/components/ui/error-message";
-import { ModalBase } from "@/components/shared/ModalBase";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
+import { Button } from "@shared/components/shared/Button";
+import { Loading } from "@shared/components/ui/loading";
+import { ErrorMessage } from "@shared/components/ui/error-message";
+import { ModalBase } from "@shared/components/shared/ModalBase";
 import { CompanyForm } from "@/components/empresas/company-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { companiesApi } from "@/lib/api/companies";
@@ -15,7 +15,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import type { Company, CreateCompany, UpdateCompany } from "@/lib/types/api";
-import { DestructiveActionConfirm } from "@/components/shared/DestructiveActionConfirm";
+import { DestructiveActionConfirm } from "@shared/components/shared/DestructiveActionConfirm";
 
 export default function EmpresasPage() {
   const router = useRouter();
@@ -271,7 +271,7 @@ export default function EmpresasPage() {
           {/* Modal Editar Empresa */}
           <ModalBase
             open={!!editingCompany}
-            onOpenChange={(open) => !open && setEditingCompany(null)}
+            onOpenChange={(open: boolean) => !open && setEditingCompany(null)}
             title={t('editCompany')}
             description={t('editDescription')}
             data-testid="shared-modal-empresas-edit"
