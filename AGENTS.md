@@ -40,7 +40,8 @@ Selecciona el rol más específico posible. Si dudas, activa **Arquitecto**.
 | **[SEGURIDAD]** | Auth, Login, Seeds, Inputs, Forms, Delete, Reset. | Cargar [`docs/agents/rol_seguridad.md`](./docs/agents/rol_seguridad.md). Auditar input/output. |
 | **[JUEZ]** | Pre-Commit, Pre-Push, Review, Docs, Tests. | Cargar [`docs/agents/rol_juez_qa.md`](./docs/agents/rol_juez_qa.md). Bloquear si falta evidencia. |
 | **[RENDIMIENTO]**| Cierre tarea, Logs, Docker, Queries lentas. | Cargar [`docs/agents/rol_rendimiento.md`](./docs/agents/rol_rendimiento.md). Generar métricas. |
-| **[AUDITOR]** | Auditoría, Accesibilidad, Lint. | Cargar [`docs/agents/rol_auditor_front.md`](./docs/agents/rol_auditor_front.md). Generar reporte. |
+| **[AUDITOR-FRONT]** | Auditoría, Accesibilidad, Lint, Frontend. | Cargar [`docs/agents/rol_auditor_front.md`](./docs/agents/rol_auditor_front.md). Generar reporte. |
+| **[AUDITOR-BACK]** | Auditoría, Backend, C#, Arquitectura, DbContext. | Cargar [`docs/agents/rol_auditor_back.md`](./docs/agents/rol_auditor_back.md). Generar reporte. |
 
 ---
 
