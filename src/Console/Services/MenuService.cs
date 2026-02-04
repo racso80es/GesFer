@@ -20,6 +20,7 @@ namespace GesFer.ConsoleApp.Services;
 public class MenuService
 {
     private readonly CheckDockerCommand _checkDockerCommand;
+    private readonly CheckDockerComposeCommand _checkDockerComposeCommand;
     private readonly RemoveContainersCommand _removeContainersCommand;
     private readonly CreateContainersCommand _createContainersCommand;
     private readonly WaitMySqlReadyCommand _waitMySqlReadyCommand;
@@ -35,6 +36,7 @@ public class MenuService
 
     public MenuService(
         CheckDockerCommand checkDockerCommand,
+        CheckDockerComposeCommand checkDockerComposeCommand,
         RemoveContainersCommand removeContainersCommand,
         CreateContainersCommand createContainersCommand,
         WaitMySqlReadyCommand waitMySqlReadyCommand,
@@ -49,6 +51,7 @@ public class MenuService
         LogService logService)
     {
         _checkDockerCommand = checkDockerCommand;
+        _checkDockerComposeCommand = checkDockerComposeCommand;
         _removeContainersCommand = removeContainersCommand;
         _createContainersCommand = createContainersCommand;
         _waitMySqlReadyCommand = waitMySqlReadyCommand;
@@ -168,6 +171,16 @@ public class MenuService
             return true;
         }
         Console.WriteLine("    ✓ Docker está corriendo");
+
+        var dockerComposeCheck = await _checkDockerComposeCommand.HandleAsync(new CheckDockerComposeInput());
+        if (!dockerComposeCheck.Success || !dockerComposeCheck.Data)
+        {
+            Console.WriteLine("ERROR: docker-compose no se encuentra instalado o no está en el PATH.");
+            Console.WriteLine("Presione cualquier tecla para continuar...");
+            SafeReadKey();
+            return true;
+        }
+        Console.WriteLine("    ✓ docker-compose está disponible");
         Console.WriteLine();
 
         // 2. Verificar que la API compila

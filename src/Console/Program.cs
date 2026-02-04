@@ -102,6 +102,7 @@ class Program
         // Crear instancias de los comandos y servicios
         // Docker Commands
         var checkDockerCommand = new CheckDockerCommand(logService);
+        var checkDockerComposeCommand = new CheckDockerComposeCommand(logService);
         var removeContainersCommand = new RemoveContainersCommand(logService);
         var createContainersCommand = new CreateContainersCommand(logService);
         var waitMySqlReadyCommand = new WaitMySqlReadyCommand(logService);
@@ -122,6 +123,7 @@ class Program
 
         var menuService = new MenuService(
             checkDockerCommand,
+            checkDockerComposeCommand,
             removeContainersCommand,
             createContainersCommand,
             waitMySqlReadyCommand,
