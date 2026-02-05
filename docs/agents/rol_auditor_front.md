@@ -32,3 +32,23 @@ Debes generar un documento titulado `docs/governance/audits/AUDITORIA_FRONTEND_Y
 *   **Acciones Kaizen (Plan de Acción):**
     *   Instrucciones precisas para el Kaizen Executor para resolver cada punto.
     *   Definición de "Hecho" (Definition of Done) para cada tarea.
+
+## 4. PROTOCOLO DE AUTONOMÍA (MERGE & DELETE)
+Si la auditoría es exitosa (Salud 100% o aprobación explícita) y se ha verificado la funcionalidad:
+
+1.  **Fusión a Master (Direct Git Commands):**
+    - `git checkout master`
+    - `git pull origin master`
+    - `git merge <rama_trabajo>`
+
+2.  **Manejo de Conflictos (PR Preparado):**
+    - Si el merge falla:
+        - `git merge --abort`
+        - `git push origin <rama_trabajo>`
+        - **STOP:** Notificar que se requiere intervención manual (PR Preparado).
+
+3.  **Limpieza Post-Merge:**
+    - Si el merge es exitoso:
+        - `git push origin master`
+        - `git branch -d <rama_trabajo>`
+        - `git push origin --delete <rama_trabajo>`
