@@ -9,6 +9,7 @@ using GesFer.ConsoleApp.Commands.Dtos;
 
 namespace GesFer.Console.E2ETests;
 
+[Trait("Category", "Heavy")]
 public class Option1IntegrationTest
 {
     private readonly ITestOutputHelper _output;
