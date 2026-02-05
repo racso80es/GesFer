@@ -61,6 +61,14 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
 
     public async Task InitializeAsync()
     {
+        if (!IsDockerAvailable())
+        {
+            Console.WriteLine("[IntegrationTestWebAppFactory] Docker not detected. Switching to InMemory mode.");
+            _useInMemory = true;
+            await InitializeInMemoryAsync();
+            return;
+        }
+
         try
         {
             _mySqlContainer = new MySqlBuilder("mysql:8.0")
@@ -82,12 +90,16 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
         {
             Console.Error.WriteLine($"[IntegrationTestWebAppFactory] Docker container failed to start. Switching to InMemory. Error: {ex.Message}");
             _useInMemory = true;
-
-            using var scope = Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            await context.Database.EnsureCreatedAsync();
-            await DbInitializer.InitializeAsync(Services, false);
+            await InitializeInMemoryAsync();
         }
+    }
+
+    private async Task InitializeInMemoryAsync()
+    {
+        using var scope = Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await context.Database.EnsureCreatedAsync();
+        await DbInitializer.InitializeAsync(Services, false);
     }
 
     public new async Task DisposeAsync()
@@ -104,5 +116,26 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
             // Ignore disposal errors if container failed to start
         }
         await base.DisposeAsync();
+    }
+
+    private bool IsDockerAvailable()
+    {
+        try
+        {
+            using var process = new System.Diagnostics.Process();
+            process.StartInfo.FileName = "docker";
+            process.StartInfo.Arguments = "ps -q";
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+            process.WaitForExit(3000);
+            return process.ExitCode == 0;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
