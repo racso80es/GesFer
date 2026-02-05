@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "version": "2.0",
+    "last_updated": "2026-02-04",
+    "status": "Active",
+    "title": "Values Manifesto & Architectural Standard"
+  },
+  "principles": [
+    {
+      "name": "Racso's Sovereignty",
+      "description": "Final decision and strategic direction belong to Racso. Code and architecture serve this sovereignty."
+    },
+    {
+      "name": "Objective Proactivity",
+      "description": "Detect risks/inconsistencies early. Assert only what is verifiable. Leave evidence."
+    },
+    {
+      "name": "Technical Rigor",
+      "description": "Compilation is mandatory. Logs are evidence. Zero broken windows."
+    },
+    {
+      "name": "Sector Pragmatism",
+      "description": "Built for traditional sector reality (scrap yards). Utility in plant > Abstract perfection."
+    },
+    {
+      "name": "Domain Architecture (S+)",
+      "description": "Strict separation of responsibilities: Shared, Product, Admin, Utils."
+    }
+  ],
+  "architecture_pillars": {
+    "Shared": {
+      "purpose": "Common DNA. Transversal components.",
+      "path": "src/Shared/",
+      "rules": ["Must NOT depend on Product or Admin.", "Contains only genuinely transversal code (Geography, UI Base)."]
+    },
+    "Product": {
+      "purpose": "Main Operational App (Multi-tenant).",
+      "path": "src/Product/",
+      "rules": ["Can consume Shared.", "Must NOT consume Admin.", "Multi-tenant (CompanyId required)."]
+    },
+    "Admin": {
+      "purpose": "Global Management System (Single-tenant).",
+      "path": "src/Admin/",
+      "rules": ["Can consume Shared.", "Must NOT consume Product.", "Global scope (No CompanyId)."]
+    },
+    "Utils": {
+      "purpose": "Orchestration & Master Data.",
+      "path": "src/Utils/",
+      "rules": ["Can consume Shared, Product, Admin.", "Contains Console, Seeds, Migrations."]
+    }
+  },
+  "dependency_rules": {
+    "backend": [
+      { "from": "src/Shared/Back/", "to": "GesFer.Product.Back.*", "allowed": false },
+      { "from": "src/Shared/Back/", "to": "GesFer.Admin.Back.*", "allowed": false },
+      { "from": "src/Product/Back/", "to": "GesFer.Admin.Back.*", "allowed": false },
+      { "from": "src/Admin/Back/", "to": "GesFer.Product.Back.*", "allowed": false },
+      { "from": "src/Product/Back/", "to": "GesFer.Shared.Back.*", "allowed": true },
+      { "from": "src/Admin/Back/", "to": "GesFer.Shared.Back.*", "allowed": true }
+    ],
+    "frontend": [
+      { "from": "src/Shared/Front/", "import": "@product", "allowed": false },
+      { "from": "src/Shared/Front/", "import": "@admin", "allowed": false },
+      { "from": "src/Product/Front/", "import": "@admin", "allowed": false },
+      { "from": "src/Admin/Front/", "import": "@product", "allowed": false },
+      { "from": "src/Product/Front/", "import": "@shared", "allowed": true },
+      { "from": "src/Admin/Front/", "import": "@shared", "allowed": true }
+    ]
+  },
+  "seed_taxonomy": {
+    "structure": "src/Utils/Data/Seeds/{level}/{scope}-data.json",
+    "levels": ["master", "demo", "test"],
+    "scopes": ["Shared", "Admin", "Product"]
+  }
+}

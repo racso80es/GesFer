@@ -21,7 +21,8 @@
     }
   ],
   "instructions": [
-    "Output: Generate docs/governance/audits/AUDITORIA_FRONTEND_YYYY_MM_DD.md.",
+    "Reference Standard: openspecs/manifesto.json",
+    "Output: Generate docs/audits/AUDITORIA_FRONTEND_YYYY_MM_DD.md.",
     "Check: Path Mapping usage (@shared vs ../../).",
     "Check: Accessibility (WCAG).",
     "Autonomy Protocol: If Audit 100%, merge to master and delete branch."
