@@ -134,6 +134,14 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
     - Build de Product y Admin exitoso.
     - Tests de Product exitosos (114 tests pasados).
 
+---
+
+## 2026-02-05 — Auditoría Frontend: Alerta de Terminología (Falla Crítica)
+
+- **Evento:** Detección de terminología prohibida ("empresa") durante auditoría automatizada.
+- **Impacto:** Violación de reglas de aislamiento semántico en `Admin` y deuda de internacionalización en `Product`.
+- **Acción Requerida:** Refactorización inmediata de terminología a "Company/Tenant" y eliminación de literales en UI (forzar i18n).
+- **Referencia:** Ver reporte en `docs/audits/AUDITORIA_FRONTEND_2026_02_05.md`.
 ## 2026-02-04 — Refactor de Identidad Compartida (S+)
 
 - **Acción:** Centralización de la lógica de generación de Identidades (GUIDs secuenciales).
