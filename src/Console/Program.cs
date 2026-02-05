@@ -93,7 +93,7 @@ class Program
         // KAIZEN: Limpieza automática de procesos .NET al inicio
         CleanupDotNetProcesses();
         
-        // Configurar codificaci?n UTF-8 para la consola
+        // Configurar codificación UTF-8 para la consola
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
         // Crear instancia del servicio de log
@@ -137,7 +137,7 @@ class Program
             goldenRulesService,
             logService);
 
-        // Si se pasa el argumento "--validate" o "-v", ejecutar validaci?n de integridad autom?ticamente
+        // Si se pasa el argumento "--validate" o "-v", ejecutar validación de integridad automáticamente
         if (args.Length > 0 && (args[0] == "--validate" || args[0] == "-v"))
         {
             try
@@ -148,8 +148,8 @@ class Program
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error durante la validaci?n: {ex.Message}");
-                logService.WriteError("Error durante la validaci?n autom?tica", ex);
+                Console.WriteLine($"Error durante la validación: {ex.Message}");
+                logService.WriteError("Error durante la validación automática", ex);
                 Environment.Exit(1);
                 return;
             }
@@ -173,7 +173,7 @@ class Program
             }
         }
 
-        // Si se pasa el argumento "--initialize" o "-i" o "1", ejecutar inicializaci?n completa
+        // Si se pasa el argumento "--initialize" o "-i" o "1", ejecutar inicialización completa
         if (args.Length > 0 && (args[0] == "--initialize" || args[0] == "-i" || args[0] == "1"))
         {
             try
@@ -184,8 +184,8 @@ class Program
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error durante la inicializaci?n: {ex.Message}");
-                logService.WriteError("Error durante la inicializaci?n autom?tica", ex);
+                Console.WriteLine($"Error durante la inicialización: {ex.Message}");
+                logService.WriteError("Error durante la inicialización automática", ex);
                 Environment.Exit(1);
                 return;
             }
@@ -209,7 +209,7 @@ class Program
             }
         }
 
-        // Si se pasa el argumento "--step8" o "--punto8" o "8", ejecutar punto 8 de la opci?n 1
+        // Si se pasa el argumento "--step8" o "--punto8" o "8", ejecutar punto 8 de la opción 1
         if (args.Length > 0 && (args[0] == "--step8" || args[0] == "--punto8" || args[0] == "8"))
         {
             try
@@ -231,10 +231,10 @@ class Program
                 Console.WriteLine("========================================");
                 Console.WriteLine();
 
-                // Mostrar informaci?n del proceso de forma visual
+                // Mostrar información del proceso de forma visual
                 if (result.Information.Any())
                 {
-                    Console.WriteLine("Informaci?n del proceso:");
+                    Console.WriteLine("Información del proceso:");
                     Console.WriteLine();
                     foreach (var info in result.Information)
                     {
@@ -271,7 +271,7 @@ class Program
                     Console.WriteLine("Errores encontrados:");
                     foreach (var error in result.Errors)
                     {
-                        Console.WriteLine($"  ? {error}");
+                        Console.WriteLine($"  ✖ {error}");
                     }
                     Console.ResetColor();
                     Console.WriteLine();
@@ -291,8 +291,8 @@ class Program
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error durante la ejecuci?n del punto 8: {ex.Message}");
-                logService.WriteError("Error durante la ejecuci?n del punto 8", ex);
+                Console.WriteLine($"Error durante la ejecución del punto 8: {ex.Message}");
+                logService.WriteError("Error durante la ejecución del punto 8", ex);
                 Environment.Exit(1);
                 return;
             }
@@ -328,7 +328,7 @@ class Program
                 }
                 else
                 {
-                    Console.WriteLine("Opci?n no v?lida. Presione cualquier tecla para continuar...");
+                    Console.WriteLine("Opción no válida. Presione cualquier tecla para continuar...");
                     SafeReadKey();
                 }
             }
@@ -341,6 +341,6 @@ class Program
         }
 
         Console.WriteLine();
-        Console.WriteLine("?Hasta luego!");
+        Console.WriteLine("¡Hasta luego!");
     }
 }
