@@ -65,6 +65,10 @@
       "inactive": "Inactivo"
     },
     "deleteConfirm": "¿Estás seguro de que deseas eliminar este usuario?",
+    "deleteConfirmTitle": "Eliminar Usuario",
+    "deleteConfirmDescription": "¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.",
+    "deleteConfirmButton": "Eliminar",
+    "cancel": "Cancelar",
     "form": {
       "company": "Empresa",
       "companyRequired": "La empresa es requerida",
@@ -122,6 +126,10 @@
       "inactive": "Inactiva"
     },
     "deleteConfirm": "¿Estás seguro de que deseas eliminar esta empresa?",
+    "deleteConfirmTitle": "Eliminar Empresa",
+    "deleteConfirmDescription": "¿Estás seguro de que deseas eliminar esta empresa? Esta acción no se puede deshacer.",
+    "deleteConfirmButton": "Eliminar",
+    "cancel": "Cancelar",
     "form": {
       "name": "Nombre",
       "nameRequired": "El nombre es requerido",
@@ -152,6 +160,10 @@
     "error": "Error al cargar los clientes",
     "deleteError": "Error al eliminar el cliente",
     "deleteConfirm": "¿Estás seguro de que deseas eliminar este cliente?",
+    "deleteConfirmTitle": "Eliminar Cliente",
+    "deleteConfirmDescription": "¿Estás seguro de que deseas eliminar este cliente? Esta acción no se puede deshacer.",
+    "deleteConfirmButton": "Eliminar",
+    "cancel": "Cancelar",
     "table": {
       "name": "Nombre",
       "taxId": "CIF/NIF",
@@ -232,5 +244,24 @@
       "success": "Purga exitosa: Se eliminaron {count} logs anteriores a {date}",
       "error": "Error al purgar los logs"
     }
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "subtitle": "Gestiona tu información personal",
+    "error": "Error al cargar el perfil",
+    "edit": "Editar Perfil",
+    "personalInfo": "Información Personal",
+    "personalInfoDescription": "Datos básicos de tu cuenta",
+    "username": "Nombre de Usuario",
+    "name": "Nombre completo",
+    "email": "Email",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "company": "Empresa",
+    "status": "Estado",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "editProfile": "Editar Perfil",
+    "editProfileDescription": "Modifica tu información personal"
   }
 }

@@ -147,3 +147,43 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
     - `dotnet build`: Exitoso.
     - `dotnet test --filter "Category!=Heavy"`: Excluye correctamente los tests E2E (0 tests ejecutados en Console).
     - Nota: La ejecución de tests de integración sigue reportando incompatibilidad de entorno con el paquete `Testcontainers` en este sandbox, pero la lógica de código está implementada y compilada correctamente para CI real.
+## Registro de Cambios - Día 8 (Frontend Stabilization & Shared Testing)
+
+### 1. Cobertura de Tests en Shared (Kaizen-03)
+- **Acción:** Creación de tests unitarios para componentes base (`Button`, `Input`) en `Shared/Front`.
+- **Problema:** Los componentes compartidos carecían de verificación automatizada directa.
+- **Solución:**
+    - Se crearon `Button.spec.tsx` y `Input.spec.tsx` validando renderizado, eventos y `data-testid`.
+    - Se configuró `src/Product/Front/jest.config.js` para incluir `src/Shared/Front` en los `roots` de prueba.
+- **Validación:**
+    - `npm test` ejecuta y pasa exitosamente los nuevos tests integrados en el pipeline de Product.
+
+### 2. Estabilización de Traducciones (Kaizen-04)
+- **Acción:** Corrección de errores de compilación por claves de traducción faltantes.
+- **Problema:** El build de producción fallaba (aunque compilaba) por claves faltantes en `es.json` (`deleteConfirmTitle`, `profile`, etc.).
+- **Solución:**
+    - Se completaron las claves faltantes para `companies`, `users`, `customers` y el namespace `profile`.
+- **Validación:**
+    - `npm run build` completa la generación estática sin errores `MISSING_MESSAGE`.
+---
+
+## 2026-02-05 — Auditoría Frontend: Alerta de Terminología (Falla Crítica)
+
+- **Evento:** Detección de terminología prohibida ("empresa") durante auditoría automatizada.
+- **Impacto:** Violación de reglas de aislamiento semántico en `Admin` y deuda de internacionalización en `Product`.
+- **Acción Requerida:** Refactorización inmediata de terminología a "Company/Tenant" y eliminación de literales en UI (forzar i18n).
+- **Referencia:** Ver reporte en `docs/audits/AUDITORIA_FRONTEND_2026_02_05.md`.
+## 2026-02-04 — Refactor de Identidad Compartida (S+)
+
+- **Acción:** Centralización de la lógica de generación de Identidades (GUIDs secuenciales).
+- **Problema:** Violación del Invariante Shared; la lógica de generación residía en `Product` pero era consumida o duplicada por otros dominios, limitando la reutilización limpia.
+- **Solución:**
+    - Movimiento de `ISequentialGuidGenerator`, `MySqlSequentialGuidGenerator` y `SequentialGuidValueGenerator` a `src/Shared/Back/Domain/Services/`.
+    - Eliminación de archivos duplicados en `Product` y `Admin` Infrastructure.
+    - Refactorización de namespaces a `GesFer.Shared.Back.Domain.Services`.
+    - Actualización de consumidores (`ApplicationDbContext`, `AdminDbContext`) para usar la implementación compartida.
+    - **Nueva Suite de Tests:** Creación de `GesFer.Shared.Back.UnitTests` para validar el comportamiento aislado del generador.
+- **Validación:**
+    - Compilación exitosa de todos los proyectos (`dotnet build`).
+    - Verificación de ausencia de archivos de GUID en capas de infraestructura de dominio.
+    - Tests unitarios de Shared, Product y Admin pasando correctamente.

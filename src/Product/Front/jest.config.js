@@ -38,6 +38,7 @@ const customJestConfig = {
     'node_modules/(?!(next-auth|@auth)/)',
   ],
   moduleDirectories: ['node_modules', '<rootDir>/node_modules'],
+  roots: ['<rootDir>', '<rootDir>/../../Shared/Front'],
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
