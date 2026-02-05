@@ -169,17 +169,22 @@ try
     // Configurar el pipeline HTTP
     if (app.Environment.IsDevelopment())
     {
+        app.UseDeveloperExceptionPage();
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "GesFer Admin API v1");
-            c.RoutePrefix = string.Empty; // Swagger en la raíz
+            c.RoutePrefix = "swagger"; // Swagger en la raíz
         });
     }
+    else
+    {
+        app.UseHttpsRedirection();
+    }
 
-    // CORS debe ir ANTES de UseHttpsRedirection
+    app.UseRouting();
     app.UseCors("AllowAll");
-    app.UseHttpsRedirection();
+    
 
     // Autenticación y autorización deben ir en este orden
     app.UseAuthentication();
