@@ -1,0 +1,16 @@
+{
+  "skill_id": "filesystem-ops",
+  "name": "File System Operations",
+  "description": "Safe file manipulation rules for Windows/PowerShell environment.",
+  "rules": [
+    "Shell: Use PowerShell (pwsh) exclusively. Do not use bash commands like 'ls -la', 'rm -rf'.",
+    "Path Validation: Verify 'Get-Location' (pwd) before creating files to ensure correct placement.",
+    "Destructive Actions: Deleting files requires explicit plan approval.",
+    "Build Artifacts: Do not edit artifacts (dist/, bin/, obj/) directly; edit source."
+  ],
+  "commands": {
+    "list": "Get-ChildItem (ls)",
+    "read": "Get-Content (cat)",
+    "delete": "Remove-Item (rm)"
+  }
+}

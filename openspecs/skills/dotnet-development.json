@@ -1,0 +1,17 @@
+{
+  "skill_id": "dotnet-development",
+  "name": ".NET Core Development Standards",
+  "description": "Standards for C#/.NET development, build, and testing.",
+  "rules": [
+    "Error Handling: Use try/catch in upper layers (Controllers/Commands).",
+    "Logging: Use structured logging (e.g., _logger.LogInformation(\"Item {Id}\", id)).",
+    "Clean Code: No 'TODO', no commented-out code.",
+    "Build: Code must compile with 'dotnet build' before any commit.",
+    "Testing: Run 'dotnet test' to ensure no regressions."
+  ],
+  "commands": {
+    "build": "dotnet build",
+    "test": "dotnet test",
+    "run": "dotnet run --project <project_path>"
+  }
+}

@@ -17,7 +17,7 @@
 
 ## 3. Constitución de IA
 **Prioridad:** Alta
-**Descripción:** `docs/governance/AI_CONSTITUTION.md` es un borrador.
+**Descripción:** `docs/governance/AI_CONSTITUTION.md` ha sido reemplazado por `openspecs/constitution.json`.
 **Acción:** Expandir con reglas detalladas de prompts, contextos y manejo de errores.
 
 ## 4. Referencias Cruzadas

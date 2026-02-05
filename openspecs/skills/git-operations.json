@@ -1,0 +1,16 @@
+{
+  "skill_id": "git-operations",
+  "name": "Git Operations Standard",
+  "description": "Enforces safe and semantic Git usage.",
+  "rules": [
+    "STRICT PROHIBITION: Never commit directly to 'master' or 'main'.",
+    "Mandatory Branching: Work must be done in 'feat/<desc>' or 'fix/<desc>' branches.",
+    "Commit Message Format: Use Conventional Commits (e.g., 'feat: add login', 'fix: resolve null ref').",
+    "Pre-Push: Always run local validation (build/tests) before requesting to push."
+  ],
+  "common_workflows": {
+    "start_task": "git checkout -b <type>/<description>",
+    "save_progress": "git commit -m '<type>: <short_description>'",
+    "finalize": "git push origin <branch_name>"
+  }
+}

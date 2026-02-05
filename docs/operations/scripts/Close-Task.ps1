@@ -274,8 +274,8 @@ try {
         if ($RunValidatePr) { $plannedOps.Add("OP|ps1|run|scripts/validate-pr.ps1") }
         if ($Autocheck) { $plannedOps.Add("OP|validation|autocheck|AC-001") }
 
-        Ensure-Directory -Path 'docs/governance/audits'
-        $auditPath = Join-Path -Path 'docs/governance/audits' -ChildPath ("{0}_{1}_CIERRE.md" -f $resolvedAuditStamp, $slug)
+        Ensure-Directory -Path 'docs/audits'
+        $auditPath = Join-Path -Path 'docs/audits' -ChildPath ("{0}_{1}_CIERRE.md" -f $resolvedAuditStamp, $slug)
         $plannedOps.Add(("OP|file|write|{0}" -f $auditPath))
         $artifacts.audit = $auditPath
         $artifacts.auditStamp = $resolvedAuditStamp
@@ -329,17 +329,17 @@ try {
     # siempre que coincida con el plan calculado usando algún CIERRE existente para este slug.
     if (-not $hashApproved -and $doPrepare) {
         try {
-            $existingAudits = Get-ChildItem -LiteralPath 'docs/governance/audits' -Filter ("*_{0}_CIERRE.md" -f $slug) -ErrorAction SilentlyContinue |
+            $existingAudits = Get-ChildItem -LiteralPath 'docs/audits' -Filter ("*_{0}_CIERRE.md" -f $slug) -ErrorAction SilentlyContinue |
                 Sort-Object Name -Descending
 
             foreach ($a in $existingAudits) {
                 if ($a.BaseName -notmatch '^(\d{8}_\d{4})_') { continue }
                 $legacyStamp = $Matches[1]
-                $legacyAuditPath = Join-Path -Path 'docs/governance/audits' -ChildPath ("{0}_{1}_CIERRE.md" -f $legacyStamp, $slug)
+                $legacyAuditPath = Join-Path -Path 'docs/audits' -ChildPath ("{0}_{1}_CIERRE.md" -f $legacyStamp, $slug)
                 $legacyAuditOp = ("OP|file|write|{0}" -f $legacyAuditPath)
 
                 $legacyOps = $plannedOps.ToArray() | ForEach-Object {
-                    if ($_ -match '^(OP\|file\|write\|)docs[\\/]+governance[\\/]+audits[\\/]+\d{8}_\d{4}_') { $legacyAuditOp } else { $_ }
+                    if ($_ -match '^(OP\|file\|write\|)docs[\\/]+audits[\\/]+\d{8}_\d{4}_') { $legacyAuditOp } else { $_ }
                 }
 
                 $legacyPlanHash = Compute-PlanHash -Ops $legacyOps
@@ -405,9 +405,9 @@ try {
 
         # Evidencia mínima de cierre (auditoría)
         Write-TaeLog -Checkpoint '[GENERATING_ARTIFACTS]' -Message ("AuditStamp={0}" -f (if ([string]::IsNullOrWhiteSpace($AuditStamp)) { '(auto)' } else { $AuditStamp }))
-        Ensure-Directory -Path 'docs/governance/audits'
+        Ensure-Directory -Path 'docs/audits'
         $resolvedAuditStamp = if ([string]::IsNullOrWhiteSpace($AuditStamp)) { (Get-Date -Format 'yyyyMMdd_HHmm') } else { $AuditStamp }
-        $auditPath = Join-Path -Path 'docs/governance/audits' -ChildPath ("{0}_{1}_CIERRE.md" -f $resolvedAuditStamp, $slug)
+        $auditPath = Join-Path -Path 'docs/audits' -ChildPath ("{0}_{1}_CIERRE.md" -f $resolvedAuditStamp, $slug)
         if (-not (Test-Path -LiteralPath $auditPath)) {
             $content = @(
                 "# CIERRE - {0}" -f $branch
