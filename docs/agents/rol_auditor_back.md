@@ -28,3 +28,23 @@ Generar `docs/governance/audits/AUDITORIA_BACKEND_YYYY_MM_DD.md` (indicando la f
 3. **Acciones Kaizen**: Instrucciones exactas para el **Kaizen Executor** (ej: comandos `dotnet add reference` o refactors de métodos).
 
 > **Nota:** Existe una tarea pendiente de refactorización para unificar toda la documentación de auditoría bajo `docs/audits/` en el futuro. Por ahora, mantén la consistencia con `docs/governance/audits/`.
+
+## 4. PROTOCOLO DE AUTONOMÍA (MERGE & DELETE)
+Si la auditoría es exitosa (Salud 100% o aprobación explícita) y se ha verificado la funcionalidad:
+
+1.  **Fusión a Master (Direct Git Commands):**
+    - `git checkout master`
+    - `git pull origin master`
+    - `git merge <rama_trabajo>`
+
+2.  **Manejo de Conflictos (PR Preparado):**
+    - Si el merge falla:
+        - `git merge --abort`
+        - `git push origin <rama_trabajo>`
+        - **STOP:** Notificar que se requiere intervención manual (PR Preparado).
+
+3.  **Limpieza Post-Merge:**
+    - Si el merge es exitoso:
+        - `git push origin master`
+        - `git branch -d <rama_trabajo>`
+        - `git push origin --delete <rama_trabajo>`
