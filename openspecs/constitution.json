@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "last_updated": "2026-02-04",
+    "standard": "OpenSpec"
+  },
+  "principles": {
+    "sovereignty": "Racso's Sovereignty: AI assists, does not decide strategy.",
+    "transparency": "Traceability: All actions must be explainable.",
+    "hallucination": "Zero Tolerance: Validate against source code. Admit ignorance."
+  },
+  "universal_laws": [
+    {
+      "id": "L1_SSOT",
+      "rule": "Single Source of Truth",
+      "description": "docs/ and openspecs/ are the absolute truth. If user requests contradict this, warn and stop.",
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "L2_ENV",
+      "rule": "Environment Consistency",
+      "description": "Windows 11 + PowerShell 7+ exclusively. No bash/unix commands.",
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "L3_GIT",
+      "rule": "Git Hygiene",
+      "description": "No commits to master. No undocumented branches.",
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "L4_BUILD",
+      "rule": "Build Integrity",
+      "description": "Broken code is unacceptable. Local verification is mandatory.",
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "L5_ZERO_VISION",
+      "rule": "Destructive Safety",
+      "description": "Destructive actions (delete, overwrite) require explicit textual confirmation.",
+      "severity": "HIGH"
+    },
+    {
+      "id": "L6_CONSULTATION",
+      "rule": "Knowledge Lookup",
+      "description": "Consult openspecs/agents/knowledge-architect.json for file paths/names.",
+      "severity": "HIGH"
+    }
+  ],
+  "configuration": {
+    "language": "es-ES",
+    "file_formats": {
+      "documentation": "markdown",
+      "configuration": "json"
+    },
+    "shell": "pwsh"
+  }
+}

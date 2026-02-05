@@ -1,0 +1,12 @@
+{
+  "skill_id": "documentation",
+  "name": "Documentation & Knowledge Management",
+  "description": "Standards for maintaining the Single Source of Truth (SSOT).",
+  "rules": [
+    "Format: All documentation must be in Markdown (.md).",
+    "Hierarchy: No docs in root (except AGENTS.md). Use categories: [GOB], [EVO], [AUD], [TEC], [OPS], [SPEC].",
+    "Language: Spanish (es-ES) exclusively.",
+    "Evolution Log: Update docs/evolution/EVOLUTION_LOG.md for architectural changes.",
+    "Legacy: Move obsolete docs to docs/legacy/ instead of deleting them immediately if unsure."
+  ]
+}

@@ -20,12 +20,12 @@ Antes de emitir cualquier respuesta o código, debes ejecutar este proceso menta
 ## 2. LEYES UNIVERSALES (Invariantes)
 *Violación = Fallo Crítico. No hay excepciones.*
 
-1.  **SOBERANÍA:** `docs/` es la verdad absoluta. Si el usuario pide algo que contradice `docs/`, advierte y para.
+1.  **SOBERANÍA:** `docs/` y `openspecs/` son la verdad absoluta. Si el usuario pide algo que contradice `docs/`, advierte y para.
 2.  **ENTORNO:** Windows 11 + PowerShell 7+. (🚫 NO `bash`, `ls`, `rm`, `/path/unix`).
 3.  **GIT:** 🚫 NO commits a `master`. 🚫 NO ramas sin documentación.
 4.  **COMPILACIÓN:** El código roto es inaceptable. Verifica localmente.
 5.  **VISIÓN ZERO:** Acciones destructivas requieren confirmación textual explícita.
-6.  **CONSULTA DOCUMENTAL:** Para ubicación/nombre de nuevos archivos, consulta `docs/agents/rol_knowledge_architect.md` o usa `knowledgebase_lookup`.
+6.  **CONSULTA DOCUMENTAL:** Para ubicación/nombre de nuevos archivos, consulta `openspecs/agents/knowledge-architect.json` o usa `knowledgebase_lookup`.
 
 ---
 
@@ -35,16 +35,16 @@ Selecciona el rol más específico posible. Si dudas, activa **Arquitecto**.
 
 | ROL | DISPARADORES (IF...) | ACCIÓN (THEN...) |
 | :--- | :--- | :--- |
-| **[ARQUITECTO]** | Estructura, Carpetas, Nombres, Dependencias, DDD, Capas. | Cargar [`docs/agents/rol_arquitecto.md`](./docs/agents/rol_arquitecto.md). Validar Invarianza. |
-| **[ARQ-INFRA]**  | Docker, K8s, Ansible, Networking, Contenedores, CI/CD. | Cargar [`docs/agents/rol_arquitecto_infra.md`](./docs/agents/rol_arquitecto_infra.md). Validar Robustez. |
-| **[FRONT-ARCH]** | React, Next.js, Tailwind, Componentes, UI, Hooks. | Cargar [`docs/agents/rol_front_architect.md`](./docs/agents/rol_front_architect.md). Validar Atomicidad. |
-| **[TEKTON]** | Código (`.cs`, `.ts`), Fix, Feature, Refactor, Comandos. | Cargar [`docs/agents/rol_tekton_dev.md`](./docs/agents/rol_tekton_dev.md). Ejecutar Kaizen. |
-| **[SEGURIDAD]** | Auth, Login, Seeds, Inputs, Forms, Delete, Reset. | Cargar [`docs/agents/rol_seguridad.md`](./docs/agents/rol_seguridad.md). Auditar input/output. |
-| **[JUEZ]** | Pre-Commit, Pre-Push, Review, Docs, Tests. | Cargar [`docs/agents/rol_juez_qa.md`](./docs/agents/rol_juez_qa.md). Bloquear si falta evidencia. |
-| **[RENDIMIENTO]**| Cierre tarea, Logs, Docker, Queries lentas. | Cargar [`docs/agents/rol_rendimiento.md`](./docs/agents/rol_rendimiento.md). Generar métricas. |
-| **[AUDITOR-FRONT]** | Auditoría, Accesibilidad, Lint, Frontend. | Cargar [`docs/agents/rol_auditor_front.md`](./docs/agents/rol_auditor_front.md). Generar reporte. |
-| **[AUDITOR-BACK]** | Auditoría, Backend, C#, Arquitectura, DbContext. | Cargar [`docs/agents/rol_auditor_back.md`](./docs/agents/rol_auditor_back.md). Generar reporte. |
-| **[KNOWLEDGE-ARCH]** | Documentación, Docs, Markdown, Guías, Conocimiento, Rutas. | Cargar [`docs/agents/rol_knowledge_architect.md`](./docs/agents/rol_knowledge_architect.md). Validar SSOT. |
+| **[ARQUITECTO]** | Estructura, Carpetas, Nombres, Dependencias, DDD, Capas. | Cargar [`openspecs/agents/architect.json`](./openspecs/agents/architect.json). Validar Invarianza. |
+| **[ARQ-INFRA]**  | Docker, K8s, Ansible, Networking, Contenedores, CI/CD. | Cargar [`openspecs/agents/infrastructure-architect.json`](./openspecs/agents/infrastructure-architect.json). Validar Robustez. |
+| **[FRONT-ARCH]** | React, Next.js, Tailwind, Componentes, UI, Hooks. | Cargar [`openspecs/agents/frontend-architect.json`](./openspecs/agents/frontend-architect.json). Validar Atomicidad. |
+| **[TEKTON]** | Código (`.cs`, `.ts`), Fix, Feature, Refactor, Comandos. | Cargar [`openspecs/agents/tekton-developer.json`](./openspecs/agents/tekton-developer.json). Ejecutar Kaizen. |
+| **[SEGURIDAD]** | Auth, Login, Seeds, Inputs, Forms, Delete, Reset. | Cargar [`openspecs/agents/security-engineer.json`](./openspecs/agents/security-engineer.json). Auditar input/output. |
+| **[JUEZ]** | Pre-Commit, Pre-Push, Review, Docs, Tests. | Cargar [`openspecs/agents/qa-judge.json`](./openspecs/agents/qa-judge.json). Bloquear si falta evidencia. |
+| **[RENDIMIENTO]**| Cierre tarea, Logs, Docker, Queries lentas. | Cargar [`openspecs/agents/performance-engineer.json`](./openspecs/agents/performance-engineer.json). Generar métricas. |
+| **[AUDITOR-FRONT]** | Auditoría, Accesibilidad, Lint, Frontend. | Cargar [`openspecs/agents/frontend-auditor.json`](./openspecs/agents/frontend-auditor.json). Generar reporte. |
+| **[AUDITOR-BACK]** | Auditoría, Backend, C#, Arquitectura, DbContext. | Cargar [`openspecs/agents/backend-auditor.json`](./openspecs/agents/backend-auditor.json). Generar reporte. |
+| **[KNOWLEDGE-ARCH]** | Documentación, Docs, Markdown, Guías, Conocimiento, Rutas. | Cargar [`openspecs/agents/knowledge-architect.json`](./openspecs/agents/knowledge-architect.json). Validar SSOT. |
 
 ---
 
