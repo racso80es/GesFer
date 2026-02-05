@@ -20,6 +20,17 @@ public class AdminApiLogSink : ILogEventSink
 
     public void Emit(LogEvent logEvent)
     {
+        if (logEvent.Properties.TryGetValue("SourceContext", out var sourceContext))
+        {
+            var context = sourceContext.ToString();
+            if (context.Contains("AdminLogProxyService") ||
+                context.Contains("System.Net.Http.HttpClient") ||
+                context.Contains("AsyncLogPublisher"))
+            {
+                return;
+            }
+        }
+
         // Capturamos los datos necesarios fuera del Task.Run para evitar problemas 
         // de acceso a objetos que Serilog pueda reciclar/liberar.
         var level = logEvent.Level.ToString();
