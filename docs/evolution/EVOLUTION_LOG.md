@@ -134,6 +134,24 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
     - Build de Product y Admin exitoso.
     - Tests de Product exitosos (114 tests pasados).
 
+## Registro de Cambios - Día 8 (Frontend Stabilization & Shared Testing)
+
+### 1. Cobertura de Tests en Shared (Kaizen-03)
+- **Acción:** Creación de tests unitarios para componentes base (`Button`, `Input`) en `Shared/Front`.
+- **Problema:** Los componentes compartidos carecían de verificación automatizada directa.
+- **Solución:**
+    - Se crearon `Button.spec.tsx` y `Input.spec.tsx` validando renderizado, eventos y `data-testid`.
+    - Se configuró `src/Product/Front/jest.config.js` para incluir `src/Shared/Front` en los `roots` de prueba.
+- **Validación:**
+    - `npm test` ejecuta y pasa exitosamente los nuevos tests integrados en el pipeline de Product.
+
+### 2. Estabilización de Traducciones (Kaizen-04)
+- **Acción:** Corrección de errores de compilación por claves de traducción faltantes.
+- **Problema:** El build de producción fallaba (aunque compilaba) por claves faltantes en `es.json` (`deleteConfirmTitle`, `profile`, etc.).
+- **Solución:**
+    - Se completaron las claves faltantes para `companies`, `users`, `customers` y el namespace `profile`.
+- **Validación:**
+    - `npm run build` completa la generación estática sin errores `MISSING_MESSAGE`.
 ---
 
 ## 2026-02-05 — Auditoría Frontend: Alerta de Terminología (Falla Crítica)
