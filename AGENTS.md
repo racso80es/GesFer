@@ -25,6 +25,7 @@ Antes de emitir cualquier respuesta o código, debes ejecutar este proceso menta
 3.  **GIT:** 🚫 NO commits a `master`. 🚫 NO ramas sin documentación.
 4.  **COMPILACIÓN:** El código roto es inaceptable. Verifica localmente.
 5.  **VISIÓN ZERO:** Acciones destructivas requieren confirmación textual explícita.
+6.  **CONSULTA DOCUMENTAL:** Para ubicación/nombre de nuevos archivos, consulta `docs/agents/rol_knowledge_architect.md` o usa `knowledgebase_lookup`.
 
 ---
 
