@@ -1,0 +1,20 @@
+services:
+  # "Apagamos" las APIs y Fronts para DEV local
+  # Al poner 'profiles: [pro]', solo se levantarán si lo pides explícitamente
+  gesfer-product-api:
+    profiles: [pro]
+  gesfer-admin-api:
+    profiles: [pro]
+  gesfer-product-front:
+    profiles: [pro]
+  gesfer-admin-front:
+    profiles: [pro]
+
+  # La DB y la Caché se quedan para que tu Local las use
+  gesfer-db:
+    ports:
+      - "3306:3306"
+
+  cache:
+    ports:
+      - "11211:11211"

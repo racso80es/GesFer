@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Nuevo perfil",
+    "Projects": [
+      {
+        "Path": "src\\Admin\\Back\\Api\\GesFer.Admin.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "src\\Product\\Back\\Api\\GesFer.Api.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

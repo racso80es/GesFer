@@ -35,39 +35,41 @@ try
     builder.Host.UseSerilog((context, services, configuration) =>
     {
         configuration
-            .ReadFrom.Services(services)
+            .ReadFrom.Configuration(context.Configuration) // <--- CARGA EL SINK DESDE EL JSON
+            .ReadFrom.Services(services) // <--- PERMITE INYECTAR DEPENDENCIAS EN EL SINK
             .Enrich.FromLogContext()
             .Enrich.WithProperty("Application", "GesFer.Api")
             .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName);
 
         if (isDevelopment)
         {
-            // En desarrollo: loguear a Consola
-            configuration
-                .MinimumLevel.Verbose()
-                .WriteTo.Console();
+            // El nivel mínimo y el Console Sink ya vienen del JSON, 
+            // pero podemos mantener esto como refuerzo o configurarlo todo en el JSON.
+            configuration.MinimumLevel.Verbose();
         }
         else
         {
-            // En producción: solo Information y superiores
             configuration
                 .MinimumLevel.Information()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning);
+
+            // En PRO: Añadimos explícitamente el Sink aquí si no está en el appsettings.json base
+            configuration.WriteTo.Sink(services.GetRequiredService<AdminApiLogSink>());
         }
     });
 
     // Configurar servicios
     builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(c =>
     {
-        Title = "GesFer API",
-        Version = "v1",
-        Description = "API RESTful para gestión de compra/venta de chatarra"
-    });
+        c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+        {
+            Title = "GesFer product API",
+            Version = "v1",
+            Description = "API RESTful para gestión de compra/venta de chatarra"
+        });
     
     // Configurar para mostrar valores por defecto desde el atributo [DefaultValue]
     c.SchemaFilter<GesFer.Api.Swagger.DefaultValueSchemaFilter>();
