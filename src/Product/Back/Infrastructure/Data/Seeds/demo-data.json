@@ -33,10 +33,10 @@
       "id": "99999999-9999-9999-9999-999999999999",
       "companyId": "550e8400-e29b-41d4-a716-446655440000",
       "username": "admin",
-      "password": "admin123",
+      "password": "",
       "firstName": "Administrador",
       "lastName": "Sistema",
-      "email": "admin@empresa.com",
+      "email": "admin@gesfer.local",
       "phone": "912345678",
       "languageId": "10000000-0000-0000-0000-000000000001"
     },
@@ -44,10 +44,10 @@
       "id": "99999999-9999-9999-9999-999999999998",
       "companyId": "550e8400-e29b-41d4-a716-446655440000",
       "username": "gestor",
-      "password": "gestor123",
+      "password": "",
       "firstName": "Gestor",
       "lastName": "Ejemplo",
-      "email": "gestor@empresa.com",
+      "email": "gestor@gesfer.local",
       "phone": "912345679",
       "languageId": "10000000-0000-0000-0000-000000000001"
     },
@@ -55,10 +55,10 @@
       "id": "88888888-8888-8888-8888-888888888888",
       "companyId": "33333333-3333-3333-3333-333333333333",
       "username": "user_test",
-      "password": "user123",
+      "password": "",
       "firstName": "Usuario",
       "lastName": "Cliente",
-      "email": "user@cliente.com",
+      "email": "user@gesfer.local",
       "phone": "911111111",
       "languageId": "10000000-0000-0000-0000-000000000001"
     }

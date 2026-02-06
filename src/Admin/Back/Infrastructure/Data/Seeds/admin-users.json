@@ -1,11 +1,11 @@
 [
   {
     "Id": "42302322-9b22-482a-874e-065401314333",
-    "Username": "racso",
-    "Password": "C0ntr@çeñ@",
-    "FirstName": "racso",
-    "LastName": "Kurama",
-    "Email": "racso80es@gmail.com",
+    "Username": "admin",
+    "Password": "",
+    "FirstName": "Admin",
+    "LastName": "System",
+    "Email": "admin@gesfer.local",
     "Role": "Admin"
   }
 ]

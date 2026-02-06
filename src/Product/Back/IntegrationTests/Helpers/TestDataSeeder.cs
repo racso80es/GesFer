@@ -43,7 +43,8 @@ public static class TestDataSeeder
         // Crear un logger mínimo usando LoggerFactory
         var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
         var logger = loggerFactory.CreateLogger<JsonDataSeeder>();
-        var jsonDataSeeder = new JsonDataSeeder(context, logger);
+        var sanitizer = new GesFer.Shared.Back.Domain.Services.SensitiveDataSanitizer();
+        var jsonDataSeeder = new JsonDataSeeder(context, logger, sanitizer);
         await jsonDataSeeder.SeedTestDataAsync();
 
         // Nota: AuditLogs no se crean aquí porque son generados automáticamente

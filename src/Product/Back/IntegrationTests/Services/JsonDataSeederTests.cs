@@ -48,6 +48,7 @@ public class JsonDataSeederTests
         // Registrar JsonDataSeeder
         services.AddScoped<JsonDataSeeder>();
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
+        services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
 
         var serviceProvider = services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();
@@ -101,6 +102,7 @@ public class JsonDataSeederTests
 
         services.AddScoped<JsonDataSeeder>();
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
+        services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
 
         var serviceProvider = services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();
@@ -143,6 +145,7 @@ public class JsonDataSeederTests
 
         services.AddScoped<JsonDataSeeder>();
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
+        services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
 
         var serviceProvider = services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();

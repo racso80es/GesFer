@@ -59,6 +59,9 @@ public static class DependencyInjection
         // Preparado para futuros proveedores (SQL Server, PostgreSQL) mediante inversión de dependencias
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
 
+        // Skill de Sanitización de Datos (Seguridad Kaizen)
+        services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
+
         // Servicios de infraestructura
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtService, JwtService>();
