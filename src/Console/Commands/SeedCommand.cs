@@ -5,8 +5,10 @@ using GesFer.ConsoleApp.Commands.Base;
 using GesFer.ConsoleApp.Commands.Dtos;
 using GesFer.ConsoleApp.Services;
 using GesFer.Infrastructure.Data;
+using GesFer.Admin.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Services;
 using GesFer.Infrastructure.Services;
+using GesFer.Admin.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,15 +59,15 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
             using (serviceProvider as IDisposable)
             {
                 using var scope2 = serviceProvider.CreateScope();
-                // var context = scope2.ServiceProvider.GetRequiredService<ApplicationDbContext>(); // Not used directly in ExecuteSeedAsync logic but usually needed for Seeder
                 var seeder = scope2.ServiceProvider.GetRequiredService<JsonDataSeeder>();
+                var adminSeeder = scope2.ServiceProvider.GetRequiredService<AdminJsonDataSeeder>();
 
                 if (command.Scope == SeedScope.All)
                 {
                     // Cargar todos los ámbitos en orden: Shared -> Admin -> Product
-                    var sharedResult = await ExecuteSeedForScopeAsync(seeder, SeedScope.Shared, command.Level);
-                    var adminResult = await ExecuteSeedForScopeAsync(seeder, SeedScope.Admin, command.Level);
-                    var productResult = await ExecuteSeedForScopeAsync(seeder, SeedScope.Product, command.Level);
+                    var sharedResult = await ExecuteSeedForScopeAsync(seeder, adminSeeder, SeedScope.Shared, command.Level);
+                    var adminResult = await ExecuteSeedForScopeAsync(seeder, adminSeeder, SeedScope.Admin, command.Level);
+                    var productResult = await ExecuteSeedForScopeAsync(seeder, adminSeeder, SeedScope.Product, command.Level);
 
                     var allLoaded = sharedResult || adminResult || productResult;
                     if (allLoaded)
@@ -86,7 +88,7 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
                 }
                 else
                 {
-                    var success = await ExecuteSeedForScopeAsync(seeder, command.Scope, command.Level);
+                    var success = await ExecuteSeedForScopeAsync(seeder, adminSeeder, command.Scope, command.Level);
                     if (success)
                     {
                         result.AddLog($"    ✓ Datos {levelName} ({scopeName}) insertados correctamente");
@@ -120,26 +122,35 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
         return result;
     }
 
-    private async Task<bool> ExecuteSeedForScopeAsync(JsonDataSeeder seeder, SeedScope scope, SeedLevel level)
+    private async Task<bool> ExecuteSeedForScopeAsync(JsonDataSeeder seeder, AdminJsonDataSeeder adminSeeder, SeedScope scope, SeedLevel level)
     {
-        // Nota: JsonDataSeeder gestiona la carga de datos para Product y Shared.
-        // Los datos de Admin (AdminUsers) se gestionan separadamente.
-        // Se mantiene la estructura agnóstica de llamada.
-
-        return level switch
+        if (scope == SeedScope.Admin)
         {
-            SeedLevel.Master => (await seeder.SeedMasterDataAsync()).Loaded,
-            SeedLevel.Demo => (await seeder.SeedDemoDataAsync()).Loaded,
-            SeedLevel.Test => await Task.Run(async () => { await seeder.SeedTestDataAsync(); return true; }),
-            _ => false
-        };
+            if (level == SeedLevel.Master || level == SeedLevel.Demo)
+            {
+                return (await adminSeeder.SeedAdminUsersAsync()).Loaded;
+            }
+            return false;
+        }
+        else if (scope == SeedScope.Shared || scope == SeedScope.Product)
+        {
+            return level switch
+            {
+                SeedLevel.Master => (await seeder.SeedMasterDataAsync()).Loaded,
+                SeedLevel.Demo => (await seeder.SeedDemoDataAsync()).Loaded,
+                SeedLevel.Test => await Task.Run(async () => { await seeder.SeedTestDataAsync(); return true; }),
+                _ => false
+            };
+        }
+
+        return false;
     }
 
     private IServiceProvider CreateServiceProvider()
     {
         var services = new ServiceCollection();
 
-        // Configuración - Usar Product/Back/Api
+        // Configuración - Usar Product/Back/Api para obtener connection string compartida
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Path.Combine(_rootPath, "src", "Product", "Back", "Api"))
             .AddJsonFile("appsettings.json", optional: true)
@@ -151,8 +162,24 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
 
-        // DbContext
+        // DbContext Product
         services.AddDbContext<ApplicationDbContext>(options =>
+        {
+            options.UseMySql(
+                connectionString,
+                new MySqlServerVersion(new Version(8, 0, 0)),
+                mysqlOptions =>
+                {
+                    mysqlOptions.EnableStringComparisonTranslations();
+                    mysqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null);
+                });
+        });
+
+        // DbContext Admin
+        services.AddDbContext<AdminDbContext>(options =>
         {
             options.UseMySql(
                 connectionString,
@@ -176,6 +203,7 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
 
         // Servicios de infraestructura
         services.AddScoped<JsonDataSeeder>();
+        services.AddScoped<AdminJsonDataSeeder>();
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
 
         return services.BuildServiceProvider();
