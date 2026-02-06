@@ -26,13 +26,12 @@ public class StockService : IStockService
             throw new ArgumentException("La cantidad debe ser mayor que cero", nameof(quantity));
 
         var article = await _context.Articles
-            .FirstOrDefaultAsync(a => a.Id == articleId && !a.IsDeleted);
+            .FirstOrDefaultAsync(a => a.Id == articleId && a.DeletedAt == null);
 
         if (article == null)
             throw new InvalidOperationException($"El artículo con ID {articleId} no existe");
 
-        article.Stock += quantity;
-        article.UpdatedAt = DateTime.UtcNow;
+        ApplyStockIncrease(article, quantity);
 
         await _context.SaveChangesAsync();
     }
@@ -46,17 +45,12 @@ public class StockService : IStockService
             throw new ArgumentException("La cantidad debe ser mayor que cero", nameof(quantity));
 
         var article = await _context.Articles
-            .FirstOrDefaultAsync(a => a.Id == articleId && !a.IsDeleted);
+            .FirstOrDefaultAsync(a => a.Id == articleId && a.DeletedAt == null);
 
         if (article == null)
             throw new InvalidOperationException($"El artículo con ID {articleId} no existe");
 
-        if (article.Stock < quantity)
-            throw new InvalidOperationException(
-                $"Stock insuficiente. Stock disponible: {article.Stock}, Cantidad solicitada: {quantity}");
-
-        article.Stock -= quantity;
-        article.UpdatedAt = DateTime.UtcNow;
+        ApplyStockDecrease(article, quantity);
 
         await _context.SaveChangesAsync();
     }
@@ -67,12 +61,35 @@ public class StockService : IStockService
     public async Task<bool> HasEnoughStockAsync(Guid articleId, decimal quantity)
     {
         var article = await _context.Articles
-            .FirstOrDefaultAsync(a => a.Id == articleId && !a.IsDeleted);
+            .FirstOrDefaultAsync(a => a.Id == articleId && a.DeletedAt == null);
 
         if (article == null)
             return false;
 
         return article.Stock >= quantity;
     }
-}
 
+    /// <inheritdoc />
+    public void ApplyStockIncrease(Article article, decimal quantity)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException("La cantidad debe ser mayor que cero", nameof(quantity));
+
+        article.Stock += quantity;
+        article.UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <inheritdoc />
+    public void ApplyStockDecrease(Article article, decimal quantity)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException("La cantidad debe ser mayor que cero", nameof(quantity));
+
+        if (article.Stock < quantity)
+            throw new InvalidOperationException(
+                $"Stock insuficiente. Stock disponible: {article.Stock}, Cantidad solicitada: {quantity}");
+
+        article.Stock -= quantity;
+        article.UpdatedAt = DateTime.UtcNow;
+    }
+}

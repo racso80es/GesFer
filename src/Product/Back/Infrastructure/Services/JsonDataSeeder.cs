@@ -81,9 +81,9 @@ public class JsonDataSeeder
                 }
             }
         }
-        
+
         _seedsPath = foundPath ?? Path.Combine(basePath, "Data", "Seeds");
-        
+
         if (!Directory.Exists(_seedsPath))
         {
             _logger.LogWarning("No se encontró la carpeta de seeds. Se esperaba en: {Path}", _seedsPath);
@@ -292,7 +292,7 @@ public class JsonDataSeeder
 
         // Orden jerárquico EXACTO para evitar errores de Foreign Key:
         // Este orden es CRÍTICO y no debe cambiarse sin revisar todas las dependencias
-        
+
         // 1. Languages (sin dependencias) - DEBE ejecutarse primero
         if (data.Languages != null && data.Languages.Any())
         {
@@ -312,16 +312,16 @@ public class JsonDataSeeder
                 .Where(l => countryLanguageIds.Contains(l.Id))
                 .Select(l => l.Id)
                 .ToListAsync();
-            
+
             var missingCountryLanguages = countryLanguageIds.Except(existingCountryLanguages).ToList();
             if (missingCountryLanguages.Any())
             {
-                _logger.LogError("Error de integridad referencial: Los siguientes LanguageId no existen para Countries: {MissingIds}", 
+                _logger.LogError("Error de integridad referencial: Los siguientes LanguageId no existen para Countries: {MissingIds}",
                     string.Join(", ", missingCountryLanguages));
                 throw new InvalidOperationException(
                     $"No se pueden insertar Countries: Los siguientes LanguageId no existen en la base de datos: {string.Join(", ", missingCountryLanguages)}");
             }
-            
+
             await SeedCountriesAsync(data.Countries);
             await _context.SaveChangesAsync();
             _logger.LogInformation("Countries sembrados: {Count}", data.Countries.Count);
@@ -338,7 +338,7 @@ public class JsonDataSeeder
         // 4. Companies (depende de Languages) - DEBE ejecutarse después de Languages
         // CASCADA RESILIENTE: Crear HashSet de IDs válidos para evitar referencias huérfanas
         var validCompanyIds = new HashSet<Guid>();
-        
+
         if (data.Companies != null && data.Companies.Any())
         {
             // Validar que todos los LanguageId referenciados existen
@@ -348,16 +348,16 @@ public class JsonDataSeeder
                 .Where(l => languageIds.Contains(l.Id))
                 .Select(l => l.Id)
                 .ToListAsync();
-            
+
             var missingLanguages = languageIds.Except(existingLanguages).ToList();
             if (missingLanguages.Any())
             {
-                _logger.LogError("Error de integridad referencial: Los siguientes LanguageId no existen: {MissingIds}", 
+                _logger.LogError("Error de integridad referencial: Los siguientes LanguageId no existen: {MissingIds}",
                     string.Join(", ", missingLanguages));
                 throw new InvalidOperationException(
                     $"No se pueden insertar Companies: Los siguientes LanguageId no existen en la base de datos: {string.Join(", ", missingLanguages)}");
             }
-            
+
             await SeedCompaniesAsync(data.Companies, validCompanyIds);
             await _context.SaveChangesAsync();
             _logger.LogInformation("Companies sembrados: {Count}", data.Companies.Count);
@@ -435,7 +435,7 @@ public class JsonDataSeeder
 
         _logger.LogInformation("Datos de prueba cargados correctamente");
         Console.WriteLine("Datos de prueba cargados correctamente");
-        
+
         // CRÍTICO: Limpiar el ChangeTracker para forzar a EF Core a consultar la base de datos real
         // en lugar de usar objetos en memoria. Esto asegura que los datos sembrados estén disponibles
         // para las consultas posteriores en los tests.
@@ -464,14 +464,14 @@ public class JsonDataSeeder
                     IsActive = true
                 };
                 _context.Languages.Add(lang);
-                _logger.LogInformation("[SEED] Cargado registro específico para test: Language '{Name}' (Code: {Code}, Id: {Id})", 
+                _logger.LogInformation("[SEED] Cargado registro específico para test: Language '{Name}' (Code: {Code}, Id: {Id})",
                     langData.Name, langData.Code, langData.Id);
             }
             else if (existing.DeletedAt != null)
             {
                 existing.DeletedAt = null;
                 existing.IsActive = true;
-                _logger.LogInformation("[SEED] Reactivado registro existente: Language '{Name}' (Code: {Code}, Id: {Id})", 
+                _logger.LogInformation("[SEED] Reactivado registro existente: Language '{Name}' (Code: {Code}, Id: {Id})",
                     langData.Name, langData.Code, langData.Id);
             }
         }
@@ -498,14 +498,14 @@ public class JsonDataSeeder
                     IsActive = true
                 };
                 _context.Permissions.Add(perm);
-                _logger.LogInformation("[SEED] Cargado registro específico para test: Permission '{Key}' (Id: {Id})", 
+                _logger.LogInformation("[SEED] Cargado registro específico para test: Permission '{Key}' (Id: {Id})",
                     permData.Key, permData.Id);
             }
             else if (existing.DeletedAt != null)
             {
                 existing.DeletedAt = null;
                 existing.IsActive = true;
-                _logger.LogInformation("[SEED] Reactivado registro existente: Permission '{Key}' (Id: {Id})", 
+                _logger.LogInformation("[SEED] Reactivado registro existente: Permission '{Key}' (Id: {Id})",
                     permData.Key, permData.Id);
             }
         }
@@ -532,14 +532,14 @@ public class JsonDataSeeder
                     IsActive = true
                 };
                 _context.Groups.Add(group);
-                _logger.LogInformation("[SEED] Cargado registro específico para test: Group '{Name}' (Id: {Id})", 
+                _logger.LogInformation("[SEED] Cargado registro específico para test: Group '{Name}' (Id: {Id})",
                     groupData.Name, groupData.Id);
             }
             else if (existing.DeletedAt != null)
             {
                 existing.DeletedAt = null;
                 existing.IsActive = true;
-                _logger.LogInformation("[SEED] Reactivado registro existente: Group '{Name}' (Id: {Id})", 
+                _logger.LogInformation("[SEED] Reactivado registro existente: Group '{Name}' (Id: {Id})",
                     groupData.Name, groupData.Id);
             }
         }
@@ -551,63 +551,63 @@ public class JsonDataSeeder
         // CRÍTICO: Validar explícitamente que Groups y Permissions existen antes de insertar GroupPermissions
         var groupIds = groupPermissions.Select(gp => Guid.Parse(gp.GroupId)).Distinct().ToList();
         var permissionIds = groupPermissions.Select(gp => Guid.Parse(gp.PermissionId)).Distinct().ToList();
-        
+
         // Verificar que todos los GroupId existen en el contexto local
         var existingGroups = await _context.Groups
             .IgnoreQueryFilters()
             .Where(g => groupIds.Contains(g.Id))
             .Select(g => g.Id)
             .ToListAsync();
-        
+
         var missingGroups = groupIds.Except(existingGroups).ToList();
         if (missingGroups.Any())
         {
-            _logger.LogError("Error de integridad referencial: Los siguientes GroupId no existen para GroupPermissions: {MissingIds}", 
+            _logger.LogError("Error de integridad referencial: Los siguientes GroupId no existen para GroupPermissions: {MissingIds}",
                 string.Join(", ", missingGroups));
             throw new InvalidOperationException(
                 $"No se pueden insertar GroupPermissions: Los siguientes GroupId no existen en la base de datos: {string.Join(", ", missingGroups)}");
         }
-        
+
         // Verificar que todos los PermissionId existen en el contexto local
         var existingPermissions = await _context.Permissions
             .IgnoreQueryFilters()
             .Where(p => permissionIds.Contains(p.Id))
             .Select(p => p.Id)
             .ToListAsync();
-        
+
         var missingPermissions = permissionIds.Except(existingPermissions).ToList();
         if (missingPermissions.Any())
         {
-            _logger.LogError("Error de integridad referencial: Los siguientes PermissionId no existen para GroupPermissions: {MissingIds}", 
+            _logger.LogError("Error de integridad referencial: Los siguientes PermissionId no existen para GroupPermissions: {MissingIds}",
                 string.Join(", ", missingPermissions));
             throw new InvalidOperationException(
                 $"No se pueden insertar GroupPermissions: Los siguientes PermissionId no existen en la base de datos: {string.Join(", ", missingPermissions)}");
         }
-        
-        _logger.LogInformation("Validación exitosa: {GroupCount} grupos y {PermissionCount} permisos encontrados para GroupPermissions", 
+
+        _logger.LogInformation("Validación exitosa: {GroupCount} grupos y {PermissionCount} permisos encontrados para GroupPermissions",
             existingGroups.Count, existingPermissions.Count);
-        
+
         // Ahora insertar GroupPermissions con la garantía de que las FK existen
         foreach (var gpData in groupPermissions)
         {
             var groupId = Guid.Parse(gpData.GroupId);
             var permissionId = Guid.Parse(gpData.PermissionId);
-            
+
             // Verificación adicional por si acaso
             var groupExists = existingGroups.Contains(groupId);
             var permissionExists = existingPermissions.Contains(permissionId);
-            
+
             if (!groupExists || !permissionExists)
             {
-                _logger.LogError("Error crítico: GroupId={GroupId} existe={GroupExists}, PermissionId={PermissionId} existe={PermissionExists}", 
+                _logger.LogError("Error crítico: GroupId={GroupId} existe={GroupExists}, PermissionId={PermissionId} existe={PermissionExists}",
                     groupId, groupExists, permissionId, permissionExists);
                 continue; // Saltar este registro
             }
-            
+
             var existing = await _context.GroupPermissions
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(gp => 
-                    gp.GroupId == groupId && 
+                .FirstOrDefaultAsync(gp =>
+                    gp.GroupId == groupId &&
                     gp.PermissionId == permissionId);
 
             if (existing == null)
@@ -667,7 +667,7 @@ public class JsonDataSeeder
                         }
                         catch (ArgumentException ex)
                         {
-                            _logger.LogWarning("[SEED] Violación de Dominio - TaxId inválido en Company '{Name}' (Id: {Id}): {Error}. Registro ignorado.", 
+                            _logger.LogWarning("[SEED] Violación de Dominio - TaxId inválido en Company '{Name}' (Id: {Id}): {Error}. Registro ignorado.",
                                 companyData.Name, companyData.Id, ex.Message);
                             skippedCount++;
                             continue;
@@ -684,7 +684,7 @@ public class JsonDataSeeder
                         }
                         catch (ArgumentException ex)
                         {
-                            _logger.LogWarning("[SEED] Violación de Dominio - Email inválido en Company '{Name}' (Id: {Id}): {Error}. Registro ignorado.", 
+                            _logger.LogWarning("[SEED] Violación de Dominio - Email inválido en Company '{Name}' (Id: {Id}): {Error}. Registro ignorado.",
                                 companyData.Name, companyData.Id, ex.Message);
                             skippedCount++;
                             continue;
@@ -707,7 +707,7 @@ public class JsonDataSeeder
                     // CASCADA RESILIENTE: Agregar ID a lista blanca solo si la empresa pasa validación
                     validCompanyIds.Add(company.Id);
                     processedCount++;
-                    _logger.LogInformation("[SEED] Cargado registro específico para test: Company '{Name}' (Id: {Id})", 
+                    _logger.LogInformation("[SEED] Cargado registro específico para test: Company '{Name}' (Id: {Id})",
                         companyData.Name, companyData.Id);
                 }
                 else if (existing.DeletedAt != null)
@@ -717,7 +717,7 @@ public class JsonDataSeeder
                     // CASCADA RESILIENTE: Agregar ID a lista blanca si se reactiva
                     validCompanyIds.Add(existing.Id);
                     processedCount++;
-                    _logger.LogInformation("[SEED] Reactivado registro existente: Company '{Name}' (Id: {Id})", 
+                    _logger.LogInformation("[SEED] Reactivado registro existente: Company '{Name}' (Id: {Id})",
                         companyData.Name, companyData.Id);
                 }
                 else
@@ -728,7 +728,7 @@ public class JsonDataSeeder
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "[SEED] Error inesperado al procesar Company '{Name}' (Id: {Id}): {Error}. Registro ignorado.", 
+                _logger.LogError(ex, "[SEED] Error inesperado al procesar Company '{Name}' (Id: {Id}): {Error}. Registro ignorado.",
                     companyData.Name, companyData.Id, ex.Message);
                 skippedCount++;
                 continue;
@@ -737,12 +737,12 @@ public class JsonDataSeeder
 
         if (skippedCount > 0)
         {
-            _logger.LogWarning("[SEED] Companies: {SkippedCount} registro(s) ignorado(s) por Violación de Dominio (Email/TaxId inválidos) de {TotalCount} totales", 
+            _logger.LogWarning("[SEED] Companies: {SkippedCount} registro(s) ignorado(s) por Violación de Dominio (Email/TaxId inválidos) de {TotalCount} totales",
                 skippedCount, companies.Count);
             Console.WriteLine($"    ⚠ Companies: {skippedCount} registro(s) ignorado(s) por datos inválidos");
         }
 
-        _logger.LogInformation("[SEED] Companies procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales", 
+        _logger.LogInformation("[SEED] Companies procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales",
             processedCount, skippedCount, companies.Count);
     }
 
@@ -763,7 +763,7 @@ public class JsonDataSeeder
                 var companyId = Guid.Parse(userData.CompanyId);
                 if (!validCompanyIds.Contains(companyId))
                 {
-                    _logger.LogWarning("Usuario {Name} descartado por empresa padre inexistente (CompanyId: {CompanyId})", 
+                    _logger.LogWarning("Usuario {Name} descartado por empresa padre inexistente (CompanyId: {CompanyId})",
                         userData.Username, companyId);
                     skippedCount++;
                     continue;
@@ -805,7 +805,7 @@ public class JsonDataSeeder
                         }
                         catch (ArgumentException ex)
                         {
-                            _logger.LogWarning("[SEED] Violación de Dominio - Email inválido en User '{Username}' (Id: {Id}): {Error}. Registro ignorado.", 
+                            _logger.LogWarning("[SEED] Violación de Dominio - Email inválido en User '{Username}' (Id: {Id}): {Error}. Registro ignorado.",
                                 userData.Username, userData.Id, ex.Message);
                             skippedCount++;
                             continue;
@@ -830,7 +830,7 @@ public class JsonDataSeeder
                     // CASCADA RESILIENTE: Agregar ID a lista blanca solo si el usuario pasa validación
                     validUserIds.Add(user.Id);
                     processedCount++;
-                    _logger.LogInformation("[SEED] Cargado registro específico para test: User '{Username}' (Id: {Id})", 
+                    _logger.LogInformation("[SEED] Cargado registro específico para test: User '{Username}' (Id: {Id})",
                         userData.Username, userData.Id);
                 }
                 else if (existing.DeletedAt != null)
@@ -845,7 +845,7 @@ public class JsonDataSeeder
                     // CASCADA RESILIENTE: Agregar ID a lista blanca si se reactiva
                     validUserIds.Add(existing.Id);
                     processedCount++;
-                    _logger.LogInformation("[SEED] Reactivado registro existente: User '{Username}' (Id: {Id})", 
+                    _logger.LogInformation("[SEED] Reactivado registro existente: User '{Username}' (Id: {Id})",
                         userData.Username, userData.Id);
                 }
                 else
@@ -856,7 +856,7 @@ public class JsonDataSeeder
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "[SEED] Error inesperado al procesar User '{Username}' (Id: {Id}): {Error}. Registro ignorado.", 
+                _logger.LogError(ex, "[SEED] Error inesperado al procesar User '{Username}' (Id: {Id}): {Error}. Registro ignorado.",
                     userData.Username, userData.Id, ex.Message);
                 skippedCount++;
                 continue;
@@ -865,12 +865,12 @@ public class JsonDataSeeder
 
         if (skippedCount > 0)
         {
-            _logger.LogWarning("[SEED] Users: {SkippedCount} registro(s) ignorado(s) por Violación de Dominio (Email inválido) o empresa padre inexistente de {TotalCount} totales", 
+            _logger.LogWarning("[SEED] Users: {SkippedCount} registro(s) ignorado(s) por Violación de Dominio (Email inválido) o empresa padre inexistente de {TotalCount} totales",
                 skippedCount, users.Count);
             Console.WriteLine($"    ⚠ Users: {skippedCount} registro(s) ignorado(s) por datos inválidos");
         }
 
-        _logger.LogInformation("[SEED] Users procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales", 
+        _logger.LogInformation("[SEED] Users procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales",
             processedCount, skippedCount, users.Count);
         // NOTA: SaveChangesAsync se llama explícitamente en SeedTestDataAsync después de SeedUsersAsync
         // para garantizar persistencia inmediata y evitar problemas de concurrencia
@@ -894,8 +894,8 @@ public class JsonDataSeeder
 
             var existing = await _context.UserGroups
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(ug => 
-                    ug.UserId == userId && 
+                .FirstOrDefaultAsync(ug =>
+                    ug.UserId == userId &&
                     ug.GroupId == Guid.Parse(ugData.GroupId));
 
             if (existing == null)
@@ -921,11 +921,11 @@ public class JsonDataSeeder
 
         if (skippedCount > 0)
         {
-            _logger.LogWarning("[SEED] UserGroups: {SkippedCount} registro(s) ignorado(s) por usuario padre inexistente de {TotalCount} totales", 
+            _logger.LogWarning("[SEED] UserGroups: {SkippedCount} registro(s) ignorado(s) por usuario padre inexistente de {TotalCount} totales",
                 skippedCount, userGroups.Count);
         }
 
-        _logger.LogInformation("[SEED] UserGroups procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales", 
+        _logger.LogInformation("[SEED] UserGroups procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales",
             processedCount, skippedCount, userGroups.Count);
         await _context.SaveChangesAsync();
     }
@@ -938,61 +938,61 @@ public class JsonDataSeeder
         // CRÍTICO: Validar explícitamente que Users y Permissions existen antes de insertar UserPermissions
         var userIds = userPermissions.Select(up => Guid.Parse(up.UserId)).Distinct().ToList();
         var permissionIds = userPermissions.Select(up => Guid.Parse(up.PermissionId)).Distinct().ToList();
-        
+
         // CASCADA RESILIENTE: Filtrar UserPermissions que referencian usuarios inexistentes
         var validUserPermissions = userPermissions.Where(up =>
         {
             var userId = Guid.Parse(up.UserId);
             return validUserIds.Contains(userId);
         }).ToList();
-        
+
         skippedCount = userPermissions.Count - validUserPermissions.Count;
-        
+
         if (skippedCount > 0)
         {
-            _logger.LogWarning("[SEED] UserPermissions: {SkippedCount} registro(s) ignorado(s) por usuario padre inexistente de {TotalCount} totales", 
+            _logger.LogWarning("[SEED] UserPermissions: {SkippedCount} registro(s) ignorado(s) por usuario padre inexistente de {TotalCount} totales",
                 skippedCount, userPermissions.Count);
         }
-        
+
         // Verificar que todos los PermissionId existen en el contexto local
         var existingPermissions = await _context.Permissions
             .IgnoreQueryFilters()
             .Where(p => permissionIds.Contains(p.Id))
             .Select(p => p.Id)
             .ToListAsync();
-        
+
         var missingPermissions = permissionIds.Except(existingPermissions).ToList();
         if (missingPermissions.Any())
         {
-            _logger.LogWarning("[SEED] UserPermissions: Algunos PermissionId no existen: {MissingIds}. Los registros afectados serán ignorados.", 
+            _logger.LogWarning("[SEED] UserPermissions: Algunos PermissionId no existen: {MissingIds}. Los registros afectados serán ignorados.",
                 string.Join(", ", missingPermissions));
         }
-        
-        _logger.LogInformation("Validación exitosa: {UserCount} usuarios válidos y {PermissionCount} permisos encontrados para UserPermissions", 
+
+        _logger.LogInformation("Validación exitosa: {UserCount} usuarios válidos y {PermissionCount} permisos encontrados para UserPermissions",
             validUserIds.Count, existingPermissions.Count);
-        
+
         // Ahora insertar UserPermissions con la garantía de que las FK existen
         foreach (var upData in validUserPermissions)
         {
             var userId = Guid.Parse(upData.UserId);
             var permissionId = Guid.Parse(upData.PermissionId);
-            
+
             // Verificación adicional por si acaso
             var userExists = validUserIds.Contains(userId);
             var permissionExists = existingPermissions.Contains(permissionId);
-            
+
             if (!userExists || !permissionExists)
             {
-                _logger.LogWarning("UserPermission descartado: UserId={UserId} existe={UserExists}, PermissionId={PermissionId} existe={PermissionExists}", 
+                _logger.LogWarning("UserPermission descartado: UserId={UserId} existe={UserExists}, PermissionId={PermissionId} existe={PermissionExists}",
                     userId, userExists, permissionId, permissionExists);
                 skippedCount++;
                 continue; // Saltar este registro
             }
-            
+
             var existing = await _context.UserPermissions
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(up => 
-                    up.UserId == userId && 
+                .FirstOrDefaultAsync(up =>
+                    up.UserId == userId &&
                     up.PermissionId == permissionId);
 
             if (existing == null)
@@ -1017,8 +1017,8 @@ public class JsonDataSeeder
                 _logger.LogDebug("UserPermission reactivado: UserId={UserId}, PermissionId={PermissionId}", userId, permissionId);
             }
         }
-        
-        _logger.LogInformation("[SEED] UserPermissions procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales", 
+
+        _logger.LogInformation("[SEED] UserPermissions procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales",
             processedCount, skippedCount, userPermissions.Count);
         // NOTA: SaveChangesAsync se llama explícitamente en SeedTestDataAsync después de SeedUserPermissionsAsync
         // para garantizar persistencia inmediata y evitar problemas de concurrencia
@@ -1103,7 +1103,7 @@ public class JsonDataSeeder
                 var companyId = Guid.Parse(supplierData.CompanyId);
                 if (!validCompanyIds.Contains(companyId))
                 {
-                    _logger.LogWarning("Supplier {Name} descartado por empresa padre inexistente (CompanyId: {CompanyId})", 
+                    _logger.LogWarning("Supplier {Name} descartado por empresa padre inexistente (CompanyId: {CompanyId})",
                         supplierData.Name, companyId);
                     skippedCount++;
                     continue;
@@ -1129,7 +1129,7 @@ public class JsonDataSeeder
                     };
                     _context.Suppliers.Add(supplier);
                     processedCount++;
-                    _logger.LogInformation("[SEED] Cargado registro específico para test: Supplier '{Name}' (Id: {Id})", 
+                    _logger.LogInformation("[SEED] Cargado registro específico para test: Supplier '{Name}' (Id: {Id})",
                         supplierData.Name, supplierData.Id);
                 }
                 else if (existing.DeletedAt != null)
@@ -1137,13 +1137,13 @@ public class JsonDataSeeder
                     existing.DeletedAt = null;
                     existing.IsActive = true;
                     processedCount++;
-                    _logger.LogInformation("[SEED] Reactivado registro existente: Supplier '{Name}' (Id: {Id})", 
+                    _logger.LogInformation("[SEED] Reactivado registro existente: Supplier '{Name}' (Id: {Id})",
                         supplierData.Name, supplierData.Id);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "[SEED] Error inesperado al procesar Supplier '{Name}' (Id: {Id}): {Error}. Registro ignorado.", 
+                _logger.LogError(ex, "[SEED] Error inesperado al procesar Supplier '{Name}' (Id: {Id}): {Error}. Registro ignorado.",
                     supplierData.Name, supplierData.Id, ex.Message);
                 skippedCount++;
                 continue;
@@ -1152,12 +1152,12 @@ public class JsonDataSeeder
 
         if (skippedCount > 0)
         {
-            _logger.LogWarning("[SEED] Suppliers: {SkippedCount} registro(s) ignorado(s) por empresa padre inexistente de {TotalCount} totales", 
+            _logger.LogWarning("[SEED] Suppliers: {SkippedCount} registro(s) ignorado(s) por empresa padre inexistente de {TotalCount} totales",
                 skippedCount, suppliers.Count);
             Console.WriteLine($"    ⚠ Suppliers: {skippedCount} registro(s) ignorado(s) por datos inválidos");
         }
 
-        _logger.LogInformation("[SEED] Suppliers procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales", 
+        _logger.LogInformation("[SEED] Suppliers procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales",
             processedCount, skippedCount, suppliers.Count);
         await _context.SaveChangesAsync();
     }
@@ -1175,7 +1175,7 @@ public class JsonDataSeeder
                 var companyId = Guid.Parse(customerData.CompanyId);
                 if (!validCompanyIds.Contains(companyId))
                 {
-                    _logger.LogWarning("Customer {Name} descartado por empresa padre inexistente (CompanyId: {CompanyId})", 
+                    _logger.LogWarning("Customer {Name} descartado por empresa padre inexistente (CompanyId: {CompanyId})",
                         customerData.Name, companyId);
                     skippedCount++;
                     continue;
@@ -1197,7 +1197,7 @@ public class JsonDataSeeder
                         }
                         catch (ArgumentException ex)
                         {
-                            _logger.LogWarning("[SEED] Violación de Dominio - TaxId inválido en Customer '{Name}' (Id: {Id}): {Error}. Registro ignorado.", 
+                            _logger.LogWarning("[SEED] Violación de Dominio - TaxId inválido en Customer '{Name}' (Id: {Id}): {Error}. Registro ignorado.",
                                 customerData.Name, customerData.Id, ex.Message);
                             skippedCount++;
                             continue;
@@ -1214,7 +1214,7 @@ public class JsonDataSeeder
                         }
                         catch (ArgumentException ex)
                         {
-                            _logger.LogWarning("[SEED] Violación de Dominio - Email inválido en Customer '{Name}' (Id: {Id}): {Error}. Registro ignorado.", 
+                            _logger.LogWarning("[SEED] Violación de Dominio - Email inválido en Customer '{Name}' (Id: {Id}): {Error}. Registro ignorado.",
                                 customerData.Name, customerData.Id, ex.Message);
                             skippedCount++;
                             continue;
@@ -1235,7 +1235,7 @@ public class JsonDataSeeder
                     };
                     _context.Customers.Add(customer);
                     processedCount++;
-                    _logger.LogInformation("[SEED] Cargado registro específico para test: Customer '{Name}' (Id: {Id})", 
+                    _logger.LogInformation("[SEED] Cargado registro específico para test: Customer '{Name}' (Id: {Id})",
                         customerData.Name, customerData.Id);
                 }
                 else if (existing.DeletedAt != null)
@@ -1243,13 +1243,13 @@ public class JsonDataSeeder
                     existing.DeletedAt = null;
                     existing.IsActive = true;
                     processedCount++;
-                    _logger.LogInformation("[SEED] Reactivado registro existente: Customer '{Name}' (Id: {Id})", 
+                    _logger.LogInformation("[SEED] Reactivado registro existente: Customer '{Name}' (Id: {Id})",
                         customerData.Name, customerData.Id);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "[SEED] Error inesperado al procesar Customer '{Name}' (Id: {Id}): {Error}. Registro ignorado.", 
+                _logger.LogError(ex, "[SEED] Error inesperado al procesar Customer '{Name}' (Id: {Id}): {Error}. Registro ignorado.",
                     customerData.Name, customerData.Id, ex.Message);
                 skippedCount++;
                 continue;
@@ -1258,12 +1258,12 @@ public class JsonDataSeeder
 
         if (skippedCount > 0)
         {
-            _logger.LogWarning("[SEED] Customers: {SkippedCount} registro(s) ignorado(s) por Violación de Dominio (Email/TaxId inválidos) o empresa padre inexistente de {TotalCount} totales", 
+            _logger.LogWarning("[SEED] Customers: {SkippedCount} registro(s) ignorado(s) por Violación de Dominio (Email/TaxId inválidos) o empresa padre inexistente de {TotalCount} totales",
                 skippedCount, customers.Count);
             Console.WriteLine($"    ⚠ Customers: {skippedCount} registro(s) ignorado(s) por datos inválidos");
         }
 
-        _logger.LogInformation("[SEED] Customers procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales", 
+        _logger.LogInformation("[SEED] Customers procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales",
             processedCount, skippedCount, customers.Count);
         await _context.SaveChangesAsync();
     }

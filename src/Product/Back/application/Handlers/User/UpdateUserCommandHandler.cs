@@ -27,9 +27,9 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserD
 
         // Validar que no exista otro usuario con el mismo username en la misma empresa (excepto el actual)
         var existingUser = await _context.Users
-            .FirstOrDefaultAsync(u => u.Username == command.Dto.Username 
-                && u.CompanyId == user.CompanyId 
-                && u.Id != command.Id 
+            .FirstOrDefaultAsync(u => u.Username == command.Dto.Username
+                && u.CompanyId == user.CompanyId
+                && u.Id != command.Id
                 && u.DeletedAt == null, cancellationToken);
 
         if (existingUser != null)

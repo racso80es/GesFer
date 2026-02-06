@@ -46,14 +46,17 @@ public class CreatePurchaseDeliveryNoteCommandHandler : ICommandHandler<CreatePu
 
         _context.PurchaseDeliveryNotes.Add(deliveryNote);
 
+        // Optimización: Cargar todos los artículos necesarios en una sola consulta
+        var articleIds = command.Lines.Select(l => l.ArticleId).Distinct().ToList();
+        var articles = await _context.Articles
+            .Include(a => a.Family)
+            .Where(a => articleIds.Contains(a.Id) && a.CompanyId == command.CompanyId && a.DeletedAt == null)
+            .ToDictionaryAsync(a => a.Id, cancellationToken);
+
         // Crear las líneas y calcular precios
         foreach (var lineDto in command.Lines)
         {
-            var article = await _context.Articles
-                .Include(a => a.Family)
-                .FirstOrDefaultAsync(a => a.Id == lineDto.ArticleId && a.CompanyId == command.CompanyId && a.DeletedAt == null, cancellationToken);
-
-            if (article == null)
+            if (!articles.TryGetValue(lineDto.ArticleId, out var article))
                 throw new InvalidOperationException($"El artículo con ID {lineDto.ArticleId} no existe");
 
             // Determinar el precio: del DTO, de la tarifa del proveedor, o del artículo base
@@ -77,8 +80,8 @@ public class CreatePurchaseDeliveryNoteCommandHandler : ICommandHandler<CreatePu
 
             deliveryNote.Lines.Add(line);
 
-            // AUMENTAR el stock del artículo
-            await _stockService.IncreaseStockAsync(article.Id, lineDto.Quantity);
+            // AUMENTAR el stock del artículo (en memoria)
+            _stockService.ApplyStockIncrease(article, lineDto.Quantity);
         }
 
         await _context.SaveChangesAsync(cancellationToken);

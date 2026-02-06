@@ -34,18 +34,27 @@ public class CreateSalesDeliveryNoteCommandHandler : ICommandHandler<CreateSales
         if (customer == null)
             throw new InvalidOperationException($"El cliente con ID {command.CustomerId} no existe o no pertenece a la empresa");
 
-        // Verificar stock antes de crear el albarán
-        foreach (var lineDto in command.Lines)
+        // Optimización: Cargar todos los artículos necesarios en una sola consulta
+        var articleIds = command.Lines.Select(l => l.ArticleId).Distinct().ToList();
+        var articles = await _context.Articles
+            .Include(a => a.Family)
+            .Where(a => articleIds.Contains(a.Id) && a.CompanyId == command.CompanyId && a.DeletedAt == null)
+            .ToDictionaryAsync(a => a.Id, cancellationToken);
+
+        // Verificar stock antes de crear el albarán (acumulando cantidades por artículo)
+        var requiredQuantities = command.Lines
+            .GroupBy(l => l.ArticleId)
+            .ToDictionary(g => g.Key, g => g.Sum(l => l.Quantity));
+
+        foreach (var req in requiredQuantities)
         {
-            var hasStock = await _stockService.HasEnoughStockAsync(lineDto.ArticleId, lineDto.Quantity);
-            if (!hasStock)
-            {
-                var article = await _context.Articles
-                    .FirstOrDefaultAsync(a => a.Id == lineDto.ArticleId, cancellationToken);
+            if (!articles.TryGetValue(req.Key, out var article))
+                throw new InvalidOperationException($"El artículo con ID {req.Key} no existe");
+
+            if (article.Stock < req.Value)
                 throw new InvalidOperationException(
-                    $"Stock insuficiente para el artículo {article?.Name}. " +
-                    $"Stock disponible: {article?.Stock}, Cantidad solicitada: {lineDto.Quantity}");
-            }
+                    $"Stock insuficiente para el artículo {article.Name}. " +
+                    $"Stock disponible: {article.Stock}, Cantidad solicitada: {req.Value}");
         }
 
         // Crear el albarán
@@ -63,12 +72,7 @@ public class CreateSalesDeliveryNoteCommandHandler : ICommandHandler<CreateSales
         // Crear las líneas y calcular precios
         foreach (var lineDto in command.Lines)
         {
-            var article = await _context.Articles
-                .Include(a => a.Family)
-                .FirstOrDefaultAsync(a => a.Id == lineDto.ArticleId && a.CompanyId == command.CompanyId && a.DeletedAt == null, cancellationToken);
-
-            if (article == null)
-                throw new InvalidOperationException($"El artículo con ID {lineDto.ArticleId} no existe");
+            var article = articles[lineDto.ArticleId]; // Ya verificado arriba
 
             // Determinar el precio: del DTO, de la tarifa del cliente, o del artículo base
             decimal price = lineDto.Price ?? GetPriceFromTariffOrArticle(customer, article);
@@ -91,8 +95,8 @@ public class CreateSalesDeliveryNoteCommandHandler : ICommandHandler<CreateSales
 
             deliveryNote.Lines.Add(line);
 
-            // DISMINUIR el stock del artículo
-            await _stockService.DecreaseStockAsync(article.Id, lineDto.Quantity);
+            // DISMINUIR el stock del artículo (en memoria)
+            _stockService.ApplyStockDecrease(article, lineDto.Quantity);
         }
 
         await _context.SaveChangesAsync(cancellationToken);

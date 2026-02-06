@@ -25,7 +25,7 @@ public class JwtService : IJwtService
     public JwtService(IConfiguration configuration)
     {
         _configuration = configuration;
-        _secretKey = _configuration["JwtSettings:SecretKey"] 
+        _secretKey = _configuration["JwtSettings:SecretKey"]
             ?? throw new InvalidOperationException("JwtSettings:SecretKey no está configurado");
 
         // Validar que la clave tenga al menos 32 caracteres (256 bits) para SHA-256 (HS256)
@@ -36,9 +36,9 @@ public class JwtService : IJwtService
                 $"Longitud actual: {_secretKey.Length} caracteres.");
         }
 
-        _issuer = _configuration["JwtSettings:Issuer"] 
+        _issuer = _configuration["JwtSettings:Issuer"]
             ?? throw new InvalidOperationException("JwtSettings:Issuer no está configurado");
-        _audience = _configuration["JwtSettings:Audience"] 
+        _audience = _configuration["JwtSettings:Audience"]
             ?? throw new InvalidOperationException("JwtSettings:Audience no está configurado");
         _expirationMinutes = int.Parse(_configuration["JwtSettings:ExpirationMinutes"] ?? "60");
     }
