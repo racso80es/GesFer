@@ -187,3 +187,21 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
     - Compilación exitosa de todos los proyectos (`dotnet build`).
     - Verificación de ausencia de archivos de GUID en capas de infraestructura de dominio.
     - Tests unitarios de Shared, Product y Admin pasando correctamente.
+
+## 2026-02-05 — Optimización Operativa y Blindaje Arquitectural (Backend)
+
+### 1. Limpieza de Logs en Consola (UX)
+- **Acción:** Reducción de verbosidad en comandos de seeding.
+- **Problema:** El comando `SeedCommand` contaminaba la salida de consola con logs informativos de EF Core, dificultando la lectura del progreso real.
+- **Solución:** Se configuró el nivel mínimo de log a `Warning` en `CreateServiceProvider`, eliminando el ruido innecesario.
+
+### 2. Blindaje de "The Wall" (Integridad Arquitectural)
+- **Acción:** Implementación de Tests de Arquitectura Automatizados.
+- **Problema:** La regla de separación estricta entre Product y Admin ("The Wall") dependía de revisión manual.
+- **Solución:**
+    - Creación del proyecto `GesFer.Architecture.Tests` en `src/Shared/Back/tests/`.
+    - Implementación de reglas con `NetArchTest.Rules` para prohibir referencias desde Product hacia Admin.
+    - Verificación exitosa de la integridad actual (Product no referencia a Admin).
+- **Validación:**
+    - `dotnet test` exitoso para la nueva suite de arquitectura.
+    - `dotnet build` exitoso para `GesFer.Console`.
