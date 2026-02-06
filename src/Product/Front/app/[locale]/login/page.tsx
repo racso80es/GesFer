@@ -13,9 +13,9 @@ import { useTranslations } from 'next-intl';
 
 // Constante definitiva para autofill de credenciales de cliente
 const MOCK_CLIENT_CREDENTIALS = {
-  empresa: "Empresa Cliente",
-  usuario: "user_test",
-  contraseña: "user123",
+  company: "Empresa Cliente",
+  username: "user_test",
+  password: "user123",
 } as const;
 
 export default function LoginPage() {
@@ -23,7 +23,7 @@ export default function LoginPage() {
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const t = useTranslations('auth');
   // Contexto ADMIN: Autocompletado para login de admin
-  const [formData, setFormData] = useState<{ empresa: string; usuario: string; contraseña: string }>({ ...MOCK_CLIENT_CREDENTIALS });
+  const [formData, setFormData] = useState<{ company: string; username: string; password: string }>({ ...MOCK_CLIENT_CREDENTIALS });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [forceShowForm, setForceShowForm] = useState(false);
@@ -120,54 +120,54 @@ export default function LoginPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4" data-testid="login-form">
             <div className="space-y-2">
-              <Label htmlFor="empresa">{t('company')}</Label>
+              <Label htmlFor="company">{t('company')}</Label>
               <div className="relative">
                 <Building2 className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  id="empresa"
+                  id="company"
                   type="text"
                   placeholder={t('company')}
-                  value={formData.empresa}
+                  value={formData.company}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setFormData({ ...formData, empresa: e.target.value })
+                    setFormData({ ...formData, company: e.target.value })
                   }
                   className="pl-10"
                   required
-                  data-testid="login-empresa-input"
+                  data-testid="login-company-input"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="usuario">{t('username')}</Label>
+              <Label htmlFor="username">{t('username')}</Label>
               <div className="relative">
                 <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  id="usuario"
+                  id="username"
                   type="text"
                   placeholder={t('username')}
-                  value={formData.usuario}
+                  value={formData.username}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setFormData({ ...formData, usuario: e.target.value })
+                    setFormData({ ...formData, username: e.target.value })
                   }
                   className="pl-10"
                   required
-                  data-testid="login-usuario-input"
+                  data-testid="login-username-input"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="contraseña">{t('password')}</Label>
+              <Label htmlFor="password">{t('password')}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  id="contraseña"
+                  id="password"
                   type="password"
                   placeholder={t('password')}
-                  value={formData.contraseña}
+                  value={formData.password}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setFormData({ ...formData, contraseña: e.target.value })
+                    setFormData({ ...formData, password: e.target.value })
                   }
                   className="pl-10"
                   required

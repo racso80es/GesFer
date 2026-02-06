@@ -14,7 +14,7 @@ import {
   DialogDescription,
   DialogClose,
 } from "@shared/components/ui/dialog";
-import { CompanyForm } from "@/components/empresas/company-form";
+import { CompanyForm } from "@/components/companies/company-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { companiesApi } from "@/lib/api/companies";
 import { Plus, Edit, Trash2, Building2, Eye } from "lucide-react";
@@ -24,7 +24,7 @@ import { useTranslations } from 'next-intl';
 import type { Company, CreateCompany, UpdateCompany } from "@/lib/types/api";
 import { DestructiveActionConfirm } from "@shared/components/shared/DestructiveActionConfirm";
 
-export default function EmpresasPage() {
+export default function CompaniesPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const t = useTranslations('companies');
@@ -35,7 +35,7 @@ export default function EmpresasPage() {
   const [companyToDelete, setCompanyToDelete] = useState<string | null>(null);
 
   const {
-    data: empresas,
+    data: companies,
     isLoading,
     error,
   } = useQuery({
@@ -45,19 +45,19 @@ export default function EmpresasPage() {
 
   // Verificar si hay un parámetro de edición en la URL
   useEffect(() => {
-    if (typeof window !== "undefined" && empresas) {
+    if (typeof window !== "undefined" && companies) {
       const params = new URLSearchParams(window.location.search);
       const editId = params.get("edit");
       if (editId) {
-        const companyToEdit = empresas.find((c) => c.id === editId);
+        const companyToEdit = companies.find((c) => c.id === editId);
         if (companyToEdit) {
           setEditingCompany(companyToEdit);
           // Limpiar la URL
-          window.history.replaceState({}, "", "/empresas");
+          window.history.replaceState({}, "", "/companies");
         }
       }
     }
-  }, [empresas]);
+  }, [companies]);
 
   const createMutation = useMutation({
     mutationFn: (data: CreateCompany) => companiesApi.create(data),
@@ -118,7 +118,7 @@ export default function EmpresasPage() {
   };
 
   const handleView = (id: string) => {
-    router.push(`/empresas/${id}`);
+    router.push(`/companies/${id}`);
   };
 
   return (
@@ -154,7 +154,7 @@ export default function EmpresasPage() {
             />
           )}
 
-          {empresas && empresas.length === 0 && (
+          {companies && companies.length === 0 && (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Building2 className="h-12 w-12 text-muted-foreground mb-4" />
@@ -169,12 +169,12 @@ export default function EmpresasPage() {
             </Card>
           )}
 
-          {empresas && empresas.length > 0 && (
+          {companies && companies.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle>{t('listTitle')}</CardTitle>
                 <CardDescription>
-                  {t('listDescription', { count: empresas.length })}
+                  {t('listDescription', { count: companies.length })}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -192,25 +192,25 @@ export default function EmpresasPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {empresas.map((empresa) => (
+                      {companies.map((company) => (
                         <tr
-                          key={empresa.id}
+                          key={company.id}
                           className="border-b hover:bg-muted/50"
                         >
-                          <td className="p-2 font-medium">{empresa.name}</td>
-                          <td className="p-2">{empresa.taxId || "-"}</td>
-                          <td className="p-2">{empresa.email || "-"}</td>
-                          <td className="p-2">{empresa.phone || "-"}</td>
-                          <td className="p-2">{empresa.address || "-"}</td>
+                          <td className="p-2 font-medium">{company.name}</td>
+                          <td className="p-2">{company.taxId || "-"}</td>
+                          <td className="p-2">{company.email || "-"}</td>
+                          <td className="p-2">{company.phone || "-"}</td>
+                          <td className="p-2">{company.address || "-"}</td>
                           <td className="p-2">
                             <span
                               className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                                empresa.isActive
+                                company.isActive
                                   ? "bg-green-100 text-green-800"
                                   : "bg-red-100 text-red-800"
                               }`}
                             >
-                              {empresa.isActive ? t('table.active') : t('table.inactive')}
+                              {company.isActive ? t('table.active') : t('table.inactive')}
                             </span>
                           </td>
                           <td className="p-2">
@@ -218,7 +218,7 @@ export default function EmpresasPage() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => handleView(empresa.id)}
+                                onClick={() => handleView(company.id)}
                                 title={t('table.view')}
                               >
                                 <Eye className="h-4 w-4" />
@@ -226,7 +226,7 @@ export default function EmpresasPage() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => setEditingCompany(empresa)}
+                                onClick={() => setEditingCompany(company)}
                                 title={t('table.edit')}
                               >
                                 <Edit className="h-4 w-4" />
@@ -234,8 +234,8 @@ export default function EmpresasPage() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => handleDeleteClick(empresa.id)}
-                                disabled={deletingCompanyId === empresa.id}
+                                onClick={() => handleDeleteClick(company.id)}
+                                disabled={deletingCompanyId === company.id}
                                 title={t('table.delete')}
                               >
                                 <Trash2 className="h-4 w-4 text-destructive" />

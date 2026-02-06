@@ -3,7 +3,7 @@
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { MainLayout } from "@/components/layout/main-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@shared/components/ui/card";
-import { Button } from "@shared/components/ui/button";
+import { Button } from "@shared/components/shared/Button";
 import { Loading } from "@shared/components/ui/loading";
 import { ErrorMessage } from "@shared/components/ui/error-message";
 import { useQuery } from "@tanstack/react-query";
@@ -16,7 +16,7 @@ import { useState, useEffect } from "react";
 export default function CompanyDetailPage({
   params,
 }: {
-  params: Promise<{ id: string; locale: string }> | { id: string; locale: string };
+  params: Promise<{ id: string }> | { id: string };
 }) {
   const router = useRouter();
   const [companyId, setCompanyId] = useState<string | null>(null);
@@ -62,6 +62,7 @@ export default function CompanyDetailPage({
               variant="ghost"
               onClick={() => router.back()}
               className="mb-4"
+              data-testid="shared-button-empresas-back"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver
@@ -89,6 +90,7 @@ export default function CompanyDetailPage({
                 variant="ghost"
                 size="icon"
                 onClick={() => router.back()}
+                data-testid="shared-button-empresas-back-icon"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
@@ -99,7 +101,8 @@ export default function CompanyDetailPage({
             </div>
             <Button
               variant="outline"
-              onClick={() => router.push(`/empresas?edit=${company.id}`)}
+              onClick={() => router.push(`/companies?edit=${company.id}`)}
+              data-testid={`shared-button-companies-edit-${company.id}`}
             >
               <Edit className="h-4 w-4 mr-2" />
               Editar
@@ -193,8 +196,5 @@ export default function CompanyDetailPage({
     </ProtectedRoute>
   );
 }
-
-
-
 
 

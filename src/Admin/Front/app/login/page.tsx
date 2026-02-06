@@ -11,12 +11,12 @@ import { ErrorMessage } from "@shared/components/ui/error-message";
 import { User, Lock, Loader2, Shield } from "lucide-react";
 
 // Autofill local (dev): credenciales administrativas
-const MOCK_ADMIN_CREDENTIALS = { usuario: "admin", contraseña: "admin123" } as const;
+const MOCK_ADMIN_CREDENTIALS = { username: "admin", password: "admin123" } as const;
 
 export default function AdminLoginPage() {
   const router = useRouter();
   // Contexto ADMIN: Autocompletado para login administrativo
-  const [formData, setFormData] = useState<{ usuario: string; contraseña: string }>({ ...MOCK_ADMIN_CREDENTIALS });
+  const [formData, setFormData] = useState<{ username: string; password: string }>({ ...MOCK_ADMIN_CREDENTIALS });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,8 +28,8 @@ export default function AdminLoginPage() {
     try {
       // Usar el provider "admin" para autenticación administrativa
       const result = await signIn("admin", {
-        usuario: formData.usuario,
-        contraseña: formData.contraseña,
+        username: formData.username,
+        password: formData.password,
         redirect: false,
       });
 
@@ -65,15 +65,15 @@ export default function AdminLoginPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="usuario">Usuario Administrativo</Label>
+              <Label htmlFor="username">Usuario Administrativo</Label>
               <div className="relative">
                 <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
-                  id="usuario"
+                  id="username"
                   type="text"
                   placeholder="admin"
-                  value={formData.usuario}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, usuario: e.target.value })}
+                  value={formData.username}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, username: e.target.value })}
                   className="pl-10"
                   required
                   disabled={isLoading}
@@ -81,15 +81,15 @@ export default function AdminLoginPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="contraseña">Contraseña</Label>
+              <Label htmlFor="password">Contraseña</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
-                  id="contraseña"
+                  id="password"
                   type="password"
                   placeholder="••••••••"
-                  value={formData.contraseña}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, contraseña: e.target.value })}
+                  value={formData.password}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value })}
                   className="pl-10"
                   required
                   disabled={isLoading}

@@ -54,7 +54,7 @@ function getLocaleFromUser(request: NextRequest): Locale {
 const publicRoutes = ['/login', '/api/auth'];
 
 // Rutas que requieren autenticación
-const protectedRoutes = ['/dashboard', '/usuarios', '/clientes', '/empresas'];
+const protectedRoutes = ['/dashboard', '/usuarios', '/clientes', '/companies'];
 
 /**
  * Normaliza la URL base corrigiendo localhost.com a localhost

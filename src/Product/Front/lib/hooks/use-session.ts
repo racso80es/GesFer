@@ -13,7 +13,7 @@ export function useSession() {
     data: session,
     status,
     update,
-    accessToken: (session as any)?.accessToken as string | undefined,
+    accessToken: session?.accessToken,
     cursorId: session?.user?.cursorId,
   };
 }
