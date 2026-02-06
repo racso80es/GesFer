@@ -10,13 +10,21 @@ import { Button } from "@shared/components/ui/button";
 import { ErrorMessage } from "@shared/components/ui/error-message";
 import { User, Lock, Loader2, Shield } from "lucide-react";
 
-// Autofill local (dev): credenciales administrativas
-const MOCK_ADMIN_CREDENTIALS = { username: "admin", password: "admin123" } as const;
-
 export default function AdminLoginPage() {
   const router = useRouter();
-  // Contexto ADMIN: Autocompletado para login administrativo
-  const [formData, setFormData] = useState<{ username: string; password: string }>({ ...MOCK_ADMIN_CREDENTIALS });
+
+  // Contexto ADMIN: Autocompletado para login administrativo en desarrollo
+  const [formData, setFormData] = useState<{ username: string; password: string }>(() => {
+    // Verificar si estamos en desarrollo y hay variables de entorno definidas
+    if (process.env.NODE_ENV === 'development') {
+      return {
+        username: process.env.NEXT_PUBLIC_ADMIN_DEFAULT_USERNAME || "",
+        password: process.env.NEXT_PUBLIC_ADMIN_DEFAULT_PASSWORD || ""
+      };
+    }
+    return { username: "", password: "" };
+  });
+
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
