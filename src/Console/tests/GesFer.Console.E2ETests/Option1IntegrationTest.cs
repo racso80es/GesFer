@@ -56,6 +56,10 @@ public class Option1IntegrationTest
         var ensureEfToolCommand = new EnsureEfToolCommand(logService);
         var seedCommand = new SeedCommand(logService);
         var initializeDatabaseCommand = new InitializeDatabaseCommand(logService);
+        var startLocalEnvironmentCommand = new StartLocalEnvironmentCommand(logService);
+        var runUnitTestsCommand = new RunUnitTestsCommand(logService);
+        var runIntegrationTestsCommand = new RunIntegrationTestsCommand(logService);
+        var runE2ETestsCommand = new RunE2ETestsCommand(logService);
         var integrityValidationService = new IntegrityValidationService(logService);
         var goldenRulesService = new GoldenRulesComplianceService(logService);
 
@@ -71,6 +75,10 @@ public class Option1IntegrationTest
             ensureEfToolCommand,
             seedCommand,
             initializeDatabaseCommand,
+            startLocalEnvironmentCommand,
+            runUnitTestsCommand,
+            runIntegrationTestsCommand,
+            runE2ETestsCommand,
             integrityValidationService,
             goldenRulesService,
             logService);
