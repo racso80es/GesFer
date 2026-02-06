@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -22,6 +23,7 @@ public class StartLocalEnvironmentCommand
     private readonly LogService _logService;
     private readonly string _rootPath;
     private readonly List<Process> _runningProcesses = new();
+    private static readonly ConcurrentDictionary<string, object> _fileLocks = new();
 
     public StartLocalEnvironmentCommand(LogService logService)
     {
@@ -282,8 +284,8 @@ public class StartLocalEnvironmentCommand
 
         var process = new Process { StartInfo = startInfo };
 
-        process.OutputDataReceived += (s, e) => { if (e.Data != null) File.AppendAllText(logFile, $"{DateTime.Now}: {e.Data}\n"); };
-        process.ErrorDataReceived += (s, e) => { if (e.Data != null) File.AppendAllText(logFile, $"ERROR {DateTime.Now}: {e.Data}\n"); };
+        process.OutputDataReceived += (s, e) => { if (e.Data != null) WriteLogSafe(logFile, $"{DateTime.Now}: {e.Data}\n"); };
+        process.ErrorDataReceived += (s, e) => { if (e.Data != null) WriteLogSafe(logFile, $"ERROR {DateTime.Now}: {e.Data}\n"); };
 
         process.Start();
         process.BeginOutputReadLine();
@@ -313,13 +315,29 @@ public class StartLocalEnvironmentCommand
 
         var process = new Process { StartInfo = startInfo };
 
-        process.OutputDataReceived += (s, e) => { if (e.Data != null) File.AppendAllText(logFile, $"{DateTime.Now}: {e.Data}\n"); };
-        process.ErrorDataReceived += (s, e) => { if (e.Data != null) File.AppendAllText(logFile, $"ERROR {DateTime.Now}: {e.Data}\n"); };
+        process.OutputDataReceived += (s, e) => { if (e.Data != null) WriteLogSafe(logFile, $"{DateTime.Now}: {e.Data}\n"); };
+        process.ErrorDataReceived += (s, e) => { if (e.Data != null) WriteLogSafe(logFile, $"ERROR {DateTime.Now}: {e.Data}\n"); };
 
         process.Start();
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
 
         _runningProcesses.Add(process);
+    }
+
+    private void WriteLogSafe(string filepath, string content)
+    {
+        var lockObj = _fileLocks.GetOrAdd(filepath, _ => new object());
+        lock (lockObj)
+        {
+            try
+            {
+                File.AppendAllText(filepath, content);
+            }
+            catch
+            {
+                // Ignore errors to avoid crashing the main process
+            }
+        }
     }
 }
