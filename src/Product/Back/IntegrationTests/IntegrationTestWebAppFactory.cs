@@ -10,6 +10,7 @@ using Testcontainers.MySql;
 using Testcontainers;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Xunit;
+using System.Diagnostics;
 
 namespace GesFer.IntegrationTests;
 
@@ -46,7 +47,16 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
                     string connectionString;
                     lock (_connectionStringLock)
                     {
-                         if (_connectionString == null) throw new InvalidOperationException("Connection string not available.");
+                         if (_connectionString == null)
+                         {
+                            // This should not happen if InitializeAsync works correctly,
+                            // but if it does, it means we are in a broken state.
+                            // Fallback to InMemory or throw?
+                            // Since we are inside ConfigureWebHost, we can't easily switch _useInMemory here effectively
+                            // if services were already built, but here we are defining the service.
+                            // However, let's assume if connection string is null, something went wrong.
+                            throw new InvalidOperationException("Connection string not available for MySql, but _useInMemory is false.");
+                         }
                          connectionString = _connectionString;
                     }
                     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 0)));
@@ -61,6 +71,17 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
 
     public async Task InitializeAsync()
     {
+        // 1. Check for explicit Override
+        var envVar = Environment.GetEnvironmentVariable("TEST_USE_IN_MEMORY");
+        if (!string.IsNullOrEmpty(envVar) && (envVar == "1" || envVar.ToLower() == "true"))
+        {
+            Console.WriteLine("[IntegrationTestWebAppFactory] TEST_USE_IN_MEMORY detected. Force InMemory.");
+            _useInMemory = true;
+            await InitializeInMemoryAsync();
+            return;
+        }
+
+        // 2. Check Docker Availability
         if (!IsDockerAvailable())
         {
             Console.WriteLine("[IntegrationTestWebAppFactory] Docker not detected. Switching to InMemory mode.");
@@ -69,6 +90,7 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
             return;
         }
 
+        // 3. Try to Start Docker
         try
         {
             _mySqlContainer = new MySqlBuilder("mysql:8.0")
@@ -81,6 +103,7 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
             await _mySqlContainer.StartAsync();
             lock (_connectionStringLock) _connectionString = _mySqlContainer.GetConnectionString();
 
+            // Only AFTER successful start do we access Services, which triggers Host Build
             using var scope = Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             await context.Database.EnsureCreatedAsync();
@@ -96,6 +119,8 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
 
     private async Task InitializeInMemoryAsync()
     {
+        // Accessing Services triggers Host Build.
+        // At this point _useInMemory is guaranteed to be true.
         using var scope = Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await context.Database.EnsureCreatedAsync();
@@ -122,15 +147,22 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
     {
         try
         {
-            using var process = new System.Diagnostics.Process();
+            using var process = new Process();
             process.StartInfo.FileName = "docker";
-            process.StartInfo.Arguments = "ps -q";
+            process.StartInfo.Arguments = "info"; // 'info' is more robust than 'ps'
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
             process.Start();
-            process.WaitForExit(3000);
+
+            // Wait a bit longer, 5 seconds
+            bool exited = process.WaitForExit(5000);
+            if (!exited)
+            {
+                process.Kill();
+                return false;
+            }
             return process.ExitCode == 0;
         }
         catch
