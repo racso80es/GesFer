@@ -42,8 +42,8 @@ Selecciona el rol más específico posible. Si dudas, activa **Arquitecto**.
 | **[SEGURIDAD]** | Auth, Login, Seeds, Inputs, Forms, Delete, Reset. | Cargar [`openspecs/agents/security-engineer.json`](./openspecs/agents/security-engineer.json). Auditar input/output. |
 | **[JUEZ]** | Pre-Commit, Pre-Push, Review, Docs, Tests. | Cargar [`openspecs/agents/qa-judge.json`](./openspecs/agents/qa-judge.json). Bloquear si falta evidencia. |
 | **[RENDIMIENTO]**| Cierre tarea, Logs, Docker, Queries lentas. | Cargar [`openspecs/agents/performance-engineer.json`](./openspecs/agents/performance-engineer.json). Generar métricas. |
-| **[AUDITOR-FRONT]** | Auditoría, Accesibilidad, Lint, Frontend. | Cargar [`openspecs/agents/frontend-auditor.json`](./openspecs/agents/frontend-auditor.json). Generar reporte. |
-| **[AUDITOR-BACK]** | Auditoría, Backend, C#, Arquitectura, DbContext. | Cargar [`openspecs/agents/backend-auditor.json`](./openspecs/agents/backend-auditor.json). Generar reporte. |
+| **[AUDITOR-FRONT]** | Auditoría, Accesibilidad, Lint, Frontend. | Cargar [`openspecs/agents/auditor/front.json`](./openspecs/agents/auditor/front.json). Generar reporte. |
+| **[AUDITOR-BACK]** | Auditoría, Backend, C#, Arquitectura, DbContext. | Cargar [`openspecs/agents/auditor/back.json`](./openspecs/agents/auditor/back.json). Generar reporte. |
 | **[KNOWLEDGE-ARCH]** | Documentación, Docs, Markdown, Guías, Conocimiento, Rutas. | Cargar [`openspecs/agents/knowledge-architect.json`](./openspecs/agents/knowledge-architect.json). Validar SSOT. |
 
 ---
