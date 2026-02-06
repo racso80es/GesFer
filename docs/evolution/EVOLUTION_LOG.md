@@ -188,6 +188,13 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
     - Verificación de ausencia de archivos de GUID en capas de infraestructura de dominio.
     - Tests unitarios de Shared, Product y Admin pasando correctamente.
 
+## 2026-02-06 — Auditoría Frontend Diaria (Falla Crítica Persistente)
+
+- **Evento:** Auditoría diaria detecta persistencia de terminología prohibida ("empresa").
+- **Impacto:** Violación de reglas de aislamiento semántico en Admin (`page.tsx`, `api.ts`) y Product (`middleware.ts`).
+- **Estado:** 🔴 FALLA CRÍTICA.
+- **Acción Requerida:** Refactorización inmediata requerida.
+- **Referencia:** `docs/audits/AUDITORIA_FRONTEND_2026_02_06.md`.
 ## 2026-02-05 — Optimización Operativa y Blindaje Arquitectural (Backend)
 
 ### 1. Limpieza de Logs en Consola (UX)
