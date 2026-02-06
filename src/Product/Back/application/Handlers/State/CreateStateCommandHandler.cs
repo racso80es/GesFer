@@ -27,8 +27,8 @@ public class CreateStateCommandHandler : ICommandHandler<CreateStateCommand, Sta
 
         // Validar que no exista una provincia con el mismo nombre en el mismo país
         var existingState = await _context.States
-            .FirstOrDefaultAsync(s => s.Name == command.Dto.Name 
-                && s.CountryId == command.Dto.CountryId 
+            .FirstOrDefaultAsync(s => s.Name == command.Dto.Name
+                && s.CountryId == command.Dto.CountryId
                 && s.DeletedAt == null, cancellationToken);
 
         if (existingState != null)

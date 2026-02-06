@@ -27,9 +27,9 @@ public class UpdateCityCommandHandler : ICommandHandler<UpdateCityCommand, CityD
 
         // Validar que no exista otra ciudad con el mismo nombre en la misma provincia (excepto la actual)
         var existingCity = await _context.Cities
-            .FirstOrDefaultAsync(c => c.Name == command.Dto.Name 
-                && c.StateId == city.StateId 
-                && c.Id != command.Id 
+            .FirstOrDefaultAsync(c => c.Name == command.Dto.Name
+                && c.StateId == city.StateId
+                && c.Id != command.Id
                 && c.DeletedAt == null, cancellationToken);
 
         if (existingCity != null)

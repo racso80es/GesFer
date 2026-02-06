@@ -28,8 +28,8 @@ public class CreateCityCommandHandler : ICommandHandler<CreateCityCommand, CityD
 
         // Validar que no exista una ciudad con el mismo nombre en la misma provincia
         var existingCity = await _context.Cities
-            .FirstOrDefaultAsync(c => c.Name == command.Dto.Name 
-                && c.StateId == command.Dto.StateId 
+            .FirstOrDefaultAsync(c => c.Name == command.Dto.Name
+                && c.StateId == command.Dto.StateId
                 && c.DeletedAt == null, cancellationToken);
 
         if (existingCity != null)

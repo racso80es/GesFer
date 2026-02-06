@@ -78,7 +78,7 @@ public class ApplicationDbContext : DbContext
         {
             // Buscar la propiedad Id de tipo Guid
             var idProperty = entityType.FindProperty(nameof(BaseEntity.Id));
-            
+
             if (idProperty != null && idProperty.ClrType == typeof(Guid))
             {
                 // Configurar el ValueGenerator secuencial

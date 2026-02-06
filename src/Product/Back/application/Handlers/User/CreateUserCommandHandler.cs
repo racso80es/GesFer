@@ -28,8 +28,8 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
 
         // Validar que no exista un usuario con el mismo username en la misma empresa
         var existingUser = await _context.Users
-            .FirstOrDefaultAsync(u => u.Username == command.Dto.Username 
-                && u.CompanyId == command.Dto.CompanyId 
+            .FirstOrDefaultAsync(u => u.Username == command.Dto.Username
+                && u.CompanyId == command.Dto.CompanyId
                 && u.DeletedAt == null, cancellationToken);
 
         if (existingUser != null)

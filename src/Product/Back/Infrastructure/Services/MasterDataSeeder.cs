@@ -17,7 +17,7 @@ public class MasterDataSeeder
     private readonly ISequentialGuidGenerator _guidGenerator;
 
     public MasterDataSeeder(
-        ApplicationDbContext context, 
+        ApplicationDbContext context,
         ILogger<MasterDataSeeder> logger,
         ISequentialGuidGenerator guidGenerator)
     {
@@ -335,7 +335,7 @@ public class MasterDataSeeder
         }
 
         await _context.SaveChangesAsync();
-        _logger.LogInformation("Ciudades y códigos postales cargados: {CitiesCount} ciudades, {PostalCodesCount} códigos postales", 
+        _logger.LogInformation("Ciudades y códigos postales cargados: {CitiesCount} ciudades, {PostalCodesCount} códigos postales",
             citiesCreated, postalCodesCreated);
     }
 }

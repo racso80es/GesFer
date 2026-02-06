@@ -29,8 +29,8 @@ public class CreatePostalCodeCommandHandler : ICommandHandler<CreatePostalCodeCo
 
         // Validar que no exista un código postal con el mismo código en la misma ciudad
         var existingPostalCode = await _context.PostalCodes
-            .FirstOrDefaultAsync(pc => pc.Code == command.Dto.Code 
-                && pc.CityId == command.Dto.CityId 
+            .FirstOrDefaultAsync(pc => pc.Code == command.Dto.Code
+                && pc.CityId == command.Dto.CityId
                 && pc.DeletedAt == null, cancellationToken);
 
         if (existingPostalCode != null)

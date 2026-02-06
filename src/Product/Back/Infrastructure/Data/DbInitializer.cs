@@ -28,7 +28,7 @@ public static class DbInitializer
         // En Testing, también ejecutamos migraciones para tests E2E
         var environment = serviceProvider.GetRequiredService<IHostEnvironment>();
         var shouldInitialize = isDevelopment || environment.EnvironmentName == "Testing";
-        
+
         if (!shouldInitialize)
         {
             return;
@@ -63,7 +63,7 @@ public static class DbInitializer
                 .IgnoreQueryFilters()
                 .Include(u => u.Company)
                 .FirstOrDefaultAsync(u => u.Username == "admin");
-            
+
             // KAIZEN: Verificación adicional de integridad referencial
             if (adminUser == null)
             {
@@ -72,7 +72,7 @@ public static class DbInitializer
                 Console.WriteLine($"    ❌ {errorMessage}");
                 throw new Exception(errorMessage);
             }
-            
+
             // KAIZEN: Verificar que el admin tenga CompanyId vinculado
             if (adminUser.CompanyId == Guid.Empty || adminUser.CompanyId == default(Guid))
             {
@@ -81,7 +81,7 @@ public static class DbInitializer
                 Console.WriteLine($"    ❌ {errorMessage}");
                 throw new Exception(errorMessage);
             }
-            
+
             // KAIZEN: Verificar que la empresa vinculada existe
             if (adminUser.Company == null)
             {
@@ -90,25 +90,25 @@ public static class DbInitializer
                 Console.WriteLine($"    ❌ {errorMessage}");
                 throw new Exception(errorMessage);
             }
-            
+
             // KAIZEN: Verificar que la empresa vinculada es "Empresa Admin" con el GUID correcto
             const string EXPECTED_ADMIN_COMPANY_NAME = "Empresa Admin";
             const string EXPECTED_ADMIN_COMPANY_ID = "550e8400-e29b-41d4-a716-446655440000";
-            
+
             if (adminUser.Company.Name != EXPECTED_ADMIN_COMPANY_NAME)
             {
                 var warningMessage = $"⚠️ ADVERTENCIA: El usuario 'admin' está vinculado a '{adminUser.Company.Name}' en lugar de '{EXPECTED_ADMIN_COMPANY_NAME}'. Esto puede causar problemas de autenticación.";
                 logger.LogWarning(warningMessage);
                 Console.WriteLine($"    ⚠ {warningMessage}");
             }
-            
+
             if (adminUser.CompanyId.ToString() != EXPECTED_ADMIN_COMPANY_ID)
             {
                 var warningMessage = $"⚠️ ADVERTENCIA: El usuario 'admin' tiene CompanyId '{adminUser.CompanyId}' en lugar del esperado '{EXPECTED_ADMIN_COMPANY_ID}'. Verifique la sincronización en demo-data.json.";
                 logger.LogWarning(warningMessage);
                 Console.WriteLine($"    ⚠ {warningMessage}");
             }
-            
+
             var companyInfo = $" (Empresa: {adminUser.Company.Name}, CompanyId: {adminUser.CompanyId})";
             logger.LogInformation("✅ Smoke Test Superado: Usuario 'admin' verificado correctamente{CompanyInfo}", companyInfo);
             Console.WriteLine($"    ✅ Smoke Test Superado: Usuario 'admin' verificado{companyInfo}");
@@ -156,7 +156,7 @@ public static class DbInitializer
                 logger.LogInformation("Se encontraron {Count} migraciones pendientes: {Migrations}",
                     pendingMigrationsList.Count,
                     migrationsList);
-                
+
                 try
                 {
                     await context.Database.MigrateAsync();
@@ -171,13 +171,13 @@ public static class DbInitializer
                     if (migrateEx.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase) ||
                         (migrateEx.InnerException?.Message?.Contains("already exists", StringComparison.OrdinalIgnoreCase) == true))
                     {
-                        logger.LogWarning(migrateEx, 
+                        logger.LogWarning(migrateEx,
                             "Las tablas ya existen. Verificando si las migraciones están aplicadas...");
-                        
+
                         // Verificar si las migraciones ya están aplicadas
                         var appliedMigrations = await context.Database.GetAppliedMigrationsAsync();
                         var appliedMigrationsList = appliedMigrations.ToList();
-                        
+
                         if (appliedMigrationsList.Any())
                         {
                             logger.LogInformation("Las migraciones ya están aplicadas. La base de datos está actualizada.");
@@ -200,21 +200,21 @@ public static class DbInitializer
                                 throw new InvalidOperationException(
                                     $"Error al aplicar migraciones: {migrateEx.Message}. " +
                                     $"Verifique la configuración de la base de datos y las migraciones. " +
-                                    $"Una vez corregido el problema, puede reintentar ejecutando la aplicación nuevamente.", 
+                                    $"Una vez corregido el problema, puede reintentar ejecutando la aplicación nuevamente.",
                                     migrateEx);
                             }
                         }
                     }
                     else
                     {
-                        logger.LogError(migrateEx, 
-                            "Error al aplicar migraciones. Tipo: {ExceptionType}, Mensaje: {Message}", 
-                            migrateEx.GetType().Name, 
+                        logger.LogError(migrateEx,
+                            "Error al aplicar migraciones. Tipo: {ExceptionType}, Mensaje: {Message}",
+                            migrateEx.GetType().Name,
                             migrateEx.Message);
                         throw new InvalidOperationException(
                             $"Error al aplicar migraciones: {migrateEx.Message}. " +
                             $"Verifique la configuración de la base de datos y las migraciones. " +
-                            $"Una vez corregido el problema, puede reintentar ejecutando la aplicación nuevamente.", 
+                            $"Una vez corregido el problema, puede reintentar ejecutando la aplicación nuevamente.",
                             migrateEx);
                     }
                 }
@@ -234,7 +234,7 @@ public static class DbInitializer
         {
             logger.LogError(ex, "Error inesperado al aplicar migraciones. Tipo: {ExceptionType}", ex.GetType().Name);
             throw new InvalidOperationException(
-                $"Error inesperado al aplicar migraciones: {ex.Message}", 
+                $"Error inesperado al aplicar migraciones: {ex.Message}",
                 ex);
         }
     }
@@ -265,7 +265,7 @@ public static class DbInitializer
                 // En modo Development, cargar master-data.json y demo-data.json
                 // Cargar datos maestros y obtener resumen de entidades
                 var masterDataResult = await seeder.SeedMasterDataAsync();
-                
+
                 // Cargar datos de demostración y obtener resumen de entidades
                 var demoDataResult = await seeder.SeedDemoDataAsync();
 
@@ -273,12 +273,12 @@ public static class DbInitializer
                 if (masterDataResult.Loaded || demoDataResult.Loaded)
                 {
                     var entities = new List<string>();
-                    
+
                     if (masterDataResult.Loaded && masterDataResult.Entities.Any())
                     {
                         entities.AddRange(masterDataResult.Entities);
                     }
-                    
+
                     if (demoDataResult.Loaded && demoDataResult.Entities.Any())
                     {
                         entities.AddRange(demoDataResult.Entities);

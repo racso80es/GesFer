@@ -17,7 +17,7 @@ public static class DatabaseExtensions
     public static async Task MigrateAndSeedAsync(this ApplicationDbContext context, IServiceProvider serviceProvider)
     {
         var logger = serviceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
-        
+
         try
         {
             // Aplicar migraciones pendientes

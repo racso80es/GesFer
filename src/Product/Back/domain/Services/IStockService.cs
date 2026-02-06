@@ -21,5 +21,16 @@ public interface IStockService
     /// Verifica si hay stock suficiente para una venta
     /// </summary>
     Task<bool> HasEnoughStockAsync(Guid articleId, decimal quantity);
-}
 
+    /// <summary>
+    /// Aplica el aumento de stock en la entidad en memoria sin guardar en base de datos.
+    /// Útil para operaciones masivas donde el guardado se realiza externamente.
+    /// </summary>
+    void ApplyStockIncrease(Article article, decimal quantity);
+
+    /// <summary>
+    /// Aplica la disminución de stock en la entidad en memoria sin guardar en base de datos.
+    /// Útil para operaciones masivas donde el guardado se realiza externamente.
+    /// </summary>
+    void ApplyStockDecrease(Article article, decimal quantity);
+}

@@ -13,14 +13,14 @@ public class LoginRequestDto
     /// <example>Empresa Demo</example>
     [DefaultValue("Empresa Demo")]
     public string Empresa { get; set; } = "Empresa Demo";
-    
+
     /// <summary>
     /// Nombre de usuario
     /// </summary>
     /// <example>admin</example>
     [DefaultValue("admin")]
     public string Usuario { get; set; } = "admin";
-    
+
     /// <summary>
     /// Contraseña del usuario
     /// </summary>

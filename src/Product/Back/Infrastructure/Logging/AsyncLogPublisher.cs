@@ -28,7 +28,7 @@ public class AsyncLogPublisher : IAsyncLogPublisher
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
         _logger = logger;
-        
+
         // Obtener configuración de Admin API
         _adminApiBaseUrl = _configuration["AdminApi:BaseUrl"] ?? "http://localhost:5001";
         _logsEndpoint = _configuration["AdminApi:LogsEndpoint"] ?? "/api/admin/logs";
@@ -63,7 +63,7 @@ public class AsyncLogPublisher : IAsyncLogPublisher
 
                 // Intentar enviar el log
                 var response = await httpClient.PostAsync(_logsEndpoint, content);
-                
+
                 if (!response.IsSuccessStatusCode)
                 {
                     // Log localmente si falla, pero no interrumpir el flujo
@@ -77,7 +77,7 @@ public class AsyncLogPublisher : IAsyncLogPublisher
             {
                 // Log localmente el error pero no propagarlo
                 // Esto asegura que el fallo de Admin API no afecte a Product
-                _logger.LogWarning(ex, 
+                _logger.LogWarning(ex,
                     "Error al publicar log en Admin API. El log se perdió pero el flujo continúa. Message: {Message}",
                     message);
             }
@@ -114,7 +114,7 @@ public class AsyncLogPublisher : IAsyncLogPublisher
 
                 // Intentar enviar el log de auditoría
                 var response = await httpClient.PostAsync(_auditLogsEndpoint, content);
-                
+
                 if (!response.IsSuccessStatusCode)
                 {
                     // Log localmente si falla, pero no interrumpir el flujo
