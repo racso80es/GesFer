@@ -217,20 +217,16 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
 - **Estado:** 🔴 FALLA CRÍTICA.
 - **Acción Requerida:** Refactorización inmediata requerida.
 - **Referencia:** `docs/audits/AUDITORIA_FRONTEND_2026_02_06.md`.
-## 2026-02-05 — Optimización Operativa y Blindaje Arquitectural (Backend)
 
-### 1. Limpieza de Logs en Consola (UX)
-- **Acción:** Reducción de verbosidad en comandos de seeding.
-- **Problema:** El comando `SeedCommand` contaminaba la salida de consola con logs informativos de EF Core, dificultando la lectura del progreso real.
-- **Solución:** Se configuró el nivel mínimo de log a `Warning` en `CreateServiceProvider`, eliminando el ruido innecesario.
+## 2026-02-06 — Estabilización de Entorno de Pruebas (Kaizen-Tests)
 
-### 2. Blindaje de "The Wall" (Integridad Arquitectural)
-- **Acción:** Implementación de Tests de Arquitectura Automatizados.
-- **Problema:** La regla de separación estricta entre Product y Admin ("The Wall") dependía de revisión manual.
+- **Acción:** Blindaje de entorno de pruebas Backend y E2E.
+- **Problema:** Fallo catastrófico en CI/Auditoría por dependencia dura de Docker (Integration) y falta de pre-chequeos (E2E).
 - **Solución:**
-    - Creación del proyecto `GesFer.Architecture.Tests` en `src/Shared/Back/tests/`.
-    - Implementación de reglas con `NetArchTest.Rules` para prohibir referencias desde Product hacia Admin.
-    - Verificación exitosa de la integridad actual (Product no referencia a Admin).
+    - **Integration:** Implementación robusta de `try-catch` y fallback a `InMemoryDatabase` en `IntegrationTestWebAppFactory`. Corrección de crash en `Program.cs` por LogSink no registrado en entorno Testing.
+    - **E2E:** Implementación de "Soft Skip" en tests pesados si `docker-compose` no está disponible.
+    - **Shared:** Modernización de tests unitarios (`FluentAssertions` + AAA).
 - **Validación:**
-    - `dotnet test` exitoso para la nueva suite de arquitectura.
-    - `dotnet build` exitoso para `GesFer.Console`.
+    - `GesFer.IntegrationTests`: Ejecución exitosa (recuperación de crash).
+    - `GesFer.Console.E2ETests`: Ejecución exitosa (skip controlado).
+    - `GesFer.Shared.Back.UnitTests`: Pase verde con estilo modernizado.

@@ -41,7 +41,7 @@ try
             .Enrich.WithProperty("Application", "GesFer.Api")
             .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName);
 
-        if (isDevelopment)
+        if (isDevelopment || context.HostingEnvironment.EnvironmentName == "Testing")
         {
             // El nivel mínimo y el Console Sink ya vienen del JSON, 
             // pero podemos mantener esto como refuerzo o configurarlo todo en el JSON.
@@ -55,7 +55,12 @@ try
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning);
 
             // En PRO: Añadimos explícitamente el Sink aquí si no está en el appsettings.json base
-            configuration.WriteTo.Sink(services.GetRequiredService<AdminApiLogSink>());
+            // Solo si el servicio está registrado (para evitar crash en entornos intermedios)
+            var sink = services.GetService<AdminApiLogSink>();
+            if (sink != null)
+            {
+                configuration.WriteTo.Sink(sink);
+            }
         }
     });
 
