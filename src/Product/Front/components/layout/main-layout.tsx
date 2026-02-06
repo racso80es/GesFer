@@ -16,6 +16,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
 import { useTranslations, useLocale } from 'next-intl';
+import type { LoginResponse } from "@/lib/types/api";
+import type { LucideIcon } from "lucide-react";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -31,7 +33,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   const navigation = [
     { name: t('dashboard'), href: "/dashboard", icon: LayoutDashboard },
-    { name: t('companies'), href: "/empresas", icon: Briefcase },
+    { name: t('companies'), href: "/companies", icon: Briefcase },
     { name: t('users'), href: "/usuarios", icon: Users },
     { name: t('customers'), href: "/clientes", icon: Building2 },
   ];
@@ -119,10 +121,10 @@ function SidebarContent({
   onClose,
   navigation,
 }: {
-  user: any;
+  user: LoginResponse | null;
   onLogout: () => void;
   onClose?: () => void;
-  navigation: Array<{ name: string; href: string; icon: any; children?: Array<{ name: string; href: string; icon: any }> }>;
+  navigation: Array<{ name: string; href: string; icon: LucideIcon; children?: Array<{ name: string; href: string; icon: LucideIcon }> }>;
 }) {
   const pathname = usePathname();
   const tAuth = useTranslations('auth');
@@ -166,7 +168,7 @@ function SidebarContent({
           // Mapear hrefs a test-ids
           const testIdMap: Record<string, string> = {
             '/dashboard': 'dashboard-dashboard-link',
-            '/empresas': 'dashboard-empresas-link',
+            '/companies': 'dashboard-companies-link',
             '/usuarios': 'dashboard-usuarios-link',
             '/clientes': 'dashboard-clientes-link',
           };

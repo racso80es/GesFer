@@ -74,9 +74,9 @@ describe('LoginPage', () => {
     
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith({
-        empresa: 'Empresa Cliente',
-        usuario: 'user_test',
-        contraseña: 'user123',
+        company: 'Empresa Cliente',
+        username: 'user_test',
+        password: 'user123',
       })
     })
   })

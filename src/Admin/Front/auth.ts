@@ -12,11 +12,11 @@ export const authConfig: NextAuthConfig = {
       id: "admin",
       name: "Admin",
       credentials: {
-        usuario: { label: "Usuario", type: "text" },
-        contraseña: { label: "Contraseña", type: "password" },
+        username: { label: "Usuario", type: "text" },
+        password: { label: "Contraseña", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.usuario || !credentials?.contraseña) {
+        if (!credentials?.username || !credentials?.password) {
           return null;
         }
 
@@ -31,8 +31,8 @@ export const authConfig: NextAuthConfig = {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              usuario: credentials.usuario,
-              contraseña: credentials.contraseña,
+              usuario: credentials.username,
+              contraseña: credentials.password,
             }),
           });
 
@@ -84,8 +84,8 @@ export const authConfig: NextAuthConfig = {
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
         session.user.email = token.email as string;
-        (session.user as any).role = token.role as string;
-        (session as any).accessToken = token.accessToken as string;
+        session.user.role = token.role as string;
+        session.accessToken = token.accessToken as string;
       }
       return session;
     },

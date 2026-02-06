@@ -18,7 +18,7 @@ export class DashboardPage extends BasePage {
     // Preferir getByTestId, con fallback a getByRole, usando .first() para evitar múltiples elementos
     this.title = page.getByTestId('dashboard-title').or(page.getByRole('heading', { name: /panel de control|dashboard/i })).first();
     this.usuariosLink = page.getByTestId('dashboard-usuarios-link').or(page.getByRole('link', { name: /usuarios|users/i })).first();
-    this.empresasLink = page.getByTestId('dashboard-empresas-link').or(page.getByRole('link', { name: /empresas|companies/i })).first();
+    this.empresasLink = page.getByTestId('dashboard-companies-link').or(page.getByRole('link', { name: /empresas|companies/i })).first();
     this.clientesLink = page.getByTestId('dashboard-clientes-link').or(page.getByRole('link', { name: /clientes|customers/i })).first();
     this.logoutButton = page.getByTestId('dashboard-logout-button').or(page.getByRole('button', { name: /cerrar sesión|logout/i })).first();
   }
@@ -42,9 +42,9 @@ export class DashboardPage extends BasePage {
   /**
    * Navega a la sección de empresas
    */
-  async goToEmpresas() {
+  async goToCompanies() {
     await this.empresasLink.click();
-    await this.page.waitForURL(/\/empresas/, { timeout: 5000 });
+    await this.page.waitForURL(/\/companies/, { timeout: 5000 });
   }
 
   /**

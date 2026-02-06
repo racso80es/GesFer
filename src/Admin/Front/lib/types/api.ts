@@ -1,8 +1,8 @@
 // Tipos para Auth
 export interface LoginRequest {
-  empresa: string;
-  usuario: string;
-  contraseña: string;
+  company: string;
+  username: string;
+  password: string;
 }
 
 export interface LoginResponse {

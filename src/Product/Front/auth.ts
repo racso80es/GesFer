@@ -14,12 +14,12 @@ export const authConfig: NextAuthConfig = {
       id: "credentials",
       name: "Credentials",
       credentials: {
-        empresa: { label: "Empresa", type: "text" },
-        usuario: { label: "Usuario", type: "text" },
-        contraseña: { label: "Contraseña", type: "password" },
+        company: { label: "Empresa", type: "text" },
+        username: { label: "Usuario", type: "text" },
+        password: { label: "Contraseña", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.empresa || !credentials?.usuario || !credentials?.contraseña) {
+        if (!credentials?.company || !credentials?.username || !credentials?.password) {
           return null;
         }
 
@@ -31,9 +31,9 @@ export const authConfig: NextAuthConfig = {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              empresa: credentials.empresa,
-              usuario: credentials.usuario,
-              contraseña: credentials.contraseña,
+              empresa: credentials.company,
+              usuario: credentials.username,
+              contraseña: credentials.password,
             }),
           });
 
@@ -104,7 +104,7 @@ export const authConfig: NextAuthConfig = {
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
         session.user.email = token.email as string;
-        (session.user as any).role = token.role as string;
+        session.user.role = token.role as string;
         
         // Campos específicos para usuarios regulares (multi-tenant)
         if (token.companyId) {
@@ -114,7 +114,7 @@ export const authConfig: NextAuthConfig = {
         }
         
         // El accessToken se expone en session para uso en Server Components
-        (session as any).accessToken = token.accessToken as string;
+        session.accessToken = token.accessToken as string;
       }
       return session;
     },

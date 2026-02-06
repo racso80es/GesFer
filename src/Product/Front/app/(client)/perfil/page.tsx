@@ -10,6 +10,7 @@ import { ModalBase } from "@shared/components/shared/ModalBase";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
 import { UserForm } from "@/components/usuarios/user-form";
 import { usersApi } from "@/lib/api/users";
+import type { UpdateUser, CreateUser } from "@/lib/types/api";
 import { useAuth } from "@/contexts/auth-context";
 import { Edit, User as UserIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -33,7 +34,7 @@ export default function PerfilPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
+    mutationFn: ({ id, data }: { id: string; data: UpdateUser }) =>
       usersApi.update(id, data),
     onSuccess: (updatedUser) => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
@@ -61,11 +62,11 @@ export default function PerfilPage() {
     },
   });
 
-  const handleUpdate = async (data: any) => {
+  const handleUpdate = async (data: CreateUser | UpdateUser) => {
     if (user) {
       await updateMutation.mutateAsync({
         id: user.id,
-        data,
+        data: data as UpdateUser,
       });
     }
   };

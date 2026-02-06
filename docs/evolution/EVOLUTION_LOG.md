@@ -187,3 +187,26 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
     - Compilación exitosa de todos los proyectos (`dotnet build`).
     - Verificación de ausencia de archivos de GUID en capas de infraestructura de dominio.
     - Tests unitarios de Shared, Product y Admin pasando correctamente.
+
+## 2026-02-05 — Refactorización Frontend (Terminología y Tipado)
+
+### 1. Refactorización de Terminología "Empresa" (Kaizen-05)
+- **Acción:** Renombrado masivo de rutas, componentes y variables de "empresas" a "companies" en Product y Admin.
+- **Problema:** Violación de terminología canónica y uso de términos prohibidos ("empresa") en código fuente de Admin (fuga de abstracción).
+- **Solución:**
+    - Renombrado de rutas: `/empresas` -> `/companies`.
+    - Adaptador de Autenticación: Estandarización interna a claves en inglés (`company`, `username`, `password`) con mapeo legacy para backend.
+    - Limpieza de UI: Uso de i18n para etiquetas en lugar de literales harcodeados.
+- **Validación:**
+    - Builds de Product y Admin exitosos.
+    - Verificación visual de Login con inputs y etiquetas correctas.
+
+### 2. Eliminación de Deuda Técnica de Tipado (Kaizen-06)
+- **Acción:** Definición de tipos robustos para Auth y eliminación de `any` críticos.
+- **Problema:** Uso extensivo de `as any` en manejo de sesiones NextAuth, ocultando errores potenciales.
+- **Solución:**
+    - Creación de `types/next-auth.d.ts` extendiendo `Session` y `JWT`.
+    - Tipado estricto en `auth.ts`, `use-session.ts`, `auth-helper.ts` y middleware.
+- **Validación:**
+    - Tests de Product pasando (123 tests).
+    - Código libre de `as any` en puntos críticos de seguridad.

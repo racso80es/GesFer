@@ -10,7 +10,7 @@ import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/auth-context";
 import UsuariosPage from "@/app/(client)/usuarios/page";
-import EmpresasPage from "@/app/empresas/page";
+import CompaniesPage from "@/app/(client)/companies/page";
 import { usersApi } from "@/lib/api/users";
 import { companiesApi } from "@/lib/api/companies";
 import { authApi } from "@/lib/api/auth";
@@ -212,9 +212,9 @@ describe("Flujos E2E - Interacciones Completas", () => {
       mockAuthApi.getStoredUser.mockReturnValue(loginResponse);
 
       const result = await authApi.login({
-        empresa: "Test Company",
-        usuario: "admin",
-        contraseña: "password",
+        company: "Test Company",
+        username: "admin",
+        password: "password",
       });
 
       expect(result.token).toBe("new-token");

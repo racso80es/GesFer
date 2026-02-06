@@ -30,7 +30,7 @@ export default function AdminDashboardPage() {
         setError(null);
 
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-        const token = (session as any)?.accessToken;
+        const token = session?.accessToken;
 
         if (!token) {
           setError("Token de autenticación no disponible");
@@ -101,12 +101,12 @@ export default function AdminDashboardPage() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Empresas</CardTitle>
+                <CardTitle className="text-sm font-medium">Total Companies</CardTitle>
                 <Building2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{summary.totalCompanies}</div>
-                <p className="text-xs text-muted-foreground">Empresas registradas</p>
+                <p className="text-xs text-muted-foreground">Registered companies</p>
               </CardContent>
             </Card>
 

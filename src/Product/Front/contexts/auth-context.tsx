@@ -8,9 +8,9 @@ interface AuthContextType {
   user: LoginResponse | null;
   isLoading: boolean;
   login: (credentials: {
-    empresa: string;
-    usuario: string;
-    contraseña: string;
+    company: string;
+    username: string;
+    password: string;
   }) => Promise<void>;
   logout: () => void;
   updateUser: (updatedUser: Partial<LoginResponse>) => void;
@@ -68,9 +68,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (credentials: {
-    empresa: string;
-    usuario: string;
-    contraseña: string;
+    company: string;
+    username: string;
+    password: string;
   }) => {
     try {
       // Primero hacer login con la API para obtener los datos

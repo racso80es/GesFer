@@ -1,12 +1,18 @@
 import { apiClient } from "./client";
-import type { LoginRequest, LoginResponse } from "@/lib/types/api";
+import type { LoginRequest, LoginResponse, LoginPayload } from "@/lib/types/api";
 import { validateAndCleanStoredUser, clearAuthData } from "@/lib/utils/client-init";
 
 export const authApi = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
+    const payload: LoginPayload = {
+      empresa: credentials.company,
+      usuario: credentials.username,
+      contraseña: credentials.password
+    };
+
     const response = await apiClient.post<LoginResponse>(
       "/api/auth/login",
-      credentials
+      payload
     );
     
     // Guardar usuario en localStorage y cookies (siempre, incluso sin token)

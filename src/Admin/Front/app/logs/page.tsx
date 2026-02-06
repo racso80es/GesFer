@@ -42,7 +42,7 @@ export default function LogsPage() {
         setError(null);
 
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
-        const token = (session as any)?.accessToken;
+        const token = session?.accessToken;
 
         if (!token) {
           setError("Token de autenticación no disponible");

@@ -1,5 +1,12 @@
 // Tipos para Auth
 export interface LoginRequest {
+  company: string;
+  username: string;
+  password: string;
+}
+
+// Payload real enviado al backend (contracto legacy)
+export interface LoginPayload {
   empresa: string;
   usuario: string;
   contraseña: string;

@@ -18,7 +18,7 @@ export default auth((req) => {
   }
 
   // Verificar que el usuario tenga rol Admin
-  const user = req.auth?.user as any;
+  const user = req.auth?.user;
   if (user?.role !== "Admin") {
     const loginUrl = new URL("/login", req.url);
     return NextResponse.redirect(loginUrl);
