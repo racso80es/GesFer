@@ -2,6 +2,7 @@ using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Infrastructure.Data;
+using GesFer.Shared.Back.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -25,14 +26,17 @@ public class JsonDataSeeder
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<JsonDataSeeder> _logger;
+    private readonly ISensitiveDataSanitizer _sanitizer;
     private readonly string _seedsPath;
 
     public JsonDataSeeder(
         ApplicationDbContext context,
-        ILogger<JsonDataSeeder> logger)
+        ILogger<JsonDataSeeder> logger,
+        ISensitiveDataSanitizer sanitizer)
     {
         _context = context;
         _logger = logger;
+        _sanitizer = sanitizer;
 
         // Obtener la ruta de los archivos de seed
         // Ubicación canónica: src/Product/Back/Infrastructure/Data/Seeds/
@@ -774,6 +778,15 @@ public class JsonDataSeeder
                 if (userData.Password == "admin123")
                 {
                     passwordHash = fixedAdminHash;
+                }
+                else if (string.IsNullOrEmpty(userData.Password))
+                {
+                    var randomPwd = _sanitizer.GenerateRandomPassword();
+                    passwordHash = BCrypt.Net.BCrypt.HashPassword(randomPwd);
+                    // IMPORTANTE: En entorno real, esto debería comunicarse de forma segura.
+                    // Aquí lo logueamos como Warning para que el desarrollador lo vea en la consola al iniciar.
+                    _logger.LogWarning("[SEED SECURE] 🔐 Generated RANDOM password for user '{Username}': {Password}", userData.Username, randomPwd);
+                    Console.WriteLine($"    🔐 Clave generada para '{userData.Username}': {randomPwd}");
                 }
                 else
                 {

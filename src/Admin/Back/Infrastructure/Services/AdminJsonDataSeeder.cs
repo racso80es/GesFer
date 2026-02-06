@@ -1,5 +1,6 @@
 using GesFer.Admin.Back.Domain.Entities;
 using GesFer.Admin.Infrastructure.Data;
+using GesFer.Shared.Back.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -23,14 +24,17 @@ public class AdminJsonDataSeeder
 {
     private readonly AdminDbContext _context;
     private readonly ILogger<AdminJsonDataSeeder> _logger;
+    private readonly ISensitiveDataSanitizer _sanitizer;
     private readonly string _seedsPath;
 
     public AdminJsonDataSeeder(
         AdminDbContext context,
-        ILogger<AdminJsonDataSeeder> logger)
+        ILogger<AdminJsonDataSeeder> logger,
+        ISensitiveDataSanitizer sanitizer)
     {
         _context = context;
         _logger = logger;
+        _sanitizer = sanitizer;
 
         // Obtener la ruta de los archivos de seed
         // Ubicación canónica: src/Admin/Back/Infrastructure/Data/Seeds/
@@ -125,7 +129,17 @@ public class AdminJsonDataSeeder
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(u => u.Username == userData.Username);
 
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(userData.Password);
+            string passwordHash;
+            if (string.IsNullOrEmpty(userData.Password))
+            {
+                var randomPwd = _sanitizer.GenerateRandomPassword();
+                passwordHash = BCrypt.Net.BCrypt.HashPassword(randomPwd);
+                _logger.LogWarning("[SEED ADMIN] 🔐 Generated RANDOM password for Admin '{Username}': {Password}", userData.Username, randomPwd);
+            }
+            else
+            {
+                passwordHash = BCrypt.Net.BCrypt.HashPassword(userData.Password);
+            }
 
             if (existing == null)
             {
@@ -165,7 +179,8 @@ public class AdminJsonDataSeeder
                 // Actualizar contraseña si es un seed (para asegurar que coincida)
                 // Esto podría ser debatible en prod, pero para seed/reset es útil.
                 // Verificamos si la contraseña ha cambiado
-                if (!BCrypt.Net.BCrypt.Verify(userData.Password, existing.PasswordHash))
+                // Si la password en JSON es vacía (random), NO la actualizamos si ya existe, para no sobrescribir la del usuario.
+                if (!string.IsNullOrEmpty(userData.Password) && !BCrypt.Net.BCrypt.Verify(userData.Password, existing.PasswordHash))
                 {
                     existing.PasswordHash = passwordHash;
                     modified = true;
