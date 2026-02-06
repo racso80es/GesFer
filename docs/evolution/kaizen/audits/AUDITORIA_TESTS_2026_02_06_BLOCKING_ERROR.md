@@ -1,13 +1,13 @@
 # AUDITORIA_TESTS_2026_02_06_BLOCKING_ERROR
 
 ## Resumen Ejecutivo
-**Estado**: 🔴 **BLOQUEO CRÍTICO**
+**Estado**: 🟢 **RESUELTO** (Previamente 🔴 BLOQUEO CRÍTICO)
 **Fecha**: 2026-02-06
-**Responsable**: Auditoría Automatizada (Jules)
+**Responsable**: Auditoría Automatizada (Jules) -> Jules (Agent)
 
-La auditoría programada de Tests y Calidad de Código no ha podido ejecutarse debido a un error de compilación que impide la construcción de la solución. Se ha detenido el proceso según el protocolo de "Stop & Fix".
+La auditoría programada de Tests y Calidad de Código fue detenida inicialmente por un error de compilación. Posteriormente, se identificó y corrigió un error crítico en tiempo de ejecución. Adicionalmente, se implementaron salvaguardas de proceso (Kaizen).
 
-## Detalle del Error
+## Detalle del Error 1: Compilación
 
 ### Fallo de Compilación
 - **Proyecto Afectado**: `GesFer.Console.E2ETests`
@@ -15,24 +15,46 @@ La auditoría programada de Tests y Calidad de Código no ha podido ejecutarse d
 - **Error**: `CS7036: There is no argument given that corresponds to the required parameter 'runE2ETestsCommand' of 'MenuService.MenuService(...)'`
 
 ### Diagnóstico
-La clase `MenuService` ha sido modificada recientemente para incluir una nueva dependencia (`RunE2ETestsCommand` o similar), pero el test de integración `Option1IntegrationTest` no ha sido actualizado para inyectar esta dependencia en el constructor.
+La clase `MenuService` ha sido modificada recientemente para incluir nuevas dependencias, pero el test de integración `Option1IntegrationTest` no había sido actualizado.
 
-```csharp
-// Código actual en Option1IntegrationTest.cs (Línea 62)
-var menuService = new MenuService(
-    checkDockerCommand,
-    checkDockerComposeCommand,
-    // ... faltan argumentos ...
-    logService);
-```
+## Detalle del Error 2: Tiempo de Ejecución (Runtime)
 
-## Acciones Kaizen Requeridas
+### Fallo de Inyección de Dependencias
+- **Proyecto Afectado**: `GesFer.Console`
+- **Comando**: `InitializeDatabaseCommand`
+- **Error**: `Unable to resolve service for type 'GesFer.Shared.Back.Domain.Services.ISensitiveDataSanitizer' while attempting to activate 'GesFer.Admin.Infrastructure.Services.AdminJsonDataSeeder'.`
 
-1. **Corrección Inmediata (Hotfix)**:
-   - Actualizar `Option1IntegrationTest.cs` para instanciar e inyectar `RunE2ETestsCommand` (y cualquier otra dependencia faltante) en el constructor de `MenuService`.
+### Diagnóstico
+El servicio `AdminJsonDataSeeder` requiere `ISensitiveDataSanitizer` en su constructor. La aplicación de consola, al construir su contenedor de servicios manualmente en `InitializeDatabaseCommand`, no estaba registrando esta implementación, causando un fallo al intentar instanciar el seeder.
 
-2. **Mejora de Proceso**:
-   - Revisar el hook de pre-commit para asegurar que los tests de integración del proyecto `Console` se compilen (o ejecuten) antes de permitir commits que modifiquen el constructor de servicios core como `MenuService`.
+## Acciones Realizadas (Fix)
+
+1. **Corrección de Compilación (Test)**:
+   - Se actualizó `src/Console/tests/GesFer.Console.E2ETests/Option1IntegrationTest.cs`.
+   - Se instanciaron e inyectaron las dependencias faltantes en el constructor de `MenuService`.
+
+2. **Corrección de Runtime (Console DI)**:
+   - Se modificó `src/Console/Commands/InitializeDatabaseCommand.cs` añadiendo `services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();`.
+
+## Acciones Kaizen (Mejora de Proceso)
+
+Se han implementado **Skills Automatizados** protegidos por el Token del Auditor para prevenir regresiones futuras:
+
+1.  **Commit Skill** (`scripts/skills/commit-skill.sh`):
+    -   Se ejecuta en `pre-commit`.
+    -   Valida el Token de Interacción activo.
+    -   Ejecuta automáticamente todos los **Tests Unitarios**.
+    -   Registra éxito/fallo en `docs/audits/ACCESS_LOG.md`.
+
+2.  **PR Skill** (`scripts/skills/pr-skill.sh`):
+    -   Se ejecuta en `pre-push`.
+    -   Valida el Token de Interacción activo.
+    -   Ejecuta la **Suite Completa de Tests** (Unitarios + Integración + E2E) mediante `GesFer.Console`.
+    -   Registra éxito/fallo en `docs/audits/ACCESS_LOG.md`.
+
+3.  **Mecanismo de Bypass**:
+    -   Permite omitir auditoría explícita mediante `export BYPASS_AUDIT=1`.
+    -   Registra una advertencia (WARNING) en el log de auditoría.
 
 ---
-*Este informe ha sido generado automáticamente ante un evento de bloqueo.*
+*Este informe ha sido actualizado tras la resolución del incidente y la implementación de mejoras Kaizen.*
