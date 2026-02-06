@@ -1,16 +1,15 @@
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using GesFer.ConsoleApp.Commands;
 using GesFer.ConsoleApp.Commands.Dtos;
 using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Pomelo.EntityFrameworkCore.MySql;
 
 namespace GesFer.ConsoleApp.Services;
 
@@ -30,6 +29,7 @@ public class MenuService
     private readonly EnsureEfToolCommand _ensureEfToolCommand;
     private readonly SeedCommand _seedCommand;
     private readonly InitializeDatabaseCommand _initializeDatabaseCommand;
+    private readonly StartLocalEnvironmentCommand _startLocalEnvironmentCommand; // Nuevo
     private readonly RunUnitTestsCommand _runUnitTestsCommand;
     private readonly RunIntegrationTestsCommand _runIntegrationTestsCommand;
     private readonly RunE2ETestsCommand _runE2ETestsCommand;
@@ -49,6 +49,7 @@ public class MenuService
         EnsureEfToolCommand ensureEfToolCommand,
         SeedCommand seedCommand,
         InitializeDatabaseCommand initializeDatabaseCommand,
+        StartLocalEnvironmentCommand startLocalEnvironmentCommand, // Inyectado
         RunUnitTestsCommand runUnitTestsCommand,
         RunIntegrationTestsCommand runIntegrationTestsCommand,
         RunE2ETestsCommand runE2ETestsCommand,
@@ -67,6 +68,7 @@ public class MenuService
         _ensureEfToolCommand = ensureEfToolCommand;
         _seedCommand = seedCommand;
         _initializeDatabaseCommand = initializeDatabaseCommand;
+        _startLocalEnvironmentCommand = startLocalEnvironmentCommand;
         _runUnitTestsCommand = runUnitTestsCommand;
         _runIntegrationTestsCommand = runIntegrationTestsCommand;
         _runE2ETestsCommand = runE2ETestsCommand;
@@ -99,15 +101,16 @@ public class MenuService
         Console.WriteLine("Seleccione una opción:");
         Console.WriteLine();
         Console.WriteLine("  1. Inicialización completa");
-        Console.WriteLine("  2. Inicialización de base de datos");
-        Console.WriteLine("  3. Validación de integridad completa");
-        Console.WriteLine("  4. Cumplimiento de Reglas de Oro (continuar desde último punto)");
-        Console.WriteLine("  5. Gestionar contenedores Docker");
-        Console.WriteLine("  6. Aplicar migraciones de BD");
-        Console.WriteLine("  7. Ejecutar seeds de datos");
-        Console.WriteLine("  8. Squash de migraciones (Resetear y crear migración inicial única)");
-        Console.WriteLine("  9. Salir");
-        Console.WriteLine("  10. Ejecutar tests");
+        Console.WriteLine("  2. Levantar entorno local (Back/Front)"); // Nuevo
+        Console.WriteLine("  3. Inicialización de base de datos");
+        Console.WriteLine("  4. Validación de integridad completa");
+        Console.WriteLine("  5. Cumplimiento de Reglas de Oro");
+        Console.WriteLine("  6. Gestionar contenedores Docker");
+        Console.WriteLine("  7. Aplicar migraciones de BD");
+        Console.WriteLine("  8. Ejecutar seeds de datos");
+        Console.WriteLine("  9. Squash de migraciones");
+        Console.WriteLine("  10. Salir");
+        Console.WriteLine("  11. Ejecutar tests");
         Console.WriteLine();
         Console.Write("Opción: ");
     }
@@ -123,23 +126,26 @@ public class MenuService
             {
                 case 1:
                     return await ExecuteFullInitializationAsync(waitForInput);
-                case 2:
+                case 2: // Nueva opción
+                    await _startLocalEnvironmentCommand.HandleAsync(new StartLocalEnvironmentInput());
+                    return true;
+                case 3: // Antes 2
                     return await ExecuteDatabaseInitializationStep8Async(waitForInput);
-                case 3:
+                case 4: // Antes 3
                     return await ExecuteIntegrityValidationAsync();
-                case 4:
+                case 5: // Antes 4
                     return await ExecuteGoldenRulesComplianceAsync();
-                case 5:
+                case 6: // Antes 5
                     return await ExecuteDockerMenuAsync();
-                case 6:
+                case 7: // Antes 6
                     return await ExecuteMigrationsMenuAsync();
-                case 7:
+                case 8: // Antes 7
                     return await ExecuteSeedsMenuAsync();
-                case 8:
+                case 9: // Antes 8
                     return await ExecuteMigrationSquashAsync();
-                case 9:
-                    return false; // Salir
-                case 10:
+                case 10: // Antes 9 (Salir)
+                    return false;
+                case 11: // Antes 10 (Tests)
                     return await ExecuteTestsMenuAsync();
                 default:
                     Console.WriteLine("Opción no válida. Presione cualquier tecla para continuar...");

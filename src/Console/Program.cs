@@ -2,6 +2,7 @@ using GesFer.ConsoleApp.Commands;
 using GesFer.ConsoleApp.Services;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GesFer.ConsoleApp;
 
@@ -116,6 +117,7 @@ class Program
         // Other Commands
         var seedCommand = new SeedCommand(logService);
         var initializeDatabaseCommand = new InitializeDatabaseCommand(logService);
+        var startLocalEnvironmentCommand = new StartLocalEnvironmentCommand(logService); // Nuevo
 
         // Test Commands
         var runUnitTestsCommand = new RunUnitTestsCommand(logService);
@@ -138,6 +140,7 @@ class Program
             ensureEfToolCommand,
             seedCommand,
             initializeDatabaseCommand,
+            startLocalEnvironmentCommand, // Inyectado
             runUnitTestsCommand,
             runIntegrationTestsCommand,
             runE2ETestsCommand,
@@ -163,24 +166,6 @@ class Program
             }
         }
 
-        // Si se pasa el argumento "2", ejecutar opción 2 del menú (Inicialización de base de datos)
-        if (args.Length > 0 && args[0] == "2")
-        {
-            try
-            {
-                var initResult = await menuService.ExecuteOptionAsync(2, waitForInput: false);
-                Environment.Exit(initResult ? 0 : 1);
-                return;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error durante la inicialización de base de datos: {ex.Message}");
-                logService.WriteError("Error durante la inicialización de base de datos", ex);
-                Environment.Exit(1);
-                return;
-            }
-        }
-
         // Si se pasa el argumento "--initialize" o "-i" o "1", ejecutar inicialización completa
         if (args.Length > 0 && (args[0] == "--initialize" || args[0] == "-i" || args[0] == "1"))
         {
@@ -199,8 +184,44 @@ class Program
             }
         }
 
-        // Si se pasa el argumento "--test-golden-rules" o "--golden-rules" o "3", ejecutar cumplimiento de reglas de oro
-        if (args.Length > 0 && (args[0] == "--test-golden-rules" || args[0] == "--golden-rules" || args[0] == "3"))
+        // Si se pasa el argumento "2", ejecutar opción 2 (Levantar entorno local)
+        if (args.Length > 0 && args[0] == "2")
+        {
+            try
+            {
+                var initResult = await menuService.ExecuteOptionAsync(2, waitForInput: false);
+                Environment.Exit(initResult ? 0 : 1);
+                return;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error durante el inicio del entorno local: {ex.Message}");
+                logService.WriteError("Error durante el inicio del entorno local", ex);
+                Environment.Exit(1);
+                return;
+            }
+        }
+
+        // Si se pasa el argumento "3", ejecutar opción 3 (Inicialización de base de datos)
+        if (args.Length > 0 && args[0] == "3")
+        {
+            try
+            {
+                var initResult = await menuService.ExecuteOptionAsync(3, waitForInput: false);
+                Environment.Exit(initResult ? 0 : 1);
+                return;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error durante la inicialización de base de datos: {ex.Message}");
+                logService.WriteError("Error durante la inicialización de base de datos", ex);
+                Environment.Exit(1);
+                return;
+            }
+        }
+
+        // Si se pasa el argumento "--test-golden-rules" o "--golden-rules" o "5", ejecutar cumplimiento de reglas de oro
+        if (args.Length > 0 && (args[0] == "--test-golden-rules" || args[0] == "--golden-rules" || args[0] == "5"))
         {
             try
             {
@@ -217,12 +238,12 @@ class Program
             }
         }
 
-        // Si se pasa el argumento "--tests" o "10", ir al menú de tests
-        if (args.Length > 0 && (args[0] == "--tests" || args[0] == "10"))
+        // Si se pasa el argumento "--tests" o "11", ir al menú de tests
+        if (args.Length > 0 && (args[0] == "--tests" || args[0] == "11"))
         {
             try
             {
-                await menuService.ExecuteOptionAsync(10, waitForInput: false);
+                await menuService.ExecuteOptionAsync(11, waitForInput: false);
                 Environment.Exit(0);
                 return;
             }
@@ -235,7 +256,7 @@ class Program
             }
         }
 
-        // Si se pasa el argumento "--step8" o "--punto8" o "8", ejecutar punto 8 de la opción 1
+        // Si se pasa el argumento "--step8" o "--punto8" o "8", ejecutar punto 8 de la opción 1 (que es lo mismo que opción 3)
         if (args.Length > 0 && (args[0] == "--step8" || args[0] == "--punto8" || args[0] == "8"))
         {
             try
@@ -330,9 +351,11 @@ class Program
             Console.WriteLine("Uso: GesFer.Console [opcion]");
             Console.WriteLine("Opciones:");
             Console.WriteLine("  1, -i, --initialize       Inicialización completa");
-            Console.WriteLine("  2                         Inicialización de base de datos");
-            Console.WriteLine("  3, --golden-rules         Verificar reglas de oro");
-            Console.WriteLine("  8, --step8                Ejecutar paso 8");
+            Console.WriteLine("  2                         Levantar entorno local");
+            Console.WriteLine("  3                         Inicialización de base de datos");
+            Console.WriteLine("  5, --golden-rules         Verificar reglas de oro");
+            Console.WriteLine("  8, --step8                Ejecutar paso 8 (Init DB)");
+            Console.WriteLine("  11, --tests               Ejecutar tests");
             Console.WriteLine("  -v, --validate            Validar ecosistema");
             Environment.Exit(1);
             return;
