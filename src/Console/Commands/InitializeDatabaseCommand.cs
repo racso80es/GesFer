@@ -16,6 +16,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using GesFer.Admin.Infrastructure.Data;
+using GesFer.Admin.Infrastructure.Services;
 using Pomelo.EntityFrameworkCore.MySql;
 
 namespace GesFer.ConsoleApp.Commands;
@@ -139,6 +140,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             });
 
             services.AddScoped<JsonDataSeeder>();
+            services.AddScoped<AdminJsonDataSeeder>();
             services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
 
             var serviceProvider = services.BuildServiceProvider();
@@ -149,6 +151,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                 var scopedServices = scope.ServiceProvider;
                 var context = scopedServices.GetRequiredService<ApplicationDbContext>();
                 var adminContext = scopedServices.GetRequiredService<AdminDbContext>();
+                var adminSeeder = scopedServices.GetRequiredService<AdminJsonDataSeeder>();
                 var logger = scopedServices.GetRequiredService<ILogger<InitializeDatabaseCommand>>();
 
                 if (isDetailed) _logService.WriteLog("Eliminando base de datos para empezar de 0...");
@@ -199,6 +202,15 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     
                     if (isDetailed) _logService.WriteLog("Aplicando migraciones de Admin...");
                     await adminContext.Database.MigrateAsync();
+
+                    // Cargar datos de seed para Admin
+                    if (isDetailed) _logService.WriteLog("Cargando seeds de Admin...");
+                    var adminSeedResult = await adminSeeder.SeedAdminUsersAsync();
+                    if (adminSeedResult.Loaded)
+                    {
+                        var info = $"✓ Seeds Admin cargados: {string.Join(", ", adminSeedResult.Entities)}";
+                        result.Data.Information.Add(info);
+                    }
 
                     var migrationsAfter = await context.Database.GetAppliedMigrationsAsync();
                     var appliedMigrations = migrationsAfter.Except(migrationsBefore).ToList();
