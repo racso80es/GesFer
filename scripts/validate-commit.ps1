@@ -36,27 +36,18 @@ function Fail-SGrade {
     exit 1
 }
 
-function Assert-BranchDocumentation {
-    Write-Host "Verificando documentación obligatoria de rama..." -ForegroundColor Yellow
+function Assert-InteractionToken {
+    Write-Host "Verificando Token de Interacción [Auditor Process]..." -ForegroundColor Yellow
 
-    $branch = (git branch --show-current).Trim()
-    if ([string]::IsNullOrWhiteSpace($branch)) {
-        Fail-SGrade "Documentación de rama ausente."
+    $scriptPath = Join-Path $PSScriptRoot "auditor\process-token-manager.ps1"
+    if (-not (Test-Path $scriptPath)) {
+        Fail-SGrade "Script de gestión de tokens no encontrado en $scriptPath"
     }
 
-    $docBranchName = ($branch -replace "[/\\]", "-")
-    $docPath = Join-Path -Path "docs\branches" -ChildPath ("{0}.md" -f $docBranchName)
-
-    if (-not (Test-Path $docPath)) {
-        Fail-SGrade "Documentación de rama ausente."
+    & $scriptPath -Command Validate
+    if ($LASTEXITCODE -ne 0) {
+        Fail-SGrade "Token de interacción inválido. El Auditor ha bloqueado el proceso."
     }
-
-    $content = (Get-Content -Path $docPath -Raw -ErrorAction SilentlyContinue)
-    if ([string]::IsNullOrWhiteSpace($content)) {
-        Fail-SGrade "Documentación de rama ausente."
-    }
-
-    Write-Host "Documentación de rama OK: $docPath" -ForegroundColor Green
 }
 
 function Assert-AiTelemetry {
@@ -98,7 +89,7 @@ function Assert-AiPerfReport {
     Write-Host "Reporte IA OK: $reportPath" -ForegroundColor Green
 }
 
-$null = Assert-BranchDocumentation
+$null = Assert-InteractionToken
 $null = Assert-AiTelemetry
 $null = Assert-AiPerfReport
 
