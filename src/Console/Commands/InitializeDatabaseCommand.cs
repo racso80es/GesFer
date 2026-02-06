@@ -142,6 +142,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             services.AddScoped<JsonDataSeeder>();
             services.AddScoped<AdminJsonDataSeeder>();
             services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
+            services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
 
             var serviceProvider = services.BuildServiceProvider();
             
