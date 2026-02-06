@@ -170,16 +170,8 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
         // Servicios necesarios
         services.AddLogging(builder =>
         {
-            // builder.AddConsole(); // Prohibido escribir a consola desde aquí si queremos control total?
-            // El original tenía builder.AddConsole().
-            // Si el DbContext o Seeder escriben logs a ILogger, saldrán a consola.
-            // Para cumplir estrictamente "Prohibido usar Console.WriteLine", esto es aceptable porque es ILogger, no Console.WriteLine directo.
-            // Pero si queremos que "la consola decida cómo mostrarlos", quizás deberíamos capturar estos logs?
-            // Por ahora lo dejaré como estaba para no romper funcionalidad oculta, pero lo comento.
-            // Si AddConsole está activo, EF Core escribirá en stdout.
-            // Lo mantendré para debug, pero idealmente deberíamos redirigirlo.
             builder.AddConsole();
-            builder.SetMinimumLevel(LogLevel.Information);
+            builder.SetMinimumLevel(LogLevel.Warning);
         });
 
         // Servicios de infraestructura
