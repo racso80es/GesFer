@@ -173,7 +173,7 @@ public class MenuService
         _logService.WriteLog("========================================");
 
         // 1. Verificar Docker
-        Console.WriteLine("[1/9] Verificando Docker...");
+        Console.WriteLine("[1/12] Verificando Docker...");
         var dockerCheck = await _checkDockerCommand.HandleAsync(new CheckDockerInput());
         if (!dockerCheck.Success || !dockerCheck.Data)
         {
@@ -195,100 +195,45 @@ public class MenuService
         Console.WriteLine("    ✓ docker-compose está disponible");
         Console.WriteLine();
 
-        // 2. Verificar que la API compila
-        Console.WriteLine("[2/9] Verificando compilación de la API...");
+        // 2. Verificar que la API Product compila
+        Console.WriteLine("[2/12] Verificando compilación de la API Product...");
         // Ruta corregida: _logService.GetRootPath() es la raíz del repo, luego src/Product/Back/Api
         var apiProjectPath = Path.Combine(_logService.GetRootPath(), "src", "Product", "Back", "Api", "GesFer.Api.csproj");
         
-        if (!File.Exists(apiProjectPath))
+        if (!await CheckDotNetProjectCompilationAsync(apiProjectPath, "API Product"))
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("    ⚠ Advertencia: No se encontró el proyecto de la API en:");
-            Console.WriteLine($"      {apiProjectPath}");
-            Console.ResetColor();
-            Console.WriteLine("    Continuando sin verificar compilación...");
-            Console.WriteLine();
-        }
-        else
-        {
-            try
-            {
-                var buildProcess = new ProcessStartInfo
-                {
-                    FileName = "dotnet",
-                    Arguments = $"build \"{apiProjectPath}\" --no-incremental",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                using var buildProcessInstance = Process.Start(buildProcess);
-                if (buildProcessInstance == null)
-                {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("    ⚠ Advertencia: No se pudo iniciar el proceso de compilación");
-                    Console.ResetColor();
-                    Console.WriteLine("    Continuando sin verificar compilación...");
-                    Console.WriteLine();
-                }
-                else
-                {
-                    var output = await buildProcessInstance.StandardOutput.ReadToEndAsync();
-                    var error = await buildProcessInstance.StandardError.ReadToEndAsync();
-                    await buildProcessInstance.WaitForExitAsync();
-
-                    if (buildProcessInstance.ExitCode != 0)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("    ❌ ERROR: La API no compila. Abortando inicialización.");
-                        Console.ResetColor();
-                        Console.WriteLine();
-                        Console.WriteLine("Errores de compilación:");
-                        if (!string.IsNullOrWhiteSpace(error))
-                        {
-                            Console.WriteLine(error);
-                        }
-                        if (!string.IsNullOrWhiteSpace(output))
-                        {
-                            Console.WriteLine(output);
-                        }
-                        Console.WriteLine();
-                        Console.WriteLine("Por favor, corrige los errores de compilación antes de continuar.");
-                        Console.WriteLine($"Ruta del proyecto: {apiProjectPath}");
-                        Console.WriteLine();
-                        Console.WriteLine("Presione cualquier tecla para continuar...");
-                        SafeReadKey();
-                        
-                        _logService.WriteError($"La API no compila. ExitCode: {buildProcessInstance.ExitCode}");
-                        _logService.WriteLog($"Salida de compilación: {output}");
-                        if (!string.IsNullOrWhiteSpace(error))
-                        {
-                            _logService.WriteLog($"Errores de compilación: {error}");
-                        }
-                        
-                        return true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("    ✓ API compila correctamente");
-                        _logService.WriteLog("API compilada correctamente");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"    ⚠ Advertencia: Error al verificar compilación: {ex.Message}");
-                Console.ResetColor();
-                Console.WriteLine("    Continuando sin verificar compilación...");
-                _logService.WriteError("Error al verificar compilación de la API", ex);
-            }
-            Console.WriteLine();
+            return true;
         }
 
-        // 3. Eliminar contenedores
-        Console.WriteLine("[3/9] Limpiando contenedores existentes...");
+        // 3. Verificar que la API Admin compila
+        Console.WriteLine("[3/12] Verificando compilación de la API Admin...");
+        var adminApiProjectPath = Path.Combine(_logService.GetRootPath(), "src", "Admin", "Back", "Api", "GesFer.Admin.Api.csproj");
+
+        if (!await CheckDotNetProjectCompilationAsync(adminApiProjectPath, "API Admin"))
+        {
+            return true;
+        }
+
+        // 4. Verificar que el Frontend Product compila
+        Console.WriteLine("[4/12] Verificando compilación del Frontend Product...");
+        var productFrontPath = Path.Combine(_logService.GetRootPath(), "src", "Product", "Front");
+
+        if (!await CheckNpmProjectCompilationAsync(productFrontPath, "Frontend Product"))
+        {
+            return true;
+        }
+
+        // 5. Verificar que el Frontend Admin compila
+        Console.WriteLine("[5/12] Verificando compilación del Frontend Admin...");
+        var adminFrontPath = Path.Combine(_logService.GetRootPath(), "src", "Admin", "Front");
+
+        if (!await CheckNpmProjectCompilationAsync(adminFrontPath, "Frontend Admin"))
+        {
+            return true;
+        }
+
+        // 6. Eliminar contenedores
+        Console.WriteLine("[6/12] Limpiando contenedores existentes...");
         var rmResult = await _removeContainersCommand.HandleAsync(new RemoveContainersInput());
         if (rmResult?.Logs != null)
         {
@@ -296,8 +241,8 @@ public class MenuService
         }
         Console.WriteLine();
 
-        // 4. Crear contenedores
-        Console.WriteLine("[4/9] Creando contenedores Docker...");
+        // 7. Crear contenedores
+        Console.WriteLine("[7/12] Creando contenedores Docker...");
         var createResult = await _createContainersCommand.HandleAsync(new CreateContainersInput());
         foreach(var l in createResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
 
@@ -310,8 +255,8 @@ public class MenuService
         }
         Console.WriteLine();
 
-        // 5. Esperar MySQL
-        Console.WriteLine("[5/9] Esperando a que MySQL esté listo...");
+        // 8. Esperar MySQL
+        Console.WriteLine("[8/12] Esperando a que MySQL esté listo...");
         var waitResult = await _waitMySqlReadyCommand.HandleAsync(new WaitMySqlInput());
         foreach(var l in waitResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
 
@@ -324,8 +269,8 @@ public class MenuService
         }
         Console.WriteLine();
 
-        // 6. Verificar/Instalar dotnet-ef
-        Console.WriteLine("[6/9] Verificando herramienta dotnet-ef...");
+        // 9. Verificar/Instalar dotnet-ef
+        Console.WriteLine("[9/12] Verificando herramienta dotnet-ef...");
         var efToolResult = await _ensureEfToolCommand.HandleAsync(new EnsureEfToolInput());
         foreach (var log in efToolResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(log);
 
@@ -338,8 +283,8 @@ public class MenuService
         }
         Console.WriteLine();
 
-        // 7. Crear migraciones si no existen
-        Console.WriteLine("[7/9] Verificando migraciones...");
+        // 10. Crear migraciones si no existen
+        Console.WriteLine("[10/12] Verificando migraciones...");
         var initMigResult = await _createInitialMigrationCommand.HandleAsync(new CreateInitialMigrationInput());
         foreach (var log in initMigResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(log);
 
@@ -349,8 +294,8 @@ public class MenuService
         }
         Console.WriteLine();
 
-        // 8. Aplicar migraciones y ejecutar seeds usando DatabaseInitializationService (Command)
-        Console.WriteLine("[8/9] Aplicando migraciones y cargando datos iniciales desde JSON...");
+        // 11. Aplicar migraciones y ejecutar seeds usando DatabaseInitializationService (Command)
+        Console.WriteLine("[11/12] Aplicando migraciones y cargando datos iniciales desde JSON...");
         var initCmdResult = await _initializeDatabaseCommand.HandleAsync(new InitializeDatabaseInput());
 
         if (initCmdResult == null || initCmdResult.Data == null)
@@ -479,6 +424,189 @@ public class MenuService
             }
         }
 
+        return true;
+    }
+
+    private async Task<bool> CheckDotNetProjectCompilationAsync(string projectPath, string projectName)
+    {
+        if (!File.Exists(projectPath))
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"    ⚠ Advertencia: No se encontró el proyecto {projectName} en:");
+            Console.WriteLine($"      {projectPath}");
+            Console.ResetColor();
+            Console.WriteLine("    Continuando sin verificar compilación...");
+            Console.WriteLine();
+            return true;
+        }
+
+        try
+        {
+            var buildProcess = new ProcessStartInfo
+            {
+                FileName = "dotnet",
+                Arguments = $"build \"{projectPath}\" --no-incremental",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var buildProcessInstance = Process.Start(buildProcess);
+            if (buildProcessInstance == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("    ⚠ Advertencia: No se pudo iniciar el proceso de compilación");
+                Console.ResetColor();
+                Console.WriteLine("    Continuando sin verificar compilación...");
+                Console.WriteLine();
+                return true;
+            }
+
+            var output = await buildProcessInstance.StandardOutput.ReadToEndAsync();
+            var error = await buildProcessInstance.StandardError.ReadToEndAsync();
+            await buildProcessInstance.WaitForExitAsync();
+
+            if (buildProcessInstance.ExitCode != 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"    ❌ ERROR: {projectName} no compila. Abortando inicialización.");
+                Console.ResetColor();
+                Console.WriteLine();
+                Console.WriteLine("Errores de compilación:");
+                if (!string.IsNullOrWhiteSpace(error))
+                {
+                    Console.WriteLine(error);
+                }
+                if (!string.IsNullOrWhiteSpace(output))
+                {
+                    Console.WriteLine(output);
+                }
+                Console.WriteLine();
+                Console.WriteLine("Por favor, corrige los errores de compilación antes de continuar.");
+                Console.WriteLine($"Ruta del proyecto: {projectPath}");
+                Console.WriteLine();
+                Console.WriteLine("Presione cualquier tecla para continuar...");
+                SafeReadKey();
+
+                _logService.WriteError($"{projectName} no compila. ExitCode: {buildProcessInstance.ExitCode}");
+                _logService.WriteLog($"Salida de compilación: {output}");
+                if (!string.IsNullOrWhiteSpace(error))
+                {
+                    _logService.WriteLog($"Errores de compilación: {error}");
+                }
+
+                return false;
+            }
+            else
+            {
+                Console.WriteLine($"    ✓ {projectName} compila correctamente");
+                _logService.WriteLog($"{projectName} compilada correctamente");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"    ⚠ Advertencia: Error al verificar compilación de {projectName}: {ex.Message}");
+            Console.ResetColor();
+            Console.WriteLine("    Continuando sin verificar compilación...");
+            _logService.WriteError($"Error al verificar compilación de {projectName}", ex);
+        }
+        Console.WriteLine();
+        return true;
+    }
+
+    private async Task<bool> CheckNpmProjectCompilationAsync(string projectPath, string projectName)
+    {
+        if (!Directory.Exists(projectPath))
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"    ⚠ Advertencia: No se encontró el directorio de {projectName} en:");
+            Console.WriteLine($"      {projectPath}");
+            Console.ResetColor();
+            Console.WriteLine("    Continuando sin verificar compilación...");
+            Console.WriteLine();
+            return true;
+        }
+
+        Console.WriteLine("    Iniciando instalación de dependencias y build (puede tardar unos minutos)...");
+
+        try
+        {
+            // Ejecutar npm install y npm run build
+            // Usamos cmd /c en Windows o bash en Linux para encadenar comandos
+            var isWindows = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
+            var fileName = isWindows ? "cmd" : "bash";
+            var arguments = isWindows
+                ? $"/c cd \"{projectPath}\" && npm install && npm run build"
+                : $"-c \"cd '{projectPath}' && npm install && npm run build\"";
+
+            var buildProcess = new ProcessStartInfo
+            {
+                FileName = fileName,
+                Arguments = arguments,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var buildProcessInstance = Process.Start(buildProcess);
+            if (buildProcessInstance == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("    ⚠ Advertencia: No se pudo iniciar el proceso de build npm");
+                Console.ResetColor();
+                Console.WriteLine("    Continuando sin verificar compilación...");
+                Console.WriteLine();
+                return true;
+            }
+
+            // Para procesos largos, a veces es mejor no esperar a leer todo al final si el buffer se llena.
+            // Pero para simplificar mantenemos ReadToEndAsync. Si falla por buffer, cambiaremos.
+            var output = await buildProcessInstance.StandardOutput.ReadToEndAsync();
+            var error = await buildProcessInstance.StandardError.ReadToEndAsync();
+            await buildProcessInstance.WaitForExitAsync();
+
+            if (buildProcessInstance.ExitCode != 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"    ❌ ERROR: {projectName} no compila. Abortando inicialización.");
+                Console.ResetColor();
+                Console.WriteLine();
+                Console.WriteLine("Errores de compilación:");
+                 // Mostramos solo las últimas líneas de error para no saturar la consola
+                var errorLines = (error + "\n" + output).Split('\n').TakeLast(20);
+                foreach(var line in errorLines) Console.WriteLine(line);
+
+                Console.WriteLine();
+                Console.WriteLine("Por favor, corrige los errores de compilación antes de continuar.");
+                Console.WriteLine($"Ruta del proyecto: {projectPath}");
+                Console.WriteLine();
+                Console.WriteLine("Presione cualquier tecla para continuar...");
+                SafeReadKey();
+
+                _logService.WriteError($"{projectName} no compila. ExitCode: {buildProcessInstance.ExitCode}");
+                _logService.WriteLog($"Salida de compilación: {output}\nERRORES: {error}");
+
+                return false;
+            }
+            else
+            {
+                Console.WriteLine($"    ✓ {projectName} compila correctamente");
+                _logService.WriteLog($"{projectName} compilada correctamente");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"    ⚠ Advertencia: Error al verificar compilación de {projectName}: {ex.Message}");
+            Console.WriteLine("    Asegúrate de tener node y npm instalados.");
+            Console.ResetColor();
+            Console.WriteLine("    Continuando sin verificar compilación...");
+            _logService.WriteError($"Error al verificar compilación de {projectName}", ex);
+        }
+        Console.WriteLine();
         return true;
     }
 
