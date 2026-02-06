@@ -53,6 +53,23 @@ info() {
     echo -e "${YELLOW}ℹ️  $1${NC}"
 }
 
+# 0. Validar Token de Interacción (Auditor Process)
+assert_interaction_token() {
+    info "Verificando Token de Interacción [Auditor Process]..."
+
+    local script_path="scripts/auditor/process-token-manager.sh"
+    if [ ! -f "$script_path" ]; then
+        error "Script de gestión de tokens no encontrado en $script_path"
+    fi
+
+    if bash "$script_path" Validate; then
+         success "Token válido."
+    else
+         error "Token de interacción inválido. El Auditor ha bloqueado el proceso."
+    fi
+}
+assert_interaction_token
+
 # 1. Validar Backend - Build
 info "Compilando Backend (dotnet build)..."
 if [ -d "Api" ]; then

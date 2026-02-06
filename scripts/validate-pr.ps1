@@ -127,11 +127,24 @@ function Assert-ArchitecturalAlignmentAliasReport {
     }
 }
 
+function Assert-InteractionToken {
+    Write-Host "[AUDITOR] Verificando Token de Interacción..." -ForegroundColor Yellow
+    $scriptPath = Join-Path $PSScriptRoot "auditor\process-token-manager.ps1"
+    if (-not (Test-Path $scriptPath)) {
+        Fail-SGrade "Script de gestión de tokens no encontrado"
+    }
+    & $scriptPath -Command Validate
+    if ($LASTEXITCODE -ne 0) {
+        Fail-SGrade "Token de interacción inválido. Ejecuta el gestor de tokens."
+    }
+}
+
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "JUEZ MODULAR - Validacion PR/Push" -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
 
+$null = Assert-InteractionToken
 $null = Assert-BranchDocumentation
 $null = Assert-AiTelemetryGlobal
 $null = Assert-AiPerfReportForBranch

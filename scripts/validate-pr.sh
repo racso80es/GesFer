@@ -88,6 +88,17 @@ cleanup_services() {
 # Registrar cleanup al finalizar (éxito o error)
 trap cleanup_services EXIT
 
+# 0. Validar Token de Interacción
+echo "🔐 [0/4] Verificando Token de Interacción (Auditor Process)..."
+if bash scripts/auditor/process-token-manager.sh Validate; then
+     echo "✅ Token válido."
+else
+     echo "❌ ERROR: Token de interacción inválido. Ejecuta el gestor de tokens."
+     # Bloqueo inmediato por seguridad
+     exit 1
+fi
+echo ""
+
 # 1. Validar Backend - Build
 echo "📦 [1/4] Compilando Backend (dotnet build)..."
 if [ -d "Api" ]; then
