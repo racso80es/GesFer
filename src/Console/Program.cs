@@ -117,6 +117,11 @@ class Program
         var seedCommand = new SeedCommand(logService);
         var initializeDatabaseCommand = new InitializeDatabaseCommand(logService);
 
+        // Test Commands
+        var runUnitTestsCommand = new RunUnitTestsCommand(logService);
+        var runIntegrationTestsCommand = new RunIntegrationTestsCommand(logService);
+        var runE2ETestsCommand = new RunE2ETestsCommand(logService);
+
         // Services (Legacy/Not refactored yet)
         var integrityValidationService = new IntegrityValidationService(logService);
         var goldenRulesService = new GoldenRulesComplianceService(logService);
@@ -133,6 +138,9 @@ class Program
             ensureEfToolCommand,
             seedCommand,
             initializeDatabaseCommand,
+            runUnitTestsCommand,
+            runIntegrationTestsCommand,
+            runE2ETestsCommand,
             integrityValidationService,
             goldenRulesService,
             logService);
@@ -204,6 +212,24 @@ class Program
             {
                 Console.WriteLine($"Error durante la prueba de reglas de oro: {ex.Message}");
                 logService.WriteError("Error durante la prueba de reglas de oro", ex);
+                Environment.Exit(1);
+                return;
+            }
+        }
+
+        // Si se pasa el argumento "--tests" o "10", ir al menú de tests
+        if (args.Length > 0 && (args[0] == "--tests" || args[0] == "10"))
+        {
+            try
+            {
+                await menuService.ExecuteOptionAsync(10, waitForInput: false);
+                Environment.Exit(0);
+                return;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error durante la ejecución de tests: {ex.Message}");
+                logService.WriteError("Error durante la ejecución de tests", ex);
                 Environment.Exit(1);
                 return;
             }

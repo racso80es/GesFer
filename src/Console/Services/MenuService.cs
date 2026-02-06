@@ -30,6 +30,9 @@ public class MenuService
     private readonly EnsureEfToolCommand _ensureEfToolCommand;
     private readonly SeedCommand _seedCommand;
     private readonly InitializeDatabaseCommand _initializeDatabaseCommand;
+    private readonly RunUnitTestsCommand _runUnitTestsCommand;
+    private readonly RunIntegrationTestsCommand _runIntegrationTestsCommand;
+    private readonly RunE2ETestsCommand _runE2ETestsCommand;
     private readonly IntegrityValidationService _integrityValidationService;
     private readonly GoldenRulesComplianceService _goldenRulesService;
     private readonly LogService _logService;
@@ -46,6 +49,9 @@ public class MenuService
         EnsureEfToolCommand ensureEfToolCommand,
         SeedCommand seedCommand,
         InitializeDatabaseCommand initializeDatabaseCommand,
+        RunUnitTestsCommand runUnitTestsCommand,
+        RunIntegrationTestsCommand runIntegrationTestsCommand,
+        RunE2ETestsCommand runE2ETestsCommand,
         IntegrityValidationService integrityValidationService,
         GoldenRulesComplianceService goldenRulesService,
         LogService logService)
@@ -61,6 +67,9 @@ public class MenuService
         _ensureEfToolCommand = ensureEfToolCommand;
         _seedCommand = seedCommand;
         _initializeDatabaseCommand = initializeDatabaseCommand;
+        _runUnitTestsCommand = runUnitTestsCommand;
+        _runIntegrationTestsCommand = runIntegrationTestsCommand;
+        _runE2ETestsCommand = runE2ETestsCommand;
         _integrityValidationService = integrityValidationService;
         _goldenRulesService = goldenRulesService;
         _logService = logService;
@@ -98,6 +107,7 @@ public class MenuService
         Console.WriteLine("  7. Ejecutar seeds de datos");
         Console.WriteLine("  8. Squash de migraciones (Resetear y crear migración inicial única)");
         Console.WriteLine("  9. Salir");
+        Console.WriteLine("  10. Ejecutar tests");
         Console.WriteLine();
         Console.Write("Opción: ");
     }
@@ -129,6 +139,8 @@ public class MenuService
                     return await ExecuteMigrationSquashAsync();
                 case 9:
                     return false; // Salir
+                case 10:
+                    return await ExecuteTestsMenuAsync();
                 default:
                     Console.WriteLine("Opción no válida. Presione cualquier tecla para continuar...");
                     SafeReadKey();
@@ -972,6 +984,51 @@ public class MenuService
         Console.WriteLine("Presione cualquier tecla para continuar...");
         Console.ReadKey();
 
+        return true;
+    }
+
+    /// <summary>
+    /// Muestra el menú de ejecución de tests
+    /// </summary>
+    private async Task<bool> ExecuteTestsMenuAsync()
+    {
+        Console.Clear();
+        Console.WriteLine("========================================");
+        Console.WriteLine("   Ejecución de Tests");
+        Console.WriteLine("========================================");
+        Console.WriteLine();
+        Console.WriteLine("  1. Tests Unitarios (Local)");
+        Console.WriteLine("  2. Tests de Integridad (Docker)");
+        Console.WriteLine("  3. Tests E2E (Playwright - Docker)");
+        Console.WriteLine("  4. Todos los Tests");
+        Console.WriteLine("  5. Volver al menú principal");
+        Console.WriteLine();
+        Console.Write("Opción: ");
+
+        if (int.TryParse(Console.ReadLine(), out int option))
+        {
+            switch (option)
+            {
+                case 1:
+                    await _runUnitTestsCommand.HandleAsync(new RunUnitTestsInput());
+                    break;
+                case 2:
+                    await _runIntegrationTestsCommand.HandleAsync(new RunIntegrationTestsInput());
+                    break;
+                case 3:
+                    await _runE2ETestsCommand.HandleAsync(new RunE2ETestsInput());
+                    break;
+                case 4:
+                    await _runUnitTestsCommand.HandleAsync(new RunUnitTestsInput());
+                    await _runIntegrationTestsCommand.HandleAsync(new RunIntegrationTestsInput());
+                    await _runE2ETestsCommand.HandleAsync(new RunE2ETestsInput());
+                    break;
+            }
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Presione cualquier tecla para continuar...");
+        SafeReadKey();
         return true;
     }
 }
