@@ -387,6 +387,47 @@ class Program
             return;
         }
 
+        // Clarify Command (Agregado para Clarification Implementation)
+        if (args.Length > 0 && args[0] == "--clarify")
+        {
+            // Parse args manually
+            var token = "";
+            var specPath = "";
+            var context = "";
+
+            for (int i = 1; i < args.Length; i++)
+            {
+                if (args[i] == "--token" && i + 1 < args.Length) token = args[++i];
+                else if (args[i] == "--spec-path" && i + 1 < args.Length) specPath = args[++i];
+                else if (args[i] == "--context" && i + 1 < args.Length) context = args[++i];
+            }
+
+            // Instantiate services
+            var auditorService = new AuditorService();
+            var securityScanner = new SecurityScanner();
+            var clarifyCommand = new ClarifyCommand(auditorService, securityScanner, logService);
+
+            var input = new ClarifyInput
+            {
+                Token = token,
+                SpecPath = specPath,
+                Context = context
+            };
+
+            try
+            {
+                var result = await clarifyCommand.HandleAsync(input);
+                Environment.Exit(result.Success ? 0 : 1);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error executing clarify command: {ex.Message}");
+                logService.WriteError("Error executing clarify command", ex);
+                Environment.Exit(1);
+            }
+            return;
+        }
+
         // Si se pasan argumentos pero ninguno coincide, mostrar ayuda y salir
         if (args.Length > 0)
         {
@@ -399,6 +440,7 @@ class Program
             Console.WriteLine("  8, --step8                Ejecutar paso 8 (Init DB)");
             Console.WriteLine("  11, --tests               Ejecutar tests");
             Console.WriteLine("  --spec                    Generar Spec (requiere --token y --prompt)");
+            Console.WriteLine("  --clarify                 Clarificar Spec (requiere --token y --spec-path o --context)");
             Console.WriteLine("  -v, --validate            Validar ecosistema");
             Environment.Exit(1);
             return;
