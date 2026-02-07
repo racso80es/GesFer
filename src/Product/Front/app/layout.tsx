@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
+import type { AbstractIntlMessages } from 'next-intl';
 import "./globals.css";
 import { QueryProvider } from "@/lib/providers/query-provider";
 import { SessionProvider } from "@/lib/providers/session-provider";
@@ -29,7 +30,7 @@ export default async function RootLayout({
   // El locale se obtiene automáticamente desde i18n.ts basado en el usuario
   // Manejar errores para evitar que bloquee la carga
   let locale: string = 'es';
-  let messages: any = {};
+  let messages: AbstractIntlMessages = {};
   
   try {
     locale = await getLocale();

@@ -46,7 +46,7 @@ export default function CompanyDetailPage({
       <ProtectedRoute>
         <MainLayout>
           <div className="flex justify-center py-12">
-            <Loading size="lg" text="Cargando empresa..." />
+            <Loading size="lg" text="Cargando organización..." />
           </div>
         </MainLayout>
       </ProtectedRoute>
@@ -94,7 +94,7 @@ export default function CompanyDetailPage({
               </Button>
               <div>
                 <h1 className="text-3xl font-bold">{company.name}</h1>
-                <p className="text-muted-foreground">Detalle de la empresa</p>
+                <p className="text-muted-foreground">Detalle de la organización</p>
               </div>
             </div>
             <Button
@@ -164,7 +164,7 @@ export default function CompanyDetailPage({
 
             <Card>
               <CardHeader>
-                <CardTitle>Información del Sistema</CardTitle>
+                <CardTitle>Información de la Organización</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>

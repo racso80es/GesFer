@@ -121,12 +121,12 @@ const telemetryTransport = new TelemetryTransport();
 
 // Hook personalizado para interceptar logs
 const telemetryHook = {
-  logMethod(inputArgs: any[], method: any, level: number) {
+  logMethod(inputArgs: unknown[], method: (...args: unknown[]) => void, level: number) {
     const [obj, msg, ...args] = inputArgs;
     
     // Extraer información del log
     const message = typeof msg === 'string' ? msg : JSON.stringify(msg);
-    const properties = typeof obj === 'object' && obj !== null ? obj : {};
+    const properties = typeof obj === 'object' && obj !== null ? (obj as Record<string, any>) : {};
     const exception = properties.err?.stack || properties.error?.stack || undefined;
     
     // Obtener información del cliente

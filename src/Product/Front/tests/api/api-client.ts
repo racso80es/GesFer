@@ -29,7 +29,7 @@ export class ApiClient {
   /**
    * Realiza una petición POST
    */
-  async post(endpoint: string, data: any, headers?: Record<string, string>): Promise<APIResponse> {
+  async post(endpoint: string, data: unknown, headers?: Record<string, string>): Promise<APIResponse> {
     return await this.request.post(`${this.baseURL}${endpoint}`, {
       data,
       headers: {
@@ -42,7 +42,7 @@ export class ApiClient {
   /**
    * Realiza una petición PUT
    */
-  async put(endpoint: string, data: any, headers?: Record<string, string>): Promise<APIResponse> {
+  async put(endpoint: string, data: unknown, headers?: Record<string, string>): Promise<APIResponse> {
     return await this.request.put(`${this.baseURL}${endpoint}`, {
       data,
       headers: {

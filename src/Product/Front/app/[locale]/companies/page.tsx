@@ -297,8 +297,8 @@ export default function CompaniesPage() {
             open={showDeleteConfirm}
             onOpenChange={setShowDeleteConfirm}
             onConfirm={handleDeleteConfirm}
-            title={t('deleteConfirmTitle') || "Eliminar Empresa"}
-            description={t('deleteConfirmDescription') || "Esta acción eliminará permanentemente la empresa. Esta acción no se puede deshacer."}
+            title={t('deleteConfirmTitle') || "Eliminar Organización"}
+            description={t('deleteConfirmDescription') || "Esta acción eliminará permanentemente la organización. Esta acción no se puede deshacer."}
             confirmationKeyword="ELIMINAR"
             confirmButtonText={t('deleteConfirmButton') || "Eliminar"}
             cancelButtonText={t('cancel') || "Cancelar"}

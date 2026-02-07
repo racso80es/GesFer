@@ -8,7 +8,7 @@ export const companiesApi = {
   },
 
   getById: async (id: string): Promise<Company> => {
-    const validId = validateId(id, "empresa");
+    const validId = validateId(id, "organización");
     return apiClient.get<Company>(`/api/company/${validId}`);
   },
 
@@ -17,12 +17,12 @@ export const companiesApi = {
   },
 
   update: async (id: string, data: UpdateCompany): Promise<Company> => {
-    const validId = validateId(id, "empresa");
+    const validId = validateId(id, "organización");
     return apiClient.put<Company>(`/api/company/${validId}`, data);
   },
 
   delete: async (id: string): Promise<void> => {
-    const validId = validateId(id, "empresa");
+    const validId = validateId(id, "organización");
     return apiClient.delete<void>(`/api/company/${validId}`);
   },
 };
