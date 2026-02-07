@@ -127,8 +127,8 @@ public class MenuService
                 case 1:
                     return await ExecuteFullInitializationAsync(waitForInput);
                 case 2: // Nueva opción
-                    await _startLocalEnvironmentCommand.HandleAsync(new StartLocalEnvironmentInput());
-                    return true;
+                    var result = await _startLocalEnvironmentCommand.HandleAsync(new StartLocalEnvironmentInput());
+                    return result.Success;
                 case 3: // Antes 2
                     return await ExecuteDatabaseInitializationStep8Async(waitForInput);
                 case 4: // Antes 3

@@ -6,19 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using GesFer.ConsoleApp.Commands.Base;
 using GesFer.ConsoleApp.Services;
 
 namespace GesFer.ConsoleApp.Commands;
 
 public class StartLocalEnvironmentInput { }
 
-public class StartLocalEnvironmentResult
-{
-    public bool Success { get; set; }
-    public string Message { get; set; } = string.Empty;
-}
-
-public class StartLocalEnvironmentCommand
+public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmentInput, bool>
 {
     private readonly LogService _logService;
     private readonly string _rootPath;
@@ -31,7 +26,7 @@ public class StartLocalEnvironmentCommand
         _rootPath = logService.GetRootPath();
     }
 
-    public async Task<StartLocalEnvironmentResult> HandleAsync(StartLocalEnvironmentInput input)
+    public async Task<CommandResult<bool>> HandleAsync(StartLocalEnvironmentInput input)
     {
         Console.WriteLine("Iniciando entorno local...");
         _logService.WriteLog("Iniciando entorno local - Opción 2");
@@ -45,8 +40,11 @@ public class StartLocalEnvironmentCommand
             var adminFrontPort = GetNpmProjectPort("src/Admin/Front/package.json", 3001);
 
             // 2. Compilar Backends
-            if (!await BuildDotNetProjectAsync("src/Product/Back/Api/GesFer.Api.csproj", "Product API")) return Fail();
-            if (!await BuildDotNetProjectAsync("src/Admin/Back/Api/GesFer.Admin.Api.csproj", "Admin API")) return Fail();
+            if (!await BuildDotNetProjectAsync("src/Product/Back/Api/GesFer.Api.csproj", "Product API"))
+                return CommandResult<bool>.Fail("Fallo en la preparación del entorno (Compilación Product API).");
+
+            if (!await BuildDotNetProjectAsync("src/Admin/Back/Api/GesFer.Admin.Api.csproj", "Admin API"))
+                return CommandResult<bool>.Fail("Fallo en la preparación del entorno (Compilación Admin API).");
 
             // 3. Preparar Frontends (npm install)
             await PrepareNpmProjectAsync("src/Product/Front", "Product Front");
@@ -104,19 +102,14 @@ public class StartLocalEnvironmentCommand
             }
 
             StopAllProcesses();
-            return new StartLocalEnvironmentResult { Success = true, Message = "Entorno detenido correctamente" };
+            return CommandResult<bool>.Ok(true, "Entorno detenido correctamente");
         }
         catch (Exception ex)
         {
             StopAllProcesses();
             _logService.WriteError("Error al levantar entorno local", ex);
-            return new StartLocalEnvironmentResult { Success = false, Message = $"Error: {ex.Message}" };
+            return CommandResult<bool>.Fail($"Error: {ex.Message}");
         }
-    }
-
-    private StartLocalEnvironmentResult Fail()
-    {
-        return new StartLocalEnvironmentResult { Success = false, Message = "Fallo en la preparación del entorno." };
     }
 
     private void StopAllProcesses()
