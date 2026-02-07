@@ -230,3 +230,11 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
     - `GesFer.IntegrationTests`: Ejecución exitosa (recuperación de crash).
     - `GesFer.Console.E2ETests`: Ejecución exitosa (skip controlado).
     - `GesFer.Shared.Back.UnitTests`: Pase verde con estilo modernizado.
+
+## 2026-02-07 — Auditoría Frontend Diaria (Falla Crítica Recurrente)
+
+- **Evento:** Auditoría diaria detecta uso extensivo de terminología prohibida ("empresa") en `src/Product/Front`.
+- **Impacto:** Violación de reglas de aislamiento semántico y deuda técnica en UI/Tests.
+- **Estado:** 🔴 FALLA CRÍTICA.
+- **Acción Requerida:** Refactorización prioritaria de literales y tests en Product.
+- **Referencia:** `docs/audits/AUDITORIA_FRONTEND_2026_02_07.md`.
