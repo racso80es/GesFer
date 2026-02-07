@@ -1,7 +1,7 @@
 # Action: Plan
 
 ## Propósito
-La acción **plan** tiene como objetivo transformar especificaciones validadas en hojas de ruta técnicas ejecutables y seguras. Convierte el "qué" (Spec) en el "cómo" (Roadmap), asegurando que cada paso esté validado y libre de ambigüedades.
+La acción **plan** tiene como objetivo transformar especificaciones y aclaraciones validadas en hojas de ruta técnicas ejecutables y seguras. Convierte el "qué" (Spec) en el "cómo" (Roadmap), asegurando que cada paso esté validado y libre de ambigüedades.
 
 ## Implementación
 Esta acción se implementa mediante el comando `GesFer.Console --plan`.
@@ -22,7 +22,10 @@ dotnet run --project src/Console/GesFer.Console.csproj -- --plan --token <AUDITO
 
 ## Integración con Agentes
 El agente **Tekton Developer** (o el Lead Architect) utiliza esta acción para formalizar la estrategia de implementación antes de escribir código.
-
+El agente **Auditor** utiliza esta acción auditar la documentación generada.
+El agente **Dcoumentación** utiliza esta acción para indicar formato y ruta de ficheros documentales (y json) generados.
+El agente **Seguridad** utiliza esta acción para valorar aspectos relacionados con la seguridad que afecten al plan.
+.
 ## Estándares de Calidad
 *   **Grado S+:** Generación determinista y trazable.
 *   **Seguridad:** Validación de inputs y outputs mediante `SecurityScanner`.
