@@ -1,0 +1,51 @@
+{
+  "spec_version": "1.0.0",
+  "skill_id": "security-audit-automation",
+  "name": "Security Audit Automation & Git Hooks",
+  "description": "Specification for automated security audits during commit and PR/push events, enforcing the Auditor Process and ensuring compliance with project governance.",
+  "owner": "auditor.process",
+  "status": "Active",
+  "implementation": {
+    "hooks": {
+      "pre-commit": {
+        "script": "scripts/skills/commit-skill.sh",
+        "purpose": "Validate commit token and run unit tests."
+      },
+      "pre-push": {
+        "script": "scripts/skills/pr-skill.sh",
+        "purpose": "Validate push token and run integration/E2E tests."
+      }
+    },
+    "logging": {
+      "file": "docs/audits/ACCESS_LOG.md",
+      "format": "| Timestamp | User | Branch | Action | Status | Details |"
+    }
+  },
+  "requirements": [
+    {
+      "id": "SEC-AUDIT-001",
+      "description": "All git commits must trigger the pre-commit hook which executes 'scripts/skills/commit-skill.sh'."
+    },
+    {
+      "id": "SEC-AUDIT-002",
+      "description": "All git pushes must trigger the pre-push hook which executes 'scripts/skills/pr-skill.sh'."
+    },
+    {
+      "id": "SEC-AUDIT-003",
+      "description": "Any failure in the audit script (exit code != 0) must block the git operation."
+    },
+    {
+      "id": "SEC-AUDIT-004",
+      "description": "Execution must be logged to 'docs/audits/ACCESS_LOG.md' regardless of outcome (Success/Failure/Bypass)."
+    },
+    {
+      "id": "SEC-AUDIT-005",
+      "description": "Auditor Process Token must be validated before allowing any action."
+    }
+  ],
+  "related_agents": [
+    "auditor.process",
+    "auditor.back",
+    "auditor.front"
+  ]
+}
