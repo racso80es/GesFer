@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using GesFer.Admin.Application.DTOs;
 
 namespace GesFer.Admin.Api.Controllers;
 
@@ -66,34 +67,31 @@ public class DashboardController : ControllerBase
                 GeneratedAt = DateTime.UtcNow
             };
 
-            // Registrar log de auditoría con el Cursor ID (Fire and Forget)
-            // No bloqueamos la respuesta del dashboard por el log
+            // Registrar log de auditoría con el Cursor ID
             var method = HttpContext.Request.Method;
             var path = HttpContext.Request.Path;
 
-            _ = Task.Run(async () =>
+            try
             {
-                try
-                {
-                    await _auditLogService.LogActionAsync(
-                        cursorId: cursorId,
-                        username: username,
-                        action: "GetDashboardSummary",
-                        httpMethod: method,
-                        path: path,
-                        additionalData: System.Text.Json.JsonSerializer.Serialize(new
-                        {
-                            TotalCompanies = summary.TotalCompanies,
-                            TotalUsers = summary.TotalUsers,
-                            ActiveUsers = summary.ActiveUsers
-                        })
-                    );
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error al registrar audit log en background");
-                }
-            });
+                await _auditLogService.LogActionAsync(
+                    cursorId: cursorId,
+                    username: username,
+                    action: "GetDashboardSummary",
+                    httpMethod: method,
+                    path: path,
+                    additionalData: System.Text.Json.JsonSerializer.Serialize(new
+                    {
+                        TotalCompanies = summary.TotalCompanies,
+                        TotalUsers = summary.TotalUsers,
+                        ActiveUsers = summary.ActiveUsers
+                    })
+                );
+            }
+            catch (Exception ex)
+            {
+                // Loguear error pero no detener la respuesta al usuario si la auditoría falla (fail-open)
+                _logger.LogError(ex, "Error al registrar audit log");
+            }
 
             return Ok(summary);
         }
@@ -105,14 +103,3 @@ public class DashboardController : ControllerBase
     }
 }
 
-// DTO temporal (debería estar en Application/DTOs)
-public class DashboardSummaryDto
-{
-    public int TotalCompanies { get; set; }
-    public int TotalUsers { get; set; }
-    public int ActiveUsers { get; set; }
-    public int TotalArticles { get; set; }
-    public int TotalSuppliers { get; set; }
-    public int TotalCustomers { get; set; }
-    public DateTime GeneratedAt { get; set; }
-}
