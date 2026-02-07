@@ -1,5 +1,6 @@
 import { getRequestConfig } from 'next-intl/server';
 import { cookies } from 'next/headers';
+import type { AbstractIntlMessages } from 'next-intl';
 
 // Idiomas soportados
 export const locales = ['es', 'en', 'ca'] as const;
@@ -92,7 +93,7 @@ export default getRequestConfig(async () => {
   }
 
   // Cargar mensajes de forma segura
-  let messages: any = {};
+  let messages: AbstractIntlMessages = {};
   try {
     messages = (await import(`./messages/${locale}.json`)).default;
   } catch (error) {

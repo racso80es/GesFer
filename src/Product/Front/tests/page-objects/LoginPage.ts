@@ -18,7 +18,7 @@ export class LoginPage extends BasePage {
     super(page);
     
     // Preferir getByTestId, con fallback a getByLabel, usando .first() para evitar múltiples elementos
-    this.empresaInput = page.getByTestId('login-empresa-input').or(page.getByLabel(/empresa|company/i)).first();
+    this.empresaInput = page.getByTestId('login-empresa-input').or(page.getByLabel(/organización|organization|empresa|company/i)).first();
     this.usuarioInput = page.getByTestId('login-usuario-input').or(page.getByLabel(/usuario|username/i)).first();
     this.passwordInput = page.getByTestId('login-password-input').or(page.getByLabel(/contraseña|password/i)).first();
     this.loginButton = page.getByTestId('login-submit-button').or(page.getByRole('button', { name: /iniciar sesión|login/i })).first();

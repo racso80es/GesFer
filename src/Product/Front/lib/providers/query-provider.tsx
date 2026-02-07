@@ -53,9 +53,10 @@ export function QueryProvider({ children }: { children: ReactNode }) {
 
     // Crear QueryCache con manejo global de errores
     const queryCache = new QueryCache({
-      onError: (error: any, query) => {
+      onError: (error: unknown, query) => {
+        const err = error as { message?: string; status?: number };
         // Si es un error 401, limpiar caché y datos de autenticación
-        if (error?.message?.includes("401") || error?.status === 401) {
+        if (err?.message?.includes("401") || err?.status === 401) {
           console.warn("Error 401 detectado, limpiando datos de autenticación...");
           if (typeof window !== "undefined") {
             clearAuthData();

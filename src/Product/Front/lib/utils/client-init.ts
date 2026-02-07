@@ -29,19 +29,21 @@ function isTokenExpired(token: string): boolean {
 /**
  * Valida si los datos del usuario tienen la estructura correcta
  */
-function isValidUserData(data: any): data is LoginResponse {
-  if (!data || typeof data !== "object") return false;
+function isValidUserData(data: unknown): data is LoginResponse {
+  if (!data || typeof data !== "object" || data === null) return false;
+
+  const typedData = data as Record<string, unknown>;
 
   // Campos requeridos
   const requiredFields = ["userId", "username", "firstName", "lastName", "companyId", "companyName"];
   for (const field of requiredFields) {
-    if (!(field in data) || typeof data[field] !== "string" || data[field].trim() === "") {
+    if (!(field in typedData) || typeof typedData[field] !== "string" || (typedData[field] as string).trim() === "") {
       return false;
     }
   }
 
   // Validar que permissions sea un array
-  if (!Array.isArray(data.permissions)) {
+  if (!Array.isArray(typedData.permissions)) {
     return false;
   }
 
@@ -89,7 +91,7 @@ export function validateAndCleanStoredUser(): LoginResponse | null {
     }
 
     // Parsear usuario
-    let userData: any;
+    let userData: unknown;
     try {
       userData = JSON.parse(userStr);
     } catch (parseError) {

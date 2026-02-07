@@ -8,7 +8,7 @@ import type { CreateCompany, UpdateCompany } from "@/lib/types/api";
 export const createCompanySchema = z.object({
   name: z
     .string()
-    .min(1, "El nombre de la empresa es obligatorio")
+    .min(1, "El nombre de la organización es obligatorio")
     .max(200, "El nombre no puede exceder 200 caracteres"),
   taxId: z
     .string()
@@ -44,7 +44,7 @@ export const createCompanySchema = z.object({
 export const updateCompanySchema = z.object({
   name: z
     .string()
-    .min(1, "El nombre de la empresa es obligatorio")
+    .min(1, "El nombre de la organización es obligatorio")
     .max(200, "El nombre no puede exceder 200 caracteres"),
   taxId: z
     .string()
