@@ -1,4 +1,5 @@
 using GesFer.ConsoleApp.Commands;
+using GesFer.ConsoleApp.Commands.Dtos;
 using GesFer.ConsoleApp.Services;
 using System;
 using System.Linq;
@@ -345,6 +346,47 @@ class Program
             }
         }
 
+        // Spec Command (Agregado para Spec Implementation)
+        if (args.Length > 0 && args[0] == "--spec")
+        {
+            // Parse args manually
+            var token = "";
+            var prompt = "";
+            var title = "Untitled";
+
+            for (int i = 1; i < args.Length; i++)
+            {
+                if (args[i] == "--token" && i + 1 < args.Length) token = args[++i];
+                else if (args[i] == "--prompt" && i + 1 < args.Length) prompt = args[++i];
+                else if (args[i] == "--title" && i + 1 < args.Length) title = args[++i];
+            }
+
+            // Instantiate services
+            var auditorService = new AuditorService();
+            var securityScanner = new SecurityScanner();
+            var specCommand = new SpecCommand(auditorService, securityScanner, logService);
+
+            var input = new SpecInput
+            {
+                Token = token,
+                Prompt = prompt,
+                Title = title
+            };
+
+            try
+            {
+                var result = await specCommand.HandleAsync(input);
+                Environment.Exit(result.Success ? 0 : 1);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error executing spec command: {ex.Message}");
+                logService.WriteError("Error executing spec command", ex);
+                Environment.Exit(1);
+            }
+            return;
+        }
+
         // Si se pasan argumentos pero ninguno coincide, mostrar ayuda y salir
         if (args.Length > 0)
         {
@@ -356,6 +398,7 @@ class Program
             Console.WriteLine("  5, --golden-rules         Verificar reglas de oro");
             Console.WriteLine("  8, --step8                Ejecutar paso 8 (Init DB)");
             Console.WriteLine("  11, --tests               Ejecutar tests");
+            Console.WriteLine("  --spec                    Generar Spec (requiere --token y --prompt)");
             Console.WriteLine("  -v, --validate            Validar ecosistema");
             Environment.Exit(1);
             return;
