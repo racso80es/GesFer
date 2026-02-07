@@ -3,7 +3,7 @@ chcp 65001 >nul
 setlocal enabledelayedexpansion
 
 echo ========================================
-echo Iniciando Calma-Desktop (Electron)
+echo INICIANDO CALMA-DESKTOP (ELECTRON)
 echo ========================================
 echo.
 
@@ -26,19 +26,54 @@ if not exist "package.json" (
     exit /b 1
 )
 
-REM Verificar si existen módulos de node
-if not exist "node_modules\" (
+REM Intentar cerrar instancias previas de Electron para liberar archivos
+echo [0/2] Limpiando procesos previos...
+taskkill /F /IM electron.exe /T >nul 2>&1
+taskkill /F /IM "Calma Desktop.exe" /T >nul 2>&1
+
+REM Verificar integridad de dependencias
+set "INSTALL_NEEDED=0"
+if not exist "node_modules\" set "INSTALL_NEEDED=1"
+if not exist "node_modules\.bin\vite.cmd" set "INSTALL_NEEDED=1"
+if not exist "node_modules\.bin\electron.cmd" set "INSTALL_NEEDED=1"
+
+if "!INSTALL_NEEDED!"=="1" (
     echo [1/2] Instalando dependencias (npm install)...
     call npm install
     if errorlevel 1 (
-        echo ERROR: No se pudieron instalar las dependencias
-        pause
-        exit /b 1
+        echo.
+        echo [WARN] Fallo la instalacion inicial.
+        echo [INFO] Intentando limpieza profunda y reinstalacion...
+
+        REM Limpiar node_modules corrupto
+        if exist "node_modules\" (
+            echo Eliminando node_modules...
+            rmdir /s /q "node_modules"
+            if errorlevel 1 (
+                 echo ERROR: No se pudo eliminar node_modules. Archivos bloqueados?
+                 pause
+                 exit /b 1
+            )
+        )
+
+        REM Reintentar instalación
+        echo Reintentando npm install...
+        call npm install
+        if errorlevel 1 (
+            echo.
+            echo ERROR CRITICO: No se pudieron instalar las dependencias.
+            echo Posibles causas:
+            echo  - Problemas de conexion a internet (proxy/vpn)
+            echo  - Permisos de escritura bloqueados
+            echo.
+            pause
+            exit /b 1
+        )
     )
     echo    ✓ Dependencias instaladas correctamente
     echo.
 ) else (
-    echo [1/2] Dependencias ya instaladas.
+    echo [1/2] Dependencias verificadas.
     echo.
 )
 
@@ -47,7 +82,8 @@ echo [2/2] Ejecutando aplicación (npm run dev)...
 echo.
 call npm run dev
 if errorlevel 1 (
-    echo ERROR: Error al ejecutar la aplicación
+    echo.
+    echo ERROR: La aplicacion se cerro inesperadamente.
     pause
     exit /b 1
 )
