@@ -1,40 +1,21 @@
 #!/bin/sh
-# Pre-push hook - Juez del Proyecto
-# Ejecuta validación completa antes de permitir push
-# Si falla, el push es BLOQUEADO físicamente
+# Pre-push hook - Security Audit Automation
+# Enforces the PR Skill (Token + All Tests)
 
-echo "🚨 JUEZ DEL PROYECTO ACTIVADO"
-echo "Ejecutando validación completa antes de push..."
-echo ""
+echo "🔒 [SECURITY AUDIT] Validating Push/PR..."
 
-# Detectar sistema operativo y ejecutar script apropiado
-if [ -n "$WINDIR" ] || [ -n "$OS" ]; then
-    # Windows: usar PowerShell
-    if [ -f "scripts/validate-pr.ps1" ]; then
-        powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/validate-pr.ps1
-        VALIDATION_EXIT_CODE=$?
-    else
-        echo "❌ ERROR: scripts/validate-pr.ps1 no encontrado"
-        exit 1
-    fi
+# Execute the PR Skill script
+if [ -f "scripts/skills/pr-skill.sh" ]; then
+    bash scripts/skills/pr-skill.sh
+    EXIT_CODE=$?
 else
-    # Linux/Mac: usar bash
-    if [ -f "scripts/validate-pr.sh" ]; then
-        sh scripts/validate-pr.sh
-        VALIDATION_EXIT_CODE=$?
-    else
-        echo "❌ ERROR: scripts/validate-pr.sh no encontrado"
-        exit 1
-    fi
-fi
-
-if [ $VALIDATION_EXIT_CODE -ne 0 ]; then
-    echo ""
-    echo "❌ PUSH BLOQUEADO por el Juez del Proyecto"
-    echo "   Corrige los errores antes de hacer push"
+    echo "❌ ERROR: scripts/skills/pr-skill.sh not found!"
     exit 1
 fi
 
-echo ""
-echo "✅ PUSH AUTORIZADO por el Juez del Proyecto"
+if [ $EXIT_CODE -ne 0 ]; then
+    echo "❌ PUSH BLOCKED by Security Audit."
+    exit 1
+fi
+
 exit 0
