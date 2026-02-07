@@ -428,6 +428,47 @@ class Program
             return;
         }
 
+        // Plan Command (Agregado para Plan Implementation)
+        if (args.Length > 0 && args[0] == "--plan")
+        {
+            // Parse args manually
+            var token = "";
+            var specPath = "";
+            var clarifyPath = "";
+
+            for (int i = 1; i < args.Length; i++)
+            {
+                if (args[i] == "--token" && i + 1 < args.Length) token = args[++i];
+                else if (args[i] == "--spec" && i + 1 < args.Length) specPath = args[++i];
+                else if (args[i] == "--clarify" && i + 1 < args.Length) clarifyPath = args[++i];
+            }
+
+            // Instantiate services
+            var auditorService = new AuditorService();
+            var securityScanner = new SecurityScanner();
+            var planCommand = new PlanCommand(auditorService, securityScanner, logService);
+
+            var input = new PlanInput
+            {
+                Token = token,
+                SpecPath = specPath,
+                ClarifyPath = clarifyPath
+            };
+
+            try
+            {
+                var result = await planCommand.HandleAsync(input);
+                Environment.Exit(result.Success ? 0 : 1);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error executing plan command: {ex.Message}");
+                logService.WriteError("Error executing plan command", ex);
+                Environment.Exit(1);
+            }
+            return;
+        }
+
         // Si se pasan argumentos pero ninguno coincide, mostrar ayuda y salir
         if (args.Length > 0)
         {
@@ -441,6 +482,7 @@ class Program
             Console.WriteLine("  11, --tests               Ejecutar tests");
             Console.WriteLine("  --spec                    Generar Spec (requiere --token y --prompt)");
             Console.WriteLine("  --clarify                 Clarificar Spec (requiere --token y --spec-path o --context)");
+            Console.WriteLine("  --plan                    Generar Plan (requiere --token y --spec, opcional --clarify)");
             Console.WriteLine("  -v, --validate            Validar ecosistema");
             Environment.Exit(1);
             return;
