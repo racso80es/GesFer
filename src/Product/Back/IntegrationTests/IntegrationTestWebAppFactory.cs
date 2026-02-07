@@ -20,6 +20,7 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
     private bool _useInMemory = false;
     private string? _connectionString;
     private readonly object _connectionStringLock = new object();
+    private readonly string _inMemoryDbName = "GesFerTestDb_InMemory_" + Guid.NewGuid();
 
     public IntegrationTestWebAppFactory()
     {
@@ -39,7 +40,7 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
             {
                 if (_useInMemory)
                 {
-                    options.UseInMemoryDatabase("GesFerTestDb_InMemory_" + Guid.NewGuid());
+                    options.UseInMemoryDatabase(_inMemoryDbName);
                     options.EnableSensitiveDataLogging();
                 }
                 else
@@ -64,6 +65,13 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
             }, ServiceLifetime.Scoped);
 
             services.AddHttpClient("AdminApi", client => client.BaseAddress = new Uri("http://localhost:5010"));
+        });
+
+        builder.ConfigureLogging(logging =>
+        {
+            logging.ClearProviders();
+            logging.AddConsole();
+            logging.SetMinimumLevel(LogLevel.Error);
         });
 
         builder.UseEnvironment("Testing");

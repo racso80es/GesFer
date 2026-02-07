@@ -11,7 +11,7 @@ public class SupplierControllerTests
 {
     private readonly HttpClient _client;
     private readonly DatabaseFixture _fixture;
-    private readonly Guid _companyId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    private readonly Guid _companyId = Guid.Parse("11111111-1111-1111-1111-111111111115");
 
     public SupplierControllerTests(DatabaseFixture fixture)
     {
@@ -39,7 +39,7 @@ public class SupplierControllerTests
         {
             CompanyId = _companyId,
             Name = "Proveedor Test",
-            TaxId = "B11111111"
+            TaxId = "B11111119"
         };
         await _client.PostAsJsonAsync("/api/supplier", createDto);
 
@@ -62,7 +62,7 @@ public class SupplierControllerTests
         {
             CompanyId = _companyId,
             Name = "Proveedor Test GetById",
-            TaxId = "B22222222"
+            TaxId = "B22222228"
         };
         var createResponse = await _client.PostAsJsonAsync("/api/supplier", createDto);
         var createdSupplier = await createResponse.Content.ReadFromJsonAsync<SupplierDto>();
@@ -100,7 +100,7 @@ public class SupplierControllerTests
         {
             CompanyId = _companyId,
             Name = "Nuevo Proveedor",
-            TaxId = "B33333333",
+            TaxId = "B33333337",
             Address = "Calle Proveedor 123",
             Phone = "912345678",
             Email = "proveedor@test.com"
@@ -125,7 +125,7 @@ public class SupplierControllerTests
         {
             CompanyId = Guid.NewGuid(), // Empresa inexistente
             Name = "Proveedor Test",
-            TaxId = "B44444444"
+            TaxId = "B44444446"
         };
 
         // Act
@@ -143,7 +143,7 @@ public class SupplierControllerTests
         {
             CompanyId = _companyId,
             Name = "Proveedor Duplicado",
-            TaxId = "B55555555"
+            TaxId = "B55555551"
         };
         await _client.PostAsJsonAsync("/api/supplier", createDto);
 
@@ -162,7 +162,7 @@ public class SupplierControllerTests
         {
             CompanyId = _companyId,
             Name = "Proveedor Para Actualizar",
-            TaxId = "B66666666"
+            TaxId = "B66666660"
         };
         var createResponse = await _client.PostAsJsonAsync("/api/supplier", createDto);
         var createdSupplier = await createResponse.Content.ReadFromJsonAsync<SupplierDto>();
@@ -171,7 +171,7 @@ public class SupplierControllerTests
         var updateDto = new UpdateSupplierDto
         {
             Name = "Proveedor Actualizado",
-            TaxId = "B66666666",
+            TaxId = "B66666660",
             Address = "Calle Actualizada 456",
             Phone = "987654321",
             Email = "actualizado@test.com",
@@ -215,7 +215,7 @@ public class SupplierControllerTests
         {
             CompanyId = _companyId,
             Name = "Proveedor Para Eliminar",
-            TaxId = "B77777777"
+            TaxId = "B77777779"
         };
         var createResponse = await _client.PostAsJsonAsync("/api/supplier", createDto);
         var createdSupplier = await createResponse.Content.ReadFromJsonAsync<SupplierDto>();
@@ -245,4 +245,3 @@ public class SupplierControllerTests
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
-

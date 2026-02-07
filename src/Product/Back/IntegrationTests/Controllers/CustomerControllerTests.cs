@@ -11,7 +11,7 @@ public class CustomerControllerTests
 {
     private readonly HttpClient _client;
     private readonly DatabaseFixture _fixture;
-    private readonly Guid _companyId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    private readonly Guid _companyId = Guid.Parse("11111111-1111-1111-1111-111111111115");
 
     public CustomerControllerTests(DatabaseFixture fixture)
     {
@@ -39,7 +39,7 @@ public class CustomerControllerTests
         {
             CompanyId = _companyId,
             Name = "Cliente Test",
-            TaxId = "B11111111"
+            TaxId = "B11111119"
         };
         await _client.PostAsJsonAsync("/api/customer", createDto);
 
@@ -62,7 +62,7 @@ public class CustomerControllerTests
         {
             CompanyId = _companyId,
             Name = "Cliente Test GetById",
-            TaxId = "B22222222"
+            TaxId = "B22222228"
         };
         var createResponse = await _client.PostAsJsonAsync("/api/customer", createDto);
         var createdCustomer = await createResponse.Content.ReadFromJsonAsync<CustomerDto>();
@@ -100,7 +100,7 @@ public class CustomerControllerTests
         {
             CompanyId = _companyId,
             Name = "Nuevo Cliente",
-            TaxId = "B33333333",
+            TaxId = "B33333337",
             Address = "Calle Cliente 123",
             Phone = "912345678",
             Email = "cliente@test.com"
@@ -110,7 +110,8 @@ public class CustomerControllerTests
         var response = await _client.PostAsJsonAsync("/api/customer", createDto);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        var content = await response.Content.ReadAsStringAsync();
+        response.StatusCode.Should().Be(HttpStatusCode.Created, $"Error details: {content}");
         var customer = await response.Content.ReadFromJsonAsync<CustomerDto>();
         customer.Should().NotBeNull();
         customer!.Name.Should().Be(createDto.Name);
@@ -125,7 +126,7 @@ public class CustomerControllerTests
         {
             CompanyId = Guid.NewGuid(), // Empresa inexistente
             Name = "Cliente Test",
-            TaxId = "B44444444"
+            TaxId = "B44444446"
         };
 
         // Act
@@ -143,7 +144,7 @@ public class CustomerControllerTests
         {
             CompanyId = _companyId,
             Name = "Cliente Duplicado",
-            TaxId = "B55555555"
+            TaxId = "B55555551"
         };
         await _client.PostAsJsonAsync("/api/customer", createDto);
 
@@ -162,7 +163,7 @@ public class CustomerControllerTests
         {
             CompanyId = _companyId,
             Name = "Cliente Para Actualizar",
-            TaxId = "B66666666"
+            TaxId = "B66666660"
         };
         var createResponse = await _client.PostAsJsonAsync("/api/customer", createDto);
         var createdCustomer = await createResponse.Content.ReadFromJsonAsync<CustomerDto>();
@@ -171,7 +172,7 @@ public class CustomerControllerTests
         var updateDto = new UpdateCustomerDto
         {
             Name = "Cliente Actualizado",
-            TaxId = "B66666666",
+            TaxId = "B66666660",
             Address = "Calle Actualizada 456",
             Phone = "987654321",
             Email = "actualizado@test.com",
@@ -215,7 +216,7 @@ public class CustomerControllerTests
         {
             CompanyId = _companyId,
             Name = "Cliente Para Eliminar",
-            TaxId = "B77777777"
+            TaxId = "B77777779"
         };
         var createResponse = await _client.PostAsJsonAsync("/api/customer", createDto);
         var createdCustomer = await createResponse.Content.ReadFromJsonAsync<CustomerDto>();

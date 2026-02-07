@@ -11,7 +11,7 @@ public class UserControllerTests
 {
     private readonly HttpClient _client;
     private readonly DatabaseFixture _fixture;
-    private readonly Guid _testCompanyId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    private readonly Guid _testCompanyId = Guid.Parse("11111111-1111-1111-1111-111111111115");
 
     public UserControllerTests(DatabaseFixture fixture)
     {
@@ -403,4 +403,3 @@ public class UserControllerTests
         user.CompanyId.Should().Be(_testCompanyId); // No debe cambiar
     }
 }
-

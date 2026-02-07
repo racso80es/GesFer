@@ -409,7 +409,7 @@ public static class DbInitializer
 
                         try
                         {
-                            existingCompany.TaxId = TaxId.Create("B87654321");
+                            existingCompany.TaxId = TaxId.Create("B87654323");
                         }
                         catch (ArgumentException ex)
                         {
@@ -446,7 +446,7 @@ public static class DbInitializer
 
                 try
                 {
-                    company.TaxId = TaxId.Create("B87654321");
+                    company.TaxId = TaxId.Create("B87654323");
                 }
                 catch (ArgumentException ex)
                 {

@@ -24,10 +24,10 @@ public class GetAllCompaniesCommandHandler : ICommandHandler<GetAllCompaniesComm
             {
                 Id = c.Id,
                 Name = c.Name,
-                TaxId = c.TaxId,
+                TaxId = c.TaxId.HasValue ? c.TaxId.Value.Value : null,
                 Address = c.Address,
                 Phone = c.Phone,
-                Email = c.Email,
+                Email = c.Email.HasValue ? c.Email.Value.Value : null,
                 PostalCodeId = c.PostalCodeId,
                 CityId = c.CityId,
                 StateId = c.StateId,

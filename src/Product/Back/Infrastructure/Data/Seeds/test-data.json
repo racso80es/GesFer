@@ -44,7 +44,7 @@
       "_comment": "DATOS BUENOS: Empresa base del sistema con TaxId válido - DEBE SER LA REFERENCIADA POR USERS",
       "id": "11111111-1111-1111-1111-111111111115",
       "name": "Empresa Demo",
-      "taxId": "B87654321",
+      "taxId": "B87654323",
       "address": "Calle Gran Vía, 1",
       "phone": "912345678",
       "email": "demo@empresa.com",
@@ -54,7 +54,7 @@
       "_comment": "DATOS DE TEST: Empresa específica para test Update_WithValidData_ShouldReturnOk",
       "id": "11111111-1111-1111-1111-111111111112",
       "name": "Empresa Test Update",
-      "taxId": "B87654321",
+      "taxId": "B87654315",
       "address": "Calle Test Update 456",
       "phone": "987654321",
       "email": "testupdate@empresa.com",
@@ -568,7 +568,7 @@
       "id": "aaaaaaaa-1111-1111-1111-111111111111",
       "companyId": "11111111-1111-1111-1111-111111111115",
       "name": "Proveedor Test 1",
-      "taxId": "B11111111",
+      "taxId": "B11111119",
       "address": "Calle Proveedor 1",
       "phone": "911111111",
       "email": "proveedor1@test.com"
@@ -577,7 +577,7 @@
       "id": "bbbbbbbb-2222-2222-2222-222222222222",
       "companyId": "11111111-1111-1111-1111-111111111115",
       "name": "Proveedor Test 2",
-      "taxId": "B22222222",
+      "taxId": "B22222228",
       "address": "Calle Proveedor 2",
       "phone": "922222222",
       "email": "proveedor2@test.com"
@@ -586,7 +586,7 @@
       "id": "cccccccc-3333-3333-3333-333333333333",
       "companyId": "11111111-1111-1111-1111-111111111115",
       "name": "Distribuidora Sevilla",
-      "taxId": "B66666666",
+      "taxId": "B66666660",
       "address": "Avenida de la Constitución, 5",
       "phone": "954123456",
       "email": "pedidos@distribuidorasevilla.es"
@@ -598,7 +598,7 @@
       "id": "cccccccc-1111-1111-1111-111111111111",
       "companyId": "11111111-1111-1111-1111-111111111115",
       "name": "Cliente Test 1",
-      "taxId": "B33333333",
+      "taxId": "B33333337",
       "address": "Calle Cliente 1",
       "phone": "933333333",
       "email": "cliente1@test.com"
@@ -608,7 +608,7 @@
       "id": "dddddddd-2222-2222-2222-222222222222",
       "companyId": "11111111-1111-1111-1111-111111111115",
       "name": "Cliente Test 2",
-      "taxId": "B44444444",
+      "taxId": "B44444446",
       "address": "Calle Cliente 2",
       "phone": "944444444",
       "email": "cliente2@test.com"
@@ -618,7 +618,7 @@
       "id": "eeeeeeee-3333-3333-3333-333333333333",
       "companyId": "11111111-1111-1111-1111-111111111115",
       "name": "Distribuidora Málaga",
-      "taxId": "B33333333",
+      "taxId": "B33333337",
       "address": "Calle Larios, 12",
       "phone": "952123456",
       "email": "ventas@distribuidoramalaga.es"

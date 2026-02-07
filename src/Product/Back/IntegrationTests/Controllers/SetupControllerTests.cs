@@ -56,7 +56,10 @@ public class SetupControllerTests
         var adminUser = users.First(u => u.Username == "admin");
         adminUser.FirstName.Should().Be("Administrador");
         adminUser.LastName.Should().Be("Sistema");
-        adminUser.Email.Should().Be("admin@empresa.com");
+        // FIX: Acceder a .Value.Value para comparar con string, ya que Email es ValueObject
+        adminUser.Email.HasValue.Should().BeTrue();
+        adminUser.Email!.Value.Value.Should().Be("admin@empresa.com");
+
         adminUser.CompanyId.Should().NotBeEmpty();
         adminUser.PasswordHash.Should().NotBeNullOrEmpty("El usuario debería tener un hash de contraseña");
         
@@ -87,4 +90,3 @@ public class SetupControllerTests
         content.Should().Contain("endpoint");
     }
 }
-
