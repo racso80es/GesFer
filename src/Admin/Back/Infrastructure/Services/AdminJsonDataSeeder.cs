@@ -3,6 +3,7 @@ using GesFer.Admin.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 using System.Text.Json;
 using BCrypt.Net;
 
@@ -25,16 +26,19 @@ public class AdminJsonDataSeeder
     private readonly AdminDbContext _context;
     private readonly ILogger<AdminJsonDataSeeder> _logger;
     private readonly ISensitiveDataSanitizer _sanitizer;
+    private readonly IHostEnvironment _hostEnvironment;
     private readonly string _seedsPath;
 
     public AdminJsonDataSeeder(
         AdminDbContext context,
         ILogger<AdminJsonDataSeeder> logger,
-        ISensitiveDataSanitizer sanitizer)
+        ISensitiveDataSanitizer sanitizer,
+        IHostEnvironment hostEnvironment)
     {
         _context = context;
         _logger = logger;
         _sanitizer = sanitizer;
+        _hostEnvironment = hostEnvironment;
 
         // Obtener la ruta de los archivos de seed
         // Ubicación canónica: src/Admin/Back/Infrastructure/Data/Seeds/
@@ -132,9 +136,18 @@ public class AdminJsonDataSeeder
             string passwordHash;
             if (string.IsNullOrEmpty(userData.Password))
             {
-                var randomPwd = _sanitizer.GenerateRandomPassword();
-                passwordHash = BCrypt.Net.BCrypt.HashPassword(randomPwd);
-                _logger.LogWarning("[SEED ADMIN] 🔐 Generated RANDOM password for Admin '{Username}': {Password}", userData.Username, randomPwd);
+                string rawPassword;
+                if (_hostEnvironment.IsDevelopment())
+                {
+                    rawPassword = "admin123";
+                    _logger.LogWarning("[SEED ADMIN] ⚠️ DEVELOPMENT MODE: Setting fixed password '{Password}' for Admin '{Username}'", rawPassword, userData.Username);
+                }
+                else
+                {
+                    rawPassword = _sanitizer.GenerateRandomPassword();
+                    _logger.LogWarning("[SEED ADMIN] 🔐 Generated RANDOM password for Admin '{Username}': {Password}", userData.Username, rawPassword);
+                }
+                passwordHash = BCrypt.Net.BCrypt.HashPassword(rawPassword);
             }
             else
             {
