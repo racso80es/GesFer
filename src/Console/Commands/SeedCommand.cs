@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
 using Pomelo.EntityFrameworkCore.MySql;
 
 namespace GesFer.ConsoleApp.Commands;
@@ -205,7 +207,25 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
         services.AddScoped<JsonDataSeeder>();
         services.AddScoped<AdminJsonDataSeeder>();
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
+        services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
+
+        var apiPath = Path.Combine(_rootPath, "src", "Product", "Back", "Api");
+        services.AddSingleton<IHostEnvironment>(new DevelopmentHostEnvironment(apiPath));
 
         return services.BuildServiceProvider();
+    }
+
+    private class DevelopmentHostEnvironment : IHostEnvironment
+    {
+        public DevelopmentHostEnvironment(string contentRootPath)
+        {
+            ContentRootPath = contentRootPath;
+            ContentRootFileProvider = new PhysicalFileProvider(contentRootPath);
+        }
+
+        public string EnvironmentName { get; set; } = "Development";
+        public string ApplicationName { get; set; } = "GesFer.Console";
+        public string ContentRootPath { get; set; }
+        public IFileProvider ContentRootFileProvider { get; set; }
     }
 }
