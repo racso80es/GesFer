@@ -4,9 +4,8 @@ chcp 65001 >nul
 setlocal enabledelayedexpansion
 
 echo ========================================
-echo   INICIANDO CALMA-DESKTOP (ELECTRON)
+echo INICIANDO CALMA-DESKTOP (ELECTRON)
 echo ========================================
-echo.
 
 :: 1. Definición de rutas seguras
 :: %~dp0 siempre termina en \, por lo que no añadimos una extra antes de 'src'
@@ -27,6 +26,49 @@ if not exist "%APP_DIR%" (
     goto :error_exit
 )
 
+REM Intentar cerrar instancias previas de Electron para liberar archivos
+echo [0/2] Limpiando procesos previos...
+taskkill /F /IM electron.exe /T >nul 2>&1
+taskkill /F /IM "Calma Desktop.exe" /T >nul 2>&1
+
+REM Verificar integridad de dependencias
+set "INSTALL_NEEDED=0"
+if not exist "node_modules\" set "INSTALL_NEEDED=1"
+if not exist "node_modules\.bin\vite.cmd" set "INSTALL_NEEDED=1"
+if not exist "node_modules\.bin\electron.cmd" set "INSTALL_NEEDED=1"
+
+if "!INSTALL_NEEDED!"=="1" (
+    echo [1/2] Instalando dependencias (npm install)...
+    call npm install
+    if errorlevel 1 (
+        echo.
+        echo [WARN] Fallo la instalacion inicial.
+        echo [INFO] Intentando limpieza profunda y reinstalacion...
+
+        REM Limpiar node_modules corrupto
+        if exist "node_modules\" (
+            echo Eliminando node_modules...
+            rmdir /s /q "node_modules"
+            if errorlevel 1 (
+                 echo ERROR: No se pudo eliminar node_modules. Archivos bloqueados?
+                 pause
+                 exit /b 1
+            )
+        )
+
+        REM Reintentar instalación
+        echo Reintentando npm install...
+        call npm install
+        if errorlevel 1 (
+            echo.
+            echo ERROR CRITICO: No se pudieron instalar las dependencias.
+            echo Posibles causas:
+            echo  - Problemas de conexion a internet (proxy/vpn)
+            echo  - Permisos de escritura bloqueados
+            echo.
+            pause
+            exit /b 1
+        )
 pushd "%APP_DIR%"
 
 :: 4. Gestión de dependencias (Estructura de bloque lineal para evitar fallos de salto)
