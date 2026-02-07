@@ -37,7 +37,7 @@ public class CompanyControllerTests
     public async Task GetById_WithValidId_ShouldReturnCompany()
     {
         // Arrange
-        var companyId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var companyId = Guid.Parse("11111111-1111-1111-1111-111111111115");
 
         // Act
         var response = await _client.GetAsync($"/api/company/{companyId}");
@@ -71,7 +71,7 @@ public class CompanyControllerTests
         var createDto = new CreateCompanyDto
         {
             Name = "Nueva Empresa",
-            TaxId = "B87654321",
+            TaxId = "B87654323",
             Address = "Calle Nueva 456",
             Phone = "987654321",
             Email = "nueva@empresa.com"
@@ -96,7 +96,7 @@ public class CompanyControllerTests
         var createDto1 = new CreateCompanyDto
         {
             Name = uniqueName,
-            TaxId = $"B{Guid.NewGuid().ToString().Substring(0, 8)}"
+            TaxId = "A58818501" // Use valid TaxId (Carrefour)
         };
         var createResponse1 = await _client.PostAsJsonAsync("/api/company", createDto1);
         createResponse1.StatusCode.Should().Be(HttpStatusCode.Created, "La primera empresa debería crearse correctamente");
@@ -124,7 +124,7 @@ public class CompanyControllerTests
         var updateDto = new UpdateCompanyDto
         {
             Name = "Empresa Test Update Actualizada",
-            TaxId = "B87654321",
+            TaxId = "B87654323",
             Address = "Calle Actualizada 789",
             Phone = "911111111",
             Email = "testupdate_actualizada@empresa.com",
@@ -168,7 +168,7 @@ public class CompanyControllerTests
         var createDto = new CreateCompanyDto
         {
             Name = "Empresa Para Eliminar",
-            TaxId = "B11111111"
+            TaxId = "B11111119"
         };
         var createResponse = await _client.PostAsJsonAsync("/api/company", createDto);
         var createdCompany = await createResponse.Content.ReadFromJsonAsync<CompanyDto>();

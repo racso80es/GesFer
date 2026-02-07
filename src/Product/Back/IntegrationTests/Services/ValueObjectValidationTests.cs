@@ -134,7 +134,7 @@ public class ValueObjectValidationTests : IClassFixture<DatabaseFixture>
         // Verificar que las companies válidas SÍ están en la base de datos
         var validCompanyIds = new[]
         {
-            Guid.Parse("11111111-1111-1111-1111-111111111111"), // Empresa Demo (válida)
+            Guid.Parse("11111111-1111-1111-1111-111111111115"), // Empresa Demo (válida)
             Guid.Parse("11111111-1111-1111-1111-111111111112")  // Empresa Test Update (válida)
         };
 
@@ -183,7 +183,7 @@ public class ValueObjectValidationTests : IClassFixture<DatabaseFixture>
         
         // Verificar que el TaxId de la empresa válida es correcto
         validCompany!.TaxId.HasValue.Should().BeTrue("La empresa válida debe tener un TaxId");
-        validCompany.TaxId!.Value.Value.Should().Be("B87654321", "El TaxId debe ser el valor válido esperado");
+        validCompany.TaxId!.Value.Value.Should().Be("B87654315", "El TaxId debe ser el valor válido esperado");
     }
 
     /// <summary>

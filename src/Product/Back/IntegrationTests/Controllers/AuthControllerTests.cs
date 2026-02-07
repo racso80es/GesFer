@@ -290,7 +290,7 @@ public class AuthControllerTests
         loginResponse.LastName.Should().Be("Sistema", "El apellido debe ser 'Sistema'");
         loginResponse.UserId.Should().Be(Guid.Parse("99999999-9999-9999-9999-999999999999"),
             "El ID del usuario debe ser el GUID conocido");
-        loginResponse.CompanyId.Should().Be(Guid.Parse("11111111-1111-1111-1111-111111111111"),
+        loginResponse.CompanyId.Should().Be(Guid.Parse("11111111-1111-1111-1111-111111111115"),
             "El ID de la empresa debe ser el GUID conocido");
         loginResponse.Permissions.Should().NotBeEmpty("El usuario debe tener permisos asignados");
     }
