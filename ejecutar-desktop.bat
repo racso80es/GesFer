@@ -1,59 +1,71 @@
 @echo off
+:: Configuración de codificación para caracteres especiales
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
 echo ========================================
-echo Iniciando Calma-Desktop (Electron)
+echo   INICIANDO CALMA-DESKTOP (ELECTRON)
 echo ========================================
 echo.
 
-REM Guardar la ruta raíz del proyecto
-set "ROOT_DIR=%~dp0"
+:: 1. Definición de rutas seguras
+:: %~dp0 siempre termina en \, por lo que no añadimos una extra antes de 'src'
+set "BASE_DIR=%~dp0"
+set "APP_DIR=%BASE_DIR%src\Tools\Calma-Desktop"
 
-REM Cambiar al directorio del proyecto Electron
-cd /d "%ROOT_DIR%src\Tools\Calma-Desktop"
-if errorlevel 1 (
-    echo ERROR: No se encuentra el directorio src\Tools\Calma-Desktop
-    pause
-    exit /b 1
+:: 2. Validación de entorno
+where npm >nul 2>nul
+if %errorlevel% neq 0 (
+    echo [ERROR] No se detectó 'npm' en el sistema.
+    echo Por favor, instala Node.js antes de continuar.
+    goto :error_exit
 )
 
-REM Verificar si existe package.json para confirmar que estamos en el directorio correcto
-if not exist "package.json" (
-    echo ERROR: No se encuentra package.json en el directorio actual.
-    echo Asegurese de que src\Tools\Calma-Desktop contiene el proyecto Electron.
-    pause
-    exit /b 1
+:: 3. Cambio de directorio con validación de existencia
+if not exist "%APP_DIR%" (
+    echo [ERROR] No se encuentra la ruta: "%APP_DIR%"
+    goto :error_exit
 )
 
-REM Verificar si existen módulos de node
+pushd "%APP_DIR%"
+
+:: 4. Gestión de dependencias (Estructura de bloque lineal para evitar fallos de salto)
 if not exist "node_modules\" (
-    echo [1/2] Instalando dependencias (npm install)...
+    echo [1/2] Módulos no encontrados. Iniciando instalación...
     call npm install
-    if errorlevel 1 (
-        echo ERROR: No se pudieron instalar las dependencias
-        pause
-        exit /b 1
+    if %errorlevel% neq 0 (
+        echo [ERROR] La instalación de dependencias falló.
+        popd
+        goto :error_exit
     )
-    echo    ✓ Dependencias instaladas correctamente
-    echo.
+    echo    ✓ Dependencias instaladas.
 ) else (
-    echo [1/2] Dependencias ya instaladas.
-    echo.
+    echo [1/2] Dependencias ya presentes. Saltando instalación.
 )
 
-REM Ejecutar la aplicación
-echo [2/2] Ejecutando aplicación (npm run dev)...
+:: 5. Ejecución de la aplicación
+echo [2/2] Lanzando aplicación (npm run dev)...
 echo.
 call npm run dev
-if errorlevel 1 (
-    echo ERROR: Error al ejecutar la aplicación
-    pause
-    exit /b 1
+
+:: 6. Verificación de salida
+if %errorlevel% neq 0 (
+    echo.
+    echo [ERROR] La aplicación se cerró con un código de error: %errorlevel%
+    popd
+    goto :error_exit
 )
 
 echo.
 echo ========================================
-echo Ejecución finalizada
+echo   EJECUCIÓN FINALIZADA CORRECTAMENTE
 echo ========================================
+popd
 pause
+exit /b 0
+
+:error_exit
+echo.
+echo [!] El proceso no pudo completarse.
+pause
+exit /b 1
