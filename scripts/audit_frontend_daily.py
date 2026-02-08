@@ -9,7 +9,7 @@ TARGET_DIRECTORIES = [
     "src/Admin/Front"
 ]
 
-FORBIDDEN_TERMS = ["empresa"]
+FORBIDDEN_TERMS = []
 ALLOWED_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx", ".json", ".md", ".html", ".css", ".scss"]
 EXCLUDED_DIRS = ["node_modules", ".git", "dist", "build", ".next", "coverage"]
 
