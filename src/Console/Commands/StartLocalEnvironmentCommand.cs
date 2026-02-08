@@ -13,7 +13,7 @@ namespace GesFer.ConsoleApp.Commands;
 
 public class StartLocalEnvironmentInput { }
 
-public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmentInput, bool>
+public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmentInput>
 {
     private readonly LogService _logService;
     private readonly string _rootPath;
@@ -26,7 +26,7 @@ public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmen
         _rootPath = logService.GetRootPath();
     }
 
-    public async Task<CommandResult<bool>> HandleAsync(StartLocalEnvironmentInput input)
+    public async Task<CommandResult> HandleAsync(StartLocalEnvironmentInput input)
     {
         Console.WriteLine("Iniciando entorno local...");
         _logService.WriteLog("Iniciando entorno local - Opción 2");
@@ -41,10 +41,10 @@ public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmen
 
             // 2. Compilar Backends
             if (!await BuildDotNetProjectAsync("src/Product/Back/Api/GesFer.Api.csproj", "Product API"))
-                return CommandResult<bool>.Fail("Fallo en la preparación del entorno (Compilación Product API).");
+                return CommandResult.Fail("Fallo en la preparación del entorno (Compilación Product API).");
 
             if (!await BuildDotNetProjectAsync("src/Admin/Back/Api/GesFer.Admin.Api.csproj", "Admin API"))
-                return CommandResult<bool>.Fail("Fallo en la preparación del entorno (Compilación Admin API).");
+                return CommandResult.Fail("Fallo en la preparación del entorno (Compilación Admin API).");
 
             // 3. Preparar Frontends (npm install)
             await PrepareNpmProjectAsync("src/Product/Front", "Product Front");
@@ -102,13 +102,13 @@ public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmen
             }
 
             StopAllProcesses();
-            return CommandResult<bool>.Ok(true, "Entorno detenido correctamente");
+            return CommandResult.Ok("Entorno detenido correctamente");
         }
         catch (Exception ex)
         {
             StopAllProcesses();
             _logService.WriteError("Error al levantar entorno local", ex);
-            return CommandResult<bool>.Fail($"Error: {ex.Message}");
+            return CommandResult.Fail($"Error: {ex.Message}");
         }
     }
 
