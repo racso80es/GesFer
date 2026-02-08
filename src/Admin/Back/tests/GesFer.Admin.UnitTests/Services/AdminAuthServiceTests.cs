@@ -1,4 +1,6 @@
 using FluentAssertions;
+using System;
+using System.Threading.Tasks;
 using GesFer.Admin.Back.Domain.Entities;
 using GesFer.Admin.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +11,8 @@ namespace GesFer.Admin.UnitTests.Services;
 
 public class AdminAuthServiceTests
 {
-    private readonly AdminDbContext _context;
-    private readonly AdminAuthService _service;
+    private readonly AdminDbContext _dbContext;
+    private readonly AdminAuthService _authService;
 
     public AdminAuthServiceTests()
     {
@@ -18,8 +20,8 @@ public class AdminAuthServiceTests
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        _context = new AdminDbContext(options);
-        _service = new AdminAuthService(_context);
+        _dbContext = new AdminDbContext(options);
+        _authService = new AdminAuthService(_dbContext);
     }
 
     [Fact]
@@ -34,28 +36,18 @@ public class AdminAuthServiceTests
             PasswordHash = passwordHash,
             FirstName = "Admin",
             LastName = "User",
+            Email = "admin@test.com",
             IsActive = true
         };
-
-        _context.AdminUsers.Add(user);
-        await _context.SaveChangesAsync();
+        _dbContext.AdminUsers.Add(user);
+        await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _service.AuthenticateAsync("admin", password);
+        var result = await _authService.AuthenticateAsync("admin", password);
 
         // Assert
         result.Should().NotBeNull();
         result!.Username.Should().Be("admin");
-    }
-
-    [Fact]
-    public async Task AuthenticateAsync_ShouldReturnNull_WhenUserDoesNotExist()
-    {
-        // Act
-        var result = await _service.AuthenticateAsync("nonexistent", "password");
-
-        // Assert
-        result.Should().BeNull();
     }
 
     [Fact]
@@ -68,14 +60,26 @@ public class AdminAuthServiceTests
         {
             Username = "admin",
             PasswordHash = passwordHash,
+            FirstName = "Admin",
+            LastName = "User",
+            Email = "admin@test.com",
             IsActive = true
         };
-
-        _context.AdminUsers.Add(user);
-        await _context.SaveChangesAsync();
+        _dbContext.AdminUsers.Add(user);
+        await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _service.AuthenticateAsync("admin", "wrongpassword");
+        var result = await _authService.AuthenticateAsync("admin", "wrongpassword");
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task AuthenticateAsync_ShouldReturnNull_WhenUserDoesNotExist()
+    {
+        // Act
+        var result = await _authService.AuthenticateAsync("nonexistent", "password");
 
         // Assert
         result.Should().BeNull();
@@ -91,20 +95,22 @@ public class AdminAuthServiceTests
         {
             Username = "inactive",
             PasswordHash = passwordHash,
-            IsActive = true // Initially true to be saved
+            FirstName = "Inactive",
+            LastName = "User",
+            Email = "inactive@test.com",
+            IsActive = false
         };
+        // Add directly to DbContext does not trigger SaveChanges logic if we don't call it,
+        // but SaveChanges DOES override IsActive=true for Added entities in AdminDbContext!
+        // We need to add first, then modify to inactive.
+        _dbContext.AdminUsers.Add(user);
+        await _dbContext.SaveChangesAsync();
 
-        _context.AdminUsers.Add(user);
-        await _context.SaveChangesAsync();
-
-        // Modify to inactive
         user.IsActive = false;
-        _context.Entry(user).State = EntityState.Modified;
-
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _service.AuthenticateAsync("inactive", password);
+        var result = await _authService.AuthenticateAsync("inactive", password);
 
         // Assert
         result.Should().BeNull();
@@ -120,18 +126,23 @@ public class AdminAuthServiceTests
         {
             Username = "deleted",
             PasswordHash = passwordHash,
-            IsActive = true
+            FirstName = "Deleted",
+            LastName = "User",
+            Email = "deleted@test.com",
+            IsActive = true,
+            DeletedAt = DateTime.UtcNow // Soft deleted
         };
+        _dbContext.AdminUsers.Add(user);
+        // Note: DbContext filters out deleted entities by default, but we add it manually to verify logic
+        // However, standard Add won't set DeletedAt on insert usually, but here we force it.
+        // InMemory provider might not respect QueryFilters on Add, but on Query.
+        // Let's ensure it is treated as deleted.
 
-        _context.AdminUsers.Add(user);
-        await _context.SaveChangesAsync();
-
-        // Soft delete
-        _context.AdminUsers.Remove(user);
-        await _context.SaveChangesAsync();
+        // Saving changes to persist
+        await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _service.AuthenticateAsync("deleted", password);
+        var result = await _authService.AuthenticateAsync("deleted", password);
 
         // Assert
         result.Should().BeNull();
