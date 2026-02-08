@@ -66,21 +66,29 @@ public class DashboardController : ControllerBase
                 GeneratedAt = DateTime.UtcNow
             };
 
-            // Registrar log de auditoría de forma asíncrona (Fire and Forget)
-            // El servicio AsyncLogPublisher envía el log a Admin API sin bloquear el flujo
-            _logPublisher.PublishAuditLog(
-                cursorId: cursorId,
-                username: username,
-                action: "GetDashboardSummary",
-                httpMethod: HttpContext.Request.Method,
-                path: HttpContext.Request.Path,
-                additionalData: System.Text.Json.JsonSerializer.Serialize(new
-                {
-                    TotalCompanies = summary.TotalCompanies,
-                    TotalUsers = summary.TotalUsers,
-                    ActiveUsers = summary.ActiveUsers
-                })
-            );
+            // Registrar log de auditoría de forma asíncrona y robusta (Fail-Open)
+            try
+            {
+                await _logPublisher.PublishAuditLog(
+                    cursorId: cursorId,
+                    username: username,
+                    action: "GetDashboardSummary",
+                    httpMethod: HttpContext.Request.Method,
+                    path: HttpContext.Request.Path,
+                    additionalData: System.Text.Json.JsonSerializer.Serialize(new
+                    {
+                        TotalCompanies = summary.TotalCompanies,
+                        TotalUsers = summary.TotalUsers,
+                        ActiveUsers = summary.ActiveUsers
+                    })
+                );
+            }
+            catch (Exception ex)
+            {
+                // Fail-open: loguear el error de auditoría y continuar
+                // Esto garantiza que el fallo del sistema de auditoría no bloquee la funcionalidad principal
+                _logger.LogError(ex, "Fallo crítico al registrar auditoría en DashboardController");
+            }
 
             return Ok(summary);
         }
