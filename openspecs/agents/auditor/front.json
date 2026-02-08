@@ -14,10 +14,6 @@
   "skills_scope": "Open",
   "constraints": [
     {
-      "rule": "Forbidden Term: 'empresa' is CRITICAL FAILURE. Use 'company'.",
-      "severity": "CRITICAL"
-    },
-    {
       "rule": "Leakage: Shared cannot import Product/Admin.",
       "severity": "CRITICAL"
     }
