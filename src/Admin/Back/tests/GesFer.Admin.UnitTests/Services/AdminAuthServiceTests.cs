@@ -1,3 +1,4 @@
+using FluentAssertions;
 using System;
 using System.Threading.Tasks;
 using GesFer.Admin.Back.Domain.Entities;
@@ -5,7 +6,6 @@ using GesFer.Admin.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using MyCompany.SysAdmin.Infrastructure.Services;
 using Xunit;
-using FluentAssertions;
 
 namespace GesFer.Admin.UnitTests.Services;
 

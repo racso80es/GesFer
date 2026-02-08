@@ -64,6 +64,6 @@ public class DbInitializerTests
         // So this test expects the behavior AFTER refactor.
         // If I run this now, it will pass ensuring admin exists, but might fail on "Sanitized" expectation if I check for specific hash vs Fixed.
 
-        admin.PasswordHash.Should().NotBeNullOrEmpty();
+        admin!.PasswordHash.Should().NotBeNullOrEmpty();
     }
 }
