@@ -54,7 +54,14 @@ public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmen
             var logsDir = Path.Combine(_rootPath, "logs", "services");
             Directory.CreateDirectory(logsDir);
 
-            // 4. Levantar Servicios
+            // 4. Liberar puertos
+            Console.WriteLine("Liberando puertos...");
+            FreePort(5000); // Product API
+            FreePort(5049); // Admin API
+            FreePort(productFrontPort);
+            FreePort(adminFrontPort);
+
+            // 5. Levantar Servicios
             Console.WriteLine("Levantando servicios en segundo plano...");
 
             // Product API
@@ -69,7 +76,7 @@ public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmen
             // Admin Front
             StartNpmProcess("src/Admin/Front", "AdminFront", logsDir);
 
-            // 5. Mostrar Información
+            // 6. Mostrar Información
             Console.Clear();
             Console.WriteLine("========================================");
             Console.WriteLine("   Entorno Local en Ejecución");
@@ -331,6 +338,52 @@ public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmen
             {
                 // Ignore errors to avoid crashing the main process
             }
+        }
+    }
+
+    private void FreePort(int port)
+    {
+        if (port <= 0) return;
+        try
+        {
+            var isWindows = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
+            if (isWindows)
+            {
+                // Windows: netstat para encontrar PID y taskkill para matar
+                // Usamos powershell para ser más precisos que cmd y findstr
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "powershell",
+                        Arguments = $"-Command \"Get-NetTCPConnection -LocalPort {port} -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | ForEach-Object {{ Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }}\"",
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    }
+                };
+                process.Start();
+                process.WaitForExit();
+            }
+            else
+            {
+                // Linux/Mac: lsof + kill
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "bash",
+                        Arguments = $"-c \"lsof -t -i:{port} | xargs -r kill -9\"",
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    }
+                };
+                process.Start();
+                process.WaitForExit();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logService.WriteError($"Error liberando puerto {port}", ex);
         }
     }
 }
