@@ -298,7 +298,7 @@ describe("Integridad E2E: Usuarios y Empresas", () => {
 
       if (companiesResp.status === 200) {
         const companies = JSON.parse(companiesResp.body);
-        const demoCompany = companies.find((c: any) => c.name === "Empresa Demo");
+        const demoCompany = companies.find((c: { name: string; id: string }) => c.name === "Empresa Demo");
         if (demoCompany) {
           userTestCompanyId = demoCompany.id;
         } else if (companies.length > 0) {

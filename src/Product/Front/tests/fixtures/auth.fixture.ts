@@ -1,4 +1,4 @@
-import { test as base } from '@playwright/test';
+import { test as base, Page } from '@playwright/test';
 import { LoginPage } from '../page-objects/LoginPage';
 import { ApiClient } from '../api/api-client';
 import { appConfig } from '../../lib/config';
@@ -8,7 +8,7 @@ import { appConfig } from '../../lib/config';
  * Proporciona un usuario autenticado para los tests
  */
 export const test = base.extend<{
-  authenticatedPage: { page: any; token: string };
+  authenticatedPage: { page: Page; token: string };
   apiClient: ApiClient;
 }>({
   // Fixture para página autenticada

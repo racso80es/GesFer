@@ -65,12 +65,12 @@ test.describe('Login E2E Tests', () => {
 
     // Esperar a que el formulario esté completamente cargado
     await expect(loginPage.loginForm).toBeVisible();
-    await expect(loginPage.empresaInput).toBeVisible();
+    await expect(loginPage.organizationInput).toBeVisible();
     await expect(loginPage.usuarioInput).toBeVisible();
     await expect(loginPage.passwordInput).toBeVisible();
 
     // Limpiar los campos
-    await loginPage.empresaInput.clear();
+    await loginPage.organizationInput.clear();
     await loginPage.usuarioInput.clear();
     await loginPage.passwordInput.clear();
 
@@ -78,7 +78,7 @@ test.describe('Login E2E Tests', () => {
     await loginPage.loginButton.click();
 
     // Verificar que los campos siguen visibles (el formulario no se envió)
-    await expect(loginPage.empresaInput).toBeVisible();
+    await expect(loginPage.organizationInput).toBeVisible();
     await expect(loginPage.usuarioInput).toBeVisible();
     await expect(loginPage.passwordInput).toBeVisible();
     

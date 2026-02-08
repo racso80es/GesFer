@@ -5,9 +5,10 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { initializeClient, clearAuthData } from "@/lib/utils/client-init";
 import { authApi } from "@/lib/api/auth";
+import type { LoginResponse } from "@/lib/types/api";
 
 // Variable de módulo para almacenar el resultado de inicialización (solo se ejecuta una vez)
-let initResult: { user: any; shouldClearCache: boolean } | null = null;
+let initResult: { user: LoginResponse | null; shouldClearCache: boolean } | null = null;
 
 /**
  * Componente interno que limpia el caché si es necesario después de que el QueryClient esté disponible

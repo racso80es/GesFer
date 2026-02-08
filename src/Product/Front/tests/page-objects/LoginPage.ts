@@ -7,7 +7,7 @@ import { BasePage } from './BasePage';
  */
 export class LoginPage extends BasePage {
   // Selectores - preferir getByTestId, fallback a otros métodos
-  readonly empresaInput: Locator;
+  readonly organizationInput: Locator;
   readonly usuarioInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
@@ -18,10 +18,10 @@ export class LoginPage extends BasePage {
     super(page);
     
     // Preferir getByTestId, con fallback a getByLabel, usando .first() para evitar múltiples elementos
-    this.empresaInput = page.getByTestId('login-empresa-input').or(page.getByLabel(/organización|organization|empresa|company/i)).first();
-    this.usuarioInput = page.getByTestId('login-usuario-input').or(page.getByLabel(/usuario|username/i)).first();
-    this.passwordInput = page.getByTestId('login-password-input').or(page.getByLabel(/contraseña|password/i)).first();
-    this.loginButton = page.getByTestId('login-submit-button').or(page.getByRole('button', { name: /iniciar sesión|login/i })).first();
+    this.organizationInput = page.getByTestId('login-company-input').or(page.getByTestId('shared-input-text-company')).or(page.getByTestId('login-empresa-input')).or(page.getByLabel(/organización|organization|empresa|company/i)).first();
+    this.usuarioInput = page.getByTestId('login-usuario-input').or(page.getByTestId('shared-input-text-username')).or(page.getByLabel(/usuario|username/i)).first();
+    this.passwordInput = page.getByTestId('login-password-input').or(page.getByTestId('shared-input-password-password')).or(page.getByLabel(/contraseña|password/i)).first();
+    this.loginButton = page.getByTestId('login-submit-button').or(page.getByTestId('shared-button-login-submit')).or(page.getByRole('button', { name: /iniciar sesión|login/i })).first();
     this.errorMessage = page.getByTestId('login-error-message').or(page.locator('[role="alert"], .error-message')).first();
     this.loginForm = page.getByTestId('login-form').or(page.locator('form')).first();
   }
@@ -37,8 +37,8 @@ export class LoginPage extends BasePage {
   /**
    * Realiza login con las credenciales proporcionadas
    */
-  async login(empresa: string, usuario: string, password: string) {
-    await this.empresaInput.fill(empresa);
+  async login(organization: string, usuario: string, password: string) {
+    await this.organizationInput.fill(organization);
     await this.usuarioInput.fill(usuario);
     await this.passwordInput.fill(password);
     await this.loginButton.click();

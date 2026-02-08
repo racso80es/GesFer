@@ -96,7 +96,7 @@ Después de ejecutar `npm install`, deberías ver:
 
 ## 🔐 Credenciales de Prueba
 
-- **Empresa**: Empresa Demo
+- **Organización**: Empresa Demo
 - **Usuario**: admin
 - **Contraseña**: admin123
 

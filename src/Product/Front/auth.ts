@@ -14,7 +14,7 @@ export const authConfig: NextAuthConfig = {
       id: "credentials",
       name: "Credentials",
       credentials: {
-        company: { label: "Empresa", type: "text" },
+        company: { label: "Organización", type: "text" },
         username: { label: "Usuario", type: "text" },
         password: { label: "Contraseña", type: "password" },
       },
@@ -110,7 +110,9 @@ export const authConfig: NextAuthConfig = {
         if (token.companyId) {
           session.user.companyId = token.companyId as string;
           session.user.companyName = token.companyName as string;
-          (session.user as any).permissions = (token.permissions as string)?.split(",") || [];
+          Object.assign(session.user, {
+            permissions: (token.permissions as string)?.split(",") || []
+          });
         }
         
         // El accessToken se expone en session para uso en Server Components

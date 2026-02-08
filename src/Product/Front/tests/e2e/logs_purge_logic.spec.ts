@@ -238,7 +238,7 @@ test.describe('Logs Purge Logic - Frontend E2E', () => {
     
     // Paso 8: Configurar interceptor ANTES de hacer clic
     let purgeResponseStatus: number | null = null;
-    let purgeResponseData: any = null;
+    let purgeResponseData: { deletedCount: number; dateLimit: string; message: string } | null = null;
     const consoleMessages: string[] = [];
     
     // Capturar mensajes de consola (incluyendo los logs del modal)

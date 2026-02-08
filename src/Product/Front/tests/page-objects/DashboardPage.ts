@@ -8,7 +8,7 @@ import { BasePage } from './BasePage';
 export class DashboardPage extends BasePage {
   readonly title: Locator;
   readonly usuariosLink: Locator;
-  readonly empresasLink: Locator;
+  readonly companiesLink: Locator;
   readonly clientesLink: Locator;
   readonly logoutButton: Locator;
 
@@ -18,7 +18,7 @@ export class DashboardPage extends BasePage {
     // Preferir getByTestId, con fallback a getByRole, usando .first() para evitar múltiples elementos
     this.title = page.getByTestId('dashboard-title').or(page.getByRole('heading', { name: /panel de control|dashboard/i })).first();
     this.usuariosLink = page.getByTestId('dashboard-usuarios-link').or(page.getByRole('link', { name: /usuarios|users/i })).first();
-    this.empresasLink = page.getByTestId('dashboard-companies-link').or(page.getByRole('link', { name: /empresas|companies/i })).first();
+    this.companiesLink = page.getByTestId('dashboard-companies-link').or(page.getByRole('link', { name: /empresas|companies/i })).first();
     this.clientesLink = page.getByTestId('dashboard-clientes-link').or(page.getByRole('link', { name: /clientes|customers/i })).first();
     this.logoutButton = page.getByTestId('dashboard-logout-button').or(page.getByRole('button', { name: /cerrar sesión|logout/i })).first();
   }
@@ -43,7 +43,7 @@ export class DashboardPage extends BasePage {
    * Navega a la sección de empresas
    */
   async goToCompanies() {
-    await this.empresasLink.click();
+    await this.companiesLink.click();
     await this.page.waitForURL(/\/companies/, { timeout: 5000 });
   }
 
