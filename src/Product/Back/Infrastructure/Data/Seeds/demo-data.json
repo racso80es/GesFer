@@ -55,7 +55,7 @@
       "id": "88888888-8888-8888-8888-888888888888",
       "companyId": "33333333-3333-3333-3333-333333333333",
       "username": "user_test",
-      "password": "",
+      "password": "user123",
       "firstName": "Usuario",
       "lastName": "Cliente",
       "email": "user@gesfer.local",
