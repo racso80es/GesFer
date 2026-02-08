@@ -158,13 +158,13 @@ test.describe('Logging Persistence Test', () => {
     // Si no está en la primera página, buscar en más páginas o verificar que el conteo aumentó
     if (finalLogsData.items && finalLogsData.items.length > 0) {
       const logs = finalLogsData.items;
-      let foundLog = logs.find((log: any) => 
+      let foundLog = logs.find((log: { message?: string; properties?: string }) =>
         log.message && log.message.includes('Test Log Persistence')
       );
       
       // Si no se encuentra en la primera página, buscar en propiedades JSON
       if (!foundLog) {
-        foundLog = logs.find((log: any) => 
+        foundLog = logs.find((log: { message?: string; properties?: string }) =>
           log.properties && log.properties.includes('Playwright-Persistence-Test')
         );
       }

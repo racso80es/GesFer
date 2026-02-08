@@ -1,5 +1,6 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
 import { appConfig } from '../../lib/config';
+import type { LoginResponse } from '../../lib/types/api';
 
 /**
  * Cliente API para tests de Playwright
@@ -89,7 +90,7 @@ export class ApiClient {
   /**
    * Obtiene la información completa del login
    */
-  async loginFull(empresa: string, usuario: string, contraseña: string): Promise<any> {
+  async loginFull(empresa: string, usuario: string, contraseña: string): Promise<LoginResponse> {
     const response = await this.post('/api/auth/login', {
       empresa,
       usuario,

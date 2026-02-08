@@ -104,7 +104,7 @@ export default function CompaniesPage() {
       setShowDeleteConfirm(false);
       setCompanyToDelete(null);
     } catch (error) {
-      console.error("Error al eliminar empresa:", error);
+      console.error("Error al eliminar organización:", error);
     } finally {
       setDeletingCompanyId(null);
     }
@@ -127,7 +127,7 @@ export default function CompaniesPage() {
             </div>
             <Button 
               onClick={() => setIsCreateModalOpen(true)}
-              data-testid="shared-button-empresas-new-company"
+              data-testid="shared-button-companies-new-company"
             >
               <Plus className="h-4 w-4 mr-2" />
               {t('newCompany')}
@@ -159,7 +159,7 @@ export default function CompaniesPage() {
                 </p>
                 <Button 
                   onClick={() => setIsCreateModalOpen(true)}
-                  data-testid="shared-button-empresas-create-first"
+                  data-testid="shared-button-companies-create-first"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   {t('createFirst')}
@@ -219,7 +219,7 @@ export default function CompaniesPage() {
                                 size="icon"
                                 onClick={() => handleView(company.id)}
                                 title={t('table.view')}
-                                data-testid={`shared-button-empresas-view-${company.id}`}
+                                data-testid={`shared-button-companies-view-${company.id}`}
                               >
                                 <Eye className="h-4 w-4" />
                               </Button>
@@ -228,7 +228,7 @@ export default function CompaniesPage() {
                                 size="icon"
                                 onClick={() => setEditingCompany(company)}
                                 title={t('table.edit')}
-                                data-testid={`shared-button-empresas-edit-${company.id}`}
+                                data-testid={`shared-button-companies-edit-${company.id}`}
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
@@ -238,7 +238,7 @@ export default function CompaniesPage() {
                                 onClick={() => handleDeleteClick(company.id)}
                                 disabled={deletingCompanyId === company.id}
                                 title={t('table.delete')}
-                                data-testid={`shared-button-empresas-delete-${company.id}`}
+                                data-testid={`shared-button-companies-delete-${company.id}`}
                               >
                                 <Trash2 className="h-4 w-4 text-destructive" />
                               </Button>
@@ -253,13 +253,13 @@ export default function CompaniesPage() {
             </Card>
           )}
 
-          {/* Modal Crear Empresa */}
+          {/* Modal Crear Organización */}
           <ModalBase
             open={isCreateModalOpen}
             onOpenChange={setIsCreateModalOpen}
             title={t('createCompany')}
             description={t('createDescription')}
-            data-testid="shared-modal-empresas-create"
+            data-testid="shared-modal-companies-create"
           >
             <CompanyForm
               onSubmit={handleCreate}
@@ -268,13 +268,13 @@ export default function CompaniesPage() {
             />
           </ModalBase>
 
-          {/* Modal Editar Empresa */}
+          {/* Modal Editar Organización */}
           <ModalBase
             open={!!editingCompany}
             onOpenChange={(open: boolean) => !open && setEditingCompany(null)}
             title={t('editCompany')}
             description={t('editDescription')}
-            data-testid="shared-modal-empresas-edit"
+            data-testid="shared-modal-companies-edit"
           >
             {editingCompany && (
               <CompanyForm
@@ -290,8 +290,8 @@ export default function CompaniesPage() {
             open={showDeleteConfirm}
             onOpenChange={setShowDeleteConfirm}
             onConfirm={handleDeleteConfirm}
-            title={t('deleteConfirmTitle') || "Eliminar Empresa"}
-            description={t('deleteConfirmDescription') || "Esta acción eliminará permanentemente la empresa. Esta acción no se puede deshacer."}
+            title={t('deleteConfirmTitle') || "Eliminar Organización"}
+            description={t('deleteConfirmDescription') || "Esta acción eliminará permanentemente la organización. Esta acción no se puede deshacer."}
             confirmationKeyword="ELIMINAR"
             confirmButtonText={t('deleteConfirmButton') || "Eliminar"}
             cancelButtonText={t('cancel') || "Cancelar"}

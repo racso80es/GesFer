@@ -251,7 +251,7 @@ export default function CompaniesPage() {
             </Card>
           )}
 
-          {/* Modal Crear Empresa */}
+          {/* Modal Crear Organización */}
           <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
             <DialogContent>
               <DialogClose onClose={() => setIsCreateModalOpen(false)} />
@@ -269,7 +269,7 @@ export default function CompaniesPage() {
             </DialogContent>
           </Dialog>
 
-          {/* Modal Editar Empresa */}
+          {/* Modal Editar Organización */}
           <Dialog
             open={!!editingCompany}
             onOpenChange={(open: boolean) => !open && setEditingCompany(null)}

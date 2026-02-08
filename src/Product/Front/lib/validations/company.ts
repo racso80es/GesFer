@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { CreateCompany, UpdateCompany } from "@/lib/types/api";
 
 /**
- * Esquema de validación para crear empresa
+ * Esquema de validación para crear organización
  * Sincronizado con las validaciones del Backend (CompanyConfiguration.cs)
  */
 export const createCompanySchema = z.object({
@@ -38,7 +38,7 @@ export const createCompanySchema = z.object({
 }) satisfies z.ZodType<CreateCompany>;
 
 /**
- * Esquema de validación para actualizar empresa
+ * Esquema de validación para actualizar organización
  * Sincronizado con las validaciones del Backend (CompanyConfiguration.cs)
  */
 export const updateCompanySchema = z.object({
