@@ -17,7 +17,7 @@ public interface IAsyncLogPublisher
     void PublishLog(string level, string message, Exception? exception, Dictionary<string, object> properties);
 
     /// <summary>
-    /// Publica un log de auditoría de forma asíncrona (fire and forget)
+    /// Publica un log de auditoría de forma asíncrona
     /// </summary>
     /// <param name="cursorId">ID del cursor del administrador</param>
     /// <param name="username">Nombre de usuario</param>
@@ -25,5 +25,6 @@ public interface IAsyncLogPublisher
     /// <param name="httpMethod">Método HTTP</param>
     /// <param name="path">Ruta del endpoint</param>
     /// <param name="additionalData">Datos adicionales</param>
-    void PublishAuditLog(string cursorId, string username, string action, string httpMethod, string path, string? additionalData = null);
+    /// <returns>Tarea asíncrona</returns>
+    Task PublishAuditLog(string cursorId, string username, string action, string httpMethod, string path, string? additionalData = null);
 }

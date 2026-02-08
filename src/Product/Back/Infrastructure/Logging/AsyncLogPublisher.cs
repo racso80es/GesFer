@@ -85,53 +85,51 @@ public class AsyncLogPublisher : IAsyncLogPublisher
     }
 
     /// <summary>
-    /// Publica un log de auditoría de forma asíncrona (fire and forget)
+    /// Publica un log de auditoría de forma asíncrona
     /// </summary>
-    public void PublishAuditLog(string cursorId, string username, string action, string httpMethod, string path, string? additionalData = null)
+    public async Task PublishAuditLog(string cursorId, string username, string action, string httpMethod, string path, string? additionalData = null)
     {
-        // Fire and Forget: no esperamos el resultado
-        _ = Task.Run(async () =>
+        try
         {
-            try
+            var httpClient = _httpClientFactory.CreateClient("AdminApi");
+            httpClient.BaseAddress = new Uri(_adminApiBaseUrl);
+            httpClient.Timeout = TimeSpan.FromSeconds(5); // Timeout corto para no bloquear
+
+            var auditLogData = new
             {
-                var httpClient = _httpClientFactory.CreateClient("AdminApi");
-                httpClient.BaseAddress = new Uri(_adminApiBaseUrl);
-                httpClient.Timeout = TimeSpan.FromSeconds(5); // Timeout corto para no bloquear
+                CursorId = cursorId,
+                Username = username,
+                Action = action,
+                HttpMethod = httpMethod,
+                Path = path,
+                AdditionalData = additionalData,
+                ActionTimestamp = DateTime.UtcNow
+            };
 
-                var auditLogData = new
-                {
-                    CursorId = cursorId,
-                    Username = username,
-                    Action = action,
-                    HttpMethod = httpMethod,
-                    Path = path,
-                    AdditionalData = additionalData,
-                    ActionTimestamp = DateTime.UtcNow
-                };
+            var json = JsonSerializer.Serialize(auditLogData);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var json = JsonSerializer.Serialize(auditLogData);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+            // Intentar enviar el log de auditoría
+            var response = await httpClient.PostAsync(_auditLogsEndpoint, content);
 
-                // Intentar enviar el log de auditoría
-                var response = await httpClient.PostAsync(_auditLogsEndpoint, content);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    // Log localmente si falla, pero no interrumpir el flujo
-                    _logger.LogWarning(
-                        "No se pudo enviar audit log a Admin API. Status: {StatusCode}, Endpoint: {Endpoint}",
-                        response.StatusCode,
-                        _auditLogsEndpoint);
-                }
-            }
-            catch (Exception ex)
+            if (!response.IsSuccessStatusCode)
             {
-                // Log localmente el error pero no propagarlo
-                // Esto asegura que el fallo de Admin API no afecte a Product
-                _logger.LogWarning(ex,
-                    "Error al publicar audit log en Admin API. El log se perdió pero el flujo continúa. Action: {Action}",
-                    action);
+                // Log localmente si falla, pero no interrumpir el flujo
+                _logger.LogWarning(
+                    "No se pudo enviar audit log a Admin API. Status: {StatusCode}, Endpoint: {Endpoint}",
+                    response.StatusCode,
+                    _auditLogsEndpoint);
             }
-        });
+        }
+        catch (Exception ex)
+        {
+            // Log localmente el error pero no propagarlo
+            // Esto asegura que el fallo de Admin API no afecte a Product
+            _logger.LogWarning(ex,
+                "Error al publicar audit log en Admin API. El log se perdió pero el flujo continúa. Action: {Action}",
+                action);
+            // No relanzamos la excepción para mantener el comportamiento fail-open en el llamante si este no lo maneja,
+            // aunque el llamante debería usar try-catch.
+        }
     }
 }
