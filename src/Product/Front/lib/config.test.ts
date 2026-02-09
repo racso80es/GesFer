@@ -9,7 +9,7 @@ import type { AppConfig } from './config';
 
 export const testConfig: AppConfig = {
   api: {
-    url: process.env.API_URL || 'http://127.0.0.1:5000',
+    url: process.env.API_URL || 'https://127.0.0.1:5001',
   },
   client: {
     url: process.env.CLIENT_URL || 'http://127.0.0.1:3000',

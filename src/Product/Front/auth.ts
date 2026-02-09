@@ -24,7 +24,7 @@ export const authConfig: NextAuthConfig = {
         }
 
         try {
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://localhost:5001";
           const response = await fetch(`${apiUrl}/api/auth/login`, {
             method: "POST",
             headers: {

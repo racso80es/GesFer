@@ -9,7 +9,7 @@ const getDefaultApiUrl = () => {
   if (process.env.NODE_ENV === 'production') {
     return process.env.NEXT_PUBLIC_API_URL || 'https://admin-api.gesfer.com';
   }
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5010';
+  return process.env.NEXT_PUBLIC_API_URL || 'https://localhost:5011';
 };
 
 const path = require('path');

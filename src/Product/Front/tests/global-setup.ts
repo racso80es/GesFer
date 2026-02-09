@@ -8,7 +8,7 @@
 const useMockApi = process.env.USE_MOCK_API === '1' || process.env.USE_MOCK_API === 'true';
 const apiBase = useMockApi
   ? (process.env.API_URL || 'http://127.0.0.1:5002')
-  : (process.env.API_URL || 'http://127.0.0.1:5000');
+  : (process.env.API_URL || 'https://127.0.0.1:5001');
 
 const API_HEALTH_URL = `${apiBase.replace(/\/$/, '')}/health`;
 
@@ -25,7 +25,7 @@ async function globalSetup(): Promise<void> {
     const msg = err instanceof Error ? err.message : String(err);
     const hint = useMockApi
       ? 'Levanta el mock: cd infrastructure/mock-apis && npm install && npm start. Ver infrastructure/mock-apis/README.md'
-      : 'Levanta la API (puerto 5000) o usa mock: USE_MOCK_API=1 API_URL=http://localhost:5002. Ver docs/operations/RUNBOOK_LOGIN_EMERGENCY.md';
+      : 'Levanta la API con perfil HTTPS (puerto 5001) o usa mock: USE_MOCK_API=1 API_URL=http://localhost:5002. Ver docs/operations/RUNBOOK_LOGIN_EMERGENCY.md';
     throw new Error(
       `[E2E] La API Product no está disponible en ${apiBase}. ${hint} (Error: ${msg})`
     );

@@ -22,7 +22,7 @@ export const authConfig: NextAuthConfig = {
 
         try {
           // URL de la API Admin
-          const apiUrl = process.env.ADMIN_API_URL || "http://localhost:5010";
+          const apiUrl = process.env.ADMIN_API_URL || "https://localhost:5011";
           const loginUrl = `${apiUrl}/api/admin/auth/login`;
 
           const response = await fetch(loginUrl, {
