@@ -27,6 +27,7 @@ dotnet sln add src/Admin/Back/IntegrationTests/GesFer.Admin.IntegrationTests/Ges
 ```
 
 **Verificación:**
+- **IMPORTANTE:** Verificar si los proyectos compilan correctamente una vez añadidos.
 - Ejecutar `dotnet test` desde la raíz y confirmar que el número total de tests ejecutados aumenta (actualmente 118).
 - Verificar que los proyectos aparecen en el explorador de soluciones del IDE.
 
@@ -47,68 +48,36 @@ Priorizar la creación de tests unitarios para los servicios más críticos.
 2.  **AuditLogService (`src/Admin/Back/Infrastructure/Services/AuditLogService.cs`)**:
     - Verificar que los logs se crean correctamente ante eventos de sistema.
 3.  **SetupService (`src/Product/Back/Api/Services/SetupService.cs`)**:
-    - Testear la lógica de orquestación (ver punto 3 sobre refactorización).
+    - Testear la lógica de orquestación.
 
 **Estrategia:**
 Utilizar `Moq` para simular dependencias (`DbContext`, `ILogger`, `IConfiguration`) y `FluentAssertions` para las aserciones.
 
 ---
 
-## 3. Desacoplamiento de Infraestructura en Tests (KAIZEN-03)
+## 3. Desacoplamiento de Infraestructura en Tests (KAIZEN-03) - DIFERIDO
 
-**Problema:**
-El test `SetupControllerTests` (en `src/Product/Back/IntegrationTests/Controllers/SetupControllerTests.cs`) y el servicio `SetupService` dependen directamente de la ejecución de comandos de Docker (vía `Process.Start` con `powershell`). Esto hace que los tests sean frágiles, lentos y dependientes del entorno (requieren Docker instalado y ejecutándose).
+**Estado:** DIFERIDO / REFACTOR FUTURO
+**Razón:** Se requiere mayor análisis sobre la ubicación y alcance cross-platform del servicio.
 
-**Solución Técnica:**
-Aplicar el patrón **Dependency Injection** para abstraer la interacción con Docker.
+**Problema Original:**
+El test `SetupControllerTests` y `SetupService` dependen de Docker.
 
-1.  **Definir Interfaz `IDockerService`**:
-    ```csharp
-    public interface IDockerService
-    {
-        Task<(bool Success, string? Error)> StopContainersAsync();
-        Task<(bool Success, string? Error)> PruneVolumesAsync();
-        Task<(bool Success, string? Error)> StartContainersAsync();
-        Task<bool> WaitForContainerReadyAsync(string containerName, TimeSpan timeout);
-    }
-    ```
-
-2.  **Implementar `DockerService`**:
-    Mover la lógica actual de `ExecuteDockerCommandAsync` y `WaitForMySqlReadyAsync` desde `SetupService` a una nueva clase `DockerService : IDockerService`.
-
-3.  **Refactorizar `SetupService`**:
-    Inyectar `IDockerService` en el constructor de `SetupService` y sustituir las llamadas directas.
-
-4.  **Actualizar Tests**:
-    En los tests unitarios de `SetupService`, inyectar un `Mock<IDockerService>` para verificar que el servicio orquesta los pasos correctamente sin ejecutar comandos reales.
+**Acción:**
+Se pospone la extracción de `DockerService`.
 
 ---
 
-## 4. Complejidad en Tests Unitarios ("Doble Guardado") (KAIZEN-03b)
+## 4. Complejidad en Tests Unitarios ("Doble Guardado") (KAIZEN-03b) - DIFERIDO
 
-**Problema:**
-Tanto `AdminDbContext` como `ApplicationDbContext` fuerzan `IsActive = true` en el método `SaveChanges` cuando una entidad es agregada (`EntityState.Added`). Esto sobrescribe cualquier valor explícito asignado durante la inicialización del objeto, obligando a los tests a realizar un "doble guardado" (guardar -> modificar -> guardar) para crear usuarios inactivos.
+**Estado:** DIFERIDO / REFACTOR FUTURO
+**Razón:** Incertidumbre sobre impacto en lógica existente que dependa del comportamiento actual.
 
-**Código Problemático (`DbContext.cs`):**
-```csharp
-case EntityState.Added:
-    entry.Entity.CreatedAt = DateTime.UtcNow;
-    entry.Entity.IsActive = true; // <--- Causa del problema
-    break;
-```
+**Problema Original:**
+`DbContext` fuerza `IsActive = true` en `SaveChanges`.
 
-**Solución Técnica:**
-Eliminar la línea `entry.Entity.IsActive = true;` del método `UpdateAuditFields` en ambos DbContexts.
-
-**Justificación:**
-La clase base `BaseEntity` ya inicializa `IsActive` a `true` por defecto:
-```csharp
-public abstract class BaseEntity {
-    // ...
-    public bool IsActive { get; set; } = true;
-}
-```
-Al eliminar la asignación forzada en `SaveChanges`, se respeta el valor establecido por el constructor o el inicializador de objetos (`new User { IsActive = false }`), simplificando significativamente la preparación de datos en los tests (`Arrange`).
+**Acción:**
+Se mantiene el comportamiento actual.
 
 ---
 
@@ -133,9 +102,14 @@ public class StockBenchmark
 
 ---
 
-## Plan de Ejecución Sugerido
+## Plan de Ejecución Revisado
 
-1.  **Fase 1 (Inmediata):** Integrar proyectos huérfanos a la solución (Punto 1).
-2.  **Fase 2 (Refactorización):** Aplicar corrección de "Doble Guardado" en DbContexts (Punto 4) y arreglar advertencias de Benchmarks (Punto 5).
-3.  **Fase 3 (Arquitectura):** Implementar `IDockerService` y refactorizar `SetupService` (Punto 3).
-4.  **Fase 4 (Cobertura):** Desarrollar tests unitarios para `AdminAuthService` y `SetupService` (ya refactorizado) (Punto 2).
+1.  **Fase 1 (Inmediata):**
+    - Integrar proyectos huérfanos a la solución (Punto 1).
+    - **Verificar compilación inmediatamente.**
+2.  **Fase 2 (Refactorización):**
+    - Arreglar advertencias de Benchmarks (Punto 5).
+3.  **Fase 3 (Cobertura):**
+    - Desarrollar tests unitarios para `AdminAuthService` y `SetupService` (Punto 2).
+4.  **Diferidos:**
+    - KAIZEN-03 (DockerService) y KAIZEN-03b (IsActive) quedan pendientes para futuras iteraciones.
