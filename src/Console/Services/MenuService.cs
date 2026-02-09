@@ -29,7 +29,7 @@ public class MenuService
     private readonly EnsureEfToolCommand _ensureEfToolCommand;
     private readonly SeedCommand _seedCommand;
     private readonly InitializeDatabaseCommand _initializeDatabaseCommand;
-    private readonly StartLocalEnvironmentCommand _startLocalEnvironmentCommand; // Nuevo
+    private readonly StartLocalEnvironmentCommand _startLocalEnvironmentCommand;
     private readonly RunUnitTestsCommand _runUnitTestsCommand;
     private readonly RunIntegrationTestsCommand _runIntegrationTestsCommand;
     private readonly RunE2ETestsCommand _runE2ETestsCommand;
@@ -49,7 +49,7 @@ public class MenuService
         EnsureEfToolCommand ensureEfToolCommand,
         SeedCommand seedCommand,
         InitializeDatabaseCommand initializeDatabaseCommand,
-        StartLocalEnvironmentCommand startLocalEnvironmentCommand, // Inyectado
+        StartLocalEnvironmentCommand startLocalEnvironmentCommand,
         RunUnitTestsCommand runUnitTestsCommand,
         RunIntegrationTestsCommand runIntegrationTestsCommand,
         RunE2ETestsCommand runE2ETestsCommand,
@@ -101,13 +101,13 @@ public class MenuService
         Console.WriteLine("Seleccione una opción:");
         Console.WriteLine();
         Console.WriteLine("  1. Inicialización completa");
-        Console.WriteLine("  2. Levantar entorno local (Back/Front)"); // Nuevo
-        Console.WriteLine("  3. Inicialización de base de datos");
+        Console.WriteLine("  2. Levantar entorno local (Back/Front) [Shortcut]");
+        Console.WriteLine("  3. Acciones Atómicas (Docker, Seeds, Servicios)"); // Nueva Acción 3
         Console.WriteLine("  4. Validación de integridad completa");
         Console.WriteLine("  5. Cumplimiento de Reglas de Oro");
         Console.WriteLine("  6. Gestionar contenedores Docker");
         Console.WriteLine("  7. Aplicar migraciones de BD");
-        Console.WriteLine("  8. Ejecutar seeds de datos");
+        // Opción 8 eliminada (Integrada en 3)
         Console.WriteLine("  9. Squash de migraciones");
         Console.WriteLine("  10. Salir");
         Console.WriteLine("  11. Ejecutar tests");
@@ -126,26 +126,27 @@ public class MenuService
             {
                 case 1:
                     return await ExecuteFullInitializationAsync(waitForInput);
-                case 2: // Nueva opción
+                case 2:
+                    // Shortcut: Levantar todo
                     var result = await _startLocalEnvironmentCommand.HandleAsync(new StartLocalEnvironmentInput());
                     return result.Success;
-                case 3: // Antes 2
-                    return await ExecuteDatabaseInitializationStep8Async(waitForInput);
-                case 4: // Antes 3
+                case 3:
+                    // Nueva Acción 3: Acciones Atómicas
+                    return await ExecuteAtomicActionsMenuAsync();
+                case 4:
                     return await ExecuteIntegrityValidationAsync();
-                case 5: // Antes 4
+                case 5:
                     return await ExecuteGoldenRulesComplianceAsync();
-                case 6: // Antes 5
+                case 6:
                     return await ExecuteDockerMenuAsync();
-                case 7: // Antes 6
+                case 7:
                     return await ExecuteMigrationsMenuAsync();
-                case 8: // Antes 7
-                    return await ExecuteSeedsMenuAsync();
-                case 9: // Antes 8
+                // case 8: Eliminado
+                case 9:
                     return await ExecuteMigrationSquashAsync();
-                case 10: // Antes 9 (Salir)
+                case 10:
                     return false;
-                case 11: // Antes 10 (Tests)
+                case 11:
                     return await ExecuteTestsMenuAsync();
                 default:
                     Console.WriteLine("Opción no válida. Presione cualquier tecla para continuar...");
@@ -160,6 +161,148 @@ public class MenuService
             SafeReadKey();
             return true;
         }
+    }
+
+    /// <summary>
+    /// Nuevo menú de Acciones Atómicas (Acción 3)
+    /// </summary>
+    private async Task<bool> ExecuteAtomicActionsMenuAsync()
+    {
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine("========================================");
+            Console.WriteLine("   Acciones Atómicas");
+            Console.WriteLine("========================================");
+            Console.WriteLine();
+            Console.WriteLine("  1. Inicializar Docker (Recrear + Esperar MySQL)");
+            Console.WriteLine("  2. Restaurar Datos Seed (Granular)");
+            Console.WriteLine("  3. Levantar Servicios (Granular)");
+            Console.WriteLine("  4. Inicialización Completa BD (Migraciones + Seeds)");
+            Console.WriteLine("  5. Volver al menú principal");
+            Console.WriteLine();
+            Console.Write("Opción: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int option))
+            {
+                Console.WriteLine("Opción no válida. Presione cualquier tecla para continuar...");
+                SafeReadKey();
+                continue;
+            }
+
+            switch (option)
+            {
+                case 1:
+                    await ExecuteDockerInitializationAsync();
+                    break;
+                case 2:
+                    await ExecuteSeedsMenuAsync();
+                    break;
+                case 3:
+                    await ExecuteStartServicesMenuAsync();
+                    break;
+                case 4:
+                    await ExecuteDatabaseInitializationStep8Async(waitForInput: true);
+                    break;
+                case 5:
+                    return true;
+                default:
+                    Console.WriteLine("Opción no válida.");
+                    SafeReadKey();
+                    break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Acción 3.1: Inicializar Docker (Lógica extraída de Init Completa)
+    /// </summary>
+    private async Task ExecuteDockerInitializationAsync()
+    {
+        Console.WriteLine();
+        Console.WriteLine("[Docker] Limpiando contenedores existentes...");
+        var rmResult = await _removeContainersCommand.HandleAsync(new RemoveContainersInput());
+        foreach(var l in rmResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
+
+        Console.WriteLine();
+        Console.WriteLine("[Docker] Creando contenedores...");
+        var createResult = await _createContainersCommand.HandleAsync(new CreateContainersInput());
+        foreach(var l in createResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
+
+        if (createResult == null || !createResult.Success)
+        {
+            Console.WriteLine("ERROR: No se pudieron crear los contenedores");
+        }
+        else
+        {
+            Console.WriteLine();
+            Console.WriteLine("[Docker] Esperando a que MySQL esté listo...");
+            var waitResult = await _waitMySqlReadyCommand.HandleAsync(new WaitMySqlInput());
+            foreach(var l in waitResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
+
+            if (waitResult != null && waitResult.Success)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("✓ Docker inicializado correctamente.");
+                Console.ResetColor();
+            }
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Presione cualquier tecla para continuar...");
+        SafeReadKey();
+    }
+
+    /// <summary>
+    /// Acción 3.3: Menú para levantar servicios granularmente
+    /// </summary>
+    private async Task ExecuteStartServicesMenuAsync()
+    {
+        Console.Clear();
+        Console.WriteLine("========================================");
+        Console.WriteLine("   Levantar Servicios (Granular)");
+        Console.WriteLine("========================================");
+        Console.WriteLine();
+        Console.WriteLine("  1. Iniciar TODO (Back + Front)");
+        Console.WriteLine("  2. Solo Product API (Back)");
+        Console.WriteLine("  3. Solo Admin API (Back)");
+        Console.WriteLine("  4. Solo Product Front");
+        Console.WriteLine("  5. Solo Admin Front");
+        Console.WriteLine("  6. Volver");
+        Console.WriteLine();
+        Console.Write("Opción: ");
+
+        if (!int.TryParse(Console.ReadLine(), out int option)) return;
+
+        var input = new StartLocalEnvironmentInput();
+
+        switch (option)
+        {
+            case 1:
+                // IsStartAll = true por defecto si todo es false
+                break;
+            case 2:
+                input.StartProductApi = true;
+                break;
+            case 3:
+                input.StartAdminApi = true;
+                break;
+            case 4:
+                input.StartProductFront = true;
+                break;
+            case 5:
+                input.StartAdminFront = true;
+                break;
+            case 6:
+                return;
+            default:
+                Console.WriteLine("Opción no válida.");
+                SafeReadKey();
+                return;
+        }
+
+        await _startLocalEnvironmentCommand.HandleAsync(input);
+        // Nota: HandleAsync tiene su propio loop de espera 'q' para salir, así que al volver aquí ya se detuvo.
     }
 
     /// <summary>
