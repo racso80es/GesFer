@@ -1,0 +1,15 @@
+{
+  "principle": "Operational Duality",
+  "id": "CFG-DUAL-002",
+  "purpose": "Separate Control (Boss) and Execution (Calm) processes via IPC.",
+  "guidelines": [
+    "Strict separation of Electron (Main) and React (Renderer).",
+    "Standardized and auditable IPC communication bus.",
+    "Support for distinct operational modes."
+  ],
+  "status": "Active",
+  "implementation": {
+    "ipcBridge": "src/Kalma2/Desktop/electron/ipc",
+    "modesPath": "src/Kalma2/Core/Modes"
+  }
+}

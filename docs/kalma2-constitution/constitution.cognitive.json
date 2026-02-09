@@ -1,0 +1,15 @@
+{
+  "principle": "Cognitive Core",
+  "id": "CFG-COG-003",
+  "purpose": "Establish persistent memory and context learning.",
+  "guidelines": [
+    "Secure persistent storage for critical state (Memory).",
+    "Dynamic context injection based on historical interactions.",
+    "Semantic indexing for AI compatibility."
+  ],
+  "status": "Active",
+  "implementation": {
+    "storagePath": "src/Kalma2/Core/Memory",
+    "contextManagement": "Core Services"
+  }
+}

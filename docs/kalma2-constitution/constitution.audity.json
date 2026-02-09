@@ -1,0 +1,15 @@
+{
+  "principle": "Ethical Governance & Audit",
+  "id": "CFG-AUD-004",
+  "purpose": "Immutable audit trail and ethical rule enforcement.",
+  "guidelines": [
+    "Cryptographic logging of critical actions (Immutable Audit).",
+    "IPC middleware for ethical validation (Glass Box).",
+    "Transparency dashboard for ethical health."
+  ],
+  "status": "Active",
+  "implementation": {
+    "loggerPath": "src/Kalma2/Core/Audit/Logger.ts",
+    "rulesPath": "src/Kalma2/Core/Audit/Rules"
+  }
+}

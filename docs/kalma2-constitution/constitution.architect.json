@@ -1,0 +1,16 @@
+{
+  "principle": "Architectural Foundation",
+  "id": "CFG-ARCH-001",
+  "purpose": "Establish scalable physical and logical structure.",
+  "guidelines": [
+    "Code hierarchy under src/Kalma2 (Interface vs Core).",
+    "Mandatory Dependency Injection (InversifyJS).",
+    "Interface-first design (Contracts)."
+  ],
+  "status": "Active",
+  "implementation": {
+    "location": "src/Kalma2/Interface/Desktop",
+    "diContainer": "InversifyJS",
+    "contractsPath": "src/Kalma2/Core/Contracts"
+  }
+}
