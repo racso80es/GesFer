@@ -53,8 +53,8 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
 
-  /* Variables de entorno para tests */
-  globalSetup: undefined,
+  /* Comprueba que la API (5000) esté en ejecución antes de correr los tests */
+  globalSetup: './tests/global-setup.ts',
   
   /* Configuración de API */
   globalTeardown: undefined,
