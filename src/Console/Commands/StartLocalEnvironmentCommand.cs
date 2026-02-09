@@ -11,7 +11,15 @@ using GesFer.ConsoleApp.Services;
 
 namespace GesFer.ConsoleApp.Commands;
 
-public class StartLocalEnvironmentInput { }
+public class StartLocalEnvironmentInput
+{
+    public bool StartProductApi { get; set; }
+    public bool StartAdminApi { get; set; }
+    public bool StartProductFront { get; set; }
+    public bool StartAdminFront { get; set; }
+
+    public bool IsStartAll => !StartProductApi && !StartAdminApi && !StartProductFront && !StartAdminFront;
+}
 
 public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmentInput>
 {
@@ -29,7 +37,16 @@ public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmen
     public async Task<CommandResult> HandleAsync(StartLocalEnvironmentInput input)
     {
         Console.WriteLine("Iniciando entorno local...");
-        _logService.WriteLog("Iniciando entorno local - Opción 2");
+        _logService.WriteLog("Iniciando entorno local - Opción 2/3");
+
+        var startAll = input.IsStartAll;
+        if (startAll)
+        {
+            input.StartProductApi = true;
+            input.StartAdminApi = true;
+            input.StartProductFront = true;
+            input.StartAdminFront = true;
+        }
 
         try
         {
@@ -40,15 +57,27 @@ public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmen
             var adminFrontPort = GetNpmProjectPort("src/Admin/Front/package.json", 3001);
 
             // 2. Compilar Backends
-            if (!await BuildDotNetProjectAsync("src/Product/Back/Api/GesFer.Api.csproj", "Product API"))
-                return CommandResult.Fail("Fallo en la preparación del entorno (Compilación Product API).");
+            if (input.StartProductApi)
+            {
+                if (!await BuildDotNetProjectAsync("src/Product/Back/Api/GesFer.Api.csproj", "Product API"))
+                    return CommandResult.Fail("Fallo en la preparación del entorno (Compilación Product API).");
+            }
 
-            if (!await BuildDotNetProjectAsync("src/Admin/Back/Api/GesFer.Admin.Api.csproj", "Admin API"))
-                return CommandResult.Fail("Fallo en la preparación del entorno (Compilación Admin API).");
+            if (input.StartAdminApi)
+            {
+                if (!await BuildDotNetProjectAsync("src/Admin/Back/Api/GesFer.Admin.Api.csproj", "Admin API"))
+                    return CommandResult.Fail("Fallo en la preparación del entorno (Compilación Admin API).");
+            }
 
             // 3. Preparar Frontends (npm install)
-            await PrepareNpmProjectAsync("src/Product/Front", "Product Front");
-            await PrepareNpmProjectAsync("src/Admin/Front", "Admin Front");
+            if (input.StartProductFront)
+            {
+                await PrepareNpmProjectAsync("src/Product/Front", "Product Front");
+            }
+            if (input.StartAdminFront)
+            {
+                await PrepareNpmProjectAsync("src/Admin/Front", "Admin Front");
+            }
 
             // Crear directorio de logs si no existe
             var logsDir = Path.Combine(_rootPath, "logs", "services");
@@ -56,25 +85,29 @@ public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmen
 
             // 4. Liberar puertos
             Console.WriteLine("Liberando puertos...");
-            FreePort(5000); // Product API
-            FreePort(5049); // Admin API
-            FreePort(productFrontPort);
-            FreePort(adminFrontPort);
+            if (input.StartProductApi) FreePort(5000); // Product API
+            if (input.StartAdminApi) FreePort(5049); // Admin API
+            if (input.StartProductFront) FreePort(productFrontPort);
+            if (input.StartAdminFront) FreePort(adminFrontPort);
 
             // 5. Levantar Servicios
             Console.WriteLine("Levantando servicios en segundo plano...");
 
             // Product API
-            StartDotNetProcess("src/Product/Back/Api/GesFer.Api.csproj", "ProductApi", logsDir);
+            if (input.StartProductApi)
+                StartDotNetProcess("src/Product/Back/Api/GesFer.Api.csproj", "ProductApi", logsDir);
 
             // Admin API
-            StartDotNetProcess("src/Admin/Back/Api/GesFer.Admin.Api.csproj", "AdminApi", logsDir);
+            if (input.StartAdminApi)
+                StartDotNetProcess("src/Admin/Back/Api/GesFer.Admin.Api.csproj", "AdminApi", logsDir);
 
             // Product Front
-            StartNpmProcess("src/Product/Front", "ProductFront", logsDir);
+            if (input.StartProductFront)
+                StartNpmProcess("src/Product/Front", "ProductFront", logsDir);
 
             // Admin Front
-            StartNpmProcess("src/Admin/Front", "AdminFront", logsDir);
+            if (input.StartAdminFront)
+                StartNpmProcess("src/Admin/Front", "AdminFront", logsDir);
 
             // 6. Mostrar Información
             Console.Clear();
@@ -84,10 +117,10 @@ public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmen
             Console.WriteLine();
             Console.WriteLine("Servicios:");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"  ➜ Back Product:  {productApiConfig.Url ?? "http://localhost:5000"}");
-            Console.WriteLine($"  ➜ Back Admin:    {adminApiConfig.Url ?? "http://localhost:5049"}");
-            Console.WriteLine($"  ➜ Front Product: http://localhost:{productFrontPort}");
-            Console.WriteLine($"  ➜ Front Admin:   http://localhost:{adminFrontPort}");
+            if (input.StartProductApi) Console.WriteLine($"  ➜ Back Product:  {productApiConfig.Url ?? "http://localhost:5000"}");
+            if (input.StartAdminApi) Console.WriteLine($"  ➜ Back Admin:    {adminApiConfig.Url ?? "http://localhost:5049"}");
+            if (input.StartProductFront) Console.WriteLine($"  ➜ Front Product: http://localhost:{productFrontPort}");
+            if (input.StartAdminFront) Console.WriteLine($"  ➜ Front Admin:   http://localhost:{adminFrontPort}");
             Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine($"Logs disponibles en: {logsDir}");
