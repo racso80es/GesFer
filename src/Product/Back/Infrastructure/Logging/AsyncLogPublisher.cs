@@ -36,15 +36,15 @@ public class AsyncLogPublisher : IAsyncLogPublisher
     }
 
     /// <summary>
-    /// Publica un log de forma asíncrona (fire and forget)
+    /// Publica un log de forma asíncrona
     /// </summary>
     [Obsolete("Use PublishLogAsync instead")]
-    public void PublishLog(string level, string message, Exception? exception = null, Dictionary<string, object>? properties = null)
+    public Task PublishLog(string level, string message, Exception? exception = null, Dictionary<string, object>? properties = null)
     {
-        // Delegar a la versión asíncrona en un Task separado para mantener el comportamiento Fire-and-Forget
+        // Delegar a la versión asíncrona
         // Aseguramos que properties no sea null para cumplir con la firma del método async
         var safeProperties = properties ?? new Dictionary<string, object>();
-        _ = Task.Run(async () => await PublishLogAsync(level, message, exception, safeProperties));
+        return PublishLogAsync(level, message, exception, safeProperties);
     }
 
     /// <summary>
