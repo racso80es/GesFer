@@ -15,7 +15,7 @@ public interface IAsyncLogPublisher
     /// <param name="exception">Excepción opcional</param>
     /// <param name="properties">Propiedades adicionales del log</param>
     [Obsolete("Use PublishLogAsync instead")]
-    void PublishLog(string level, string message, Exception? exception, Dictionary<string, object> properties);
+    Task PublishLog(string level, string message, Exception? exception, Dictionary<string, object> properties);
 
     /// <summary>
     /// Publica un log de forma asíncrona
