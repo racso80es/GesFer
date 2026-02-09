@@ -63,3 +63,5 @@ Refactorizar el menú de `GesFer.Console` para incluir una nueva "Acción 3: Acc
 *   **Fecha de Creación:** 2026-02-09
 *   **Evento:** Generación manual (corrección de plantilla) tras `GesFer.Console --spec`.
 *   **Referencia de Log:** `docs/audits/ACCESS_LOG.md`
+
+## 7. Indicar en proceso spec.md que la ruta donde perssitir la documentación del proceso de especificación ha de ser ./Docs/Feature/{featura indicada}/
