@@ -147,4 +147,33 @@ public class AdminAuthServiceTests
         // Assert
         result.Should().BeNull();
     }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public async Task AuthenticateAsync_ShouldReturnNull_WhenUsernameIsIdNullOrEmpty(string? username)
+    {
+        // Act
+        var result = await _authService.AuthenticateAsync(username!, "password");
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public async Task AuthenticateAsync_ShouldReturnNull_WhenPasswordIsIdNullOrEmpty(string? password)
+    {
+        // Act
+        var result = await _authService.AuthenticateAsync("admin", password!);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    // Note: RefreshTokenAsync tests are skipped as the method is not present in IAdminAuthService/AdminAuthService.
+    // Note: IsBlocked tests are skipped as AdminUser entity does not have an IsBlocked property (IsActive is used).
 }
