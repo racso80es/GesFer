@@ -1,0 +1,28 @@
+{
+  "id": "PLAN-20260209-0920",
+  "timestamp": "2026-02-09T09:20:19.4991209Z",
+  "auditor_token": "b9148395-53c1-4f78-8444-236127000003",
+  "source_spec": "docs/evolution/kaizen/PLAN_CORRECCION_TESTS_2026_02_09.md",
+  "source_clarify": "docs/evolution/kaizen/PLAN_CORRECCION_TESTS_2026_02_09_CLARIFICATIONS.md",
+  "goal": "Estabilizar la suite de tests y mejorar la calidad del código integrando proyectos huérfanos, aumentando la cobertura crítica (Admin/Product) y resolviendo deuda técnica en benchmarks.",
+  "context": "La auditoría `AUDITORIA_TESTS_2026_02_09.md` reveló brechas críticas: proyectos de test huérfanos, baja cobertura en módulos Admin/Product y deuda técnica. El objetivo es abordar los problemas inmediatos y diferir refactorizaciones complejas.",
+  "clarifications": [
+    "Orphaned Projects: Verificar compilación antes de integración permanente.",
+    "DockerService Refactor: Diferido (KAIZEN-03).",
+    "Double Save/IsActive: Diferido (KAIZEN-03b).",
+    "AdminAuthService Tests: Usar Moq para nuevos tests.",
+    "Benchmark Debt: Usar `null!` para suprimir CS8618.",
+    "Rollback: No se requiere plan de rollback explícito."
+  ],
+  "steps": [
+    "Step 1: [INFRA] Integrate Orphaned Projects (GesFer.Shared.Back.UnitTests, GesFer.Architecture.Tests, GesFer.Admin.IntegrationTests)",
+    "Step 2: [FIX] Resolve Benchmark Tech Debt (StockBenchmark.cs: Initialize with null!)",
+    "Step 3: [TEST] Implement AdminAuthService Tests (LoginAsync, RefreshTokenAsync)",
+    "Step 4: [TEST] Implement AuditLogService Tests (Log creation)",
+    "Step 5: [TEST] Implement SetupService Tests (Orchestration logic)"
+  ],
+  "risks": [
+    "Risk 1: Errores de compilación tras añadir proyectos huérfanos.",
+    "Risk 2: Flakiness en tests de integración añadidos."
+  ]
+}
