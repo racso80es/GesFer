@@ -11,3 +11,4 @@
 [2026-02-08] [Refactor Async Logging] [Refactored IAsyncLogPublisher to expose PublishLogAsync. Updated AsyncLogPublisher to implement pure async method. Updated AdminApiLogSink to handle Fire-and-Forget explicitly. Updated DashboardController to use Fail-Open LogWarning. Fixed TelemetryController async usage. 0 Warnings.] [S+ Stable]
 [2026-02-09] [Auditoría Frontend] [FALLA CRÍTICA: 176 violaciones de 'empresa' detectadas] [Requiere Acción]
 [2026-02-09] [Kaizen Test Coverage Increase] [Added 14 new unit tests for Product Handlers (Company/User Update/Delete) and Admin Auth Controller. Removed invalid seed data to fix integration warnings. All tests passing.] [S+ Stable]
+[2026-02-09] - Inicio de Kalma2. Validación de arquitectura Desktop. Se documenta la resolución del conflicto en DI como punto de evolución arquitectónica.
