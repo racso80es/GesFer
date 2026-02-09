@@ -7,9 +7,9 @@ console.log('[KAIZEN] Initiating Pre-Compilation Protection Check...');
 console.log('--------------------------------------------------');
 
 // Rule 1: Verify Critical Constitution Files Exist
-// Path relative to src/Kalma2/Desktop/scripts/
-// Go up to Desktop (..), then Kalma2 (../..), then into Docs
-const constitutionPath = path.resolve(__dirname, '../../Docs/Conscience/CONSTITUTION.md');
+// Path relative to src/Kalma2/Interfaces/Desktop/scripts/
+// Go up to Desktop (..), then Interfaces (../..), then Kalma2 (../../..)
+const constitutionPath = path.resolve(__dirname, '../../../CONSTITUTION.md');
 
 console.log(`[KAIZEN] Verifying Constitution at: ${constitutionPath}`);
 
