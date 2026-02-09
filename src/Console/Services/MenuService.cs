@@ -363,21 +363,39 @@ public class MenuService
             return true;
         }
 
-        // 4. Verificar que el Frontend Product compila
-        Console.WriteLine("[4/12] Verificando compilación del Frontend Product...");
+        // 4 y 5. Verificar compilación de ambos frontends en paralelo (evita duplicar tiempo)
         var productFrontPath = Path.Combine(_logService.GetRootPath(), "src", "Product", "Front");
-
-        if (!await CheckNpmProjectCompilationAsync(productFrontPath, "Frontend Product"))
-        {
-            return true;
-        }
-
-        // 5. Verificar que el Frontend Admin compila
-        Console.WriteLine("[5/12] Verificando compilación del Frontend Admin...");
         var adminFrontPath = Path.Combine(_logService.GetRootPath(), "src", "Admin", "Front");
 
-        if (!await CheckNpmProjectCompilationAsync(adminFrontPath, "Frontend Admin"))
+        Console.WriteLine("[4/12] y [5/12] Verificando compilación de Frontend Product y Admin en paralelo...");
+        Console.WriteLine("    (solo se ejecuta 'npm install' si falta node_modules; luego 'npm run build')");
+        var productTask = RunNpmCompilationCheckAsync(productFrontPath, "Frontend Product");
+        var adminTask = RunNpmCompilationCheckAsync(adminFrontPath, "Frontend Admin");
+        await Task.WhenAll(productTask, adminTask);
+        var (productOk, productError) = await productTask;
+        var (adminOk, adminError) = await adminTask;
+
+        // Resultados en orden para lectura clara
+        Console.WriteLine("[4/12] Frontend Product: " + (productOk ? "✓ compila correctamente" : "❌ ERROR"));
+        if (!productOk && !string.IsNullOrEmpty(productError))
         {
+            Console.ForegroundColor = ConsoleColor.Red;
+            foreach (var line in productError.Split('\n').TakeLast(15)) Console.WriteLine("    " + line);
+            Console.ResetColor();
+        }
+        Console.WriteLine("[5/12] Frontend Admin: " + (adminOk ? "✓ compila correctamente" : "❌ ERROR"));
+        if (!adminOk && !string.IsNullOrEmpty(adminError))
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            foreach (var line in adminError.Split('\n').TakeLast(15)) Console.WriteLine("    " + line);
+            Console.ResetColor();
+        }
+        Console.WriteLine();
+
+        if (!productOk || !adminOk)
+        {
+            Console.WriteLine("Presione cualquier tecla para continuar...");
+            SafeReadKey();
             return true;
         }
 
@@ -665,6 +683,69 @@ public class MenuService
         return true;
     }
 
+    /// <summary>
+    /// Ejecuta verificación de compilación npm (install solo si falta node_modules, luego build).
+    /// Devuelve (éxito, mensajeDeError). No escribe en consola para permitir ejecución en paralelo.
+    /// </summary>
+    private async Task<(bool Success, string? ErrorDetail)> RunNpmCompilationCheckAsync(string projectPath, string projectName)
+    {
+        if (!Directory.Exists(projectPath))
+        {
+            _logService.WriteLog($"Omisión: no existe directorio de {projectName} en {projectPath}");
+            return (true, null);
+        }
+
+        var nodeModulesPath = Path.Combine(projectPath, "node_modules");
+        var needsInstall = !Directory.Exists(nodeModulesPath);
+        var isWindows = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
+        var fileName = isWindows ? "cmd" : "bash";
+        var installAndBuild = needsInstall
+            ? (isWindows ? $"npm install && npm run build" : "npm install && npm run build")
+            : "npm run build";
+        var arguments = isWindows
+            ? $"/c cd \"{projectPath}\" && {installAndBuild}"
+            : $"-c \"cd '{projectPath}' && {installAndBuild}\"";
+
+        try
+        {
+            var buildProcess = new ProcessStartInfo
+            {
+                FileName = fileName,
+                Arguments = arguments,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var buildProcessInstance = Process.Start(buildProcess);
+            if (buildProcessInstance == null)
+            {
+                _logService.WriteError($"No se pudo iniciar proceso npm para {projectName}", null!);
+                return (true, null);
+            }
+
+            var output = await buildProcessInstance.StandardOutput.ReadToEndAsync();
+            var error = await buildProcessInstance.StandardError.ReadToEndAsync();
+            await buildProcessInstance.WaitForExitAsync();
+
+            if (buildProcessInstance.ExitCode != 0)
+            {
+                _logService.WriteError($"{projectName} no compila. ExitCode: {buildProcessInstance.ExitCode}");
+                _logService.WriteLog($"Salida: {output}\nERRORES: {error}");
+                var errorDetail = string.IsNullOrWhiteSpace(error) ? output : error;
+                return (false, errorDetail);
+            }
+            _logService.WriteLog($"{projectName} compilada correctamente");
+            return (true, null);
+        }
+        catch (Exception ex)
+        {
+            _logService.WriteError($"Error al verificar compilación de {projectName}", ex);
+            return (true, null);
+        }
+    }
+
     private async Task<bool> CheckNpmProjectCompilationAsync(string projectPath, string projectName)
     {
         if (!Directory.Exists(projectPath))
@@ -680,81 +761,27 @@ public class MenuService
 
         Console.WriteLine("    Iniciando instalación de dependencias y build (puede tardar unos minutos)...");
 
-        try
+        var (success, errorDetail) = await RunNpmCompilationCheckAsync(projectPath, projectName);
+
+        if (!success)
         {
-            // Ejecutar npm install y npm run build
-            // Usamos cmd /c en Windows o bash en Linux para encadenar comandos
-            var isWindows = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
-            var fileName = isWindows ? "cmd" : "bash";
-            var arguments = isWindows
-                ? $"/c cd \"{projectPath}\" && npm install && npm run build"
-                : $"-c \"cd '{projectPath}' && npm install && npm run build\"";
-
-            var buildProcess = new ProcessStartInfo
-            {
-                FileName = fileName,
-                Arguments = arguments,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            using var buildProcessInstance = Process.Start(buildProcess);
-            if (buildProcessInstance == null)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("    ⚠ Advertencia: No se pudo iniciar el proceso de build npm");
-                Console.ResetColor();
-                Console.WriteLine("    Continuando sin verificar compilación...");
-                Console.WriteLine();
-                return true;
-            }
-
-            // Para procesos largos, a veces es mejor no esperar a leer todo al final si el buffer se llena.
-            // Pero para simplificar mantenemos ReadToEndAsync. Si falla por buffer, cambiaremos.
-            var output = await buildProcessInstance.StandardOutput.ReadToEndAsync();
-            var error = await buildProcessInstance.StandardError.ReadToEndAsync();
-            await buildProcessInstance.WaitForExitAsync();
-
-            if (buildProcessInstance.ExitCode != 0)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"    ❌ ERROR: {projectName} no compila. Abortando inicialización.");
-                Console.ResetColor();
-                Console.WriteLine();
-                Console.WriteLine("Errores de compilación:");
-                 // Mostramos solo las últimas líneas de error para no saturar la consola
-                var errorLines = (error + "\n" + output).Split('\n').TakeLast(20);
-                foreach(var line in errorLines) Console.WriteLine(line);
-
-                Console.WriteLine();
-                Console.WriteLine("Por favor, corrige los errores de compilación antes de continuar.");
-                Console.WriteLine($"Ruta del proyecto: {projectPath}");
-                Console.WriteLine();
-                Console.WriteLine("Presione cualquier tecla para continuar...");
-                SafeReadKey();
-
-                _logService.WriteError($"{projectName} no compila. ExitCode: {buildProcessInstance.ExitCode}");
-                _logService.WriteLog($"Salida de compilación: {output}\nERRORES: {error}");
-
-                return false;
-            }
-            else
-            {
-                Console.WriteLine($"    ✓ {projectName} compila correctamente");
-                _logService.WriteLog($"{projectName} compilada correctamente");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"    ⚠ Advertencia: Error al verificar compilación de {projectName}: {ex.Message}");
-            Console.WriteLine("    Asegúrate de tener node y npm instalados.");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"    ❌ ERROR: {projectName} no compila. Abortando inicialización.");
             Console.ResetColor();
-            Console.WriteLine("    Continuando sin verificar compilación...");
-            _logService.WriteError($"Error al verificar compilación de {projectName}", ex);
+            Console.WriteLine();
+            Console.WriteLine("Errores de compilación:");
+            foreach (var line in (errorDetail ?? "").Split('\n').TakeLast(20))
+                Console.WriteLine(line);
+            Console.WriteLine();
+            Console.WriteLine("Por favor, corrige los errores de compilación antes de continuar.");
+            Console.WriteLine($"Ruta del proyecto: {projectPath}");
+            Console.WriteLine();
+            Console.WriteLine("Presione cualquier tecla para continuar...");
+            SafeReadKey();
+            return false;
         }
+
+        Console.WriteLine($"    ✓ {projectName} compila correctamente");
         Console.WriteLine();
         return true;
     }
