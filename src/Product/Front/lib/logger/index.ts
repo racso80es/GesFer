@@ -20,11 +20,9 @@ class TelemetryTransport {
   constructor() {
     // Obtener la URL de la API desde la configuración
     if (typeof window !== 'undefined') {
-      // En el cliente, usar la variable de entorno o la configuración
-      this.apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      this.apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:5001';
     } else {
-      // En el servidor, usar la configuración del servidor
-      this.apiUrl = process.env.API_URL || 'http://localhost:5000';
+      this.apiUrl = process.env.API_URL || 'https://localhost:5001';
     }
     
     // Solo habilitar en producción o si está explícitamente configurado

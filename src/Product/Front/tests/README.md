@@ -79,12 +79,16 @@ npx playwright test --project=chromium
 
 ## Requisitos Previos
 
-1. La aplicación web debe estar ejecutándose en `http://localhost:3000`
-2. La API debe estar ejecutándose en `http://localhost:5000`
-3. Credenciales de prueba:
-   - Empresa: "Empresa Demo"
-   - Usuario: "admin"
-   - Contraseña: "admin123"
+**E2E (navegador + API):**
+1. La aplicación web debe estar ejecutándose en `http://localhost:3000` (o la levanta Playwright con webServer)
+2. La API debe estar en `http://localhost:5000` **o** usar mock: `USE_MOCK_API=1` y `API_URL=http://localhost:5002` (tras levantar `infrastructure/mock-apis`)
+
+**Solo tests de API (sin frontend):** `npm run test:e2e:api`. La API debe estar en 5000, o mock en 5002 con `USE_MOCK_API=1` y `API_URL=http://localhost:5002`.
+
+Credenciales de prueba (API real o mock):
+- Empresa: "Empresa Demo"
+- Usuario: "admin"
+- Contraseña: "admin123"
 
 ## Reporte HTML (localhost:9323)
 

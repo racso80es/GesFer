@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
       const isNetworkError = err instanceof TypeError && (err.message === "Failed to fetch" || err.message.includes("fetch"));
       setError(
         isNetworkError
-          ? "No se pudo conectar con el servidor. Comprueba que la API Admin esté en ejecución (puerto 5010)."
+          ? "No se pudo conectar con el servidor. Comprueba que la API Admin esté en ejecución (HTTPS puerto 5011)."
           : "Error al iniciar sesión. Por favor, intenta de nuevo."
       );
       setIsLoading(false);

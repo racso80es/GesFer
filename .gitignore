@@ -108,3 +108,5 @@ src/Admin/Front/playwright-report/
 /src/Shared/Back/.vs
 /node_modules
 **/TestResults/
+infrastructure/mock-apis/node_modules/
+/src/Tools/Calma-Desktop/node_modules

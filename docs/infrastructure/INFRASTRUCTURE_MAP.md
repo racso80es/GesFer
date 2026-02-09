@@ -17,8 +17,8 @@ Este archivo orquesta el entorno de **Desarrollo Local**.
 | Servicio | Contenedor | Puerto Ext. | Dependencias | Notas |
 | :--- | :--- | :--- | :--- | :--- |
 | **Database** | `gesfer_db` | `3306` | - | MySQL 8.0, Shared volume. |
-| **Product API** | `gesfer_product_api` | `5000, 5001` | `gesfer-db` | ASP.NET Core (Dev). |
-| **Admin API** | `gesfer_admin_api` | `5010, 5011` | `gesfer-db` | ASP.NET Core (Dev). |
+| **Product API** | `gesfer_product_api` | `5000, 5001` | `gesfer-db` | ASP.NET Core (Dev). **HTTPS:** 5001 (HTTP 5000 redirige). |
+| **Admin API** | `gesfer_admin_api` | `5010, 5011` | `gesfer-db` | ASP.NET Core (Dev). **HTTPS:** 5011 (HTTP 5010 redirige). |
 | **Product Front**| `gesfer_product_front`| `3000` | `gesfer-product-api` | Next.js (Dev). |
 | **Admin Front** | `gesfer_admin_front` | `3001` | `gesfer-admin-api` | Next.js (Dev). |
 | **Cache** | `gesfer_api_cache` | `11211` | - | Memcached (Alpine). |
@@ -43,3 +43,11 @@ El script `ejecutar-tests.bat` orquesta la prueba:
 2.  Ejecuta `npm install` y `npm run test:all` en local (host), **NO** dentro de Docker.
 3.  Ejecuta `dotnet test` en local.
 *   **Riesgo:** Discrepancia entre entorno de test (Windows Host) y producción (Linux Container).
+
+## 4. Seguridad: HTTPS en todos los entornos
+
+**Política (refactor #agente_seguridad):** Todo el tráfico debe ser HTTPS. La redirección permitida es solo HTTP → HTTPS.
+
+- **Local (host):** Ejecutar las APIs con perfil **"https"** en launchSettings (Product: https://localhost:5001, Admin: https://localhost:5011). Los frontends usan por defecto esas URLs.
+- **Docker:** Los puertos 5001 y 5011 están expuestos. Para HTTPS dentro del contenedor se requiere configuración de certificados; en producción se recomienda TLS en el reverse proxy.
+- **Runbook:** `docs/operations/RUNBOOK_LOGIN_EMERGENCY.md`.
