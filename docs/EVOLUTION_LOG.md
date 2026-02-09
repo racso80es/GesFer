@@ -6,8 +6,7 @@
 [2026-02-07] [Refactor StartLocalEnvironmentCommand] [Refactored to return non-generic CommandResult. Added ICommandHandler<T> interface.] [S+ estable]
 [2026-02-08] [Kaizen Integration Tests Recovery] [Fixed 52 failures. Seed Data updated (TaxId validation), Factory isolation patched, Handler mapping logic corrected. 104/104 Tests Passing.] [S+ Stable]
 [2026-02-08] [Frontend Kaizen Audit Fix] [Refactored 'Empresa' to 'Organización' in Product/Front (UI, Tests, Validations, Auth). Reduced explicit 'any' usages (API Client, Tests, Providers). Lint & Build Passing.] [Completed]
-
 [2026-02-08] [Auditoría Frontend] [FALLA CRÍTICA: 192 violaciones de 'empresa' detectadas] [Requiere Acción]
 [2026-02-08] [Kaizen Backend Tests Audit Fix] [Fixed CS8602 in DbInitializerTests, NU1608 in Performance.Benchmarks. Implemented AdminAuthServiceTests (5 new tests). Total Tests: 126.] [S+ Stable]
-
+[2026-02-08] [Refactor Async Logging] [Refactored IAsyncLogPublisher to expose PublishLogAsync. Updated AsyncLogPublisher to implement pure async method. Updated AdminApiLogSink to handle Fire-and-Forget explicitly. Updated DashboardController to use Fail-Open LogWarning. Fixed TelemetryController async usage. 0 Warnings.] [S+ Stable]
 [2026-02-09] [Auditoría Frontend] [FALLA CRÍTICA: 176 violaciones de 'empresa' detectadas] [Requiere Acción]

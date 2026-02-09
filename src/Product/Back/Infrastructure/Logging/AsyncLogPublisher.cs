@@ -38,50 +38,58 @@ public class AsyncLogPublisher : IAsyncLogPublisher
     /// <summary>
     /// Publica un log de forma asíncrona (fire and forget)
     /// </summary>
+    [Obsolete("Use PublishLogAsync instead")]
     public void PublishLog(string level, string message, Exception? exception = null, Dictionary<string, object>? properties = null)
     {
-        // Fire and Forget: no esperamos el resultado
-        _ = Task.Run(async () =>
+        // Delegar a la versión asíncrona en un Task separado para mantener el comportamiento Fire-and-Forget
+        // Aseguramos que properties no sea null para cumplir con la firma del método async
+        var safeProperties = properties ?? new Dictionary<string, object>();
+        _ = Task.Run(async () => await PublishLogAsync(level, message, exception, safeProperties));
+    }
+
+    /// <summary>
+    /// Publica un log de forma asíncrona
+    /// </summary>
+    public async Task PublishLogAsync(string level, string message, Exception? exception, Dictionary<string, object> properties)
+    {
+        try
         {
-            try
+            var httpClient = _httpClientFactory.CreateClient("AdminApi");
+            httpClient.BaseAddress = new Uri(_adminApiBaseUrl);
+            httpClient.Timeout = TimeSpan.FromSeconds(5); // Timeout corto para no bloquear
+
+            var logData = new
             {
-                var httpClient = _httpClientFactory.CreateClient("AdminApi");
-                httpClient.BaseAddress = new Uri(_adminApiBaseUrl);
-                httpClient.Timeout = TimeSpan.FromSeconds(5); // Timeout corto para no bloquear
+                Level = level,
+                Message = message,
+                Exception = exception?.ToString(),
+                TimeStamp = DateTime.UtcNow,
+                Properties = properties
+            };
 
-                var logData = new
-                {
-                    Level = level,
-                    Message = message,
-                    Exception = exception?.ToString(),
-                    TimeStamp = DateTime.UtcNow,
-                    Properties = properties ?? new Dictionary<string, object>()
-                };
+            var json = JsonSerializer.Serialize(logData);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var json = JsonSerializer.Serialize(logData);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+            // Intentar enviar el log
+            var response = await httpClient.PostAsync(_logsEndpoint, content);
 
-                // Intentar enviar el log
-                var response = await httpClient.PostAsync(_logsEndpoint, content);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    // Log localmente si falla, pero no interrumpir el flujo
-                    _logger.LogWarning(
-                        "No se pudo enviar log a Admin API. Status: {StatusCode}, Endpoint: {Endpoint}",
-                        response.StatusCode,
-                        _logsEndpoint);
-                }
-            }
-            catch (Exception ex)
+            if (!response.IsSuccessStatusCode)
             {
-                // Log localmente el error pero no propagarlo
-                // Esto asegura que el fallo de Admin API no afecte a Product
-                _logger.LogWarning(ex,
-                    "Error al publicar log en Admin API. El log se perdió pero el flujo continúa. Message: {Message}",
-                    message);
+                // Log localmente si falla, pero no interrumpir el flujo
+                _logger.LogWarning(
+                    "No se pudo enviar log a Admin API. Status: {StatusCode}, Endpoint: {Endpoint}",
+                    response.StatusCode,
+                    _logsEndpoint);
             }
-        });
+        }
+        catch (Exception ex)
+        {
+            // Log localmente el error pero no propagarlo
+            // Esto asegura que el fallo de Admin API no afecte a Product
+            _logger.LogWarning(ex,
+                "Error al publicar log en Admin API. El log se perdió pero el flujo continúa. Message: {Message}",
+                message);
+        }
     }
 
     /// <summary>
