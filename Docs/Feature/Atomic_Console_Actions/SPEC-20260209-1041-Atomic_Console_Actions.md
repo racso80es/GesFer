@@ -19,10 +19,9 @@ Refactorizar el menú de `GesFer.Console` para incluir una nueva "Acción 3: Acc
 *   **Incluido:**
     *   Creación de submenú para Acción 3.
     *   **3.1 Inicializar Docker:** Detener contenedores, recrearlos y esperar a MySQL.
-    *   **3.2 Aplicar / unificar migraciones EF:** .
-    *   **3.3 Restaurar Datos Seed:** Selección de Scope (Admin/Product/All) y Level. (Reemplaza Action 8).
-    *   **3.4 Levantar Servicios:** Selección granular (Product API, Admin API, Product Front, Admin Front) o "Iniciar Todos".
-    *   **3.5 Inicialización Completa BD:** Migraciones + Seeds (Reemplaza antigua Action 3).
+    *   **3.2 Restaurar Datos Seed:** Selección de Scope (Admin/Product/All) y Level. (Reemplaza Action 8).
+    *   **3.3 Levantar Servicios:** Selección granular (Product API, Admin API, Product Front, Admin Front) o "Iniciar Todos".
+    *   **3.4 Inicialización Completa BD:** Migraciones + Seeds (Reemplaza antigua Action 3).
     *   Eliminación de Action 8 del menú principal.
     *   Actualización de referencias en `MenuService.cs` y comandos relacionados.
 *   **Fuera de Alcance:**
@@ -48,12 +47,11 @@ Refactorizar el menú de `GesFer.Console` para incluir una nueva "Acción 3: Acc
 
 ## 5. Criterios de Aceptación
 
-- [ ] La Acción 3 muestra el submenú correcto con las 5 opciones.
+- [ ] La Acción 3 muestra el submenú correcto con las 4 opciones.
 - [ ] La opción 3.1 reinicia Docker correctamente y espera a la BD.
-- [ ] La opción 3.2 Indica las migraciones pendientes, las unifica, y deja la inicial.
-- [ ] La opción 3.3 permite seleccionar Scope y Level y ejecuta los seeds correspondientes.
-- [ ] La opción 3.4 permite elegir qué servicios levantar (uno, varios o todos) y libera los puertos correspondientes antes de iniciar.
-- [ ] La opción 3.5 ejecuta migraciones y seeds completos correctamente.
+- [ ] La opción 3.2 permite seleccionar Scope y Level y ejecuta los seeds correspondientes.
+- [ ] La opción 3.3 permite elegir qué servicios levantar (uno, varios o todos) y libera los puertos correspondientes antes de iniciar.
+- [ ] La opción 3.4 ejecuta migraciones y seeds completos correctamente.
 - [ ] La Acción 8 ya no aparece en el menú principal.
 - [ ] La antigua Acción 3 ya no está en el menú principal (movida a 3.4).
 - [ ] El código compila sin errores.
@@ -64,4 +62,5 @@ Refactorizar el menú de `GesFer.Console` para incluir una nueva "Acción 3: Acc
 *   **Evento:** Generación manual (corrección de plantilla) tras `GesFer.Console --spec`.
 *   **Referencia de Log:** `docs/audits/ACCESS_LOG.md`
 
-## 7. Indicar en proceso spec.md que la ruta donde perssitir la documentación del proceso de especificación ha de ser ./Docs/Feature/{feature indicada}/
+## 7. Persistencia Documental
+Indicar en proceso spec.md que la ruta donde perssitir la documentación del proceso de especificación ha de ser ./Docs/Feature/{feature indicada}/
