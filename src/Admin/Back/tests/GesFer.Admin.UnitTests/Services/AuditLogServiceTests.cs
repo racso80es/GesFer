@@ -58,27 +58,34 @@ public class AuditLogServiceTests
     public async Task LogActionAsync_ShouldNotThrow_WhenDatabaseFails()
     {
         // Arrange
-        // We cannot easily mock DbContext failure with InMemory,
-        // but we can try to force an exception by disposing the context contextually
-        // or passing invalid data if constraints existed (InMemory has few constraints).
-        // Best approach here for unit testing "fail-open" logic is to mock the context/set if possible,
-        // but since we are using concrete DbContext, we rely on the implementation structure.
-        
-        // Alternatively, we can verify that normal operation works, and visually inspect the catch block.
-        // Or we can try to inject a "Broken" context.
+        // Force failure by disposing the context
+        await _dbContext.DisposeAsync();
 
-        // For this test, we will verify the happy path deeply, as mocking DbContext specifically to throw
-        // requires more setup (e.g. Repository pattern mock).
-        // We will assume the Service catches exceptions as per code review.
+        // Act
+        Func<Task> act = async () => await _auditLogService.LogActionAsync("cursor", "user", "action", "POST", "/path", null);
 
-        // Let's create a scenario where SaveChangesAsync might fail? Hard with InMemory.
-        // We will skip the "Failure" test for now and rely on Code Review for the try-catch block,
-        // as `AuditLogService` catches `Exception`.
+        // Assert
+        await act.Should().NotThrowAsync();
 
-        // Let's test null handling for optional params
+        // Verify logger was called
+        _loggerMock.Verify(x => x.Log(
+            LogLevel.Error,
+            It.IsAny<EventId>(),
+            It.Is<It.IsAnyType>((v, t) => true),
+            It.IsAny<Exception>(),
+            It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), Times.Once);
+    }
+
+    [Fact]
+    public async Task LogActionAsync_ShouldHandleNullAdditionalData_AndSetIsActive()
+    {
+        // Act
         await _auditLogService.LogActionAsync("cursor", "user", "action", "POST", "/path", null);
 
+        // Assert
         var log = await _dbContext.AuditLogs.FirstAsync();
+        log.Should().NotBeNull();
         log.AdditionalData.Should().BeNull();
+        log.IsActive.Should().BeTrue();
     }
 }

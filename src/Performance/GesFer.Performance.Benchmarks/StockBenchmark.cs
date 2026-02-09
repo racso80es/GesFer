@@ -9,9 +9,9 @@ namespace GesFer.Performance.Benchmarks;
 [MemoryDiagnoser]
 public class StockBenchmark
 {
-    private ApplicationDbContext _context;
-    private StockService _service;
-    private List<Guid> _articleIds;
+    private ApplicationDbContext _context = null!;
+    private StockService _service = null!;
+    private List<Guid> _articleIds = null!;
     private const int ArticleCount = 100;
 
     [GlobalSetup]

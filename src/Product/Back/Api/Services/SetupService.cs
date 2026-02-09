@@ -220,7 +220,7 @@ public class SetupService : ISetupService
         }
     }
 
-    private async Task<(bool Success, string? Error)> ExecuteDockerCommandAsync(string command)
+    protected virtual async Task<(bool Success, string? Error)> ExecuteDockerCommandAsync(string command)
     {
         try
         {
@@ -275,7 +275,7 @@ public class SetupService : ISetupService
         }
     }
 
-    private async Task<bool> WaitForMySqlReadyAsync(TimeSpan timeout, string containerName = "gesfer_product_db")
+    protected virtual async Task<bool> WaitForMySqlReadyAsync(TimeSpan timeout, string containerName = "gesfer_product_db")
     {
         var startTime = DateTime.UtcNow;
         var checkInterval = TimeSpan.FromSeconds(5);
