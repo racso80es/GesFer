@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
-import { IGreetingService, GreetingService } from '../../services/GreetingService';
+import { IGreetingService, GreetingService } from '../../src/services/GreetingService';
 
 // Conscience Imports
 import { IJudge, IAuditor, IImmutableStorage, IConscience } from '../conscience/interfaces';
