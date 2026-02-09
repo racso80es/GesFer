@@ -34,7 +34,6 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
-      // Usar el provider "admin" para autenticación administrativa
       const result = await signIn("admin", {
         username: formData.username,
         password: formData.password,
@@ -48,12 +47,20 @@ export default function AdminLoginPage() {
       }
 
       if (result?.ok) {
-        // Redirigir al dashboard administrativo
+        setIsLoading(false);
         router.push("/dashboard");
+        return;
       }
+
+      setIsLoading(false);
     } catch (err) {
       console.error("Error en login administrativo:", err);
-      setError("Error al iniciar sesión. Por favor, intenta de nuevo.");
+      const isNetworkError = err instanceof TypeError && (err.message === "Failed to fetch" || err.message.includes("fetch"));
+      setError(
+        isNetworkError
+          ? "No se pudo conectar con el servidor. Comprueba que la API Admin esté en ejecución (puerto 5010)."
+          : "Error al iniciar sesión. Por favor, intenta de nuevo."
+      );
       setIsLoading(false);
     }
   };

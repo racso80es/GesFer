@@ -7,7 +7,7 @@ Validación de la estructura base mediante un "Hola Mundo" en un entorno Desktop
 - **Base:** Electron + Vite + React + TypeScript + TailwindCSS.
 - **Inyección de Dependencias (DI):** Se utilizará InversifyJS para gestionar las dependencias, asegurando el desacoplamiento y la testabilidad.
 - **Gestión de Estado:** React Context / Hooks para estado simple de UI, Servicios para lógica de dominio.
-- **Terminología:** Uso estricto de `company` en lugar de `empresa` en todo el código, comentarios y variables.
+- **Terminología:**
 
 ## 3. Estrategia de Inyección de Dependencias
 Para resolver las fricciones iniciales con la DI, adoptamos un patrón de contenedor estándar usando InversifyJS.

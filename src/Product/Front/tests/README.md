@@ -86,9 +86,20 @@ npx playwright test --project=chromium
    - Usuario: "admin"
    - Contraseña: "admin123"
 
+## Reporte HTML (localhost:9323)
+
+Tras ejecutar `npm run test:e2e`, puedes abrir el reporte con:
+
+```bash
+npm run test:e2e:report
+```
+
+Playwright abre el reporte en un puerto disponible (por ejemplo **http://localhost:9323**). Ahí ves qué tests pasaron o fallaron, traces y capturas. Si todos los tests salen "malos", suele ser porque **la API no estaba en ejecución** al correr los tests: el `globalSetup` comprueba que la API (puerto 5000) responda antes de empezar; si no, falla con un mensaje claro.
+
 ## Notas
 
 - Los tests se ejecutan en paralelo por defecto
+- **Antes de ejecutar E2E:** la API Product debe estar levantada en el puerto 5000 (p. ej. `docker-compose up -d gesfer-product-api` o ejecutar el backend desde IDE)
 - Los screenshots y videos se guardan solo cuando fallan
 - Los traces se guardan solo en reintentos
 - El reporte HTML se genera automáticamente después de cada ejecución
