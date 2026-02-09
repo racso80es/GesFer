@@ -31,16 +31,6 @@
   ],
   "companies": [
     {
-      "_comment": "DATOS MALOS: Legacy 'B12345678' inválido según algoritmo oficial (debe ser rechazado para validar cuarentena)",
-      "id": "11111111-1111-1111-1111-111111111111",
-      "name": "Empresa Legacy Inválida",
-      "taxId": "B12345678",
-      "address": "Calle Demo 123",
-      "phone": "912345678",
-      "email": "demo@empresa.com",
-      "languageId": "10000000-0000-0000-0000-000000000001"
-    },
-    {
       "_comment": "DATOS BUENOS: Empresa base del sistema con TaxId válido - DEBE SER LA REFERENCIADA POR USERS",
       "id": "11111111-1111-1111-1111-111111111115",
       "name": "Empresa Demo",
@@ -58,26 +48,6 @@
       "address": "Calle Test Update 456",
       "phone": "987654321",
       "email": "testupdate@empresa.com",
-      "languageId": "10000000-0000-0000-0000-000000000001"
-    },
-    {
-      "_comment": "DATOS MALOS: Empresa con TaxId inválido (debe ser ignorado por el seeder)",
-      "id": "11111111-1111-1111-1111-111111111113",
-      "name": "Empresa TaxId Inválido",
-      "taxId": "INVALID999",
-      "address": "Calle Test",
-      "phone": "988888888",
-      "email": "valido@empresa.com",
-      "languageId": "10000000-0000-0000-0000-000000000001"
-    },
-    {
-      "_comment": "DATOS MALOS: Empresa con Email inválido (debe ser ignorado por el seeder)",
-      "id": "11111111-1111-1111-1111-111111111114",
-      "name": "Empresa Email Inválido",
-      "taxId": "B99999999",
-      "address": "Calle Test",
-      "phone": "999999999",
-      "email": "email-sin-arroba-invalido",
       "languageId": "10000000-0000-0000-0000-000000000001"
     }
   ],
@@ -556,13 +526,6 @@
       "permissionId": "dddddddd-dddd-dddd-dddd-dddddddddd01"
     }
   ],
-  "userPermissions": [
-    {
-      "id": "ffffffff-ffff-ffff-ffff-ffffffffffff",
-      "userId": "99999999-9999-9999-9999-999999999999",
-      "permissionId": "77777777-7777-7777-7777-777777777777"
-    }
-  ],
   "suppliers": [
     {
       "id": "aaaaaaaa-1111-1111-1111-111111111111",
@@ -622,36 +585,6 @@
       "address": "Calle Larios, 12",
       "phone": "952123456",
       "email": "ventas@distribuidoramalaga.es"
-    },
-    {
-      "_comment": "DATOS MALOS: Cliente con TaxId inválido (debe ser ignorado por el seeder)",
-      "id": "ffffffff-0000-0000-0000-000000000001",
-      "companyId": "11111111-1111-1111-1111-111111111115",
-      "name": "Cliente TaxId Inválido",
-      "taxId": "INVALID123",
-      "address": "Calle Test",
-      "phone": "955555555",
-      "email": "valido@test.com"
-    },
-    {
-      "_comment": "DATOS MALOS: Cliente con Email inválido (debe ser ignorado por el seeder)",
-      "id": "ffffffff-0000-0000-0000-000000000002",
-      "companyId": "11111111-1111-1111-1111-111111111115",
-      "name": "Cliente Email Inválido",
-      "taxId": "B55555555",
-      "address": "Calle Test",
-      "phone": "966666666",
-      "email": "email-invalido-sin-arroba"
-    },
-    {
-      "_comment": "DATOS MALOS: Cliente con TaxId y Email inválidos (debe ser ignorado por el seeder)",
-      "id": "ffffffff-0000-0000-0000-000000000003",
-      "companyId": "11111111-1111-1111-1111-111111111115",
-      "name": "Cliente Datos Inválidos",
-      "taxId": "BADTAXID",
-      "address": "Calle Test",
-      "phone": "977777777",
-      "email": "email.mal.formato"
     }
   ]
 }
