@@ -42,7 +42,7 @@ public class TelemetryController : ControllerBase
     [HttpPost("logs")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult ReceiveLog([FromBody] CreateLogDto logDto)
+    public async Task<IActionResult> ReceiveLog([FromBody] CreateLogDto logDto)
     {
         try
         {
@@ -86,8 +86,8 @@ public class TelemetryController : ControllerBase
                 exception = new Exception(logDto.Exception);
             }
 
-            // Enviar log a Admin API mediante AsyncLogPublisher (Fire and Forget)
-            _logPublisher.PublishLog(level, logDto.Message, exception, properties);
+            // Enviar log a Admin API mediante AsyncLogPublisher (Awaitable)
+            await _logPublisher.PublishLogAsync(level, logDto.Message, exception, properties);
 
             return Ok(new { message = "Log recibido correctamente" });
         }

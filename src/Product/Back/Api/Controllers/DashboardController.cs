@@ -85,9 +85,9 @@ public class DashboardController : ControllerBase
             }
             catch (Exception ex)
             {
-                // Fail-open: loguear el error de auditoría y continuar
+                // Fail-open: loguear el error de auditoría y continuar (Audit Compliance)
                 // Esto garantiza que el fallo del sistema de auditoría no bloquee la funcionalidad principal
-                _logger.LogError(ex, "Fallo crítico al registrar auditoría en DashboardController");
+                _logger.LogWarning(ex, "Fallo en auditoría de dashboard - Operación continúa (Fail-Open)");
             }
 
             return Ok(summary);
