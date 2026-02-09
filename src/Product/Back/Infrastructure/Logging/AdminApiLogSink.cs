@@ -48,8 +48,9 @@ public class AdminApiLogSink : ILogEventSink
 
             if (logPublisher != null)
             {
-                // PublishLog es void y maneja su propia asincronía
-                logPublisher.PublishLog(level, message, exception, properties);
+                // Usamos la versión asíncrona explícita y gestionamos el Fire-and-Forget aquí
+                // Esto permite que IAsyncLogPublisher sea puro y no oculte Task.Run
+                _ = Task.Run(async () => await logPublisher.PublishLogAsync(level, message, exception, properties));
             }
         }
         catch

@@ -34,9 +34,14 @@ echo [2/3] Validando módulos...
 set "NEEDS_INSTALL=0"
 if not exist "node_modules\" set "NEEDS_INSTALL=1"
 if not exist "package-lock.json" set "NEEDS_INSTALL=1"
+if not exist "node_modules\.bin\vite.cmd" set "NEEDS_INSTALL=1"
 
 if "%NEEDS_INSTALL%"=="1" (
-    echo [!] Dependencias incompletas. Instalando...
+    echo [!] Dependencias incompletas o corruptas. Reinstalando...
+    if exist "node_modules\" (
+        echo     - Limpiando instalación anterior...
+        rmdir /s /q "node_modules"
+    )
     call npm install
     if !errorlevel! neq 0 (
         echo [ERROR] Falló la instalación de npm.

@@ -9,7 +9,7 @@ TARGET_DIRECTORIES = [
     "src/Admin/Front"
 ]
 
-FORBIDDEN_TERMS = []
+FORBIDDEN_TERMS = ["empresa"]
 ALLOWED_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx", ".json", ".md", ".html", ".css", ".scss"]
 EXCLUDED_DIRS = ["node_modules", ".git", "dist", "build", ".next", "coverage"]
 
@@ -193,9 +193,9 @@ Estado Global: **{status}**
 ## 4. Conclusión
 
 """
-    if status == "🔴 FALLA CRÍTICA":
+    if data["forbidden_terms_count"] > 0:
         content += "El estado actual es **CRÍTICO**. Se requiere intervención inmediata."
-    elif status == "🟡 ALERTA":
+    elif data["tech_debt_any"] > 20:
         content += "El estado actual requiere atención para reducir la deuda técnica."
     else:
         content += "El estado actual es saludable."
