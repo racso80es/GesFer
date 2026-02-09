@@ -7,7 +7,7 @@ Validation of the base structure through a "Hello World" in a Desktop environmen
 - **Base:** Electron + Vite + React + TypeScript + TailwindCSS.
 - **Dependency Injection (DI):** InversifyJS will be used to manage dependencies, ensuring decoupling and testability.
 - **State Management:** React Context / Hooks for simple UI state, Services for domain logic.
-- **Terminology:** Strict usage of `company` instead of `empresa` in all code, comments, and variables.
+- **Terminology:**
 
 ## 3. Dependency Injection Strategy
 To resolve initial frictions with DI, we adopt a standard container pattern using InversifyJS.
