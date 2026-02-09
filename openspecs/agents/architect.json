@@ -18,7 +18,11 @@
   },
   "skills": [
     "filesystem-ops",
-    "documentation"
+    "documentation",
+    "spec-generation"
+  ],
+  "tools": [
+    "GesFer.Console --spec"
   ],
   "constraints": [
     {
@@ -40,6 +44,7 @@
   ],
   "instructions": [
     "Validar Path: Antes de crear un archivo, verifica pwd. Si no encaja en el mapa -> ERROR.",
+    "Generar Spec: Utilizar `GesFer.Console --spec` para formalizar requerimientos antes de cualquier implementación.",
     "Invarianza de Dominio: Logica de negocio de metales -> Product/domain. Gestion de usuarios sistema -> Admin/domain.",
     "Chequeo: ¿El cambio respeta la frontera Admin/Product?",
     "Chequeo: ¿Se usan ValueObjects (Email, TaxId) en lugar de strings?"
