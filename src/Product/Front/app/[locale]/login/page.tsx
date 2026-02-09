@@ -43,17 +43,13 @@ export default function LoginPage() {
 
   // Redirigir si ya está autenticado al cargar la página o después del login
   useEffect(() => {
-    // Solo redirigir si:
-    // 1. Ya terminó de cargar el estado de autenticación inicial
-    // 2. Está autenticado
-    // 3. NO estamos en proceso de hacer login (isLoading es false)
-    // 4. Estamos realmente en la página de login
     if (!authLoading && isAuthenticated && !isLoading) {
       const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-      // Solo redirigir si estamos en login y no en dashboard
       if (currentPath.includes('login') && !currentPath.includes('dashboard')) {
-        // Usar replace para evitar que el usuario pueda volver atrás
-        router.replace("/dashboard");
+        const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+        const callbackUrl = params?.get('callbackUrl');
+        const target = callbackUrl && callbackUrl.startsWith('/') && !callbackUrl.startsWith('//') ? callbackUrl : '/dashboard';
+        router.replace(target);
       }
     }
   }, [authLoading, isAuthenticated, isLoading, router]);
@@ -70,11 +66,14 @@ export default function LoginPage() {
     );
   }
 
-  // Si está autenticado y ya terminó de cargar, redirigir
+  // Si está autenticado y ya terminó de cargar, redirigir a dashboard o callbackUrl
   if (!authLoading && isAuthenticated && !isLoading) {
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
     if (currentPath.includes('login')) {
-      router.replace("/dashboard");
+      const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+      const callbackUrl = params?.get('callbackUrl');
+      const target = callbackUrl && callbackUrl.startsWith('/') && !callbackUrl.startsWith('//') ? callbackUrl : '/dashboard';
+      router.replace(target);
       return (
         <div className="flex min-h-screen items-center justify-center">
           <div className="text-center">
