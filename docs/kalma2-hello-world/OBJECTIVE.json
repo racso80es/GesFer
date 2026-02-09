@@ -1,0 +1,48 @@
+{
+  "metadata": {
+    "title": "Kalma2 - Objetivo Hello World Desktop",
+    "version": "1.0",
+    "language": "es",
+    "purpose": "Validación estructural e implementación de DI en entorno Desktop",
+    "status": "Active"
+  },
+  "sections": {
+    "goal": {
+      "summary": "Validar la estructura base con un 'Hola Mundo' en Electron.",
+      "details": "Herencia adaptada y ligera de la base GesFer."
+    },
+    "architecture": {
+      "stack": [
+        "Electron",
+        "Vite",
+        "React",
+        "TypeScript",
+        "TailwindCSS"
+      ],
+      "dependencyInjection": "InversifyJS",
+      "stateManagement": "React Context / Hooks + Services",
+      "terminology": "Uso estricto de 'company' sobre 'empresa'."
+    },
+    "diStrategy": {
+      "summary": "Patrón de contenedor centralizado con InversifyJS.",
+      "components": {
+        "container": "src/core/di/container.ts",
+        "services": "Lógica de negocio encapsulada (ej. IGreetingService)",
+        "integration": "Hooks personalizados o Contexto para acceso en React"
+      }
+    },
+    "implementation": {
+      "location": "src/Kalma2/Desktop",
+      "migrationSource": "src/Tools/Calma-Desktop",
+      "keyFeature": "GreetingService para validación de DI",
+      "policies": [
+        "No Any"
+      ]
+    },
+    "goldenRules": [
+      "Documentar decisiones arquitectónicas",
+      "Pruebas unitarias para servicios futuros",
+      "Evitar duplicidad en EVOLUTION_LOG.md"
+    ]
+  }
+}

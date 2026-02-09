@@ -1,12 +1,34 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { container, TYPES } from './core/di/container'
+import { IGreetingService } from './services/GreetingService'
+
+interface ActionButtonProps {
+  onClick: () => void
+  label: string
+  icon: string
+  variant?: 'default' | 'danger'
+}
 
 function App() {
-  const [status, setStatus] = useState<any>({})
+  const [greeting, setGreeting] = useState<string>('')
+  // Using unknown instead of any for status until shape is defined
+  const [status, setStatus] = useState<Record<string, unknown>>({})
+
+  useEffect(() => {
+    // DI Resolution
+    const greetingService = container.get<IGreetingService>(TYPES.GreetingService)
+    setGreeting(greetingService.getGreeting())
+
+    // Status subscription
+    const unsubscribe = window.calmaAPI.onStatusChange((newStatus: unknown) => {
+      setStatus(newStatus as Record<string, unknown>)
+    })
+    return () => unsubscribe()
+  }, [])
 
   const handleStartProduct = () => window.calmaAPI.startSequence(1)
   const handleStopAll = () => window.calmaAPI.stopAll()
 
-  // Quick Actions
   const runAudit = () => window.calmaAPI.runAudit()
   const clearCache = () => window.calmaAPI.clearCache()
   const syncSpec = () => window.calmaAPI.syncSpec()
@@ -14,7 +36,11 @@ function App() {
   return (
     <div className="flex h-screen flex-col bg-background p-6">
       <header className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight text-white">Calma Desktop</h1>
+        <div>
+           <h1 className="text-2xl font-bold tracking-tight text-white">Calma Desktop</h1>
+           {/* Hello World from DI */}
+           <p className="text-sm text-green-400 mt-1">{greeting}</p>
+        </div>
         <div className="flex gap-2 items-center">
           <span className="h-2 w-2 rounded-full bg-gray-500"></span>
           <span className="text-xs text-gray-500">System Idle</span>
@@ -26,7 +52,6 @@ function App() {
         <div className="rounded-xl border border-border bg-surface p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-primary">Product Domain</h2>
-            {/* Toggle Switch Placeholder */}
             <button
               onClick={handleStartProduct}
               className="px-4 py-2 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition text-sm font-medium"
@@ -82,7 +107,7 @@ function App() {
   )
 }
 
-function ActionButton({ onClick, label, icon, variant = 'default' }: any) {
+function ActionButton({ onClick, label, icon, variant = 'default' }: ActionButtonProps) {
   const base = "flex flex-col items-center gap-2 px-4 py-4 rounded-xl font-medium transition-all text-sm w-full justify-center border group"
   const styles = variant === 'danger'
     ? "bg-red-500/5 border-red-500/20 text-red-500 hover:bg-red-500/10 hover:border-red-500/30"
