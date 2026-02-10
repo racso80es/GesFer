@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using GesFer.Admin.Application.DTOs.Company;
+using GesFer.Product.Back.Infrastructure.DTOs;
 using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +40,7 @@ public class MyCompanyController : ControllerBase
     /// Obtiene los datos de la empresa del usuario actual
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(CompanyDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AdminCompanyDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetMyCompany()
     {
@@ -69,9 +69,9 @@ public class MyCompanyController : ControllerBase
     /// Actualiza los datos de la empresa del usuario actual
     /// </summary>
     [HttpPut]
-    [ProducesResponseType(typeof(CompanyDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AdminCompanyDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateMyCompany([FromBody] UpdateCompanyDto dto)
+    public async Task<IActionResult> UpdateMyCompany([FromBody] AdminUpdateCompanyDto dto)
     {
         try
         {

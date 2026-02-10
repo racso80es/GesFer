@@ -27,7 +27,6 @@
   <ItemGroup>
     <ProjectReference Include="..\domain\GesFer.Domain.csproj" />
     <ProjectReference Include="..\..\..\Shared\Back\GesFer.Shared.Back.Domain.csproj" />
-    <ProjectReference Include="..\..\..\Admin\Back\application\GesFer.Admin.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

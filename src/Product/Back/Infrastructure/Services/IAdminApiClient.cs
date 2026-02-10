@@ -1,4 +1,4 @@
-using GesFer.Admin.Application.DTOs.Company;
+using GesFer.Product.Back.Infrastructure.DTOs;
 
 namespace GesFer.Product.Back.Infrastructure.Services;
 
@@ -7,6 +7,6 @@ namespace GesFer.Product.Back.Infrastructure.Services;
 /// </summary>
 public interface IAdminApiClient
 {
-    Task<CompanyDto?> GetCompanyAsync(Guid id);
-    Task<CompanyDto> UpdateCompanyAsync(Guid id, UpdateCompanyDto dto);
+    Task<AdminCompanyDto?> GetCompanyAsync(Guid id);
+    Task<AdminCompanyDto> UpdateCompanyAsync(Guid id, AdminUpdateCompanyDto dto);
 }

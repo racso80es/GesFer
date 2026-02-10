@@ -1,7 +1,7 @@
 # Valoración de calidad — PR feat/e2e-product-back-mocked
 
-**Fecha:** 2026-02-10  
-**Alcance:** Cambios mergeados en master (2fdf0e1..c0415bb): E2E Product Back con mock, documentación en docs/Feature, acción feature en openspecs.  
+**Fecha:** 2026-02-10
+**Alcance:** Cambios mergeados en master (2fdf0e1..c0415bb): E2E Product Back con mock, documentación en docs/Feature, acción feature en openspecs.
 **Archivos afectados:** 14 (2 modificados, 12 nuevos). Sin cambios en código fuente (.cs, .ts, .tsx); solo documentación y openspecs.
 
 ---

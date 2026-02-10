@@ -1,8 +1,8 @@
 # Valoración de calidad — PR feat/separate-company-management
 
-**Fecha:** 2026-02-10  
-**Rama:** feat/separate-company-management-2466795083738940271  
-**Alcance:** Cambios respecto a `master`: separación de gestión de empresas al dominio Admin; Product como consumidor vía API; Admin Front CRUD empresas; Product Front "Mi empresa"; Shared entidad Company.  
+**Fecha:** 2026-02-10
+**Rama:** feat/separate-company-management-2466795083738940271
+**Alcance:** Cambios respecto a `master`: separación de gestión de empresas al dominio Admin; Product como consumidor vía API; Admin Front CRUD empresas; Product Front "Mi empresa"; Shared entidad Company.
 **Archivos afectados:** 70 (código Back/Front .cs, .ts, .tsx, docs, openspecs).
 
 ---

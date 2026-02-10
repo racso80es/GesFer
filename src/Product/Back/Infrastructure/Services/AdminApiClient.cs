@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using GesFer.Admin.Application.DTOs.Company;
+using GesFer.Product.Back.Infrastructure.DTOs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -24,7 +24,7 @@ public class AdminApiClient : IAdminApiClient
         }
     }
 
-    public async Task<CompanyDto?> GetCompanyAsync(Guid id)
+    public async Task<AdminCompanyDto?> GetCompanyAsync(Guid id)
     {
         try
         {
@@ -34,7 +34,7 @@ public class AdminApiClient : IAdminApiClient
                 return null;
 
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<CompanyDto>();
+            return await response.Content.ReadFromJsonAsync<AdminCompanyDto>();
         }
         catch (Exception ex)
         {
@@ -43,13 +43,13 @@ public class AdminApiClient : IAdminApiClient
         }
     }
 
-    public async Task<CompanyDto> UpdateCompanyAsync(Guid id, UpdateCompanyDto dto)
+    public async Task<AdminCompanyDto> UpdateCompanyAsync(Guid id, AdminUpdateCompanyDto dto)
     {
         try
         {
             var response = await _httpClient.PutAsJsonAsync($"api/company/{id}", dto);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<CompanyDto>()
+            return await response.Content.ReadFromJsonAsync<AdminCompanyDto>()
                    ?? throw new InvalidOperationException("La respuesta de Admin API fue nula");
         }
         catch (Exception ex)
