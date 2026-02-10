@@ -192,16 +192,10 @@ public class JsonDataSeeder
             return result;
         }
 
-        // CASCADA RESILIENTE: Crear HashSet de IDs válidos para evitar referencias huérfanas
-        var validCompanyIds = new HashSet<Guid>();
-
-        // Seed Companies
-        if (data.Companies != null && data.Companies.Any())
-        {
-            await SeedCompaniesAsync(data.Companies, validCompanyIds);
-            await _context.SaveChangesAsync();
-            result.Entities.Add($"{data.Companies.Count} Company(ies)");
-        }
+        // CASCADA RESILIENTE: Companies son SSOT en Admin; Product usa los IDs ya existentes en BD.
+        var validCompanyIds = new HashSet<Guid>(await _context.Companies.IgnoreQueryFilters().Select(c => c.Id).ToListAsync());
+        if (validCompanyIds.Count == 0)
+            _logger.LogWarning("[SEED] No hay companies en la BD. Ejecutar antes el seed de Admin (companies.json) si se usa BD compartida.");
 
         // CASCADA RESILIENTE: Crear HashSet de IDs válidos de usuarios para evitar referencias huérfanas
         var validUserIds = new HashSet<Guid>();
@@ -335,33 +329,10 @@ public class JsonDataSeeder
             _logger.LogInformation("Cities sembrados: {Count}", data.Cities.Count);
         }
 
-        // 4. Companies (depende de Languages) - DEBE ejecutarse después de Languages
-        // CASCADA RESILIENTE: Crear HashSet de IDs válidos para evitar referencias huérfanas
-        var validCompanyIds = new HashSet<Guid>();
-
-        if (data.Companies != null && data.Companies.Any())
-        {
-            // Validar que todos los LanguageId referenciados existen
-            var languageIds = data.Companies.Select(c => Guid.Parse(c.LanguageId)).Distinct().ToList();
-            var existingLanguages = await _context.Languages
-                .IgnoreQueryFilters()
-                .Where(l => languageIds.Contains(l.Id))
-                .Select(l => l.Id)
-                .ToListAsync();
-
-            var missingLanguages = languageIds.Except(existingLanguages).ToList();
-            if (missingLanguages.Any())
-            {
-                _logger.LogError("Error de integridad referencial: Los siguientes LanguageId no existen: {MissingIds}",
-                    string.Join(", ", missingLanguages));
-                throw new InvalidOperationException(
-                    $"No se pueden insertar Companies: Los siguientes LanguageId no existen en la base de datos: {string.Join(", ", missingLanguages)}");
-            }
-
-            await SeedCompaniesAsync(data.Companies, validCompanyIds);
-            await _context.SaveChangesAsync();
-            _logger.LogInformation("Companies sembrados: {Count}", data.Companies.Count);
-        }
+        // 4. Companies: SSOT en Admin. Product usa los IDs ya existentes en BD (ejecutar seed de Admin antes).
+        var validCompanyIds = new HashSet<Guid>(await _context.Companies.IgnoreQueryFilters().Select(c => c.Id).ToListAsync());
+        if (validCompanyIds.Count == 0)
+            _logger.LogWarning("[SEED] No hay companies en la BD. Ejecutar antes el seed de Admin (companies.json) si se usa BD compartida.");
 
         // CASCADA RESILIENTE: Crear HashSet de IDs válidos de usuarios para evitar referencias huérfanas
         var validUserIds = new HashSet<Guid>();
@@ -640,110 +611,6 @@ public class JsonDataSeeder
         }
         await _context.SaveChangesAsync();
         _logger.LogInformation("GroupPermissions sembrados: {Count}", groupPermissions.Count);
-    }
-
-    private async Task SeedCompaniesAsync(List<CompanySeed> companies, HashSet<Guid> validCompanyIds)
-    {
-        int skippedCount = 0;
-        int processedCount = 0;
-
-        foreach (var companyData in companies)
-        {
-            try
-            {
-                var existing = await _context.Companies
-                    .IgnoreQueryFilters()
-                    .FirstOrDefaultAsync(c => c.Id == Guid.Parse(companyData.Id));
-
-                if (existing == null)
-                {
-                    // Validar y convertir TaxId si se proporciona
-                    TaxId? taxId = null;
-                    if (!string.IsNullOrWhiteSpace(companyData.TaxId))
-                    {
-                        try
-                        {
-                            taxId = TaxId.Create(companyData.TaxId);
-                        }
-                        catch (ArgumentException ex)
-                        {
-                            _logger.LogWarning("[SEED] Violación de Dominio - TaxId inválido en Company '{Name}' (Id: {Id}): {Error}. Registro ignorado.",
-                                companyData.Name, companyData.Id, ex.Message);
-                            skippedCount++;
-                            continue;
-                        }
-                    }
-
-                    // Validar y convertir Email si se proporciona
-                    Email? email = null;
-                    if (!string.IsNullOrWhiteSpace(companyData.Email))
-                    {
-                        try
-                        {
-                            email = Email.Create(companyData.Email);
-                        }
-                        catch (ArgumentException ex)
-                        {
-                            _logger.LogWarning("[SEED] Violación de Dominio - Email inválido en Company '{Name}' (Id: {Id}): {Error}. Registro ignorado.",
-                                companyData.Name, companyData.Id, ex.Message);
-                            skippedCount++;
-                            continue;
-                        }
-                    }
-
-                    var company = new GesFer.Product.Back.Domain.Entities.Company
-                    {
-                        Id = Guid.Parse(companyData.Id),
-                        Name = companyData.Name,
-                        TaxId = taxId,
-                        Address = companyData.Address,
-                        Phone = companyData.Phone,
-                        Email = email,
-                        LanguageId = Guid.Parse(companyData.LanguageId),
-                        CreatedAt = DateTime.UtcNow,
-                        IsActive = true
-                    };
-                    _context.Companies.Add(company);
-                    // CASCADA RESILIENTE: Agregar ID a lista blanca solo si la empresa pasa validación
-                    validCompanyIds.Add(company.Id);
-                    processedCount++;
-                    _logger.LogInformation("[SEED] Cargado registro específico para test: Company '{Name}' (Id: {Id})",
-                        companyData.Name, companyData.Id);
-                }
-                else if (existing.DeletedAt != null)
-                {
-                    existing.DeletedAt = null;
-                    existing.IsActive = true;
-                    // CASCADA RESILIENTE: Agregar ID a lista blanca si se reactiva
-                    validCompanyIds.Add(existing.Id);
-                    processedCount++;
-                    _logger.LogInformation("[SEED] Reactivado registro existente: Company '{Name}' (Id: {Id})",
-                        companyData.Name, companyData.Id);
-                }
-                else
-                {
-                    // CASCADA RESILIENTE: Agregar ID a lista blanca si ya existe y está activa
-                    validCompanyIds.Add(existing.Id);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "[SEED] Error inesperado al procesar Company '{Name}' (Id: {Id}): {Error}. Registro ignorado.",
-                    companyData.Name, companyData.Id, ex.Message);
-                skippedCount++;
-                continue;
-            }
-        }
-
-        if (skippedCount > 0)
-        {
-            _logger.LogWarning("[SEED] Companies: {SkippedCount} registro(s) ignorado(s) por Violación de Dominio (Email/TaxId inválidos) de {TotalCount} totales",
-                skippedCount, companies.Count);
-            Console.WriteLine($"    ⚠ Companies: {skippedCount} registro(s) ignorado(s) por datos inválidos");
-        }
-
-        _logger.LogInformation("[SEED] Companies procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales",
-            processedCount, skippedCount, companies.Count);
     }
 
     private async Task SeedUsersAsync(List<UserSeed> users, HashSet<Guid> validCompanyIds, HashSet<Guid> validUserIds)

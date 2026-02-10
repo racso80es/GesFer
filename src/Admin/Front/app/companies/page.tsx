@@ -1,11 +1,18 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Button } from "../../components/ui/button";
-import { Plus, Pencil, Trash } from "lucide-react";
-import { getAdminApi } from "@/lib/api/admin-api";
+import { Plus, Pencil } from "lucide-react";
+import { getAdminApiWithToken } from "@/lib/api/admin-api-server";
 import { Company } from "@/lib/types/api";
+import { auth } from "@/auth";
 
 export default async function CompaniesPage() {
-  const api = getAdminApi();
+  const session = await auth();
+  if (!session?.user || session.user.role !== "Admin") {
+    redirect("/login");
+  }
+
+  const api = getAdminApiWithToken(session.accessToken);
   let companies: Company[] = [];
 
   try {

@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Company } from "@/lib/types/api";
-import { getAdminApi } from "@/lib/api/admin-api";
+import { getAdminApiWithToken } from "@/lib/api/admin-api-server";
+import { auth } from "@/auth";
 
 interface Params {
-  params: {
-    id: string;
-  };
+  params: { id: string };
 }
 
-export async function GET(request: NextRequest, { params }: Params) {
+export async function GET(_request: NextRequest, { params }: Params) {
   try {
-    const api = getAdminApi();
+    const session = await auth();
+    if (!session?.accessToken) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    }
+    const api = getAdminApiWithToken(session.accessToken);
     const company = await api.get<Company>(`/company/${params.id}`);
 
     if (!company) {
@@ -32,8 +35,12 @@ export async function GET(request: NextRequest, { params }: Params) {
 
 export async function PUT(request: NextRequest, { params }: Params) {
   try {
+    const session = await auth();
+    if (!session?.accessToken) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    }
     const body = await request.json();
-    const api = getAdminApi();
+    const api = getAdminApiWithToken(session.accessToken);
     const company = await api.put<Company>(`/company/${params.id}`, body);
     return NextResponse.json(company);
   } catch (error) {
@@ -45,9 +52,13 @@ export async function PUT(request: NextRequest, { params }: Params) {
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: Params) {
+export async function DELETE(_request: NextRequest, { params }: Params) {
   try {
-    const api = getAdminApi();
+    const session = await auth();
+    if (!session?.accessToken) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    }
+    const api = getAdminApiWithToken(session.accessToken);
     await api.delete(`/company/${params.id}`);
     return new NextResponse(null, { status: 204 });
   } catch (error) {

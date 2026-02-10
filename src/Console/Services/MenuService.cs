@@ -394,7 +394,7 @@ public class MenuService
         var adminFrontPath = Path.Combine(_logService.GetRootPath(), "src", "Admin", "Front");
 
         Console.WriteLine("[4/12] y [5/12] Verificando compilación de Frontend Product y Admin en paralelo...");
-        Console.WriteLine("    (solo se ejecuta 'npm install' si falta node_modules; luego 'npm run build')");
+        Console.WriteLine("    (npm install y luego npm run build)");
         var productTask = RunNpmCompilationCheckAsync(productFrontPath, "Frontend Product");
         var adminTask = RunNpmCompilationCheckAsync(adminFrontPath, "Frontend Admin");
         await Task.WhenAll(productTask, adminTask);
@@ -631,9 +631,12 @@ public class MenuService
                 return true;
             }
 
-            var output = await buildProcessInstance.StandardOutput.ReadToEndAsync();
-            var error = await buildProcessInstance.StandardError.ReadToEndAsync();
+            // Leer stdout/stderr en paralelo mientras el proceso corre para evitar deadlock
+            var outputTask = buildProcessInstance.StandardOutput.ReadToEndAsync();
+            var errorTask = buildProcessInstance.StandardError.ReadToEndAsync();
             await buildProcessInstance.WaitForExitAsync();
+            var output = await outputTask;
+            var error = await errorTask;
 
             if (buildProcessInstance.ExitCode != 0)
             {
@@ -685,7 +688,7 @@ public class MenuService
     }
 
     /// <summary>
-    /// Ejecuta verificación de compilación npm (install solo si falta node_modules, luego build).
+    /// Ejecuta verificación de compilación npm (npm install y luego npm run build).
     /// Devuelve (éxito, mensajeDeError). No escribe en consola para permitir ejecución en paralelo.
     /// </summary>
     private async Task<(bool Success, string? ErrorDetail)> RunNpmCompilationCheckAsync(string projectPath, string projectName)
@@ -696,13 +699,10 @@ public class MenuService
             return (true, null);
         }
 
-        var nodeModulesPath = Path.Combine(projectPath, "node_modules");
-        var needsInstall = !Directory.Exists(nodeModulesPath);
+        // Siempre ejecutar npm install antes de build para que dependencias nuevas (ej. next-intl) estén instaladas
         var isWindows = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
         var fileName = isWindows ? "cmd" : "bash";
-        var installAndBuild = needsInstall
-            ? (isWindows ? $"npm install && npm run build" : "npm install && npm run build")
-            : "npm run build";
+        var installAndBuild = isWindows ? "npm install && npm run build" : "npm install && npm run build";
         var arguments = isWindows
             ? $"/c cd \"{projectPath}\" && {installAndBuild}"
             : $"-c \"cd '{projectPath}' && {installAndBuild}\"";
@@ -726,9 +726,13 @@ public class MenuService
                 return (true, null);
             }
 
-            var output = await buildProcessInstance.StandardOutput.ReadToEndAsync();
-            var error = await buildProcessInstance.StandardError.ReadToEndAsync();
+            // Leer stdout/stderr en paralelo mientras el proceso corre para evitar deadlock
+            // (si se lee solo al final, los buffers se llenan y npm/dotnet se bloquean)
+            var outputTask = buildProcessInstance.StandardOutput.ReadToEndAsync();
+            var errorTask = buildProcessInstance.StandardError.ReadToEndAsync();
             await buildProcessInstance.WaitForExitAsync();
+            var output = await outputTask;
+            var error = await errorTask;
 
             if (buildProcessInstance.ExitCode != 0)
             {

@@ -1,12 +1,20 @@
 # Seeds para Dominio Admin
 
-Esta carpeta contiene los archivos de seed data para el dominio Admin, organizados en tres niveles:
+Esta carpeta contiene los archivos de seed data para el dominio Admin. **Admin es SSOT (Source of Truth) para Companies.**
 
-## Estructura
+## Archivos
 
-- **Master/**: Datos maestros administrativos (usuarios admin del sistema, configuraciones globales)
-- **Demo/**: Datos de demostración para entornos de desarrollo/demo
-- **Test/**: Datos de prueba para entornos de testing
+- **admin-users.json**: Usuarios administrativos del sistema.
+- **companies.json**: Empresas (Companies). Cargado por `AdminJsonDataSeeder.SeedCompaniesAsync()` usando `AdminDbContext`.
+
+## Orden de ejecución (BD compartida)
+
+En entornos donde Admin y Product comparten la misma base de datos:
+
+1. **Ejecutar primero los seeds de Admin** (companies y admin-users), para que la tabla `Companies` exista y esté poblada.
+2. **Después**, ejecutar los seeds de Product (Languages, Users, etc.). El seed de Product ya no inserta companies; obtiene los `validCompanyIds` desde la BD (companies creadas por Admin).
+
+Así se garantiza que las empresas existan antes de que Product cree usuarios, proveedores o clientes que referencien `CompanyId`.
 
 ## Niveles de Seed
 

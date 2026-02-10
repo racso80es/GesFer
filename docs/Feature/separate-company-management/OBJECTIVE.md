@@ -29,5 +29,10 @@ Transferir la autoridad y gestión de las entidades "Empresa" (Company) del domi
 - **Datos:** El estado de la empresa (Activo/Inactivo) será gestionado exclusivamente por Admin. Product solo podrá editar información operativa (dirección, contacto, etc.).
 - **Autenticación:** Las llamadas entre `Product.Back` y `Admin.Back` deben estar aseguradas.
 
+## Seeds (Admin SSOT)
+
+- **Companies:** Definidos en `Admin/Back/Infrastructure/Data/Seeds/companies.json` y cargados por `AdminJsonDataSeeder.SeedCompaniesAsync()`. Product ya no inserta companies; obtiene los IDs existentes en BD.
+- **Orden en BD compartida:** Ejecutar seeds de Admin (companies, admin-users) **antes** que los de Product, para que la tabla `Companies` esté poblada. Ver `Admin/Back/Infrastructure/Data/Seeds/README.md`.
+
 ## Referencias
 - `openspecs/actions/feature.md`

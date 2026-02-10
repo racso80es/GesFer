@@ -11,7 +11,7 @@ namespace GesFer.Infrastructure.Services;
 /// </summary>
 public interface IJwtService
 {
-    string GenerateToken(string cursorId, string username, Guid userId, List<string> permissions);
+    string GenerateToken(string cursorId, string username, Guid userId, Guid companyId, List<string> permissions);
 }
 
 public class JwtService : IJwtService
@@ -44,9 +44,9 @@ public class JwtService : IJwtService
     }
 
     /// <summary>
-    /// Genera un token JWT con el Cursor ID como ClaimTypes.NameIdentifier
+    /// Genera un token JWT con el Cursor ID como ClaimTypes.NameIdentifier y CompanyId para MyCompany.
     /// </summary>
-    public string GenerateToken(string cursorId, string username, Guid userId, List<string> permissions)
+    public string GenerateToken(string cursorId, string username, Guid userId, Guid companyId, List<string> permissions)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -59,6 +59,9 @@ public class JwtService : IJwtService
             new Claim(ClaimTypes.Name, username),
             // UserId como Guid
             new Claim("UserId", userId.ToString()),
+            // CompanyId para MyCompanyController y filtrado por tenant
+            new Claim("company_id", companyId.ToString()),
+            new Claim("CompanyId", companyId.ToString()),
             // JWT ID único
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };

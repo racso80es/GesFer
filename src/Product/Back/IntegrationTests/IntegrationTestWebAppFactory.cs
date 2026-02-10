@@ -1,16 +1,18 @@
 using GesFer.Api;
 using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
+using GesFer.IntegrationTests.Helpers;
+using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Testcontainers.MySql;
-using Testcontainers;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using Xunit;
 using System.Diagnostics;
+using Testcontainers;
+using Testcontainers.MySql;
+using Xunit;
 
 namespace GesFer.IntegrationTests;
 
@@ -64,7 +66,11 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
                 }
             }, ServiceLifetime.Scoped);
 
-            services.AddHttpClient("AdminApi", client => client.BaseAddress = new Uri("http://localhost:5010"));
+            // Reemplazar IAdminApiClient por mock para tests (MyCompanyController no llama a Admin real)
+            var adminClientDescriptors = services.Where(d => d.ServiceType == typeof(IAdminApiClient)).ToList();
+            foreach (var d in adminClientDescriptors)
+                services.Remove(d);
+            services.AddScoped<IAdminApiClient, MockAdminApiClient>();
         });
 
         builder.ConfigureLogging(logging =>

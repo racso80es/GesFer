@@ -1,9 +1,9 @@
 /**
  * Configuración de Next.js para Admin
- * 
+ *
  * La URL de la API se obtiene de:
  * 1. Variable de entorno NEXT_PUBLIC_API_URL (tiene prioridad)
- * 2. Valor por defecto según el entorno (development: localhost:5001, production: desde env)
+ * 2. Valor por defecto según el entorno (development: localhost:5011, production: desde env)
  */
 const getDefaultApiUrl = () => {
   if (process.env.NODE_ENV === 'production') {
@@ -13,6 +13,9 @@ const getDefaultApiUrl = () => {
 };
 
 const path = require('path');
+const createNextIntlPlugin = require('next-intl/plugin');
+
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -30,4 +33,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withNextIntl(nextConfig);
