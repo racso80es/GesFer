@@ -46,7 +46,8 @@ def scan_file(filepath):
 
             # Check for technical debt (any, ts-ignore)
             if filepath.endswith(('.ts', '.tsx', '.js', '.jsx')):
-                findings["any_usage"] = content.count(": any") + content.count("as any")
+                # Use regex for better 'any' detection
+                findings["any_usage"] = len(re.findall(r':\s*any', content)) + len(re.findall(r'as\s+any', content))
                 findings["ts_ignore"] = content.count("@ts-ignore")
 
             # Check for accessibility (img without alt)
@@ -208,7 +209,17 @@ Estado Global: **{status}**
 
 def update_evolution_log(data):
     if data["forbidden_terms_count"] > 0:
-        log_entry = f"[{data['date']}] [Auditoría Frontend] [FALLA CRÍTICA: {data['forbidden_terms_count']} violaciones de 'empresa' detectadas] [Requiere Acción]"
+        log_entry_prefix = f"[{data['date']}] [Auditoría Frontend]"
+
+        # Check for duplicates
+        if os.path.exists(EVOLUTION_LOG):
+            with open(EVOLUTION_LOG, 'r', encoding='utf-8') as f:
+                content = f.read()
+                if log_entry_prefix in content:
+                    print(f"Skipping duplicate log entry for {data['date']}")
+                    return
+
+        log_entry = f"{log_entry_prefix} [FALLA CRÍTICA: {data['forbidden_terms_count']} violaciones de 'empresa' detectadas] [Requiere Acción]"
 
         with open(EVOLUTION_LOG, 'a', encoding='utf-8') as f:
             f.write(f"\n{log_entry}")
@@ -219,4 +230,4 @@ if __name__ == "__main__":
     data = audit_directories()
     status = generate_report(data)
     update_evolution_log(data)
-    print("Audit completed.")
+    print("Auditoría Frontend diaria completada. Reporte generado en la carpeta de docs.")

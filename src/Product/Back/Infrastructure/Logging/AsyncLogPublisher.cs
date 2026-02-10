@@ -9,7 +9,6 @@ namespace GesFer.Infrastructure.Logging;
 
 /// <summary>
 /// Servicio para publicar logs de forma asíncrona a la API de Admin
-/// Implementa patrón "Fire and Forget" con resiliencia: los fallos no interrumpen el flujo principal
 /// </summary>
 public class AsyncLogPublisher : IAsyncLogPublisher
 {
@@ -33,18 +32,6 @@ public class AsyncLogPublisher : IAsyncLogPublisher
         _adminApiBaseUrl = _configuration["AdminApi:BaseUrl"] ?? "http://localhost:5001";
         _logsEndpoint = _configuration["AdminApi:LogsEndpoint"] ?? "/api/admin/logs";
         _auditLogsEndpoint = _configuration["AdminApi:AuditLogsEndpoint"] ?? "/api/admin/audit-logs";
-    }
-
-    /// <summary>
-    /// Publica un log de forma asíncrona
-    /// </summary>
-    [Obsolete("Use PublishLogAsync instead")]
-    public Task PublishLog(string level, string message, Exception? exception = null, Dictionary<string, object>? properties = null)
-    {
-        // Delegar a la versión asíncrona
-        // Aseguramos que properties no sea null para cumplir con la firma del método async
-        var safeProperties = properties ?? new Dictionary<string, object>();
-        return PublishLogAsync(level, message, exception, safeProperties);
     }
 
     /// <summary>
