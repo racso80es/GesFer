@@ -17,7 +17,6 @@ namespace GesFer.Admin.IntegrationTests;
 
 public class AdminWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private bool _useInMemory = true;
     private readonly string _inMemoryDbName = "GesFerAdminTestDb_InMemory_" + Guid.NewGuid();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
