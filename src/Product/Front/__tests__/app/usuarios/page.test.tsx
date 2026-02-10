@@ -2,8 +2,9 @@ import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import UsuariosPage from "@/app/(client)/usuarios/page";
 import { useAuth } from "@/contexts/auth-context";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, type UseQueryResult, type UseMutationResult, type QueryClient } from "@tanstack/react-query";
 import { usersApi } from "@/lib/api/users";
+import type { User } from "@/lib/types/api";
 
 jest.mock("@/contexts/auth-context");
 jest.mock("@tanstack/react-query");
@@ -22,7 +23,7 @@ jest.mock('next-intl', () => ({
       'common.loading': 'Cargando...',
       'navigation.dashboard': 'Panel de control',
       'navigation.users': 'Usuarios',
-      'navigation.companies': 'Empresas',
+      'navigation.companies': 'Companies',
       'navigation.customers': 'Clientes',
       'auth.logout': 'Cerrar sesión',
       'users.title': 'Usuarios',
@@ -43,7 +44,7 @@ jest.mock('next-intl', () => ({
       'users.table.name': 'Nombre',
       'users.table.email': 'Email',
       'users.table.phone': 'Teléfono',
-      'users.table.company': 'Empresa',
+      'users.table.company': 'Company',
       'users.table.status': 'Estado',
       'users.table.actions': 'Acciones',
       'users.table.view': 'Ver detalle',
@@ -109,16 +110,16 @@ describe("UsuariosPage", () => {
       isLoading: false,
       error: null,
       refetch: jest.fn(),
-    } as any);
+    } as unknown as UseQueryResult<User[], Error>);
 
     mockUseMutation.mockReturnValue({
       mutateAsync: jest.fn().mockResolvedValue({}),
       isPending: false,
-    } as any);
+    } as unknown as UseMutationResult<unknown, Error, unknown, unknown>);
 
     mockUseQueryClient.mockReturnValue({
       invalidateQueries: jest.fn(),
-    } as any);
+    } as unknown as QueryClient);
   });
 
   it("should render usuarios list", () => {

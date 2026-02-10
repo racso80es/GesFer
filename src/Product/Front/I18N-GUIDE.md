@@ -15,10 +15,10 @@ app/
       page.tsx          # Página de login
     dashboard/
       page.tsx          # Página de dashboard
-    empresas/
-      page.tsx          # Lista de empresas
+    companies/
+      page.tsx          # Lista de companies
       [id]/
-        page.tsx        # Detalle de empresa
+        page.tsx        # Detalle de company
     # ... más páginas
 ```
 
@@ -138,7 +138,7 @@ t('titulo'); // "Mi Título"
 
 El sistema detecta automáticamente el idioma del usuario basándose en:
 1. `userLanguageId` (idioma del usuario)
-2. `companyLanguageId` (idioma de la empresa)
+2. `companyLanguageId` (idioma de la company)
 3. `countryLanguageId` (idioma del país)
 4. `effectiveLanguageId` (idioma efectivo)
 5. **Español (por defecto)** si ninguno está configurado

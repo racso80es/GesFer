@@ -166,7 +166,7 @@ const loggerConfig: pino.LoggerOptions = {
     },
   },
   hooks: {
-    logMethod: telemetryHook.logMethod as any,
+    logMethod: telemetryHook.logMethod as unknown as NonNullable<pino.LoggerOptions['hooks']>['logMethod'],
   },
 };
 

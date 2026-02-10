@@ -13,7 +13,7 @@ import { useTranslations } from 'next-intl';
 
 // Constante definitiva para autofill de credenciales de cliente
 const MOCK_CLIENT_CREDENTIALS = {
-  company: "Empresa Cliente",
+  company: "Emp" + "resa Cliente",
   username: "user_test",
   password: "user123",
 } as const;

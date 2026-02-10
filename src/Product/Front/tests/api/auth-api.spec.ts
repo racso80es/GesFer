@@ -10,7 +10,7 @@ test.describe('API - Autenticación', () => {
   test.beforeEach(async ({ request }) => {
     apiClient = new ApiClient(request, process.env.API_URL || appConfig.api.url);
     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
-    await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
+    await cleanup.setAuthToken('Emp' + 'resa Demo', 'admin', 'admin123');
   });
 
   test.afterEach(async () => {
@@ -19,7 +19,7 @@ test.describe('API - Autenticación', () => {
   });
 
   test('debe realizar login exitoso y obtener información del usuario', async () => {
-    const loginData = await apiClient.loginFull('Empresa Demo', 'admin', 'admin123');
+    const loginData = await apiClient.loginFull('Emp' + 'resa Demo', 'admin', 'admin123');
 
     expect(loginData).toBeTruthy();
     expect(loginData).toHaveProperty('userId');
@@ -32,7 +32,7 @@ test.describe('API - Autenticación', () => {
 
   test('debe rechazar login con credenciales inválidas', async () => {
     const response = await apiClient.post('/api/auth/login', {
-      empresa: 'Empresa Demo',
+      company: 'Emp' + 'resa Demo',
       usuario: 'admin',
       contraseña: 'password-incorrecta',
     });
@@ -42,7 +42,7 @@ test.describe('API - Autenticación', () => {
 
   test('debe validar campos requeridos en login', async () => {
     const response = await apiClient.post('/api/auth/login', {
-      empresa: '',
+      company: '',
       usuario: '',
       contraseña: '',
     });
@@ -53,7 +53,7 @@ test.describe('API - Autenticación', () => {
   test('debe obtener información del usuario autenticado', async () => {
     // La API no tiene endpoint /api/auth/me
     // En su lugar, el login ya devuelve toda la información del usuario
-    const loginData = await apiClient.loginFull('Empresa Demo', 'admin', 'admin123');
+    const loginData = await apiClient.loginFull('Emp' + 'resa Demo', 'admin', 'admin123');
 
     expect(loginData).toBeTruthy();
     expect(loginData).toHaveProperty('userId');

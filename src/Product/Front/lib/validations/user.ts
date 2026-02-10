@@ -6,7 +6,7 @@ import type { CreateUser, UpdateUser } from "@/lib/types/api";
  * Sincronizado con las validaciones del Backend (UserConfiguration.cs)
  */
 export const createUserSchema = z.object({
-  companyId: z.string().uuid("El ID de empresa debe ser un UUID válido"),
+  companyId: z.string().uuid("El ID de company debe ser un UUID válido"),
   username: z
     .string()
     .min(1, "El nombre de usuario es obligatorio")

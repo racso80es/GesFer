@@ -22,7 +22,7 @@
 ### 4. Componentes
 - ✅ `MainLayout` - Navegación internacionalizada
 - ✅ `ProtectedRoute` - Mensajes traducidos
-- ✅ Páginas de login, dashboard, empresas, usuarios, clientes - Traducidas
+- ✅ Páginas de login, dashboard, companies, usuarios, clientes - Traducidas
 
 ### 5. Navegación
 - ✅ Links del menú funcionan correctamente con locale
@@ -34,7 +34,7 @@
 La funcionalidad de idiomas está **completamente implementada y funcional**. El sistema:
 
 1. **Detecta automáticamente** el idioma del usuario al iniciar sesión
-2. **Redirige** al idioma correcto según la configuración del usuario/empresa/país
+2. **Redirige** al idioma correcto según la configuración del usuario/company/país
 3. **Muestra** todas las traducciones en los componentes
 4. **Mantiene** el idioma durante la navegación
 5. **Usa español por defecto** si no hay idioma configurado

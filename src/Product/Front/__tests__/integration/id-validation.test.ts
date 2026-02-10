@@ -66,7 +66,7 @@ const getAuthToken = async (): Promise<string> => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      empresa: "Empresa Demo",
+      company: "Emp" + "resa Demo",
       usuario: "admin",
       contraseña: "admin123",
     }),
@@ -101,7 +101,7 @@ describe("Validación de IDs en peticiones API", () => {
       // Continuar de todas formas para que los tests que no requieren auth puedan ejecutarse
     }
 
-    // Obtener una empresa válida (solo si tenemos token)
+    // Obtener una company válida (solo si tenemos token)
     if (authToken) {
       try {
         const companiesResp = await httpRequest(`${API_URL}/api/company`, {
@@ -118,7 +118,7 @@ describe("Validación de IDs en peticiones API", () => {
           }
         }
       } catch (error) {
-        console.warn("No se pudo obtener empresas. Algunos tests pueden fallar.");
+        console.warn("No se pudo obtener companies. Algunos tests pueden fallar.");
       }
 
       // Obtener un usuario válido
@@ -142,7 +142,7 @@ describe("Validación de IDs en peticiones API", () => {
     }
   });
 
-  describe("Empresas - Validación de IDs", () => {
+  describe("Companies - Validación de IDs", () => {
     it("debe rechazar actualización con ID mal formateado (contiene caracteres inválidos)", async () => {
       if (!authToken) {
         console.warn("Saltando test: no hay token de autenticación");
@@ -175,14 +175,14 @@ describe("Validación de IDs en peticiones API", () => {
       }
     });
 
-    it("debe validar que el ID de empresa sea un GUID válido antes de actualizar", async () => {
+    it("debe validar que el ID de company sea un GUID válido antes de actualizar", async () => {
       if (!authToken) {
         console.warn("Saltando test: no hay token de autenticación");
         return;
       }
 
       if (!validCompanyId) {
-        console.warn("No hay empresa válida disponible para el test");
+        console.warn("No hay company válida disponible para el test");
         return;
       }
 

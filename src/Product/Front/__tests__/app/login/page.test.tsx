@@ -14,7 +14,7 @@ jest.mock('next-intl', () => ({
   useTranslations: () => (key: string) => {
     const translations: Record<string, string> = {
       'auth.login': 'Iniciar sesión',
-      'auth.company': 'Empresa',
+      'auth.company': 'Company',
       'auth.username': 'Usuario',
       'auth.password': 'Contraseña',
       'auth.loginError': 'Error al iniciar sesión',
@@ -42,7 +42,7 @@ describe('LoginPage', () => {
   it('should render login form', () => {
     render(<LoginPage />)
     
-    expect(screen.getByLabelText(/empresa|company/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/company|company/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/usuario|username/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/contraseña|password/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /iniciar sesión|login/i })).toBeInTheDocument()
@@ -51,11 +51,11 @@ describe('LoginPage', () => {
   it('should have default values in form', () => {
     render(<LoginPage />)
     
-    const empresaInput = screen.getByLabelText(/empresa|company/i) as HTMLInputElement
+    const companyInput = screen.getByLabelText(/company|company/i) as HTMLInputElement
     const usuarioInput = screen.getByLabelText(/usuario|username/i) as HTMLInputElement
     const contraseñaInput = screen.getByLabelText(/contraseña|password/i) as HTMLInputElement
     
-    expect(empresaInput.value).toBe('Empresa Cliente')
+    expect(companyInput.value).toBe('Company Cliente')
     expect(usuarioInput.value).toBe('user_test')
     expect(contraseñaInput.value).toBe('user123')
   })
@@ -74,7 +74,7 @@ describe('LoginPage', () => {
     
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith({
-        company: 'Empresa Cliente',
+        company: 'Company Cliente',
         username: 'user_test',
         password: 'user123',
       })

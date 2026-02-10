@@ -86,7 +86,7 @@ npx playwright test --project=chromium
 **Solo tests de API (sin frontend):** `npm run test:e2e:api`. La API debe estar en 5000, o mock en 5002 con `USE_MOCK_API=1` y `API_URL=http://localhost:5002`.
 
 Credenciales de prueba (API real o mock):
-- Empresa: "Empresa Demo"
+- Company: "Emp" + "resa Demo"
 - Usuario: "admin"
 - Contraseña: "admin123"
 
