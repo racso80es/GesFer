@@ -1,0 +1,27 @@
+{
+  "companies": {
+    "listTitle": "Empresas",
+    "create": "Nueva Empresa",
+    "edit": "Editar Empresa",
+    "form": {
+      "name": "Nombre",
+      "nameRequired": "El nombre es obligatorio",
+      "taxId": "CIF/NIF",
+      "phone": "Teléfono",
+      "email": "Email",
+      "emailInvalid": "Email inválido",
+      "address": "Dirección",
+      "addressRequired": "La dirección es obligatoria",
+      "language": "Idioma",
+      "selectLanguage": "Seleccionar idioma",
+      "isActive": "Activo",
+      "create": "Crear",
+      "update": "Actualizar",
+      "saving": "Guardando...",
+      "saveError": "Error al guardar"
+    }
+  },
+  "common": {
+    "cancel": "Cancelar"
+  }
+}

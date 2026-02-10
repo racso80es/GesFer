@@ -17,7 +17,7 @@ public class ApplicationDbContext : DbContext
     }
 
     // DbSets - Solo entidades del dominio Product
-    public DbSet<Company> Companies => Set<Company>();
+    public DbSet<GesFer.Product.Back.Domain.Entities.Company> Companies => Set<GesFer.Product.Back.Domain.Entities.Company>();
     public DbSet<User> Users => Set<User>();
     public DbSet<Group> Groups => Set<Group>();
     public DbSet<Permission> Permissions => Set<Permission>();
@@ -36,11 +36,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<SalesDeliveryNote> SalesDeliveryNotes => Set<SalesDeliveryNote>();
     public DbSet<SalesDeliveryNoteLine> SalesDeliveryNoteLines => Set<SalesDeliveryNoteLine>();
     public DbSet<SalesInvoice> SalesInvoices => Set<SalesInvoice>();
-    public DbSet<Country> Countries => Set<Country>();
-    public DbSet<Language> Languages => Set<Language>();
-    public DbSet<State> States => Set<State>();
-    public DbSet<City> Cities => Set<City>();
-    public DbSet<PostalCode> PostalCodes => Set<PostalCode>();
+    public DbSet<GesFer.Shared.Back.Domain.Entities.Country> Countries => Set<GesFer.Shared.Back.Domain.Entities.Country>();
+    public DbSet<GesFer.Shared.Back.Domain.Entities.Language> Languages => Set<GesFer.Shared.Back.Domain.Entities.Language>();
+    public DbSet<GesFer.Shared.Back.Domain.Entities.State> States => Set<GesFer.Shared.Back.Domain.Entities.State>();
+    public DbSet<GesFer.Shared.Back.Domain.Entities.City> Cities => Set<GesFer.Shared.Back.Domain.Entities.City>();
+    public DbSet<GesFer.Shared.Back.Domain.Entities.PostalCode> PostalCodes => Set<GesFer.Shared.Back.Domain.Entities.PostalCode>();
     // NOTA: AuditLog, Log y AdminUser se gestionan en el dominio Admin
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

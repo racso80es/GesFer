@@ -691,7 +691,7 @@ public class JsonDataSeeder
                         }
                     }
 
-                    var company = new Company
+                    var company = new GesFer.Product.Back.Domain.Entities.Company
                     {
                         Id = Guid.Parse(companyData.Id),
                         Name = companyData.Name,

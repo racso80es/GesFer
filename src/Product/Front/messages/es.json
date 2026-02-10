@@ -263,5 +263,12 @@
     "inactive": "Inactivo",
     "editProfile": "Editar Perfil",
     "editProfileDescription": "Modifica tu información personal"
+  },
+  "myCompany": {
+    "title": "Mi Empresa",
+    "loading": "Cargando...",
+    "notFound": "Empresa no encontrada",
+    "updatedSuccessfully": "Empresa actualizada correctamente",
+    "updateError": "Error al actualizar la empresa"
   }
 }

@@ -1,8 +1,7 @@
 using GesFer.Admin.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Common;
-using GesFer.Shared.Back.Domain.Services;
+using GesFer.Shared.Back.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System.Linq.Expressions;
 
 namespace GesFer.Admin.Infrastructure.Data;
@@ -16,17 +15,21 @@ public class AdminDbContext : DbContext
     public DbSet<AdminUser> AdminUsers => Set<AdminUser>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<Log> Logs => Set<Log>();
+    public DbSet<Company> Companies => Set<Company>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // Aplicar configuraciones de entidades (incluyendo CompanyConfiguration)
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AdminDbContext).Assembly);
 
         // Configuración manual para Log (Serilog)
         modelBuilder.Entity<Log>(entity =>
         {
             entity.ToTable("Logs"); // Asegurar nombre de tabla
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).ValueGeneratedOnAdd(); // AUTO_INCREMENT
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
         // Configurar Sequential GUIDs
@@ -38,35 +41,33 @@ public class AdminDbContext : DbContext
 
     private void ConfigureSequentialGuids(ModelBuilder modelBuilder)
     {
-        var entityTypes = modelBuilder.Model.GetEntityTypes()
-            .Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType));
-
-        foreach (var entityType in entityTypes)
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            var idProperty = entityType.FindProperty(nameof(BaseEntity.Id));
-            if (idProperty != null && idProperty.ClrType == typeof(Guid))
+            if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
             {
-                // Usar SequentialGuidValueGenerator personalizado
-                idProperty.SetValueGeneratorFactory((property, entityType) => new GesFer.Shared.Back.Domain.Services.SequentialGuidValueGenerator());
-                idProperty.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAdd;
+                var idProperty = entityType.FindProperty(nameof(BaseEntity.Id));
+                if (idProperty != null && idProperty.ClrType == typeof(Guid))
+                {
+                    idProperty.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAdd;
+                }
             }
         }
     }
 
     private void ConfigureSoftDelete(ModelBuilder modelBuilder)
     {
-        var entityTypes = modelBuilder.Model.GetEntityTypes()
-            .Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType));
-
-        foreach (var entityType in entityTypes)
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            var parameter = Expression.Parameter(entityType.ClrType, "e");
-            var property = Expression.Property(parameter, nameof(BaseEntity.DeletedAt));
-            var nullConstant = Expression.Constant(null, typeof(DateTime?));
-            var condition = Expression.Equal(property, nullConstant);
-            var lambda = Expression.Lambda(condition, parameter);
+            if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+            {
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+                var property = Expression.Property(parameter, nameof(BaseEntity.DeletedAt));
+                var nullConstant = Expression.Constant(null, typeof(DateTime?));
+                var condition = Expression.Equal(property, nullConstant);
+                var lambda = Expression.Lambda(condition, parameter);
 
-            modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+            }
         }
     }
 
@@ -84,13 +85,15 @@ public class AdminDbContext : DbContext
 
     private void UpdateAuditFields()
     {
-        var entries = ChangeTracker.Entries<BaseEntity>();
-
-        foreach (var entry in entries)
+        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {
             switch (entry.State)
             {
                 case EntityState.Added:
+                    if (entry.Entity.Id == Guid.Empty)
+                    {
+                        entry.Entity.Id = Guid.NewGuid(); // Fallback si no se genera
+                    }
                     entry.Entity.CreatedAt = DateTime.UtcNow;
                     entry.Entity.IsActive = true;
                     break;

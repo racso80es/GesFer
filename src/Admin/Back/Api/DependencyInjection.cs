@@ -72,6 +72,10 @@ public static class DependencyInjection
         // Servicios Shared
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
 
+        // Registrar MediatR para manejar comandos/queries
+        // Escanear el ensamblado de Application
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GesFer.Admin.Application.DTOs.Company.CompanyDto).Assembly));
+
         return services;
     }
 }

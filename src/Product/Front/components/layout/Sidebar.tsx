@@ -11,6 +11,7 @@ import {
   FileText,
   ChevronLeft,
   ChevronRight,
+  Building2,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
@@ -29,6 +30,7 @@ export function Sidebar({ onClose, isMobile = false }: SidebarProps) {
 
   const navigation = [
     { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+    { name: "Mi Empresa", href: "/my-company", icon: Building2 },
     { name: "Logs", href: "/admin/logs", icon: FileText },
   ];
 

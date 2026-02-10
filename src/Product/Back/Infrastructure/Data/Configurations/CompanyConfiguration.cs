@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace GesFer.Infrastructure.Data.Configurations;
 
-public class CompanyConfiguration : IEntityTypeConfiguration<Company>
+public class CompanyConfiguration : IEntityTypeConfiguration<GesFer.Product.Back.Domain.Entities.Company>
 {
     private static TaxId? ConvertStringToTaxId(string? value)
     {
@@ -23,7 +23,7 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
 
         return Email.TryCreate(value, out var email) ? email : (Email?)null;
     }
-    public void Configure(EntityTypeBuilder<Company> builder)
+    public void Configure(EntityTypeBuilder<GesFer.Product.Back.Domain.Entities.Company> builder)
     {
         builder.ToTable("Companies");
 
@@ -92,4 +92,3 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
         builder.HasIndex(c => c.LanguageId);
     }
 }
-
