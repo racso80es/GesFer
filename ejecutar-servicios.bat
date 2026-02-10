@@ -14,15 +14,15 @@ REM 1. Detener procesos existentes en los puertos
 echo [1/5] Verificando y cerrando procesos existentes...
 
 REM Usar PowerShell para cerrar procesos de forma mas confiable
-powershell -Command "$ports = @(5000, 5001, 3000); foreach ($port in $ports) { $connections = netstat -ano | Select-String \":$port.*LISTENING\"; foreach ($conn in $connections) { $pid = ($conn -split '\s+')[-1]; if ($pid -match '^\d+$') { Write-Host \"Cerrando proceso en puerto $port (PID: $pid)...\"; taskkill /PID $pid /F 2>$null } } }"
+powershell -Command "$ports = @(5000, 5001, 5010, 5011, 3000, 3001); foreach ($port in $ports) { $connections = netstat -ano | Select-String \":$port.*LISTENING\"; foreach ($conn in $connections) { $pid = ($conn -split '\s+')[-1]; if ($pid -match '^\d+$') { Write-Host \"Cerrando proceso en puerto $port (PID: $pid)...\"; taskkill /PID $pid /F 2>$null } } }"
 
 echo    Verificacion completada
 echo.
 
 REM 2. Verificar rutas
 echo [2/5] Verificando rutas...
-set "productApiPath=%~dp0src\Product\Back\src\Api"
-set "adminApiPath=%~dp0src\Admin\Back\src\Api"
+set "productApiPath=%~dp0src\Product\Back\Api"
+set "adminApiPath=%~dp0src\Admin\Back\Api"
 set "productFrontPath=%~dp0src\Product\Front"
 
 if not exist "!productApiPath!\GesFer.Api.csproj" (
@@ -98,9 +98,9 @@ echo   - HTTPS: https://localhost:5001
 echo   - Swagger: http://localhost:5000/swagger
 echo.
 echo API Admin disponible en:
-echo   - HTTP: http://localhost:5001
-echo   - HTTPS: https://localhost:5001
-echo   - Swagger: http://localhost:5001/swagger
+echo   - HTTP: http://localhost:5010
+echo   - HTTPS: https://localhost:5011
+echo   - Swagger: http://localhost:5010/swagger
 echo.
 echo Frontend Product disponible en:
 echo   - http://localhost:3000

@@ -55,11 +55,12 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponseDt
         // Cursor ID es el UserId convertido a string
         var cursorId = user.Id.ToString();
 
-        // Generar token JWT
+        // Generar token JWT (incluye company_id para MyCompanyController)
         var token = _jwtService.GenerateToken(
             cursorId: cursorId,
             username: user.Username,
             userId: user.Id,
+            companyId: user.CompanyId,
             permissions: permissions.ToList()
         );
 

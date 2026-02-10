@@ -1,15 +1,13 @@
+using System.Collections.Generic;
 using GesFer.Admin.Api;
 using GesFer.Admin.Infrastructure.Data;
 using GesFer.Admin.Infrastructure.Services;
-using GesFer.Infrastructure.Services;
 using GesFer.Shared.Back.Domain.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Testcontainers.MySql;
-using System.Diagnostics;
 using Microsoft.Extensions.Hosting;
 using Xunit;
 
@@ -43,6 +41,15 @@ public class AdminWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         });
 
         builder.UseEnvironment("Development");
+
+        // SharedSecret para tests (AuthorizeSystemOrAdmin)
+        builder.ConfigureAppConfiguration((_, config) =>
+        {
+            config.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["SharedSecret"] = "test-internal-secret"
+            });
+        });
     }
 
     public async Task InitializeAsync()
@@ -51,8 +58,9 @@ public class AdminWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         var context = scope.ServiceProvider.GetRequiredService<AdminDbContext>();
         await context.Database.EnsureCreatedAsync();
 
-        // Run Seeder
+        // Run Seeders (Companies first - Admin SSOT; then Admin Users)
         var seeder = scope.ServiceProvider.GetRequiredService<AdminJsonDataSeeder>();
+        await seeder.SeedCompaniesAsync();
         await seeder.SeedAdminUsersAsync();
     }
 

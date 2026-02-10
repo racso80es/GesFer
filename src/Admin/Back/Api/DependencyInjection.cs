@@ -1,7 +1,6 @@
 
 using GesFer.Admin.Infrastructure.Services;
 using GesFer.Admin.Infrastructure.Data;
-using GesFer.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
@@ -48,22 +47,6 @@ public static class DependencyInjection
             }
         });
 
-        // 2. Contexto de Product (Solo lectura para Dashboard)
-        services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
-        {
-            options.UseMySql(
-                connectionString,
-                new MySqlServerVersion(new Version(8, 0, 0)),
-                mysqlOptions =>
-                {
-                    mysqlOptions.EnableStringComparisonTranslations();
-                    mysqlOptions.EnableRetryOnFailure(
-                        maxRetryCount: 5,
-                        maxRetryDelay: TimeSpan.FromSeconds(30),
-                        errorNumbersToAdd: null);
-                });
-        });
-
         // Servicios de infraestructura Admin
         services.AddScoped<IAdminAuthService, AdminAuthService>();
         services.AddScoped<IAdminJwtService, AdminJwtService>();
@@ -71,6 +54,19 @@ public static class DependencyInjection
 
         // Servicios Shared
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
+
+        // Registrar MediatR para manejar comandos/queries
+        // Escanear el ensamblado de Application
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GesFer.Admin.Application.DTOs.Company.CompanyDto).Assembly));
+
+        // Registrar cliente de Product API (Dashboard Stats Aggregation)
+        services.AddHttpClient<IProductApiClient, ProductApiClient>(client =>
+        {
+            // Usar configuración ProductApi:BaseUrl o default a 5002
+            var productApiBaseUrl = configuration["ProductApi:BaseUrl"] ?? "http://localhost:5002";
+            client.BaseAddress = new Uri(productApiBaseUrl);
+            client.Timeout = TimeSpan.FromSeconds(5);
+        });
 
         return services;
     }

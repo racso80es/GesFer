@@ -7,4 +7,13 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="14.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\GesFer.Admin.Infra.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Back\GesFer.Shared.Back.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

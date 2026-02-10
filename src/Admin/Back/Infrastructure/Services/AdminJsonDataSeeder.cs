@@ -1,6 +1,8 @@
 using GesFer.Admin.Back.Domain.Entities;
 using GesFer.Admin.Infrastructure.Data;
+using GesFer.Shared.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Services;
+using GesFer.Shared.Back.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
@@ -97,7 +99,8 @@ public class AdminJsonDataSeeder
 
     private static bool HasAnySeedJson(string directoryPath)
     {
-        return File.Exists(Path.Combine(directoryPath, "admin-users.json"));
+        return File.Exists(Path.Combine(directoryPath, "admin-users.json"))
+            || File.Exists(Path.Combine(directoryPath, "companies.json"));
     }
 
     /// <summary>
@@ -217,6 +220,126 @@ public class AdminJsonDataSeeder
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Carga empresas (Companies) desde companies.json usando AdminDbContext.
+    /// Admin es SSOT para Company; en entornos con BD compartida, ejecutar este seed antes que el de Product.
+    /// </summary>
+    public async Task<AdminSeedResult> SeedCompaniesAsync()
+    {
+        var result = new AdminSeedResult();
+        var filePath = Path.Combine(_seedsPath, "companies.json");
+        if (!File.Exists(filePath))
+        {
+            _logger.LogWarning("Archivo companies.json no encontrado en {Path}", filePath);
+            return result;
+        }
+
+        _logger.LogInformation("Cargando companies desde {Path}", filePath);
+        var json = await File.ReadAllTextAsync(filePath);
+        var companies = JsonSerializer.Deserialize<List<CompanySeed>>(json, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        if (companies == null || !companies.Any())
+        {
+            _logger.LogWarning("No se encontraron companies en companies.json");
+            return result;
+        }
+
+        int processedCount = 0;
+        int skippedCount = 0;
+
+        foreach (var companyData in companies)
+        {
+            try
+            {
+                var existing = await _context.Companies
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(c => c.Id == Guid.Parse(companyData.Id));
+
+                if (existing == null)
+                {
+                    TaxId? taxId = null;
+                    if (!string.IsNullOrWhiteSpace(companyData.TaxId))
+                    {
+                        if (!TaxId.TryCreate(companyData.TaxId, out var parsedTaxId))
+                        {
+                            _logger.LogWarning("[SEED ADMIN] TaxId inválido en Company '{Name}' (Id: {Id}). Registro ignorado.",
+                                companyData.Name, companyData.Id);
+                            skippedCount++;
+                            continue;
+                        }
+                        taxId = parsedTaxId;
+                    }
+
+                    Email? email = null;
+                    if (!string.IsNullOrWhiteSpace(companyData.Email))
+                    {
+                        if (!Email.TryCreate(companyData.Email, out var parsedEmail))
+                        {
+                            _logger.LogWarning("[SEED ADMIN] Email inválido en Company '{Name}' (Id: {Id}). Registro ignorado.",
+                                companyData.Name, companyData.Id);
+                            skippedCount++;
+                            continue;
+                        }
+                        email = parsedEmail;
+                    }
+
+                    var company = new Company
+                    {
+                        Id = Guid.Parse(companyData.Id),
+                        Name = companyData.Name,
+                        TaxId = taxId,
+                        Address = companyData.Address,
+                        Phone = string.IsNullOrWhiteSpace(companyData.Phone) ? null : companyData.Phone,
+                        Email = email,
+                        LanguageId = string.IsNullOrWhiteSpace(companyData.LanguageId) ? null : Guid.Parse(companyData.LanguageId),
+                        CreatedAt = DateTime.UtcNow,
+                        IsActive = true
+                    };
+                    _context.Companies.Add(company);
+                    processedCount++;
+                    _logger.LogInformation("[SEED ADMIN] Creada company: '{Name}' (Id: {Id})", companyData.Name, companyData.Id);
+                }
+                else if (existing.DeletedAt != null)
+                {
+                    existing.DeletedAt = null;
+                    existing.IsActive = true;
+                    processedCount++;
+                    _logger.LogInformation("[SEED ADMIN] Reactivada company: '{Name}' (Id: {Id})", companyData.Name, companyData.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "[SEED ADMIN] Error al procesar Company '{Name}' (Id: {Id})", companyData.Name, companyData.Id);
+                skippedCount++;
+            }
+        }
+
+        if (processedCount > 0)
+        {
+            await _context.SaveChangesAsync();
+            result.Loaded = true;
+            result.Entities.Add($"{processedCount} Company(ies)");
+        }
+        if (skippedCount > 0)
+            _logger.LogWarning("[SEED ADMIN] Companies: {Skipped} ignorado(s)", skippedCount);
+
+        return result;
+    }
+
+    private class CompanySeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string? TaxId { get; set; }
+        public string Address { get; set; } = string.Empty;
+        public string? Phone { get; set; }
+        public string? Email { get; set; }
+        public string LanguageId { get; set; } = string.Empty;
     }
 
     private class AdminUserSeed

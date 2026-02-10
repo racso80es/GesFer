@@ -8,6 +8,7 @@ using GesFer.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Services;
 using GesFer.Infrastructure.Repositories;
 using GesFer.Infrastructure.Services;
+using GesFer.Product.Back.Infrastructure.Services;
 using GesFer.Infrastructure.Logging;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
@@ -69,7 +70,7 @@ public static class DependencyInjection
         services.AddScoped<JsonDataSeeder>();
 
         // HttpClient para comunicación con Admin API
-        services.AddHttpClient("AdminApi", client =>
+        services.AddHttpClient<IAdminApiClient, GesFer.Product.Back.Infrastructure.Services.AdminApiClient>(client =>
         {
             var adminApiBaseUrl = configuration["AdminApi:BaseUrl"] ?? "http://localhost:5001";
             client.BaseAddress = new Uri(adminApiBaseUrl);

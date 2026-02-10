@@ -1,37 +1,27 @@
-using GesFer.Application.Commands.Company;
-using GesFer.Application.Common.Interfaces;
-using GesFer.Application.DTOs.Company;
+using GesFer.Admin.Application.Commands.Company;
+using GesFer.Admin.Application.DTOs.Company;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GesFer.Api.Controllers;
+namespace GesFer.Admin.Api.Controllers;
 
 /// <summary>
-/// Controlador para gestión de empresas
+/// Controlador para gestión de empresas en Admin
 /// </summary>
+using GesFer.Admin.Api.Attributes;
+
 [ApiController]
 [Route("api/[controller]")]
+[AuthorizeSystemOrAdmin] // Protegido por Shared Secret O rol Admin
 public class CompanyController : ControllerBase
 {
-    private readonly ICommandHandler<CreateCompanyCommand, CompanyDto> _createHandler;
-    private readonly ICommandHandler<UpdateCompanyCommand, CompanyDto> _updateHandler;
-    private readonly ICommandHandler<DeleteCompanyCommand> _deleteHandler;
-    private readonly ICommandHandler<GetCompanyByIdCommand, CompanyDto?> _getByIdHandler;
-    private readonly ICommandHandler<GetAllCompaniesCommand, List<CompanyDto>> _getAllHandler;
+    private readonly IMediator _mediator;
     private readonly ILogger<CompanyController> _logger;
 
-    public CompanyController(
-        ICommandHandler<CreateCompanyCommand, CompanyDto> createHandler,
-        ICommandHandler<UpdateCompanyCommand, CompanyDto> updateHandler,
-        ICommandHandler<DeleteCompanyCommand> deleteHandler,
-        ICommandHandler<GetCompanyByIdCommand, CompanyDto?> getByIdHandler,
-        ICommandHandler<GetAllCompaniesCommand, List<CompanyDto>> getAllHandler,
-        ILogger<CompanyController> logger)
+    public CompanyController(IMediator mediator, ILogger<CompanyController> logger)
     {
-        _createHandler = createHandler;
-        _updateHandler = updateHandler;
-        _deleteHandler = deleteHandler;
-        _getByIdHandler = getByIdHandler;
-        _getAllHandler = getAllHandler;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -45,7 +35,7 @@ public class CompanyController : ControllerBase
         try
         {
             var command = new GetAllCompaniesCommand();
-            var result = await _getAllHandler.HandleAsync(command);
+            var result = await _mediator.Send(command);
             return Ok(result);
         }
         catch (Exception ex)
@@ -66,7 +56,7 @@ public class CompanyController : ControllerBase
         try
         {
             var command = new GetCompanyByIdCommand(id);
-            var result = await _getByIdHandler.HandleAsync(command);
+            var result = await _mediator.Send(command);
 
             if (result == null)
                 return NotFound(new { message = $"No se encontró la empresa con ID {id}" });
@@ -91,7 +81,7 @@ public class CompanyController : ControllerBase
         try
         {
             var command = new CreateCompanyCommand(dto);
-            var result = await _createHandler.HandleAsync(command);
+            var result = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
         catch (ArgumentException ex)
@@ -121,7 +111,7 @@ public class CompanyController : ControllerBase
         try
         {
             var command = new UpdateCompanyCommand(id, dto);
-            var result = await _updateHandler.HandleAsync(command);
+            var result = await _mediator.Send(command);
             return Ok(result);
         }
         catch (ArgumentException ex)
@@ -152,7 +142,7 @@ public class CompanyController : ControllerBase
         try
         {
             var command = new DeleteCompanyCommand(id);
-            await _deleteHandler.HandleAsync(command);
+            await _mediator.Send(command);
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -166,4 +156,3 @@ public class CompanyController : ControllerBase
         }
     }
 }
-

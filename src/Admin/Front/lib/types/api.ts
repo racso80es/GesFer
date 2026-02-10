@@ -1,31 +1,43 @@
-// Tipos para Auth
-export interface LoginRequest {
-  company: string;
-  username: string;
-  password: string;
+export interface Company {
+  id: string;
+  name: string;
+  taxId?: string;
+  address: string;
+  phone?: string;
+  email?: string;
+  postalCodeId?: string;
+  cityId?: string;
+  stateId?: string;
+  countryId?: string;
+  languageId?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string;
 }
 
-export interface LoginResponse {
-  userId: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  companyId: string; // Puede estar vacío para admin global, o null
-  companyName: string;
-  email?: string; // Admin suele tener email
-  role?: string; // Admin role
-  permissions: string[];
-  token: string; // JWT Token
-  cursorId: string; // Cursor ID del usuario
+export interface CreateCompany {
+  name: string;
+  taxId?: string;
+  address: string;
+  phone?: string;
+  email?: string;
+  postalCodeId?: string;
+  cityId?: string;
+  stateId?: string;
+  countryId?: string;
+  languageId?: string;
 }
 
-// Tipos genéricos para respuestas de API
-export interface ApiError {
-  message: string;
-  errors?: Record<string, string[]>;
-}
-
-export interface ApiResponse<T> {
-  data?: T;
-  error?: ApiError;
+export interface UpdateCompany {
+  name: string;
+  taxId?: string;
+  address: string;
+  phone?: string;
+  email?: string;
+  postalCodeId?: string;
+  cityId?: string;
+  stateId?: string;
+  countryId?: string;
+  languageId?: string;
+  isActive: boolean;
 }

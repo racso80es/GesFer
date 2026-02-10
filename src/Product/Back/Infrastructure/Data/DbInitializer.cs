@@ -321,6 +321,9 @@ public static class DbInitializer
         // - Si no existe: crear Company base (si hace falta) + crear admin.
 
         var sanitizer = services.GetRequiredService<ISensitiveDataSanitizer>();
+        var environment = services.GetRequiredService<IHostEnvironment>();
+        var isTesting = environment.EnvironmentName == "Testing";
+        const string TestAdminPassword = "admin123"; // Solo para integración tests (AuthControllerTests, MyCompanyControllerTests)
 
         const string AdminUsername = "admin";
         // const string AdminPassword = "admin123"; // REMOVED SECURITY RISK
@@ -346,9 +349,9 @@ public static class DbInitializer
                 }
                 if (string.IsNullOrWhiteSpace(localAdmin.PasswordHash))
                 {
-                    var newPwd = sanitizer.GenerateRandomPassword();
+                    var newPwd = isTesting ? TestAdminPassword : sanitizer.GenerateRandomPassword();
                     localAdmin.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPwd);
-                    logger.LogWarning("[ENSURE ADMIN] 🔐 Set RANDOM password for existing local admin: {Password}", newPwd);
+                    logger.LogWarning("[ENSURE ADMIN] 🔐 Set password for existing local admin: {Kind}", isTesting ? "admin123 (Testing)" : "random");
                 }
                 if (localAdmin.CompanyId == Guid.Empty || localAdmin.CompanyId == default(Guid))
                 {
@@ -375,9 +378,9 @@ public static class DbInitializer
                 // Blindaje mínimo: password hash no vacío (y compatible con login)
                 if (string.IsNullOrWhiteSpace(admin.PasswordHash))
                 {
-                    var newPwd = sanitizer.GenerateRandomPassword();
+                    var newPwd = isTesting ? TestAdminPassword : sanitizer.GenerateRandomPassword();
                     admin.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPwd);
-                    logger.LogWarning("[ENSURE ADMIN] 🔐 Set RANDOM password for existing admin (was empty): {Password}", newPwd);
+                    logger.LogWarning("[ENSURE ADMIN] 🔐 Set password for existing admin (was empty): {Kind}", isTesting ? "admin123 (Testing)" : "random");
                 }
 
                 // Si CompanyId es inválido, forzar a la empresa demo
@@ -461,13 +464,13 @@ public static class DbInitializer
                 company.IsActive = true;
             }
 
-            var generatedPassword = sanitizer.GenerateRandomPassword();
+            var adminPassword = isTesting ? TestAdminPassword : sanitizer.GenerateRandomPassword();
             var newAdmin = new User
             {
                 Id = defaultAdminUserId,
                 CompanyId = defaultCompanyId,
                 Username = AdminUsername,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(generatedPassword),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword),
                 FirstName = "Administrador",
                 LastName = "Sistema",
                 Email = Email.Create("admin@empresa.com"),
@@ -480,8 +483,9 @@ public static class DbInitializer
             context.Users.Add(newAdmin);
             await context.SaveChangesAsync();
 
-            logger.LogInformation("✅ Admin garantizado: '{Username}' creado con contraseña aleatoria", AdminUsername);
-            Console.WriteLine($"    ✅ Admin garantizado: '{AdminUsername}' creado. Clave: '{generatedPassword}'");
+            logger.LogInformation("✅ Admin garantizado: '{Username}' creado con contraseña {Kind}", AdminUsername, isTesting ? "admin123 (Testing)" : "aleatoria");
+            if (!isTesting)
+                Console.WriteLine($"    ✅ Admin garantizado: '{AdminUsername}' creado. Clave: '{adminPassword}'");
         }
 
         // Pomelo MySQL suele habilitar estrategia de reintentos que requiere transacciones dentro de ExecutionStrategy.

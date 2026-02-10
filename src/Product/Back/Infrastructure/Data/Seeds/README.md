@@ -57,6 +57,13 @@ En modo **Development**, el seeding se ejecuta automáticamente al arrancar la a
 2. Se cargan los datos desde los archivos JSON
 3. Se crea/verifica el usuario administrativo (admin/admin123)
 
+### Credenciales de prueba (demo-data.json)
+
+| Empresa        | Usuario   | Contraseña |
+|----------------|-----------|------------|
+| Empresa Admin  | admin     | admin123   |
+| Empresa Cliente| user_test | admin123   |
+
 ### Ejemplo: Añadir un Nuevo Usuario
 
 ```json
