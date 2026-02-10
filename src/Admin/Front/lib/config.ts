@@ -104,7 +104,7 @@ function loadConfig(): AppConfig {
 function getDefaultConfig(env: Environment): AppConfig {
   const configs: Record<Environment, AppConfig> = {
     local: {
-      api: { url: process.env.ADMIN_API_URL || 'http://127.0.0.1:5010' },
+      api: { url: process.env.ADMIN_API_URL || 'https://127.0.0.1:5011' },
       client: { url: 'http://localhost:3001' },
       database: {
         server: process.env.DB_SERVER || 'localhost',
@@ -121,7 +121,7 @@ function getDefaultConfig(env: Environment): AppConfig {
       environment: 'local',
     },
     development: {
-      api: { url: process.env.ADMIN_API_URL || 'http://localhost:5010' },
+      api: { url: process.env.ADMIN_API_URL || 'https://localhost:5011' },
       client: { url: 'http://localhost:3001' },
       database: {
         server: process.env.DB_SERVER || 'localhost',
@@ -155,7 +155,7 @@ function getDefaultConfig(env: Environment): AppConfig {
       environment: 'production',
     },
     test: {
-      api: { url: process.env.ADMIN_API_URL || 'http://127.0.0.1:5010' },
+      api: { url: process.env.ADMIN_API_URL || 'https://127.0.0.1:5011' },
       client: { url: process.env.CLIENT_URL || 'http://127.0.0.1:3001' },
       database: {
         server: process.env.DB_SERVER || '127.0.0.1',

@@ -1,9 +1,11 @@
 import NextAuth, { NextAuthConfig } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { serverPostJson } from "@/lib/api/server-fetch";
 
 /**
  * Configuración de autenticación para GesFer Admin
- * Utiliza CredentialsProvider para autenticar contra la API Admin de ASP.NET Core
+ * Utiliza CredentialsProvider para autenticar contra la API Admin de ASP.NET Core.
+ * En desarrollo usa serverPostJson para aceptar el certificado HTTPS autofirmado de la API.
  */
 export const authConfig: NextAuthConfig = {
   providers: [
@@ -21,39 +23,38 @@ export const authConfig: NextAuthConfig = {
         }
 
         try {
-          // URL de la API Admin
-          const apiUrl = process.env.ADMIN_API_URL || "http://localhost:5010";
+          const apiUrl = process.env.ADMIN_API_URL || "https://localhost:5011";
           const loginUrl = `${apiUrl}/api/admin/auth/login`;
 
-          const response = await fetch(loginUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              usuario: credentials.username,
-              contraseña: credentials.password,
-            }),
+          const { ok, status, data, errorText } = await serverPostJson<{
+            userId?: string;
+            cursorId?: string;
+            username?: string;
+            firstName?: string;
+            lastName?: string;
+            email?: string | null;
+            role?: string;
+            token?: string;
+          }>(loginUrl, {
+            usuario: credentials.username,
+            contraseña: credentials.password,
           });
 
-          if (!response.ok) {
-            console.error("Login failed:", response.status, await response.text());
+          if (!ok || !data) {
+            console.error("Login failed:", status, errorText);
             return null;
           }
 
-          const data = await response.json();
-
-          // Retornar el usuario administrativo con el token y cursorId
           return {
-            id: data.cursorId,
-            cursorId: data.cursorId,
-            userId: data.userId,
-            username: data.username,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            role: data.role || "Admin",
-            accessToken: data.token,
+            id: data.cursorId ?? "",
+            cursorId: data.cursorId ?? "",
+            userId: data.userId ?? "",
+            username: data.username ?? "",
+            firstName: data.firstName ?? "",
+            lastName: data.lastName ?? "",
+            email: data.email ?? undefined,
+            role: data.role ?? "Admin",
+            accessToken: data.token ?? "",
           };
         } catch (error) {
           console.error("Error en authorize (admin):", error);

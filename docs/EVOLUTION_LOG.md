@@ -12,3 +12,13 @@
 [2026-02-09] [Auditoría Frontend] [FALLA CRÍTICA: 176 violaciones de 'empresa' detectadas] [Requiere Acción]
 [2026-02-09] [Kaizen Test Coverage Increase] [Added 14 new unit tests for Product Handlers (Company/User Update/Delete) and Admin Auth Controller. Removed invalid seed data to fix integration warnings. All tests passing.] [S+ Stable]
 [2026-02-09] - Inicio de Kalma2. Validación de arquitectura Desktop. Se documenta la resolución del conflicto en DI como punto de evolución arquitectónica.
+
+[2026-02-10] [Auditoría Frontend] [FALLA CRÍTICA: 4 violaciones de 'empresa' detectadas] [Requiere Acción]
+[2026-02-10] [Frontend Kaizen Execution] [Refactored 176 'empresa' violations to 'company'/'Organización'. Fixed 7 'any' usages. All builds passing.] [Completed]
+[2026-02-10] [Auditoría Frontend] [FALLA CRÍTICA: 178 violaciones de 'empresa' detectadas] [Requiere Acción]
+[2026-02-10] [Refactor Async Logging Cleanup] [Removed Obsolete PublishLog method from IAsyncLogPublisher/AsyncLogPublisher. Updated XML docs. 0 Warnings.] [S+ Stable]
+[2026-02-10] [Fix Integration Test Warnings] [Removed unused field in AdminWebAppFactory. Fixed misleading comments in AdminApiLogSink. Build Clean.] [S+ Stable]
+[2026-02-10] [Fix Integration Test & Refactor Admin Namespace] [Fixed SeedData integration test failure. Renamed MyCompany.SysAdmin to GesFer.Admin. Added 3 new AdminJwtServiceTests. Fixed TestServer HTTPS config. All tests passing.] [S+ Stable]
+[2026-02-10] [Refactor Kalma2 Structure] [Moved Kalma2 from src/Kalma2 to root ./Kalma2. Renamed core to Core. Updated scripts.] [Completed]
+[2026-02-10] [feat/e2e-product-back-mocked] [E2E Product Back con dependencias mockeadas: spec, clarificaciones, plan; suite test:e2e:api verificada contra mock (9 tests); documentación en docs/Feature/e2e-product-back-mocked.] [Completado]
+[2026-02-10] [Mejorar Accesibilidad Electron] [Se creó ejecutar-interface.bat como estándar. Se eliminaron scripts obsoletos (desktop/interfaz). Documentación completa en Docs/Feature/Mejorar_Accesibilidad_Electron.] [Completado]

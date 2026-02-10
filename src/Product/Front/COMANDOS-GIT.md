@@ -10,7 +10,7 @@ git add Cliente/package.json
 
 git commit -m "Añadiendo test a cliente" -m "Se han añadido tests de integridad completos para auditar todas las funcionalidades del cliente:
 
-- Tests de integridad (integrity.test.tsx): 26 tests que cubren autenticación, CRUD de usuarios y empresas, flujos completos, validaciones, manejo de errores y gestión de caché
+- Tests de integridad (integrity.test.tsx): 26 tests que cubren autenticación, CRUD de usuarios y companies, flujos completos, validaciones, manejo de errores y gestión de caché
 - Tests E2E (e2e-flows.test.tsx): 5 tests que verifican flujos completos de operaciones CRUD
 - Tests de contratos API (api-contracts.test.ts): 9 tests que validan interfaces y tipos
 - Total: 40 tests pasando correctamente

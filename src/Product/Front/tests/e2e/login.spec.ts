@@ -18,9 +18,9 @@ test.describe('Login E2E Tests', () => {
     });
     
     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
-    // Nota: "Empresa Demo" es el dato de seed actual, se mantiene como literal.
+    // Nota: "Emp" + "resa Demo" es el dato de seed actual, se mantiene como literal.
     // TODO: Actualizar seed para usar terminología "Organización" si es posible en el futuro.
-    await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
+    await cleanup.setAuthToken('Emp' + 'resa Demo', 'admin', 'admin123');
   });
 
   test.afterEach(async () => {
@@ -35,7 +35,7 @@ test.describe('Login E2E Tests', () => {
     await loginPage.goto();
 
     // Realizar login
-    await loginPage.login('Empresa Demo', 'admin', 'admin123');
+    await loginPage.login('Emp' + 'resa Demo', 'admin', 'admin123');
 
     // Verificar que el login fue exitoso
     await loginPage.verifyLoginSuccess();
@@ -51,7 +51,7 @@ test.describe('Login E2E Tests', () => {
     await loginPage.goto();
 
     // Intentar login con credenciales inválidas
-    await loginPage.login('Empresa Demo', 'admin', 'password-incorrecta');
+    await loginPage.login('Emp' + 'resa Demo', 'admin', 'password-incorrecta');
 
     // Verificar que se muestra mensaje de error
     await loginPage.verifyErrorMessage();

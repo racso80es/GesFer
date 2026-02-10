@@ -86,7 +86,7 @@ public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmen
             // 4. Liberar puertos
             Console.WriteLine("Liberando puertos...");
             if (input.StartProductApi) FreePort(5000); // Product API
-            if (input.StartAdminApi) FreePort(5049); // Admin API
+            if (input.StartAdminApi) FreePort(5010); // Admin API (según launchSettings)
             if (input.StartProductFront) FreePort(productFrontPort);
             if (input.StartAdminFront) FreePort(adminFrontPort);
 

@@ -142,7 +142,7 @@ describe("Flujos E2E - Interacciones Completas", () => {
     });
   });
 
-  describe("Flujo E2E: Gestión Completa de Empresas", () => {
+  describe("Flujo E2E: Gestión Completa de Companies", () => {
     const mockCompanies = [
       {
         id: "company-1",
@@ -155,19 +155,19 @@ describe("Flujos E2E - Interacciones Completas", () => {
       },
     ];
 
-    it("debe completar flujo completo de operaciones CRUD de empresas", async () => {
-      // 1. Listar empresas
+    it("debe completar flujo completo de operaciones CRUD de companies", async () => {
+      // 1. Listar companies
       mockCompaniesApi.getAll.mockResolvedValue(mockCompanies);
       const companies = await companiesApi.getAll();
       expect(companies).toHaveLength(1);
       expect(companies[0].name).toBe("Test Company");
 
-      // 2. Obtener empresa por ID
+      // 2. Obtener company por ID
       mockCompaniesApi.getById.mockResolvedValue(mockCompanies[0]);
       const company = await companiesApi.getById("company-1");
       expect(company.name).toBe("Test Company");
 
-      // 3. Crear empresa
+      // 3. Crear company
       const newCompany = {
         ...mockCompanies[0],
         id: "company-2",
@@ -180,7 +180,7 @@ describe("Flujos E2E - Interacciones Completas", () => {
       });
       expect(created.name).toBe("New Company");
 
-      // 4. Actualizar empresa
+      // 4. Actualizar company
       const updatedCompany = { ...newCompany, name: "Updated Company" };
       mockCompaniesApi.update.mockResolvedValue(updatedCompany);
       const updated = await companiesApi.update("company-2", {
@@ -188,13 +188,13 @@ describe("Flujos E2E - Interacciones Completas", () => {
       });
       expect(updated.name).toBe("Updated Company");
 
-      // 5. Eliminar empresa
+      // 5. Eliminar company
       mockCompaniesApi.delete.mockResolvedValue(undefined);
       await companiesApi.delete("company-2");
       expect(mockCompaniesApi.delete).toHaveBeenCalledWith("company-2");
     });
 
-    it("debe manejar lista vacía de empresas", async () => {
+    it("debe manejar lista vacía de companies", async () => {
       mockCompaniesApi.getAll.mockResolvedValue([]);
       const companies = await companiesApi.getAll();
       expect(companies).toHaveLength(0);

@@ -9,8 +9,8 @@ import type { AppConfig } from './config';
 
 export const testConfig: AppConfig = {
   api: {
-    // Admin API port 5010
-    url: process.env.API_URL || 'http://127.0.0.1:5010',
+    // Admin API HTTPS port 5011
+    url: process.env.API_URL || 'https://127.0.0.1:5011',
   },
   client: {
     // Admin Front port 3001

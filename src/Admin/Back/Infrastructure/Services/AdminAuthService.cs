@@ -3,7 +3,7 @@ using GesFer.Admin.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
 
-namespace MyCompany.SysAdmin.Infrastructure.Services;
+namespace GesFer.Admin.Infrastructure.Services;
 
 /// <summary>
 /// Servicio de autenticación para usuarios administrativos

@@ -1,0 +1,18 @@
+{
+  "name": "gesfer-mock-apis",
+  "version": "1.0.0",
+  "description": "APIs mock para validar clientes (Product/Admin) sin backend real. Y para testear APIs como cliente.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "start:product": "node server.mjs --product-only",
+    "start:admin": "node server.mjs --admin-only"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

@@ -13,7 +13,7 @@ const getDefaultApiUrl = () => {
   if (process.env.NODE_ENV === 'production') {
     return process.env.NEXT_PUBLIC_API_URL || 'https://api.gesfer.com';
   }
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  return process.env.NEXT_PUBLIC_API_URL || 'https://localhost:5001';
 };
 
 /** @type {import('next').NextConfig} */

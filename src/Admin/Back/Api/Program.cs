@@ -2,6 +2,7 @@ using GesFer.Admin.Api;
 using GesFer.Infrastructure.Data;
 using Serilog.Sinks.MySQL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -111,6 +112,10 @@ try
         });
     });
 
+    // Seguridad: HTTPS en todos los entornos. Redirección HTTP → HTTPS.
+    if (isDevelopment)
+        builder.Services.Configure<HttpsRedirectionOptions>(options => { options.HttpsPort = 5011; });
+
     // Configurar inyección de dependencias
     builder.Services.AddApplicationServices(builder.Configuration, builder.Environment);
 
@@ -174,14 +179,12 @@ try
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "GesFer Admin API v1");
-            c.RoutePrefix = "swagger"; // Swagger en la raíz
+            c.RoutePrefix = "swagger";
         });
     }
-    else
-    {
-        app.UseHttpsRedirection();
-    }
 
+    // Redirección HTTP → HTTPS antes de routing (seguridad: todos los entornos; Development: puerto 5011).
+    app.UseHttpsRedirection();
     app.UseRouting();
     app.UseCors("AllowAll");
     

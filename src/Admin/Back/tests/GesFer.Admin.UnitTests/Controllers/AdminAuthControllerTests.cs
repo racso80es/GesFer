@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using MyCompany.SysAdmin.Infrastructure.Services;
+using GesFer.Admin.Infrastructure.Services;
 using Xunit;
 
 namespace GesFer.Admin.UnitTests.Controllers;

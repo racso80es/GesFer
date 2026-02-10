@@ -79,16 +79,49 @@ npx playwright test --project=chromium
 
 ## Requisitos Previos
 
-1. La aplicación web debe estar ejecutándose en `http://localhost:3000`
-2. La API debe estar ejecutándose en `http://localhost:5000`
-3. Credenciales de prueba:
-   - Empresa: "Empresa Demo"
-   - Usuario: "admin"
-   - Contraseña: "admin123"
+**E2E (navegador + API):**
+1. La aplicación web debe estar ejecutándose en `http://localhost:3000` (o la levanta Playwright con webServer)
+2. La API debe estar en `http://localhost:5000` **o** usar mock: `USE_MOCK_API=1` y `API_URL=http://localhost:5002` (tras levantar `infrastructure/mock-apis`)
+
+**Solo tests de API (sin frontend):** `npm run test:e2e:api`. La API debe estar en 5000, o mock en 5002 con `USE_MOCK_API=1` y `API_URL=http://localhost:5002`.
+
+### E2E API (Product Back) con mock
+
+Tests E2E que validan **solo el backend (API) de Product**, con dependencias mockeadas (sin API real ni BD):
+
+1. **Levantar el mock** (Product en 5002):
+   ```powershell
+   cd infrastructure\mock-apis
+   npm install
+   npm start
+   ```
+2. **Ejecutar la suite de API** desde Product Front:
+   ```powershell
+   cd src\Product\Front
+   $env:USE_MOCK_API="1"; $env:API_URL="http://127.0.0.1:5002"
+   npm run test:e2e:api
+   ```
+   Ver también: `docs/infrastructure/MOCK_APIS_AND_TEST_MODES.md`.
+
+Credenciales de prueba (API real o mock):
+- Company: "Emp" + "resa Demo"
+- Usuario: "admin"
+- Contraseña: "admin123"
+
+## Reporte HTML (localhost:9323)
+
+Tras ejecutar `npm run test:e2e`, puedes abrir el reporte con:
+
+```bash
+npm run test:e2e:report
+```
+
+Playwright abre el reporte en un puerto disponible (por ejemplo **http://localhost:9323**). Ahí ves qué tests pasaron o fallaron, traces y capturas. Si todos los tests salen "malos", suele ser porque **la API no estaba en ejecución** al correr los tests: el `globalSetup` comprueba que la API (puerto 5000) responda antes de empezar; si no, falla con un mensaje claro.
 
 ## Notas
 
 - Los tests se ejecutan en paralelo por defecto
+- **Antes de ejecutar E2E:** la API Product debe estar levantada en el puerto 5000 (p. ej. `docker-compose up -d gesfer-product-api` o ejecutar el backend desde IDE)
 - Los screenshots y videos se guardan solo cuando fallan
 - Los traces se guardan solo en reintentos
 - El reporte HTML se genera automáticamente después de cada ejecución

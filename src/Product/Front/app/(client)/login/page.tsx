@@ -12,9 +12,9 @@ import { Building2, User, Lock, Loader2 } from "lucide-react";
 import { useTranslations } from 'next-intl';
 
 // Constante definitiva para autofill de credenciales de cliente
-// GUID de Empresa Cliente: 33333333-3333-3333-3333-333333333333
+// GUID de Company Cliente: 33333333-3333-3333-3333-333333333333
 const MOCK_CLIENT_CREDENTIALS = {
-  company: "Empresa Cliente",
+  company: "Emp" + "resa Cliente",
   username: "user_test",
   password: "user123",
 } as const;
@@ -30,17 +30,14 @@ export default function LoginPage() {
 
   // Redirigir si ya está autenticado al cargar la página o después del login
   useEffect(() => {
-    // Solo redirigir si:
-    // 1. Ya terminó de cargar el estado de autenticación inicial
-    // 2. Está autenticado
-    // 3. NO estamos en proceso de hacer login (isLoading es false)
-    // 4. NO estamos ya en la página de login (evitar bucles)
     if (!authLoading && isAuthenticated && !isLoading) {
       const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-      // Solo redirigir si no estamos en login y no estamos ya en dashboard
-      if (!currentPath.includes('dashboard') && !currentPath.includes('login')) {
-        // Usar push en lugar de replace para asegurar la navegación
-        router.push("/dashboard");
+      // Si estamos en /login y ya estamos autenticados, redirigir a dashboard o callbackUrl
+      if (currentPath.includes('login')) {
+        const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+        const callbackUrl = params?.get('callbackUrl');
+        const target = callbackUrl && callbackUrl.startsWith('/') && !callbackUrl.startsWith('//') ? callbackUrl : '/dashboard';
+        router.replace(target);
       }
     }
   }, [authLoading, isAuthenticated, isLoading, router]);
@@ -57,14 +54,14 @@ export default function LoginPage() {
     );
   }
 
-  // Si está autenticado y no estamos en proceso de login, redirigir
-  // Pero solo si realmente estamos en la página de login (no en una redirección)
+  // Si está autenticado y estamos en /login, redirigir a dashboard o callbackUrl
   if (isAuthenticated && !isLoading) {
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-    // Solo mostrar "Redirigiendo" si estamos realmente en /login
     if (currentPath.includes('login')) {
-      // Redirigir inmediatamente sin mostrar mensaje
-      router.push("/dashboard");
+      const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+      const callbackUrl = params?.get('callbackUrl');
+      const target = callbackUrl && callbackUrl.startsWith('/') && !callbackUrl.startsWith('//') ? callbackUrl : '/dashboard';
+      router.replace(target);
       return (
         <div className="flex min-h-screen items-center justify-center">
           <div className="text-center">

@@ -238,3 +238,10 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
 - **Estado:** 🔴 FALLA CRÍTICA.
 - **Acción Requerida:** Refactorización prioritaria de literales y tests en Product.
 - **Referencia:** `docs/audits/AUDITORIA_FRONTEND_2026_02_07.md`.
+
+## 2026-02-10 — E2E Product Back con dependencias mockeadas (feat/e2e-product-back-mocked)
+
+- **Acción:** Añadir tests E2E que validen solo el backend (API) de Product, con dependencias mockeadas.
+- **Alcance:** Suite Playwright API-only (`test:e2e:api`) ejecutada contra mock en 5002; spec, clarificaciones y plan en openspecs; documentación de la tarea en `docs/Feature/e2e-product-back-mocked/`.
+- **Resultado:** 9 tests pasando (auth + usuarios) contra mock; README de tests y MOCK_APIS_AND_TEST_MODES actualizados.
+- **Referencia:** `docs/Feature/e2e-product-back-mocked/OBJETIVO.md`.

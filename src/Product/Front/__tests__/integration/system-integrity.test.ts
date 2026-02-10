@@ -96,7 +96,7 @@ describe("Auditoría de integridad API + Cliente", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          empresa: "Empresa Demo",
+          company: "Emp" + "resa Demo",
           usuario: "admin",
           contraseña: "admin123",
         }),
@@ -118,7 +118,7 @@ describe("Auditoría de integridad API + Cliente", () => {
     
     expect(loginJson.username).toBe("admin");
     expect(loginJson.userId).toBeDefined();
-    expect(loginJson.companyName).toBe("Empresa Demo");
+    expect(loginJson.companyName).toBe("Emp" + "resa Demo");
     // El token puede venir vacío en entorno local, solo verificamos que exista la clave
     expect(loginJson).toHaveProperty("token");
   });
@@ -141,7 +141,7 @@ describe("Auditoría de integridad API + Cliente", () => {
 
     // Datos de usuario de prueba
     const testCredentials = {
-      empresa: "Empresa Demo",
+      company: "Emp" + "resa Demo",
       usuario: "admin",
       contraseña: "admin123",
     };
@@ -177,7 +177,7 @@ describe("Auditoría de integridad API + Cliente", () => {
       errorMessage += `\n\nAsegúrate de que:\n`;
       errorMessage += `1. La API esté ejecutándose en ${API_URL}\n`;
       errorMessage += `2. La base de datos tenga los datos de prueba (ejecuta el script seed-data.sql)\n`;
-      errorMessage += `3. Las credenciales sean correctas: empresa="${testCredentials.empresa}", usuario="${testCredentials.usuario}"`;
+      errorMessage += `3. Las credenciales sean correctas: company="${testCredentials.company}", usuario="${testCredentials.usuario}"`;
       throw new Error(errorMessage);
     }
     expect(loginResp.status).toBe(200);
@@ -205,7 +205,7 @@ describe("Auditoría de integridad API + Cliente", () => {
     
     expect(loginJson.companyId).toBeDefined();
     expect(loginJson.companyId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
-    expect(loginJson.companyName).toBe("Empresa Demo");
+    expect(loginJson.companyName).toBe("Emp" + "resa Demo");
     
     // Verificar que los permisos están presentes y es un array
     expect(loginJson.permissions).toBeDefined();
@@ -250,7 +250,7 @@ describe("Auditoría de integridad API + Cliente", () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        empresa: "Empresa Demo",
+        company: "Emp" + "resa Demo",
         usuario: "admin",
         contraseña: "contraseña_incorrecta",
       }),

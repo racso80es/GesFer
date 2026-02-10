@@ -19,9 +19,9 @@ export class TestDataCleanup {
   /**
    * Establece el token de autenticación para las operaciones de limpieza
    */
-  async setAuthToken(empresa: string, usuario: string, contraseña: string): Promise<void> {
+  async setAuthToken(company: string, usuario: string, contraseña: string): Promise<void> {
     try {
-      this.authToken = await this.apiClient.login(empresa, usuario, contraseña);
+      this.authToken = await this.apiClient.login(company, usuario, contraseña);
     } catch (error) {
       console.warn('No se pudo obtener token de autenticación para limpieza:', error);
     }
@@ -35,7 +35,7 @@ export class TestDataCleanup {
   }
 
   /**
-   * Registra un ID de empresa creado para limpieza posterior
+   * Registra un ID de company creado para limpieza posterior
    */
   registerCompanyId(companyId: string): void {
     this.createdCompanyIds.push(companyId);
@@ -66,12 +66,12 @@ export class TestDataCleanup {
       }
     }
 
-    // Limpiar empresas
+    // Limpiar companies
     for (const companyId of this.createdCompanyIds) {
       try {
         await this.apiClient.deleteCompany(companyId, this.authToken);
       } catch (error) {
-        console.warn(`Error al eliminar empresa ${companyId}:`, error);
+        console.warn(`Error al eliminar company ${companyId}:`, error);
       }
     }
 
@@ -108,11 +108,11 @@ export class TestDataCleanup {
   }
 
   /**
-   * Limpia una empresa específica
+   * Limpia una company específica
    */
   async cleanupCompany(companyId: string): Promise<void> {
     if (!this.authToken) {
-      console.warn('No hay token de autenticación, no se puede limpiar empresa');
+      console.warn('No hay token de autenticación, no se puede limpiar company');
       return;
     }
 
@@ -120,7 +120,7 @@ export class TestDataCleanup {
       await this.apiClient.deleteCompany(companyId, this.authToken);
       this.createdCompanyIds = this.createdCompanyIds.filter(id => id !== companyId);
     } catch (error) {
-      console.warn(`Error al eliminar empresa ${companyId}:`, error);
+      console.warn(`Error al eliminar company ${companyId}:`, error);
     }
   }
 }

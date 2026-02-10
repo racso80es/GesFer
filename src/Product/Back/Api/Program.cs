@@ -1,6 +1,7 @@
 using GesFer.Api;
 using GesFer.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -91,6 +92,10 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
+
+// Seguridad: HTTPS en todos los entornos. Redirección HTTP → HTTPS.
+if (isDevelopment)
+    builder.Services.Configure<HttpsRedirectionOptions>(options => { options.HttpsPort = 5001; });
 
 // Configurar inyección de dependencias
 builder.Services.AddApplicationServices(builder.Configuration, builder.Environment);
@@ -216,9 +221,14 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// CORS debe ir ANTES de UseHttpsRedirection para que las peticiones preflight funcionen
+// CORS debe ir ANTES de UseHttpsRedirection para que las peticiones preflight funcionen.
+// Redirección HTTP → HTTPS en todos los entornos (puerto HTTPS en Development: 5001).
 app.UseCors("AllowAll");
-app.UseHttpsRedirection();
+
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    app.UseHttpsRedirection();
+}
 
 // Autenticación y autorización deben ir en este orden
 app.UseAuthentication();
@@ -240,3 +250,5 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+public partial class Program { }

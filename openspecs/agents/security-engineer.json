@@ -31,6 +31,7 @@
     "Frontend: Destructive actions must use <DestructiveActionConfirm>.",
     "Backend: Verify granular permissions (CanDeleteUsers), not just Admin.",
     "Checklist: Zod validation in frontend?",
-    "Checklist: ValueObjects in backend?"
+    "Checklist: ValueObjects in backend?",
+    "Logs: En auditorías de seguridad, tener en cuenta el directorio de logs (C:\\Proyectos\\GesFer\\logs): raíz logs/ (gesfer-console_*.log) y logs/services/ (ProductApi.log, AdminApi.log, ProductFront.log, AdminFront.log). Referencia: docs/operations/LOGS_SERVICES_REFERENCE.md. Estudio y plan: docs/operations/LOGS_SECURITY_STUDY_AND_UPDATE_PLAN.md."
   ]
 }

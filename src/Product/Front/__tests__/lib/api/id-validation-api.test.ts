@@ -25,7 +25,7 @@ describe("Validación de IDs en APIs", () => {
   describe("companiesApi", () => {
     it("debe validar ID antes de getById", async () => {
       await expect(companiesApi.getById("invalid-id")).rejects.toThrow(
-        "El ID de empresa no es válido"
+        "El ID de company no es válido"
       );
       expect(apiClient.get).not.toHaveBeenCalled();
     });
@@ -33,12 +33,12 @@ describe("Validación de IDs en APIs", () => {
     it("debe validar ID antes de update", async () => {
       await expect(
         companiesApi.update("11.1111-111111111111:1", { name: "Test", address: "Test" })
-      ).rejects.toThrow("El ID de empresa no es válido");
+      ).rejects.toThrow("El ID de company no es válido");
       expect(apiClient.put).not.toHaveBeenCalled();
     });
 
     it("debe validar ID antes de delete", async () => {
-      await expect(companiesApi.delete("")).rejects.toThrow("El ID de empresa es requerido");
+      await expect(companiesApi.delete("")).rejects.toThrow("El ID de company es requerido");
       expect(apiClient.delete).not.toHaveBeenCalled();
     });
 
@@ -88,7 +88,7 @@ describe("Validación de IDs en APIs", () => {
 
     it("debe validar companyId en getAll", async () => {
       await expect(usersApi.getAll("invalid-company-id")).rejects.toThrow(
-        "El ID de empresa no es válido"
+        "El ID de company no es válido"
       );
       expect(apiClient.get).not.toHaveBeenCalled();
     });

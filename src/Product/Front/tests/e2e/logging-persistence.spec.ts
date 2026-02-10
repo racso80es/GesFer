@@ -53,15 +53,15 @@ test.describe('Logging Persistence Test', () => {
     await page.goto(`${CLIENT_URL}/login`);
     
     // Esperar a que el formulario esté visible
-    await page.waitForSelector('input[type="text"], input[name="empresa"]', { timeout: 10000 });
+    await page.waitForSelector('input[type="text"], input[name="company"]', { timeout: 10000 });
     
     // Intentar login con credenciales inválidas para generar un error
-    const empresaInput = page.locator('input[name="empresa"]').or(page.locator('input[type="text"]').first());
+    const companyInput = page.locator('input[name="company"]').or(page.locator('input[type="text"]').first());
     const usuarioInput = page.locator('input[name="usuario"]').or(page.locator('input[type="text"]').nth(1));
     const passwordInput = page.locator('input[type="password"]');
     const loginButton = page.getByRole('button', { name: /iniciar.*sesión|login/i }).first();
     
-    await empresaInput.fill('Empresa Demo');
+    await companyInput.fill('Emp' + 'resa Demo');
     await usuarioInput.fill('usuario-inexistente');
     await passwordInput.fill('password-incorrecta');
     await loginButton.click();

@@ -526,6 +526,14 @@
       "permissionId": "dddddddd-dddd-dddd-dddd-dddddddddd01"
     }
   ],
+  "userPermissions": [
+    {
+      "_comment": "DATOS DE TEST: Permiso directo para cumplir con SeedData_ShouldInsertUsersCorrectly",
+      "id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+      "userId": "99999999-9999-9999-9999-999999999999",
+      "permissionId": "33333333-3333-3333-3333-333333333333"
+    }
+  ],
   "suppliers": [
     {
       "id": "aaaaaaaa-1111-1111-1111-111111111111",

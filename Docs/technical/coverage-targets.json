@@ -1,0 +1,72 @@
+{
+  "version": "1.0",
+  "description": "Objetivos de cobertura de código GesFer — tender a 100% en ámbitos definidos",
+  "global": {
+    "objective": "tend_to_100_percent",
+    "exclusions": ["generated", "deprecated", "third_party_adapters_without_business_logic"]
+  },
+  "scopes": [
+    {
+      "id": "playwright-api",
+      "name": "Tests API (Playwright)",
+      "target": "100",
+      "unit": "percent_specs_passing",
+      "priority": "high",
+      "path": "src/Product/Front/tests/api",
+      "commands": ["npm run test:e2e:api", "USE_MOCK_API=1 npm run test:e2e:api"],
+      "notes": "auth-api.spec.ts + usuarios-api.spec.ts; mock cubre auth y user (GET/POST/DELETE)."
+    },
+    {
+      "id": "playwright-e2e",
+      "name": "Tests E2E (Playwright)",
+      "target": "100",
+      "unit": "percent_specs_passing",
+      "priority": "high",
+      "path": "src/Product/Front/tests/e2e",
+      "commands": ["npm run test:e2e"],
+      "notes": "Requieren API o mock y frontend."
+    },
+    {
+      "id": "jest-frontend",
+      "name": "Tests unitarios frontend (Jest)",
+      "target": "80",
+      "unit": "line_coverage_percent",
+      "priority": "medium",
+      "path": "src/Product/Front",
+      "commands": ["npm run test:coverage"],
+      "critical_paths": ["auth", "validations", "hooks", "utils"],
+      "critical_target": "100",
+      "notes": "100% en auth y validaciones."
+    },
+    {
+      "id": "backend-csharp",
+      "name": "Backend C# (Product/Admin)",
+      "target": "80",
+      "unit": "line_coverage_percent",
+      "priority": "high",
+      "path": "src/Product/Back, src/Admin/Back",
+      "commands": ["dotnet test --collect:\"XPlat Code Coverage\""],
+      "critical_paths": ["Controllers/Auth", "Controllers/AdminAuth", "Commands", "Validators"],
+      "critical_target": "100",
+      "notes": "100% en controllers auth y comandos sensibles."
+    },
+    {
+      "id": "mock-apis",
+      "name": "Mock APIs (endpoints cubiertos)",
+      "target": "100",
+      "unit": "percent_endpoints_used_by_api_specs",
+      "priority": "high",
+      "path": "infrastructure/mock-apis",
+      "endpoints_covered": [
+        "GET /health",
+        "GET /api/health",
+        "POST /api/auth/login",
+        "GET /api/user",
+        "GET /api/user/:id",
+        "POST /api/user",
+        "DELETE /api/user/:id"
+      ],
+      "notes": "Product mock; Admin mock solo auth."
+    }
+  ]
+}
