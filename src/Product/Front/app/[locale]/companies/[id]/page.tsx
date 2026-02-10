@@ -70,7 +70,7 @@ export default function CompanyDetailPage({
               message={
                 error instanceof Error
                   ? error.message
-                  : "Empresa no encontrada"
+                  : "Company no encontrada"
               }
             />
           </div>
@@ -111,7 +111,7 @@ export default function CompanyDetailPage({
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Building2 className="h-5 w-5" />
-                  Información de la Empresa
+                  Información de la Company
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">

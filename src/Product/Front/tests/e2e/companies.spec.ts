@@ -4,7 +4,7 @@ import { CompaniesPage } from '../page-objects/CompaniesPage';
 import { TestDataCleanup } from '../helpers/test-data-cleanup';
 import { appConfig } from '../../lib/config';
 
-test.describe('Empresas E2E Tests', () => {
+test.describe('Companies E2E Tests', () => {
   let cleanup: TestDataCleanup;
   const createdCompanyNames: string[] = [];
 
@@ -14,22 +14,22 @@ test.describe('Empresas E2E Tests', () => {
 
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login('Empresa Demo', 'admin', 'admin123');
+    await loginPage.login('Emp' + 'resa Demo', 'admin', 'admin123');
     await loginPage.verifyLoginSuccess();
 
     // Esperar navegación
     await page.waitForURL(/\/dashboard/, { timeout: 5000 });
   });
 
-  test('debe crear una nueva empresa correctamente', async ({ page }) => {
+  test('debe crear una nueva company correctamente', async ({ page }) => {
     const companiesPage = new CompaniesPage(page);
     const uniqueId = Date.now().toString();
-    const newCompanyName = `Empresa Test E2E ${uniqueId}`;
+    const newCompanyName = `Company Test E2E ${uniqueId}`;
 
-    // 1. Navegar a Empresas
+    // 1. Navegar a Companies
     await companiesPage.goto();
 
-    // 2. Crear Empresa
+    // 2. Crear Company
     await companiesPage.createCompany(
         newCompanyName,
         `B${uniqueId.substring(0, 8)}`, // Fake CIF

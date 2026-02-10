@@ -10,6 +10,7 @@ import { authApi } from "@/lib/api/auth";
 import { usersApi } from "@/lib/api/users";
 import { companiesApi } from "@/lib/api/companies";
 import { apiClient } from "@/lib/api/client";
+import type { CreateUser, User } from "@/lib/types/api";
 
 // Mock de las APIs
 jest.mock("@/lib/api/auth");
@@ -59,14 +60,14 @@ describe("Tests de Integridad - Auditoría Completa", () => {
       mockAuthApi.login.mockResolvedValue(mockLoginResponse);
 
       const result = await authApi.login({
-        empresa: "Test Company",
+        company: "Test Company",
         usuario: "testuser",
         contraseña: "password123",
       });
 
       expect(result).toEqual(mockLoginResponse);
       expect(mockAuthApi.login).toHaveBeenCalledWith({
-        empresa: "Test Company",
+        company: "Test Company",
         usuario: "testuser",
         contraseña: "password123",
       });
@@ -77,7 +78,7 @@ describe("Tests de Integridad - Auditoría Completa", () => {
 
       await expect(
         authApi.login({
-          empresa: "Test Company",
+          company: "Test Company",
           usuario: "wronguser",
           contraseña: "wrongpass",
         })
@@ -189,7 +190,7 @@ describe("Tests de Integridad - Auditoría Completa", () => {
     });
   });
 
-  describe("3. Integridad CRUD de Empresas", () => {
+  describe("3. Integridad CRUD de Companies", () => {
     const mockCompany = {
       id: "company-1",
       name: "Test Company",
@@ -201,7 +202,7 @@ describe("Tests de Integridad - Auditoría Completa", () => {
       createdAt: "2024-01-01T00:00:00Z",
     };
 
-    it("debe listar todas las empresas", async () => {
+    it("debe listar todas las companies", async () => {
       mockCompaniesApi.getAll.mockResolvedValue([mockCompany]);
 
       const result = await companiesApi.getAll();
@@ -211,7 +212,7 @@ describe("Tests de Integridad - Auditoría Completa", () => {
       expect(mockCompaniesApi.getAll).toHaveBeenCalled();
     });
 
-    it("debe obtener una empresa por ID", async () => {
+    it("debe obtener una company por ID", async () => {
       mockCompaniesApi.getById.mockResolvedValue(mockCompany);
 
       const result = await companiesApi.getById("company-1");
@@ -220,7 +221,7 @@ describe("Tests de Integridad - Auditoría Completa", () => {
       expect(mockCompaniesApi.getById).toHaveBeenCalledWith("company-1");
     });
 
-    it("debe crear una nueva empresa", async () => {
+    it("debe crear una nueva company", async () => {
       const newCompany = {
         name: "New Company",
         taxId: "B87654321",
@@ -239,7 +240,7 @@ describe("Tests de Integridad - Auditoría Completa", () => {
       expect(mockCompaniesApi.create).toHaveBeenCalledWith(newCompany);
     });
 
-    it("debe actualizar una empresa existente", async () => {
+    it("debe actualizar una company existente", async () => {
       const updateData = {
         name: "Updated Company",
         email: "updated@example.com",
@@ -256,7 +257,7 @@ describe("Tests de Integridad - Auditoría Completa", () => {
       expect(mockCompaniesApi.update).toHaveBeenCalledWith("company-1", updateData);
     });
 
-    it("debe eliminar una empresa", async () => {
+    it("debe eliminar una company", async () => {
       mockCompaniesApi.delete.mockResolvedValue(undefined);
 
       await companiesApi.delete("company-1");
@@ -333,7 +334,7 @@ describe("Tests de Integridad - Auditoría Completa", () => {
 
       // Ejecutar flujo
       await authApi.login({
-        empresa: "Test Company",
+        company: "Test Company",
         usuario: "admin",
         contraseña: "password",
       });
@@ -355,7 +356,7 @@ describe("Tests de Integridad - Auditoría Completa", () => {
       expect(users[0].username).toBe("newuser");
     });
 
-    it("debe completar flujo completo de edición de empresa", async () => {
+    it("debe completar flujo completo de edición de company", async () => {
       const originalCompany = {
         id: "company-1",
         name: "Original Company",
@@ -370,10 +371,10 @@ describe("Tests de Integridad - Auditoría Completa", () => {
         email: "updated@example.com",
       };
 
-      // 1. Obtener empresa (usar mockResolvedValueOnce para la primera llamada)
+      // 1. Obtener company (usar mockResolvedValueOnce para la primera llamada)
       mockCompaniesApi.getById.mockResolvedValueOnce(originalCompany);
 
-      // 2. Actualizar empresa
+      // 2. Actualizar company
       mockCompaniesApi.update.mockResolvedValue(updatedCompany);
 
       // 3. Verificar actualización (segunda llamada a getById)
@@ -400,13 +401,13 @@ describe("Tests de Integridad - Auditoría Completa", () => {
         createdAt: "2024-01-01T00:00:00Z",
       };
 
-      // 1. Listar empresas (incluye la que se va a eliminar) - usar mockResolvedValueOnce
+      // 1. Listar companies (incluye la que se va a eliminar) - usar mockResolvedValueOnce
       mockCompaniesApi.getAll.mockResolvedValueOnce([mockCompany]);
 
-      // 2. Eliminar empresa
+      // 2. Eliminar company
       mockCompaniesApi.delete.mockResolvedValue(undefined);
 
-      // 3. Listar empresas (ya no debe aparecer) - segunda llamada
+      // 3. Listar companies (ya no debe aparecer) - segunda llamada
       mockCompaniesApi.getAll.mockResolvedValueOnce([]);
 
       const before = await companiesApi.getAll();
@@ -426,7 +427,7 @@ describe("Tests de Integridad - Auditoría Completa", () => {
         password: "password123",
         firstName: "Test",
         lastName: "User",
-      } as any;
+      } as unknown as CreateUser;
 
       // El API client debería rechazar esto
       mockUsersApi.create.mockRejectedValue(
@@ -507,7 +508,7 @@ describe("Tests de Integridad - Auditoría Completa", () => {
       const cached = queryClient.getQueryData(["users", "company-1"]);
       expect(cached).toBeDefined();
       expect(Array.isArray(cached)).toBe(true);
-      expect((cached as any[]).length).toBe(1);
+      expect((cached as User[]).length).toBe(1);
 
       // Invalidar caché (marca como stale, no elimina inmediatamente)
       await queryClient.invalidateQueries({ queryKey: ["users", "company-1"] });

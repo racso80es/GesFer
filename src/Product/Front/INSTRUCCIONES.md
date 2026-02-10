@@ -79,7 +79,7 @@ npm run dev
 
 Una vez que la aplicación esté ejecutándose, puedes iniciar sesión con:
 
-- **Organización**: `Empresa Demo`
+- **Organización**: `Demo Company`
 - **Usuario**: `admin`
 - **Contraseña**: `admin123`
 

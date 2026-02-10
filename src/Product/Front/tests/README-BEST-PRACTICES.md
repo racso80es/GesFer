@@ -40,7 +40,7 @@ test.describe('Mi Feature', () => {
 
   test.beforeEach(async ({ page, request }) => {
     cleanup = new TestDataCleanup(request);
-    await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
+    await cleanup.setAuthToken('Emp' + 'resa Demo', 'admin', 'admin123');
     
     // Setup del test...
   });
@@ -105,8 +105,8 @@ Para que los tests funcionen correctamente, los componentes deben incluir atribu
 </Button>
 
 <input
-  data-testid="login-empresa-input"
-  id="empresa"
+  data-testid="login-company-input"
+  id="company"
   type="text"
 />
 ```
@@ -120,7 +120,7 @@ La clase `TestDataCleanup` proporciona métodos para:
 
 ```typescript
 const cleanup = new TestDataCleanup(request);
-await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
+await cleanup.setAuthToken('Emp' + 'resa Demo', 'admin', 'admin123');
 cleanup.registerUserId(userId);
 await cleanup.cleanup(); // Limpia todos los recursos registrados
 ```

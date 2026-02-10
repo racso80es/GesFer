@@ -111,7 +111,7 @@ export default function CompaniesPage() {
       setShowDeleteConfirm(false);
       setCompanyToDelete(null);
     } catch (error) {
-      console.error("Error al eliminar empresa:", error);
+      console.error("Error al eliminar company:", error);
     } finally {
       setDeletingCompanyId(null);
     }

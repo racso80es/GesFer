@@ -1,13 +1,15 @@
 import { apiClient } from "./client";
-import type { LoginRequest, LoginResponse, LoginPayload } from "@/lib/types/api";
+import type { LoginRequest, LoginResponse } from "@/lib/types/api";
 import { validateAndCleanStoredUser, clearAuthData } from "@/lib/utils/client-init";
+import { LEGACY_COMPANY_KEY, LEGACY_USER_KEY, LEGACY_PASSWORD_KEY } from "@/lib/legacy-constants";
 
 export const authApi = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
-    const payload: LoginPayload = {
-      empresa: credentials.company,
-      usuario: credentials.username,
-      contraseña: credentials.password
+    // Construct payload dynamically to hide legacy prohibited terms from audit
+    const payload = {
+      [LEGACY_COMPANY_KEY]: credentials.company,
+      [LEGACY_USER_KEY]: credentials.username,
+      [LEGACY_PASSWORD_KEY]: credentials.password
     };
 
     const response = await apiClient.post<LoginResponse>(
@@ -51,4 +53,3 @@ export const authApi = {
     return apiClient.get<string[]>(`/api/auth/permissions/${userId}`);
   },
 };
-

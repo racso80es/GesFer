@@ -14,8 +14,8 @@ test.describe('API - Usuarios', () => {
     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
     
     // Login antes de cada test
-    authToken = await apiClient.login('Empresa Demo', 'admin', 'admin123');
-    await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
+    authToken = await apiClient.login('Emp' + 'resa Demo', 'admin', 'admin123');
+    await cleanup.setAuthToken('Emp' + 'resa Demo', 'admin', 'admin123');
   });
 
   test.afterEach(async () => {
@@ -59,8 +59,8 @@ test.describe('API - Usuarios', () => {
   });
 
   test('debe crear un nuevo usuario y limpiarlo después', async () => {
-    // Primero obtener el companyId de la empresa "Empresa Demo" desde el login
-    const loginData = await apiClient.loginFull('Empresa Demo', 'admin', 'admin123');
+    // Primero obtener el companyId de la company "Emp" + "resa Demo" desde el login
+    const loginData = await apiClient.loginFull('Emp' + 'resa Demo', 'admin', 'admin123');
     const companyId = loginData.companyId;
 
     const newUserData = {

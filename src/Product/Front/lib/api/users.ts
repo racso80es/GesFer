@@ -4,7 +4,7 @@ import { validateId } from "@/lib/utils/id-validation";
 
 export const usersApi = {
   getAll: async (companyId?: string): Promise<User[]> => {
-    const params = companyId ? { companyId: validateId(companyId, "empresa") } : undefined;
+    const params = companyId ? { companyId: validateId(companyId, "company") } : undefined;
     return apiClient.get<User[]>("/api/user", params);
   },
 
