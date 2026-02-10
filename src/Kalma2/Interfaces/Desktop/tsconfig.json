@@ -19,6 +19,6 @@
     "emitDecoratorMetadata": true,
     "types": ["reflect-metadata", "node"]
   },
-  "include": ["src", "electron", "core"],
+  "include": ["src", "electron", "../../Core"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

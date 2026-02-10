@@ -14,3 +14,5 @@
 [2026-02-09] - Inicio de Kalma2. Validación de arquitectura Desktop. Se documenta la resolución del conflicto en DI como punto de evolución arquitectónica.
 
 [2026-02-10] [Auditoría Frontend] [FALLA CRÍTICA: 178 violaciones de 'empresa' detectadas] [Requiere Acción]
+[2026-02-10] [Refactor Async Logging Cleanup] [Removed Obsolete PublishLog method from IAsyncLogPublisher/AsyncLogPublisher. Updated XML docs. 0 Warnings.] [S+ Stable]
+[2026-02-10] [Fix Integration Test Warnings] [Removed unused field in AdminWebAppFactory. Fixed misleading comments in AdminApiLogSink. Build Clean.] [S+ Stable]

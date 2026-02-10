@@ -39,8 +39,6 @@ public class AdminApiLogSink : ILogEventSink
         var properties = logEvent.Properties.ToDictionary(p => p.Key, p => p.Value.ToString() as object);
 
         // Fire and Forget: Delegamos la publicación.
-        // Nota: IAsyncLogPublisher.PublishLog ya implementa Task.Run internamente,
-        // por lo que no necesitamos envolverlo aquí nuevamente (doble dispatch).
         try
         {
             using var scope = _serviceProvider.CreateScope();
@@ -48,8 +46,8 @@ public class AdminApiLogSink : ILogEventSink
 
             if (logPublisher != null)
             {
-                // Usamos la versión asíncrona explícita y gestionamos el Fire-and-Forget aquí
-                // Esto permite que IAsyncLogPublisher sea puro y no oculte Task.Run
+                // Usamos la versión asíncrona explícita y gestionamos el Fire-and-Forget aquí.
+                // Esto asegura que el Sink de Serilog no bloquee el hilo de log.
                 _ = Task.Run(async () => await logPublisher.PublishLogAsync(level, message, exception, properties));
             }
         }
