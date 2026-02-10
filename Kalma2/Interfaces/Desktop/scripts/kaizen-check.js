@@ -16,8 +16,8 @@ if (constitutionPathArg) {
     constitutionPath = path.resolve(process.cwd(), constitutionPathArg);
 } else {
     // Fallback: Try to locate relative to this script file
-    // Script: src/Kalma2/Interfaces/Desktop/scripts/kaizen-check.js
-    // Target: src/Kalma2/CONSTITUTION.md
+    // Script: Kalma2/Interfaces/Desktop/scripts/kaizen-check.js
+    // Target: Kalma2/CONSTITUTION.md
     // Path: ../../../CONSTITUTION.md
     constitutionPath = path.resolve(__dirname, '../../../CONSTITUTION.md');
     console.warn('[KAIZEN WARNING] No constitution path argument provided. Defaulting to relative path:', constitutionPath);
