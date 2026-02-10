@@ -7,6 +7,8 @@ using GesFer.Shared.Back.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
+using CompanyEntity = GesFer.Shared.Back.Domain.Entities.Company;
+
 namespace GesFer.Admin.UnitTests.Handlers.Company;
 
 public class CreateCompanyHandlerTests
@@ -27,7 +29,7 @@ public class CreateCompanyHandlerTests
         var dto = new CreateCompanyDto
         {
             Name = "Empresa Nueva",
-            TaxId = "B12345678",
+            TaxId = "B12345674",
             Address = "Calle Principal 1",
             Phone = "912345678",
             Email = "contacto@empresa.com"
@@ -50,7 +52,7 @@ public class CreateCompanyHandlerTests
     public async Task Handle_WithDuplicateName_ThrowsInvalidOperationException()
     {
         await using var context = CreateContext();
-        context.Companies.Add(new Company
+        context.Companies.Add(new CompanyEntity
         {
             Name = "Empresa Existente",
             Address = "Calle 1"
