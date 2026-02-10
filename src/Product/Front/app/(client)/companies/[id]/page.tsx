@@ -46,7 +46,7 @@ export default function CompanyDetailPage({
       <ProtectedRoute>
         <MainLayout>
           <div className="flex justify-center py-12">
-            <Loading size="lg" text="Cargando empresa..." />
+            <Loading size="lg" text="Cargando company..." />
           </div>
         </MainLayout>
       </ProtectedRoute>
@@ -62,7 +62,7 @@ export default function CompanyDetailPage({
               variant="ghost"
               onClick={() => router.back()}
               className="mb-4"
-              data-testid="shared-button-empresas-back"
+              data-testid="shared-button-companies-back"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Volver
@@ -71,7 +71,7 @@ export default function CompanyDetailPage({
               message={
                 error instanceof Error
                   ? error.message
-                  : "Empresa no encontrada"
+                  : "Company no encontrada"
               }
             />
           </div>
@@ -90,13 +90,13 @@ export default function CompanyDetailPage({
                 variant="ghost"
                 size="icon"
                 onClick={() => router.back()}
-                data-testid="shared-button-empresas-back-icon"
+                data-testid="shared-button-companies-back-icon"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
               <div>
                 <h1 className="text-3xl font-bold">{company.name}</h1>
-                <p className="text-muted-foreground">Detalle de la empresa</p>
+                <p className="text-muted-foreground">Detalle de la company</p>
               </div>
             </div>
             <Button
@@ -114,7 +114,7 @@ export default function CompanyDetailPage({
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Building2 className="h-5 w-5" />
-                  Información de la Empresa
+                  Información de la Company
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">

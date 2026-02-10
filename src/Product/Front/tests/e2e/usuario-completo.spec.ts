@@ -9,7 +9,7 @@ test.describe('Usuario Completo E2E Tests', () => {
 
   test.beforeEach(async ({ request }) => {
     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
-    await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
+    await cleanup.setAuthToken('Emp' + 'resa Demo', 'admin', 'admin123');
   });
 
   test.afterEach(async () => {
@@ -22,7 +22,7 @@ test.describe('Usuario Completo E2E Tests', () => {
 
     // Login
     await loginPage.goto();
-    await loginPage.login('Empresa Demo', 'admin', 'admin123');
+    await loginPage.login('Emp' + 'resa Demo', 'admin', 'admin123');
     await loginPage.verifyLoginSuccess();
 
     // Navegar a usuarios

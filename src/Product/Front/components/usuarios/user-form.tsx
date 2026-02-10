@@ -27,7 +27,7 @@ export function UserForm({
   const tCommon = useTranslations('common');
   const isEditing = !!user;
   
-  // La empresa siempre es la del usuario logueado
+  // La company siempre es la del usuario logueado
   const companyId = loggedUser?.companyId || "";
   
   const [formData, setFormData] = useState<CreateUser | UpdateUser>(

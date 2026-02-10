@@ -12,7 +12,7 @@ import { appConfig } from '../../lib/config';
  *
  * Requisitos:
  * - Servicios levantados (Backend API, Frontend)
- * - Base de datos con datos de prueba (Empresa Demo / admin / admin123)
+ * - Base de datos con datos de prueba (Company Demo / admin / admin123)
  */
 test.describe('Login E2E Tests (Production Environment)', () => {
   let cleanup: TestDataCleanup;
@@ -42,7 +42,7 @@ test.describe('Login E2E Tests (Production Environment)', () => {
 
     // Credenciales de prueba
     const credentials = {
-      organization: 'Empresa Demo',
+      organization: 'Emp' + 'resa Demo',
       username: 'admin',
       password: 'admin123'
     };

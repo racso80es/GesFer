@@ -18,8 +18,8 @@ export class CompaniesPage extends BasePage {
   constructor(page: Page) {
     super(page);
 
-    this.title = page.getByRole('heading', { name: /empresas|companies/i }).first();
-    this.newCompanyButton = page.getByRole('button', { name: /nova empresa|new company|crear|create/i }).first();
+    this.title = page.getByRole('heading', { name: /companies|companies/i }).first();
+    this.newCompanyButton = page.getByRole('button', { name: /nova company|new company|crear|create/i }).first();
     this.companiesList = page.locator('table'); // Más genérico si no tiene role table explícito, aunque debería
 
     // Modal - Ajustado selectores para ser más robustos

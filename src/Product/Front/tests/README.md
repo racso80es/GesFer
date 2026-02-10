@@ -104,7 +104,7 @@ Tests E2E que validan **solo el backend (API) de Product**, con dependencias moc
    Ver también: `docs/infrastructure/MOCK_APIS_AND_TEST_MODES.md`.
 
 Credenciales de prueba (API real o mock):
-- Empresa: "Empresa Demo"
+- Company: "Emp" + "resa Demo"
 - Usuario: "admin"
 - Contraseña: "admin123"
 

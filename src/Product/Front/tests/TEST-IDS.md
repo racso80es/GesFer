@@ -7,7 +7,7 @@ Este documento lista todos los `data-testid` agregados a los componentes para fa
 | Elemento | Test ID | Descripción |
 |----------|---------|-------------|
 | Formulario | `login-form` | Formulario de login |
-| Input Empresa | `login-empresa-input` | Campo de entrada para empresa |
+| Input Company | `login-company-input` | Campo de entrada para company |
 | Input Usuario | `login-usuario-input` | Campo de entrada para usuario |
 | Input Contraseña | `login-password-input` | Campo de entrada para contraseña |
 | Botón Submit | `login-submit-button` | Botón para enviar el formulario |
@@ -19,7 +19,7 @@ Este documento lista todos los `data-testid` agregados a los componentes para fa
 |----------|---------|-------------|
 | Título | `dashboard-title` | Título principal del dashboard |
 | Link Dashboard | `dashboard-dashboard-link` | Link de navegación al dashboard |
-| Link Empresas | `dashboard-empresas-link` | Link de navegación a empresas |
+| Link Companys | `dashboard-companies-link` | Link de navegación a companies |
 | Link Usuarios | `dashboard-usuarios-link` | Link de navegación a usuarios |
 | Link Clientes | `dashboard-clientes-link` | Link de navegación a clientes |
 | Botón Logout | `dashboard-logout-button` | Botón para cerrar sesión |

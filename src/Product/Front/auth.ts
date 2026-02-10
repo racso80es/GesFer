@@ -31,7 +31,7 @@ export const authConfig: NextAuthConfig = {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              empresa: credentials.company,
+              company: credentials.company,
               usuario: credentials.username,
               contraseña: credentials.password,
             }),

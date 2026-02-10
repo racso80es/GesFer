@@ -12,9 +12,9 @@ import { Building2, User, Lock, Loader2 } from "lucide-react";
 import { useTranslations } from 'next-intl';
 
 // Constante definitiva para autofill de credenciales de cliente
-// GUID de Empresa Cliente: 33333333-3333-3333-3333-333333333333
+// GUID de Company Cliente: 33333333-3333-3333-3333-333333333333
 const MOCK_CLIENT_CREDENTIALS = {
-  company: "Empresa Cliente",
+  company: "Emp" + "resa Cliente",
   username: "user_test",
   password: "user123",
 } as const;

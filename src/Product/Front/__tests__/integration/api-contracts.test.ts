@@ -110,7 +110,7 @@ describe("Contratos API - Verificación de Interfaces", () => {
     });
   });
 
-  describe("Contrato: Empresas API", () => {
+  describe("Contrato: Companies API", () => {
     it("debe cumplir contrato de CreateCompany", async () => {
       const createData: CreateCompany = {
         name: "New Company",
@@ -178,7 +178,7 @@ describe("Contratos API - Verificación de Interfaces", () => {
       mockAuthApi.login.mockResolvedValue(loginResponse);
 
       const result = await authApi.login({
-        empresa: "Test Company",
+        company: "Test Company",
         usuario: "testuser",
         contraseña: "password",
       });
