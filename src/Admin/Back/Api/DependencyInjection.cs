@@ -51,9 +51,11 @@ public static class DependencyInjection
         services.AddScoped<IAdminAuthService, AdminAuthService>();
         services.AddScoped<IAdminJwtService, AdminJwtService>();
         services.AddScoped<IAuditLogService, AuditLogService>();
+        services.AddScoped<AdminJsonDataSeeder>();
 
         // Servicios Shared
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
+        services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
 
         // Registrar MediatR para manejar comandos/queries
         // Escanear el ensamblado de Application
