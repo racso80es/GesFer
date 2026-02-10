@@ -76,12 +76,20 @@ Si los front se ejecutan en el host y las APIs en Docker, las URLs deben ser `ht
 3. **Certificado de desarrollo:** En Windows, el primer arranque con HTTPS puede pedir confiar en el certificado de desarrollo de dotnet. Aceptar o ejecutar `dotnet dev-certs https --trust`.
 4. **Reiniciar los fronts** después de cambiar variables de entorno.
 
-### 3.5 Credenciales
+### 3.5 Login Admin falla pero Product funciona (certificado autofirmado)
+
+El login de **Admin** se hace desde el **servidor** Next.js (callback `authorize` de NextAuth). Si la API Admin usa HTTPS con certificado autofirmado, Node.js rechaza la conexión por defecto y el login falla sin error claro en el navegador.
+
+**Solución aplicada:** El Admin Front usa `lib/api/server-fetch.ts` en desarrollo: las peticiones POST a `https://localhost:5011` se realizan con `rejectUnauthorized: false` solo en desarrollo, de modo que el login funciona sin tener que confiar el cert en Node. En producción se usa `fetch` normal.
+
+Si tras actualizar el código el login Admin sigue fallando: comprobar que la API Admin está en ejecución en 5011, que `ADMIN_API_URL` no está sobrescrita en `.env.local`, y revisar `logs/services/AdminFront.log` o la consola del servidor Next.js para el mensaje de error exacto.
+
+### 3.6 Credenciales
 
 - **Admin:** Usuario/contraseña de administrador (seed o creados en Admin API/DB).
 - **Product:** Empresa + Usuario + Contraseña (tenant). Deben existir en la base compartida (Product API).
 
-### 3.6 Errores típicos en pantalla
+### 3.7 Errores típicos en pantalla
 
 | Mensaje / Comportamiento | Causa probable | Acción |
 |--------------------------|----------------|--------|

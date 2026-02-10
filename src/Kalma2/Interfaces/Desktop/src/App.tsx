@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { container, TYPES } from '../../../Core/di/container'
+import { container, TYPES } from '../core/di/container'
 import { IGreetingService } from './services/GreetingService'
 
 interface ActionButtonProps {
