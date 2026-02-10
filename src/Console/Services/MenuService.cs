@@ -302,7 +302,11 @@ public class MenuService
         }
 
         await _startLocalEnvironmentCommand.HandleAsync(input);
-        // Nota: HandleAsync tiene su propio loop de espera 'q' para salir, así que al volver aquí ya se detuvo.
+        // HandleAsync tiene su propio loop de espera 'q' para salir; al volver aquí los servicios ya se detuvieron.
+        Console.WriteLine();
+        Console.WriteLine("Servicios detenidos. Volviendo al menú de acciones atómicas.");
+        Console.WriteLine("Presione cualquier tecla para continuar...");
+        SafeReadKey();
     }
 
     /// <summary>
