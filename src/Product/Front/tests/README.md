@@ -85,6 +85,24 @@ npx playwright test --project=chromium
 
 **Solo tests de API (sin frontend):** `npm run test:e2e:api`. La API debe estar en 5000, o mock en 5002 con `USE_MOCK_API=1` y `API_URL=http://localhost:5002`.
 
+### E2E API (Product Back) con mock
+
+Tests E2E que validan **solo el backend (API) de Product**, con dependencias mockeadas (sin API real ni BD):
+
+1. **Levantar el mock** (Product en 5002):
+   ```powershell
+   cd infrastructure\mock-apis
+   npm install
+   npm start
+   ```
+2. **Ejecutar la suite de API** desde Product Front:
+   ```powershell
+   cd src\Product\Front
+   $env:USE_MOCK_API="1"; $env:API_URL="http://127.0.0.1:5002"
+   npm run test:e2e:api
+   ```
+   Ver también: `docs/infrastructure/MOCK_APIS_AND_TEST_MODES.md`.
+
 Credenciales de prueba (API real o mock):
 - Company: "Emp" + "resa Demo"
 - Usuario: "admin"

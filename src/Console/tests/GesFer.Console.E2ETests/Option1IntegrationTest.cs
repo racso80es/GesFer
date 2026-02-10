@@ -14,6 +14,15 @@ namespace GesFer.Console.E2ETests;
 [Trait("Category", "Integration")]
 public class Option1IntegrationTest
 {
+    /// <summary>
+    /// Verifica que la opción 8 (Ejecutar seeds) no aparece en el menú principal (integrada en Acción 3.2).
+    /// </summary>
+    [Fact]
+    public void MainMenu_ShouldNotContainLegacyOption8_Seeds()
+    {
+        var menuText = MenuService.GetMainMenuTextForTesting();
+        Assert.DoesNotContain("Ejecutar seeds", menuText);
+    }
     private readonly ITestOutputHelper _output;
 
     public Option1IntegrationTest(ITestOutputHelper output)
