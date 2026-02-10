@@ -27,6 +27,12 @@
 5. Fase implementación.
 6. Cierre y PR.
 
+## Cierre y PR
+
+- **Commit:** `feat(e2e): E2E Product Back con mock - spec, plan, docs` (rama `feat/e2e-product-back-mocked`).
+- **Para abrir PR:** `git push -u origin feat/e2e-product-back-mocked` y crear Pull Request hacia `master` en el remoto. Incluir en la descripción el enlace a esta rama y a `openspecs/specs/e2e-product-back-mocked.md`.
+- **Verificación pre-PR:** Con mock levantado en 5002, ejecutar `$env:USE_MOCK_API="1"; $env:API_URL="http://127.0.0.1:5002"; npm run test:e2e:api` en `src/Product/Front` (9 tests deben pasar).
+
 ## Referencias
 
 - `openspecs/actions/spec.md`, `clarify.md`, `planning.md`
