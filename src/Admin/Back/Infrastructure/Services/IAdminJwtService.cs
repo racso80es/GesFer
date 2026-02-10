@@ -1,4 +1,4 @@
-namespace MyCompany.SysAdmin.Infrastructure.Services;
+namespace GesFer.Admin.Infrastructure.Services;
 
 /// <summary>
 /// Servicio para generar y validar tokens JWT administrativos

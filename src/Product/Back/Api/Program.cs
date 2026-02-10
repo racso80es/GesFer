@@ -224,7 +224,11 @@ if (app.Environment.IsDevelopment())
 // CORS debe ir ANTES de UseHttpsRedirection para que las peticiones preflight funcionen.
 // Redirección HTTP → HTTPS en todos los entornos (puerto HTTPS en Development: 5001).
 app.UseCors("AllowAll");
-app.UseHttpsRedirection();
+
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    app.UseHttpsRedirection();
+}
 
 // Autenticación y autorización deben ir en este orden
 app.UseAuthentication();

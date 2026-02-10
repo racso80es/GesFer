@@ -4,7 +4,7 @@ using GesFer.Admin.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
-using MyCompany.SysAdmin.Infrastructure.Services;
+using GesFer.Admin.Infrastructure.Services;
 using Xunit;
 using FluentAssertions;
 
