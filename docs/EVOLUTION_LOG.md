@@ -16,3 +16,4 @@
 [2026-02-10] [Auditoría Frontend] [FALLA CRÍTICA: 178 violaciones de 'empresa' detectadas] [Requiere Acción]
 [2026-02-10] [Refactor Async Logging Cleanup] [Removed Obsolete PublishLog method from IAsyncLogPublisher/AsyncLogPublisher. Updated XML docs. 0 Warnings.] [S+ Stable]
 [2026-02-10] [Fix Integration Test Warnings] [Removed unused field in AdminWebAppFactory. Fixed misleading comments in AdminApiLogSink. Build Clean.] [S+ Stable]
+[2026-02-10] [Fix Integration Test & Refactor Admin Namespace] [Fixed SeedData integration test failure. Renamed MyCompany.SysAdmin to GesFer.Admin. Added 3 new AdminJwtServiceTests. Fixed TestServer HTTPS config. All tests passing.] [S+ Stable]

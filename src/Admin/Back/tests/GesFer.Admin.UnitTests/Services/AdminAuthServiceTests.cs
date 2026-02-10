@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using GesFer.Admin.Back.Domain.Entities;
 using GesFer.Admin.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using MyCompany.SysAdmin.Infrastructure.Services;
+using GesFer.Admin.Infrastructure.Services;
 using Xunit;
 
 namespace GesFer.Admin.UnitTests.Services;
