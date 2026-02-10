@@ -7,11 +7,10 @@ Se ha eliminado la referencia de proyecto `GesFer.Admin.Application` desde `GesF
 - **Solución:** Se han creado DTOs locales (`AdminCompanyDto`, `AdminUpdateCompanyDto`) en `Product.Back.Infrastructure.DTOs` para mapear las respuestas de la API de Admin.
 - **Beneficio:** Desacoplamiento estricto. Product no necesita compilar Admin para funcionar.
 
-### 1.2 Admin -> Product (Deuda Técnica)
-`GesFer.Admin.Api` mantiene una referencia a `GesFer.Infrastructure` (Product).
-- **Razón:** El `DashboardController` de Admin consume `ApplicationDbContext` para métricas globales. `ApplicationDbContext` reside en Product Infrastructure.
-- **Decisión:** Se mantiene esta dependencia temporalmente.
-- **Plan Futuro:** Extraer `ApplicationDbContext` o las interfaces de métricas a una capa `Shared.Infrastructure` o un módulo de persistencia común.
+### 1.2 Admin -> Product (Resuelto)
+Se ha eliminado la referencia de proyecto de `GesFer.Admin.Api` (y de `GesFer.Admin.Infra`) a `GesFer.Infrastructure` (Product).
+- **Solución:** El `DashboardController` de Admin ya no usa `ApplicationDbContext` de Product. Las métricas propias de Admin (p. ej. TotalCompanies) se obtienen de `AdminDbContext`. Las métricas de Product (Users, Articles, Suppliers, Customers) se obtienen vía **HTTP** mediante `IProductApiClient` / `ProductApiClient`, que llama a `GET api/dashboard/stats` de la Product API (autenticación por header `X-Internal-Secret`). No existe dependencia en tiempo de compilación Admin → Product.
+- **Beneficio:** Frontera de dominio respetada; comunicación entre dominios solo por contrato HTTP.
 
 ## 2. Autenticación Inter-servicios
 
