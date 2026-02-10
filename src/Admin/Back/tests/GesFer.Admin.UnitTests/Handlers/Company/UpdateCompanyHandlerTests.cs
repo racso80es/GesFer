@@ -7,6 +7,8 @@ using GesFer.Shared.Back.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
+using CompanyEntity = GesFer.Shared.Back.Domain.Entities.Company;
+
 namespace GesFer.Admin.UnitTests.Handlers.Company;
 
 public class UpdateCompanyHandlerTests
@@ -24,7 +26,7 @@ public class UpdateCompanyHandlerTests
     {
         await using var context = CreateContext();
         var companyId = Guid.NewGuid();
-        context.Companies.Add(new Company
+        context.Companies.Add(new CompanyEntity
         {
             Id = companyId,
             Name = "Nombre Antiguo",
@@ -36,7 +38,7 @@ public class UpdateCompanyHandlerTests
         var dto = new UpdateCompanyDto
         {
             Name = "Nombre Actualizado",
-            TaxId = "B87654321",
+            TaxId = "B87654323",
             Address = "Calle Nueva 2",
             Phone = "987654321",
             Email = "nuevo@empresa.com",
@@ -79,8 +81,8 @@ public class UpdateCompanyHandlerTests
         var id1 = Guid.NewGuid();
         var id2 = Guid.NewGuid();
         context.Companies.AddRange(
-            new Company { Id = id1, Name = "Empresa A", Address = "Calle 1" },
-            new Company { Id = id2, Name = "Empresa B", Address = "Calle 2" }
+            new CompanyEntity { Id = id1, Name = "Empresa A", Address = "Calle 1" },
+            new CompanyEntity { Id = id2, Name = "Empresa B", Address = "Calle 2" }
         );
         await context.SaveChangesAsync();
 

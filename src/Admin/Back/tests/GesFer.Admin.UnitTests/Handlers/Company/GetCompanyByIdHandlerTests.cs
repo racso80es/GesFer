@@ -6,6 +6,8 @@ using GesFer.Shared.Back.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
+using CompanyEntity = GesFer.Shared.Back.Domain.Entities.Company;
+
 namespace GesFer.Admin.UnitTests.Handlers.Company;
 
 public class GetCompanyByIdHandlerTests
@@ -23,7 +25,7 @@ public class GetCompanyByIdHandlerTests
     {
         await using var context = CreateContext();
         var companyId = Guid.NewGuid();
-        context.Companies.Add(new Company
+        context.Companies.Add(new CompanyEntity
         {
             Id = companyId,
             Name = "Empresa Consulta",
@@ -58,7 +60,7 @@ public class GetCompanyByIdHandlerTests
     {
         await using var context = CreateContext();
         var companyId = Guid.NewGuid();
-        context.Companies.Add(new Company
+        context.Companies.Add(new CompanyEntity
         {
             Id = companyId,
             Name = "Empresa Borrada",
