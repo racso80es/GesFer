@@ -9,55 +9,57 @@ using System.Security.Claims;
 namespace GesFer.Api.Controllers;
 
 /// <summary>
-/// Controlador para el dashboard administrativo
-/// Todas las acciones requieren autenticación y rol Admin
+/// Controlador para el dashboard administrativo en Product API
+/// Expone métricas para que sean consumidas por Admin API
 /// </summary>
 [ApiController]
-[Route("api/admin/dashboard")]
-[Authorize(Roles = "Admin")]
+[Route("api/dashboard")]
 public class DashboardController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
-    private readonly IAsyncLogPublisher _logPublisher;
     private readonly ILogger<DashboardController> _logger;
+    private readonly IConfiguration _configuration;
 
     public DashboardController(
         ApplicationDbContext context,
-        IAsyncLogPublisher logPublisher,
-        ILogger<DashboardController> logger)
+        ILogger<DashboardController> logger,
+        IConfiguration configuration)
     {
         _context = context;
-        _logPublisher = logPublisher;
         _logger = logger;
+        _configuration = configuration;
     }
 
     /// <summary>
-    /// Obtiene un resumen de métricas clave del sistema
-    /// Cada petición registra un log de auditoría con el Cursor ID del administrador
+    /// Obtiene estadísticas del sistema para el Dashboard de Admin
+    /// Protegido por Shared Secret (System) o Rol Admin
     /// </summary>
-    /// <returns>Métricas resumidas del sistema</returns>
-    [HttpGet("summary")]
-    [ProducesResponseType(typeof(DashboardSummaryDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetSummary()
+    [HttpGet("stats")]
+    public async Task<IActionResult> GetStats()
     {
+        // Validación manual de Shared Secret (o usar atributo si se mueve a Shared)
+        // Por ahora, validamos header manualmente para no depender de Admin
+        var secretHeader = Request.Headers["X-Internal-Secret"].FirstOrDefault();
+        var configSecret = _configuration["SharedSecret"];
+
+        var isAuthenticated = !string.IsNullOrEmpty(secretHeader) && secretHeader == configSecret;
+
+        if (!isAuthenticated && !User.IsInRole("Admin"))
+        {
+             return Unauthorized();
+        }
+
         try
         {
-            // Extraer el Cursor ID del User.Identity (NameIdentifier claim)
-            var cursorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var username = User.FindFirstValue(ClaimTypes.Name) ?? "Unknown";
-
-            if (string.IsNullOrEmpty(cursorId))
-            {
-                _logger.LogWarning("Intento de acceso al dashboard sin Cursor ID en el token");
-                return Unauthorized(new { message = "Cursor ID no encontrado en el token" });
-            }
-
-            // Obtener métricas del sistema
             var summary = new DashboardSummaryDto
             {
-                TotalCompanies = await _context.Companies.CountAsync(),
+                // TotalCompanies se gestiona en Admin ahora, pero Product tiene copia local?
+                // NO, Product ya no tiene Companies (solo referencia en Shared, pero DbContext filtra).
+                // Sin embargo, ApplicationDbContext tiene DbSet<Company>.
+                // Admin es SSOT de Companies, así que Admin puede contarlas directamente en su BD.
+                // Product cuenta Users, Articles, Suppliers, Customers.
+
+                TotalCompanies = await _context.Companies.CountAsync(), // Product ve las que se han replicado/creado
                 TotalUsers = await _context.Users.CountAsync(),
                 ActiveUsers = await _context.Users.CountAsync(u => u.IsActive && u.DeletedAt == null),
                 TotalArticles = await _context.Articles.CountAsync(),
@@ -66,36 +68,12 @@ public class DashboardController : ControllerBase
                 GeneratedAt = DateTime.UtcNow
             };
 
-            // Registrar log de auditoría de forma asíncrona y robusta (Fail-Open)
-            try
-            {
-                await _logPublisher.PublishAuditLog(
-                    cursorId: cursorId,
-                    username: username,
-                    action: "GetDashboardSummary",
-                    httpMethod: HttpContext.Request.Method,
-                    path: HttpContext.Request.Path,
-                    additionalData: System.Text.Json.JsonSerializer.Serialize(new
-                    {
-                        TotalCompanies = summary.TotalCompanies,
-                        TotalUsers = summary.TotalUsers,
-                        ActiveUsers = summary.ActiveUsers
-                    })
-                );
-            }
-            catch (Exception ex)
-            {
-                // Fail-open: loguear el error de auditoría y continuar (Audit Compliance)
-                // Esto garantiza que el fallo del sistema de auditoría no bloquee la funcionalidad principal
-                _logger.LogWarning(ex, "Fallo en auditoría de dashboard - Operación continúa (Fail-Open)");
-            }
-
             return Ok(summary);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error al obtener resumen del dashboard. Error: {Message}", ex.Message);
-            return StatusCode(500, new { message = "Error interno del servidor", error = ex.Message });
+            _logger.LogError(ex, "Error al obtener estadísticas del dashboard");
+            return StatusCode(500, new { message = "Error interno", error = ex.Message });
         }
     }
 }

@@ -26,7 +26,6 @@
   <ItemGroup>
     <ProjectReference Include="..\application\GesFer.Admin.Application.csproj" />
     <ProjectReference Include="..\Infrastructure\GesFer.Admin.Infra.csproj" />
-    <ProjectReference Include="..\..\..\Product\Back\Infrastructure\GesFer.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

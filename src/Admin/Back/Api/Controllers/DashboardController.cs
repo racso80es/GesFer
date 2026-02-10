@@ -1,11 +1,11 @@
 
 using GesFer.Admin.Infrastructure.Services;
-using GesFer.Infrastructure.Data;
+using GesFer.Admin.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using GesFer.Admin.Application.DTOs;
+using GesFer.Admin.Infrastructure.DTOs;
 
 namespace GesFer.Admin.Api.Controllers;
 
@@ -18,16 +18,19 @@ namespace GesFer.Admin.Api.Controllers;
 [Authorize(Roles = "Admin")]
 public class DashboardController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly AdminDbContext _context;
+    private readonly IProductApiClient _productClient;
     private readonly IAuditLogService _auditLogService;
     private readonly ILogger<DashboardController> _logger;
 
     public DashboardController(
-        ApplicationDbContext context,
+        AdminDbContext context,
+        IProductApiClient productClient,
         IAuditLogService auditLogService,
         ILogger<DashboardController> logger)
     {
         _context = context;
+        _productClient = productClient;
         _auditLogService = auditLogService;
         _logger = logger;
     }
@@ -55,15 +58,21 @@ public class DashboardController : ControllerBase
                 return Unauthorized(new { message = "Cursor ID no encontrado en el token" });
             }
 
-            // Obtener métricas del sistema
+            // 1. Obtener métricas propias de Admin (Companies)
+            var totalCompanies = await _context.Companies.CountAsync();
+
+            // 2. Obtener métricas remotas de Product (Users, Articles, etc.)
+            var productStats = await _productClient.GetDashboardStatsAsync();
+
+            // 3. Combinar
             var summary = new DashboardSummaryDto
             {
-                TotalCompanies = await _context.Companies.CountAsync(),
-                TotalUsers = await _context.Users.CountAsync(),
-                ActiveUsers = await _context.Users.CountAsync(u => u.IsActive && u.DeletedAt == null),
-                TotalArticles = await _context.Articles.CountAsync(),
-                TotalSuppliers = await _context.Suppliers.CountAsync(),
-                TotalCustomers = await _context.Customers.CountAsync(),
+                TotalCompanies = totalCompanies,
+                TotalUsers = productStats.TotalUsers,
+                ActiveUsers = productStats.ActiveUsers,
+                TotalArticles = productStats.TotalArticles,
+                TotalSuppliers = productStats.TotalSuppliers,
+                TotalCustomers = productStats.TotalCustomers,
                 GeneratedAt = DateTime.UtcNow
             };
 

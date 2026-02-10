@@ -1,5 +1,5 @@
 using GesFer.Admin.Api;
-using GesFer.Infrastructure.Data;
+using GesFer.Admin.Infrastructure.Data;
 using Serilog.Sinks.MySQL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpsPolicy;

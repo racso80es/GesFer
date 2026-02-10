@@ -1,4 +1,4 @@
-namespace GesFer.Application.DTOs.Admin;
+namespace GesFer.Admin.Infrastructure.DTOs;
 
 public class DashboardSummaryDto
 {
