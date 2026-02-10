@@ -11,7 +11,7 @@ chcp 65001 >nul
 
 :: --- 1. CONFIGURACIÓN DE ENTORNO ---
 set "ROOT_DIR=%~dp0"
-set "APP_DIR=%ROOT_DIR%src\Kalma2\Interfaces\Desktop"
+set "APP_DIR=%ROOT_DIR%Kalma2\Interfaces\Desktop"
 
 echo ===============================================================================
 echo   GESFER - LANZADOR DE INTERFAZ (ELECTRON)

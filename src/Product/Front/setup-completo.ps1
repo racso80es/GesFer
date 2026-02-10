@@ -89,7 +89,7 @@ Write-Host "La aplicacion estara disponible en:" -ForegroundColor Yellow
 Write-Host "  http://localhost:3000" -ForegroundColor White
 Write-Host ""
 Write-Host "Credenciales de prueba:" -ForegroundColor Yellow
-Write-Host "  Empresa: Empresa Demo" -ForegroundColor White
+Write-Host "  Company: Company Demo" -ForegroundColor White
 Write-Host "  Usuario: admin" -ForegroundColor White
 Write-Host "  Contrasena: admin123" -ForegroundColor White
 Write-Host ""

@@ -24,7 +24,7 @@
     "logout": "Cerrar sesión",
     "username": "Usuario",
     "password": "Contraseña",
-    "company": "Empresa",
+    "company": "Organización",
     "loginError": "Error al iniciar sesión",
     "invalidCredentials": "Credenciales inválidas"
   },

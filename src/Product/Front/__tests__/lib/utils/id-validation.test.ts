@@ -61,20 +61,20 @@ describe("id-validation", () => {
   describe("validateId", () => {
     it("debe validar y retornar IDs válidos", () => {
       const validId = "11111111-1111-1111-1111-111111111111";
-      expect(validateId(validId, "empresa")).toBe(validId);
+      expect(validateId(validId, "company")).toBe(validId);
       expect(validateId("  " + validId + "  ", "usuario")).toBe(validId);
     });
 
     it("debe lanzar error para IDs inválidos", () => {
-      expect(() => validateId("11.1111-111111111111:1", "empresa")).toThrow(
-        "El ID de empresa no es válido"
+      expect(() => validateId("11.1111-111111111111:1", "company")).toThrow(
+        "El ID de company no es válido"
       );
       expect(() => validateId("invalid-id", "usuario")).toThrow(
         "El ID de usuario no es válido"
       );
-      expect(() => validateId("", "empresa")).toThrow("El ID de empresa es requerido");
+      expect(() => validateId("", "company")).toThrow("El ID de company es requerido");
       expect(() => validateId(null, "usuario")).toThrow("El ID de usuario es requerido");
-      expect(() => validateId(undefined, "empresa")).toThrow("El ID de empresa es requerido");
+      expect(() => validateId(undefined, "company")).toThrow("El ID de company es requerido");
     });
   });
 });

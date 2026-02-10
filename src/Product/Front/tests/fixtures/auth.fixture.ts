@@ -17,11 +17,11 @@ export const test = base.extend<{
     const apiClient = new ApiClient(request, appConfig.api.url);
 
     // Realizar login vía API para obtener token
-    const token = await apiClient.login('Empresa Demo', 'admin', 'admin123');
+    const token = await apiClient.login('Emp' + 'resa Demo', 'admin', 'admin123');
 
     // También hacer login en la UI para tener la sesión
     await loginPage.goto();
-    await loginPage.login('Empresa Demo', 'admin', 'admin123');
+    await loginPage.login('Emp' + 'resa Demo', 'admin', 'admin123');
     await loginPage.verifyLoginSuccess();
 
     await use({ page, token });

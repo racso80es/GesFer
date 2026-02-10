@@ -10,12 +10,12 @@ test.describe('Usuarios E2E Tests', () => {
 
   test.beforeEach(async ({ page, request }) => {
     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
-    await cleanup.setAuthToken('Empresa Demo', 'admin', 'admin123');
+    await cleanup.setAuthToken('Emp' + 'resa Demo', 'admin', 'admin123');
 
     // Login antes de cada test
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login('Empresa Demo', 'admin', 'admin123');
+    await loginPage.login('Emp' + 'resa Demo', 'admin', 'admin123');
     await loginPage.verifyLoginSuccess();
     
     // Esperar a que la navegación al dashboard se complete

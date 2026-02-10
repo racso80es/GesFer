@@ -5,13 +5,6 @@ export interface LoginRequest {
   password: string;
 }
 
-// Payload real enviado al backend (contracto legacy)
-export interface LoginPayload {
-  empresa: string;
-  usuario: string;
-  contraseña: string;
-}
-
 export interface LoginResponse {
   userId: string;
   username: string;

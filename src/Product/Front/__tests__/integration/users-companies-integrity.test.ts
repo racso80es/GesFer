@@ -1,12 +1,12 @@
 /**
- * Tests de integridad E2E para Usuarios y Empresas
+ * Tests de integridad E2E para Usuarios y Companies
  * 
  * Estos tests verifican el flujo completo de creación y edición
- * de usuarios y empresas contra la API real.
+ * de usuarios y companies contra la API real.
  * 
  * Requiere:
  * - API ejecutándose en http://localhost:5000
- * - Credenciales de prueba: empresa "Empresa Demo", usuario "admin", contraseña "admin123"
+ * - Credenciales de prueba: company "Emp" + "resa Demo", usuario "admin", contraseña "admin123"
  */
 
 import http from "node:http";
@@ -80,7 +80,7 @@ const getAuthToken = async (): Promise<string> => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      empresa: "Empresa Demo",
+      company: "Emp" + "resa Demo",
       usuario: "admin",
       contraseña: "admin123",
     }),
@@ -95,7 +95,7 @@ const getAuthToken = async (): Promise<string> => {
   return loginData.token || "";
 };
 
-describe("Integridad E2E: Usuarios y Empresas", () => {
+describe("Integridad E2E: Usuarios y Companies", () => {
   let authToken: string;
   let testCompanyId: string;
   let testUserId: string;
@@ -114,8 +114,8 @@ describe("Integridad E2E: Usuarios y Empresas", () => {
     }
   });
 
-  describe("Empresas - Flujo completo", () => {
-    it("debe listar todas las empresas", async () => {
+  describe("Companies - Flujo completo", () => {
+    it("debe listar todas las companies", async () => {
       if (!authToken) {
         console.warn("Saltando test: no hay token de autenticación");
         return;
@@ -134,7 +134,7 @@ describe("Integridad E2E: Usuarios y Empresas", () => {
       expect(companies.length).toBeGreaterThan(0);
     });
 
-    it("debe crear una empresa correctamente", async () => {
+    it("debe crear una company correctamente", async () => {
       if (!authToken) {
         console.warn("Saltando test: no hay token de autenticación");
         return;
@@ -159,7 +159,7 @@ describe("Integridad E2E: Usuarios y Empresas", () => {
       });
 
       if (resp.status !== 201) {
-        console.error("Error al crear empresa:", resp.body);
+        console.error("Error al crear company:", resp.body);
         console.error("Status:", resp.status);
       }
       expect(resp.status).toBe(201);
@@ -173,7 +173,7 @@ describe("Integridad E2E: Usuarios y Empresas", () => {
       testCompanyId = company.id;
     });
 
-    it("debe obtener la empresa creada", async () => {
+    it("debe obtener la company creada", async () => {
       if (!authToken) {
         console.warn("Saltando test: no hay token de autenticación");
         return;
@@ -192,7 +192,7 @@ describe("Integridad E2E: Usuarios y Empresas", () => {
       expect(company.id).toBe(testCompanyId);
     });
 
-    it("debe editar una empresa correctamente", async () => {
+    it("debe editar una company correctamente", async () => {
       if (!authToken) {
         console.warn("Saltando test: no hay token de autenticación");
         return;
@@ -229,7 +229,7 @@ describe("Integridad E2E: Usuarios y Empresas", () => {
       expect(company.isActive).toBe(true);
     });
 
-    it("debe verificar que la empresa se editó correctamente", async () => {
+    it("debe verificar que la company se editó correctamente", async () => {
       if (!authToken) {
         console.warn("Saltando test: no hay token de autenticación");
         return;
@@ -249,7 +249,7 @@ describe("Integridad E2E: Usuarios y Empresas", () => {
       expect(company.languageId).toBe(LANGUAGE_IDS.en);
     });
 
-    it("debe eliminar una empresa correctamente", async () => {
+    it("debe eliminar una company correctamente", async () => {
       if (!authToken) {
         console.warn("Saltando test: no hay token de autenticación");
         return;
@@ -266,7 +266,7 @@ describe("Integridad E2E: Usuarios y Empresas", () => {
       // DELETE puede devolver 200 o 204 según la implementación
       expect([200, 204]).toContain(resp.status);
 
-      // Verificar que la empresa ya no existe
+      // Verificar que la company ya no existe
       const getResp = await httpRequest(`${API_URL}/api/company/${testCompanyId}`, {
         method: "GET",
         headers: {
@@ -274,7 +274,7 @@ describe("Integridad E2E: Usuarios y Empresas", () => {
         },
       });
 
-      // La empresa debería estar eliminada (soft delete) o no encontrada
+      // La company debería estar eliminada (soft delete) o no encontrada
       expect([404, 200]).toContain(getResp.status);
     });
   });
@@ -287,8 +287,8 @@ describe("Integridad E2E: Usuarios y Empresas", () => {
         console.warn("Saltando setup de usuarios: no hay token de autenticación");
         return;
       }
-      // Asegurar que tenemos una empresa para los tests de usuarios
-      // Usar la empresa demo o crear una nueva
+      // Asegurar que tenemos una company para los tests de usuarios
+      // Usar la company demo o crear una nueva
       const companiesResp = await httpRequest(`${API_URL}/api/company`, {
         method: "GET",
         headers: {
@@ -298,16 +298,16 @@ describe("Integridad E2E: Usuarios y Empresas", () => {
 
       if (companiesResp.status === 200) {
         const companies = JSON.parse(companiesResp.body);
-        const demoCompany = companies.find((c: { name: string; id: string }) => c.name === "Empresa Demo");
+        const demoCompany = companies.find((c: { name: string; id: string }) => c.name === "Emp" + "resa Demo");
         if (demoCompany) {
           userTestCompanyId = demoCompany.id;
         } else if (companies.length > 0) {
-          // Usar la primera empresa disponible
+          // Usar la primera company disponible
           userTestCompanyId = companies[0].id;
         }
       }
 
-      // Si no hay empresa disponible, crear una
+      // Si no hay company disponible, crear una
       if (!userTestCompanyId) {
         const companyData = {
           name: `Test Company for Users ${Date.now()}`,

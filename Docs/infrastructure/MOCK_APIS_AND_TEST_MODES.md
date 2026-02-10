@@ -83,7 +83,7 @@ $env:API_URL="http://127.0.0.1:5002"
 npm run test:e2e:api
 ```
 
-Así validas el contrato (request/response) del cliente contra el mock, sin backend real ni frontend.
+Así validas el contrato (request/response) del cliente contra el mock, sin backend real ni frontend. Esta es la configuración recomendada para **tests E2E del Product Back con dependencias mockeadas** (feat/e2e-product-back-mocked); ver `src/Product/Front/tests/README.md` sección "E2E API (Product Back) con mock".
 
 ## 3. E2E completos (cliente + API)
 

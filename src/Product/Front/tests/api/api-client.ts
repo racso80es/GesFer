@@ -70,9 +70,9 @@ export class ApiClient {
    * Nota: La API no devuelve un token, devuelve un LoginResponseDto
    * Para mantener compatibilidad con tests, devolvemos el userId como "token"
    */
-  async login(empresa: string, usuario: string, contraseña: string): Promise<string> {
+  async login(company: string, usuario: string, contraseña: string): Promise<string> {
     const response = await this.post('/api/auth/login', {
-      empresa,
+      company,
       usuario,
       contraseña,
     });
@@ -90,9 +90,9 @@ export class ApiClient {
   /**
    * Obtiene la información completa del login
    */
-  async loginFull(empresa: string, usuario: string, contraseña: string): Promise<LoginResponse> {
+  async loginFull(company: string, usuario: string, contraseña: string): Promise<LoginResponse> {
     const response = await this.post('/api/auth/login', {
-      empresa,
+      company,
       usuario,
       contraseña,
     });
@@ -121,7 +121,7 @@ export class ApiClient {
   }
 
   /**
-   * Elimina una empresa por ID (para limpieza de tests)
+   * Elimina una company por ID (para limpieza de tests)
    */
   async deleteCompany(companyId: string, token: string): Promise<APIResponse> {
     return await this.delete(`/api/company/${companyId}`, this.getAuthHeaders(token));

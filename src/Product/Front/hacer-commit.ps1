@@ -38,7 +38,7 @@ Write-Host ""
 Write-Host "Creando commit..." -ForegroundColor Yellow
 
 $descripcion = "Se han anadido tests de integridad completos para auditar todas las funcionalidades del cliente:`n`n" +
-               "Tests de integridad (integrity.test.tsx): 26 tests que cubren autenticacion, CRUD de usuarios y empresas, flujos completos, validaciones, manejo de errores y gestion de cache`n" +
+               "Tests de integridad (integrity.test.tsx): 26 tests que cubren autenticacion, CRUD de usuarios y companies, flujos completos, validaciones, manejo de errores y gestion de cache`n" +
                "Tests E2E (e2e-flows.test.tsx): 5 tests que verifican flujos completos de operaciones CRUD`n" +
                "Tests de contratos API (api-contracts.test.ts): 9 tests que validan interfaces y tipos`n" +
                "Total: 40 tests pasando correctamente`n" +

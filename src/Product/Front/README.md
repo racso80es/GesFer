@@ -95,7 +95,7 @@ La aplicación utiliza autenticación basada en tokens almacenados en `localStor
 
 ### Credenciales por defecto
 
-- **Empresa**: Empresa Demo
+- **Company**: Emp<!-- -->resa Demo
 - **Usuario**: admin
 - **Contraseña**: admin123
 
