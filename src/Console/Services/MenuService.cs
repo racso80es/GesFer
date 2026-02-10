@@ -89,29 +89,37 @@ public class MenuService
     }
 
     /// <summary>
+    /// Devuelve el texto del menú principal (para tests que verifican contenido sin usar consola).
+    /// </summary>
+    public static string GetMainMenuTextForTesting()
+    {
+        return string.Join(Environment.NewLine,
+            "========================================",
+            "        GesFer - Consola de Gestión",
+            "========================================",
+            "",
+            "Seleccione una opción:",
+            "",
+            "  1. Inicialización completa",
+            "  2. Levantar entorno local (Back/Front) [Shortcut]",
+            "  3. Acciones Atómicas (Docker, Seeds, Servicios)",
+            "  4. Validación de integridad completa",
+            "  5. Cumplimiento de Reglas de Oro",
+            "  6. Gestionar contenedores Docker",
+            "  7. Aplicar migraciones de BD",
+            "  9. Squash de migraciones",
+            "  10. Salir",
+            "  11. Ejecutar tests",
+            "");
+    }
+
+    /// <summary>
     /// Muestra el menú principal
     /// </summary>
     public void ShowMenu()
     {
         Console.Clear();
-        Console.WriteLine("========================================");
-        Console.WriteLine("        GesFer - Consola de Gestión");
-        Console.WriteLine("========================================");
-        Console.WriteLine();
-        Console.WriteLine("Seleccione una opción:");
-        Console.WriteLine();
-        Console.WriteLine("  1. Inicialización completa");
-        Console.WriteLine("  2. Levantar entorno local (Back/Front) [Shortcut]");
-        Console.WriteLine("  3. Acciones Atómicas (Docker, Seeds, Servicios)"); // Nueva Acción 3
-        Console.WriteLine("  4. Validación de integridad completa");
-        Console.WriteLine("  5. Cumplimiento de Reglas de Oro");
-        Console.WriteLine("  6. Gestionar contenedores Docker");
-        Console.WriteLine("  7. Aplicar migraciones de BD");
-        // Opción 8 eliminada (Integrada en 3)
-        Console.WriteLine("  9. Squash de migraciones");
-        Console.WriteLine("  10. Salir");
-        Console.WriteLine("  11. Ejecutar tests");
-        Console.WriteLine();
+        Console.WriteLine(GetMainMenuTextForTesting());
         Console.Write("Opción: ");
     }
 
@@ -215,39 +223,53 @@ public class MenuService
     }
 
     /// <summary>
-    /// Acción 3.1: Inicializar Docker (Lógica extraída de Init Completa)
+    /// Secuencia compartida: Remove → Create → Wait MySQL. Usada por Acción 3.1 y por Inicialización Completa.
     /// </summary>
-    private async Task ExecuteDockerInitializationAsync()
+    private async Task<bool> RunDockerInitSequenceAsync(string msgRemove, string msgCreate, string msgWait)
     {
         Console.WriteLine();
-        Console.WriteLine("[Docker] Limpiando contenedores existentes...");
+        Console.WriteLine(msgRemove);
         var rmResult = await _removeContainersCommand.HandleAsync(new RemoveContainersInput());
-        foreach(var l in rmResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
+        foreach (var l in rmResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
 
         Console.WriteLine();
-        Console.WriteLine("[Docker] Creando contenedores...");
+        Console.WriteLine(msgCreate);
         var createResult = await _createContainersCommand.HandleAsync(new CreateContainersInput());
-        foreach(var l in createResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
-
+        foreach (var l in createResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
         if (createResult == null || !createResult.Success)
         {
             Console.WriteLine("ERROR: No se pudieron crear los contenedores");
+            return false;
         }
-        else
+
+        Console.WriteLine();
+        Console.WriteLine(msgWait);
+        var waitResult = await _waitMySqlReadyCommand.HandleAsync(new WaitMySqlInput());
+        foreach (var l in waitResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
+        if (waitResult == null || !waitResult.Success)
         {
-            Console.WriteLine();
-            Console.WriteLine("[Docker] Esperando a que MySQL esté listo...");
-            var waitResult = await _waitMySqlReadyCommand.HandleAsync(new WaitMySqlInput());
-            foreach(var l in waitResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
-
-            if (waitResult != null && waitResult.Success)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("✓ Docker inicializado correctamente.");
-                Console.ResetColor();
-            }
+            Console.WriteLine("ERROR: MySQL no está listo");
+            return false;
         }
+        Console.WriteLine();
+        return true;
+    }
 
+    /// <summary>
+    /// Acción 3.1: Inicializar Docker (reutiliza RunDockerInitSequenceAsync)
+    /// </summary>
+    private async Task ExecuteDockerInitializationAsync()
+    {
+        var ok = await RunDockerInitSequenceAsync(
+            "[Docker] Limpiando contenedores existentes...",
+            "[Docker] Creando contenedores...",
+            "[Docker] Esperando a que MySQL esté listo...");
+        if (ok)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("✓ Docker inicializado correctamente.");
+            Console.ResetColor();
+        }
         Console.WriteLine();
         Console.WriteLine("Presione cualquier tecla para continuar...");
         SafeReadKey();
@@ -403,42 +425,17 @@ public class MenuService
             return true;
         }
 
-        // 6. Eliminar contenedores
-        Console.WriteLine("[6/12] Limpiando contenedores existentes...");
-        var rmResult = await _removeContainersCommand.HandleAsync(new RemoveContainersInput());
-        if (rmResult?.Logs != null)
+        // 6–8. Secuencia Docker (compartida con Acción 3.1)
+        var dockerOk = await RunDockerInitSequenceAsync(
+            "[6/12] Limpiando contenedores existentes...",
+            "[7/12] Creando contenedores Docker...",
+            "[8/12] Esperando a que MySQL esté listo...");
+        if (!dockerOk)
         {
-            foreach(var l in rmResult.Logs) Console.WriteLine(l);
-        }
-        Console.WriteLine();
-
-        // 7. Crear contenedores
-        Console.WriteLine("[7/12] Creando contenedores Docker...");
-        var createResult = await _createContainersCommand.HandleAsync(new CreateContainersInput());
-        foreach(var l in createResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
-
-        if (createResult == null || !createResult.Success)
-        {
-            Console.WriteLine("ERROR: No se pudieron crear los contenedores");
             Console.WriteLine("Presione cualquier tecla para continuar...");
             SafeReadKey();
             return true;
         }
-        Console.WriteLine();
-
-        // 8. Esperar MySQL
-        Console.WriteLine("[8/12] Esperando a que MySQL esté listo...");
-        var waitResult = await _waitMySqlReadyCommand.HandleAsync(new WaitMySqlInput());
-        foreach(var l in waitResult?.Logs ?? Enumerable.Empty<string>()) Console.WriteLine(l);
-
-        if (waitResult == null || !waitResult.Success)
-        {
-            Console.WriteLine("ERROR: MySQL no está listo");
-            Console.WriteLine("Presione cualquier tecla para continuar...");
-            SafeReadKey();
-            return true;
-        }
-        Console.WriteLine();
 
         // 9. Verificar/Instalar dotnet-ef
         Console.WriteLine("[9/12] Verificando herramienta dotnet-ef...");
