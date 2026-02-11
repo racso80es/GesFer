@@ -51,62 +51,13 @@ public class ApplicationDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
         // Configurar Sequential GUIDs para todas las entidades que heredan de BaseEntity
-        ConfigureSequentialGuids(modelBuilder);
+        modelBuilder.ConfigureSequentialGuids();
 
         // Configurar Soft Delete global para todas las entidades que heredan de BaseEntity
-        ConfigureSoftDelete(modelBuilder);
+        modelBuilder.ConfigureSoftDelete();
 
         // Configurar UTF8 para MySQL
         ConfigureUtf8(modelBuilder);
-    }
-
-    /// <summary>
-    /// Configura el generador de GUIDs secuenciales para todas las propiedades Id de tipo Guid
-    /// en entidades que heredan de BaseEntity.
-    /// 
-    /// Esto mejora el rendimiento de los índices agrupados al reducir la fragmentación
-    /// y permitir un mejor ordenamiento natural por fecha de creación.
-    /// 
-    /// Usa inversión de dependencias para soportar múltiples proveedores de BD (MySQL, SQL Server, PostgreSQL).
-    /// </summary>
-    private void ConfigureSequentialGuids(ModelBuilder modelBuilder)
-    {
-        var entityTypes = modelBuilder.Model.GetEntityTypes()
-            .Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType));
-
-        foreach (var entityType in entityTypes)
-        {
-            // Buscar la propiedad Id de tipo Guid
-            var idProperty = entityType.FindProperty(nameof(BaseEntity.Id));
-
-            if (idProperty != null && idProperty.ClrType == typeof(Guid))
-            {
-                // Configurar el ValueGenerator secuencial
-                // El ServiceProvider se resolverá en el método Next() del ValueGenerator desde el EntityEntry
-                idProperty.SetValueGeneratorFactory((property, entityType) => new SequentialGuidValueGenerator());
-                idProperty.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAdd;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Configura el filtro de Soft Delete globalmente
-    /// </summary>
-    private void ConfigureSoftDelete(ModelBuilder modelBuilder)
-    {
-        var entityTypes = modelBuilder.Model.GetEntityTypes()
-            .Where(e => typeof(BaseEntity).IsAssignableFrom(e.ClrType));
-
-        foreach (var entityType in entityTypes)
-        {
-            var parameter = Expression.Parameter(entityType.ClrType, "e");
-            var property = Expression.Property(parameter, nameof(BaseEntity.DeletedAt));
-            var nullConstant = Expression.Constant(null, typeof(DateTime?));
-            var condition = Expression.Equal(property, nullConstant);
-            var lambda = Expression.Lambda(condition, parameter);
-
-            modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
-        }
     }
 
     /// <summary>
@@ -146,44 +97,14 @@ public class ApplicationDbContext : DbContext
 
     public override int SaveChanges()
     {
-        UpdateAuditFields();
+        ChangeTracker.UpdateAuditFields();
         return base.SaveChanges();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        UpdateAuditFields();
+        ChangeTracker.UpdateAuditFields();
         return base.SaveChangesAsync(cancellationToken);
-    }
-
-    /// <summary>
-    /// Actualiza automáticamente los campos de auditoría (CreatedAt, UpdatedAt, DeletedAt)
-    /// </summary>
-    private void UpdateAuditFields()
-    {
-        var entries = ChangeTracker.Entries<BaseEntity>();
-
-        foreach (var entry in entries)
-        {
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    entry.Entity.CreatedAt = DateTime.UtcNow;
-                    entry.Entity.IsActive = true;
-                    break;
-
-                case EntityState.Modified:
-                    entry.Entity.UpdatedAt = DateTime.UtcNow;
-                    break;
-
-                case EntityState.Deleted:
-                    // Soft Delete
-                    entry.State = EntityState.Modified;
-                    entry.Entity.DeletedAt = DateTime.UtcNow;
-                    entry.Entity.IsActive = false;
-                    break;
-            }
-        }
     }
 }
 
