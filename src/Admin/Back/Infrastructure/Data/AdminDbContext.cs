@@ -35,6 +35,8 @@ public class AdminDbContext : DbContext
 
         // Configurar Shared Entities (Sequential GUIDs + Soft Delete)
         modelBuilder.ConfigureSharedEntities();
+        modelBuilder.ConfigureSequentialGuids();
+        modelBuilder.ConfigureSoftDelete();
     }
 
     public override int SaveChanges()
