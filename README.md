@@ -11,13 +11,12 @@ GesFer es una plataforma ERP moderna diseñada para la gestión operativa y admi
 El objetivo de GesFer es digitalizar y optimizar el flujo de trabajo en plantas de reciclaje, cubriendo desde la entrada de materiales (compras/pesaje) hasta su venta y expedición, pasando por la gestión de inventarios y tarifas complejas basadas en cotizaciones de mercado.
 
 ### Capacidades Clave
-*   **Gestión de Compras:** Albaranes de entrada, Facturas de compra, Autofacturas.
+*   **Gestión de Compras:** Albaranes de entrada, Facturas de compra, Autofacturas, rectificativas, etc.
 *   **Gestión de Ventas:** Albaranes de salida, Facturación a clientes.
-*   **Tarifas Dinámicas:** Gestión de precios por material, familia, grupo y cliente/proveedor.
+*   **Tarifas Dinámicas:** Gestión de precios por material, familia, grupo y cliente/proveedor
 *   **Maestros:** Artículos, Familias, Grupos, Clientes, Proveedores.
 *   **Seguridad:** Gestión granular de Usuarios y Permisos.
 *   **Auditoría:** Registro inmutable de acciones (Logs) para trazabilidad completa.
-
 ---
 
 ## 🏗 Arquitectura del Sistema
