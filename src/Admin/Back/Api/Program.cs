@@ -207,7 +207,10 @@ try
     }
 
     // Redirección HTTP → HTTPS antes de routing (seguridad: todos los entornos; Development: puerto 5011).
-    app.UseHttpsRedirection();
+    if (!app.Environment.IsEnvironment("Testing"))
+    {
+        app.UseHttpsRedirection();
+    }
     app.UseRouting();
     app.UseCors("AllowAll");
     
