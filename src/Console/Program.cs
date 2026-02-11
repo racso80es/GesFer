@@ -351,14 +351,16 @@ class Program
         {
             // Parse args manually
             var token = "";
-            var prompt = "";
+            var content = "";
             var title = "Untitled";
+            var context = "";
 
             for (int i = 1; i < args.Length; i++)
             {
                 if (args[i] == "--token" && i + 1 < args.Length) token = args[++i];
-                else if (args[i] == "--prompt" && i + 1 < args.Length) prompt = args[++i];
+                else if ((args[i] == "--input" || args[i] == "--prompt") && i + 1 < args.Length) content = args[++i];
                 else if (args[i] == "--title" && i + 1 < args.Length) title = args[++i];
+                else if (args[i] == "--context" && i + 1 < args.Length) context = args[++i];
             }
 
             // Instantiate services
@@ -369,8 +371,9 @@ class Program
             var input = new SpecInput
             {
                 Token = token,
-                Prompt = prompt,
-                Title = title
+                Content = content,
+                Title = title,
+                Context = context
             };
 
             try
@@ -480,7 +483,7 @@ class Program
             Console.WriteLine("  5, --golden-rules         Verificar reglas de oro");
             Console.WriteLine("  8, --step8                Ejecutar paso 8 (Init DB)");
             Console.WriteLine("  11, --tests               Ejecutar tests");
-            Console.WriteLine("  --spec                    Generar Spec (requiere --token y --prompt)");
+            Console.WriteLine("  --spec                    Generar Spec (requiere --token y --input, opcional --title, --context)");
             Console.WriteLine("  --clarify                 Clarificar Spec (requiere --token y --spec-path o --context)");
             Console.WriteLine("  --plan                    Generar Plan (requiere --token y --spec, opcional --clarify)");
             Console.WriteLine("  -v, --validate            Validar ecosistema");

@@ -36,7 +36,7 @@ public class SpecCommand : ICommandHandler<SpecInput, string>
         }
 
         // 2. Security Scan
-        var securityResult = _security.Scan(command.Prompt);
+        var securityResult = _security.Scan(command.Content);
         if (securityResult.IsCritical)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -88,15 +88,18 @@ public class SpecCommand : ICommandHandler<SpecInput, string>
             .Replace("{DATE}", DateTime.UtcNow.ToString("yyyy-MM-dd"))
             .Replace("{AUTHOR}", "Agent-Spec")
             .Replace("{CONTEXT}", "Generado desde CLI")
-            .Replace("{GOAL}", command.Prompt)
+            .Replace("{GOAL}", command.Content)
             .Replace("{SECURITY_ANALYSIS}", $"Nivel de Riesgo: {securityResult.RiskLevel}\nHallazgos:\n- " + string.Join("\n- ", securityResult.Findings));
 
-        // 5. Write File
+        // 5. Determine Output Path
+        var baseDir = string.IsNullOrWhiteSpace(command.Context) ? "openspecs/specs" : command.Context;
         var fileName = $"SPEC-{DateTime.UtcNow:yyyyMMdd-HHmm}-{SanitizeFilename(command.Title)}.md";
-        var outputPath = Path.Combine("openspecs/specs", fileName);
+        var outputPath = Path.Combine(baseDir, fileName);
 
+        // Ensure directory exists
         Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
 
+        // 6. Write File
         await File.WriteAllTextAsync(outputPath, content);
 
         Console.ForegroundColor = ConsoleColor.Green;
