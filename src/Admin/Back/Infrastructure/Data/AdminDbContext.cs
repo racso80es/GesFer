@@ -1,6 +1,7 @@
 using GesFer.Admin.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Common;
 using GesFer.Shared.Back.Domain.Entities;
+using GesFer.Shared.Back.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -32,82 +33,21 @@ public class AdminDbContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
-        // Configurar Sequential GUIDs
-        ConfigureSequentialGuids(modelBuilder);
-
-        // Configurar Soft Delete
-        ConfigureSoftDelete(modelBuilder);
-    }
-
-    private void ConfigureSequentialGuids(ModelBuilder modelBuilder)
-    {
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-        {
-            if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
-            {
-                var idProperty = entityType.FindProperty(nameof(BaseEntity.Id));
-                if (idProperty != null && idProperty.ClrType == typeof(Guid))
-                {
-                    idProperty.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAdd;
-                }
-            }
-        }
-    }
-
-    private void ConfigureSoftDelete(ModelBuilder modelBuilder)
-    {
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-        {
-            if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
-            {
-                var parameter = Expression.Parameter(entityType.ClrType, "e");
-                var property = Expression.Property(parameter, nameof(BaseEntity.DeletedAt));
-                var nullConstant = Expression.Constant(null, typeof(DateTime?));
-                var condition = Expression.Equal(property, nullConstant);
-                var lambda = Expression.Lambda(condition, parameter);
-
-                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
-            }
-        }
+        // Configurar Shared Entities (Sequential GUIDs + Soft Delete)
+        modelBuilder.ConfigureSharedEntities();
+        modelBuilder.ConfigureSequentialGuids();
+        modelBuilder.ConfigureSoftDelete();
     }
 
     public override int SaveChanges()
     {
-        UpdateAuditFields();
+        ChangeTracker.UpdateSharedAuditFields();
         return base.SaveChanges();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        UpdateAuditFields();
+        ChangeTracker.UpdateSharedAuditFields();
         return base.SaveChangesAsync(cancellationToken);
-    }
-
-    private void UpdateAuditFields()
-    {
-        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
-        {
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    if (entry.Entity.Id == Guid.Empty)
-                    {
-                        entry.Entity.Id = Guid.NewGuid(); // Fallback si no se genera
-                    }
-                    entry.Entity.CreatedAt = DateTime.UtcNow;
-                    entry.Entity.IsActive = true;
-                    break;
-
-                case EntityState.Modified:
-                    entry.Entity.UpdatedAt = DateTime.UtcNow;
-                    break;
-
-                case EntityState.Deleted:
-                    entry.State = EntityState.Modified;
-                    entry.Entity.DeletedAt = DateTime.UtcNow;
-                    entry.Entity.IsActive = false;
-                    break;
-            }
-        }
     }
 }
