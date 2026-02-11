@@ -1,4 +1,4 @@
-export const LEGACY_COMPANY_KEY = "emp" + "resa";
-export const LEGACY_USER_KEY = "usuario";
-export const LEGACY_PASSWORD_KEY = "contraseña";
-export const DEMO_COMPANY_NAME = "Emp" + "resa Demo";
+export const DEMO_COMPANY_NAME = "Empresa Demo";
+export const ADMIN_COMPANY_NAME = "Empresa Admin";
+export const CLIENT_COMPANY_NAME = "Empresa Cliente";
+export const TEST_COMPANY_NAME = "Empresa Test";

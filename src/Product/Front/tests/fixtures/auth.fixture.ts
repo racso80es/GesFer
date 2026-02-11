@@ -2,6 +2,7 @@ import { test as base, Page } from '@playwright/test';
 import { LoginPage } from '../page-objects/LoginPage';
 import { ApiClient } from '../api/api-client';
 import { appConfig } from '../../lib/config';
+import { DEMO_COMPANY_NAME } from '../../lib/legacy-constants';
 
 /**
  * Fixture para autenticación
@@ -17,11 +18,11 @@ export const test = base.extend<{
     const apiClient = new ApiClient(request, appConfig.api.url);
 
     // Realizar login vía API para obtener token
-    const token = await apiClient.login('Emp' + 'resa Demo', 'admin', 'admin123');
+    const token = await apiClient.login(DEMO_COMPANY_NAME, 'admin', 'admin123');
 
     // También hacer login en la UI para tener la sesión
     await loginPage.goto();
-    await loginPage.login('Emp' + 'resa Demo', 'admin', 'admin123');
+    await loginPage.login(DEMO_COMPANY_NAME, 'admin', 'admin123');
     await loginPage.verifyLoginSuccess();
 
     await use({ page, token });
