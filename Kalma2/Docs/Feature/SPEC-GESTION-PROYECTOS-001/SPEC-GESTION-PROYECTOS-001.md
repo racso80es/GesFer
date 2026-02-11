@@ -8,7 +8,7 @@ Esta funcionalidad sigue una arquitectura de "Master Control Program" (MCP), don
 ## 2. Alcance (Scope)
 Esta especificación cubre la **Fase 1** de la implementación:
 1.  Definición de la estructura de configuración JSON.
-2.  Interfaz de usuario para selección y visualización de proyectos (Pestañas).
+2.  Interfaz de usuario para selección y visualización de proyectos (Tabs, pestañas, gatgets, etc. (MCP)).
 3.  Funcionalidad básica de acceso a servicios (Backend/Frontend) mediante enlaces.
 4.  Verificación visual del estado de los servicios (`Verify_Status`).
 
