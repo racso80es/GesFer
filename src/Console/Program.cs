@@ -395,14 +395,14 @@ class Program
         {
             // Parse args manually
             var token = "";
-            var specPath = "";
-            var context = "";
+            var specLocation = "";
+            var content = "";
 
             for (int i = 1; i < args.Length; i++)
             {
                 if (args[i] == "--token" && i + 1 < args.Length) token = args[++i];
-                else if (args[i] == "--spec-path" && i + 1 < args.Length) specPath = args[++i];
-                else if (args[i] == "--context" && i + 1 < args.Length) context = args[++i];
+                else if ((args[i] == "--spec" || args[i] == "--spec-path") && i + 1 < args.Length) specLocation = args[++i];
+                else if ((args[i] == "--input" || args[i] == "--context") && i + 1 < args.Length) content = args[++i];
             }
 
             // Instantiate services
@@ -413,8 +413,8 @@ class Program
             var input = new ClarifyInput
             {
                 Token = token,
-                SpecPath = specPath,
-                Context = context
+                SpecLocation = specLocation,
+                Content = content
             };
 
             try
@@ -484,7 +484,7 @@ class Program
             Console.WriteLine("  8, --step8                Ejecutar paso 8 (Init DB)");
             Console.WriteLine("  11, --tests               Ejecutar tests");
             Console.WriteLine("  --spec                    Generar Spec (requiere --token y --input, opcional --title, --context)");
-            Console.WriteLine("  --clarify                 Clarificar Spec (requiere --token y --spec-path o --context)");
+            Console.WriteLine("  --clarify                 Clarificar Spec (requiere --token, --spec, --input)");
             Console.WriteLine("  --plan                    Generar Plan (requiere --token y --spec, opcional --clarify)");
             Console.WriteLine("  -v, --validate            Validar ecosistema");
             Environment.Exit(1);
