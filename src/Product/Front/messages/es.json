@@ -265,10 +265,10 @@
     "editProfileDescription": "Modifica tu información personal"
   },
   "myCompany": {
-    "title": "Mi Empresa",
+    "title": "Mi Organización",
     "loading": "Cargando...",
-    "notFound": "Empresa no encontrada",
-    "updatedSuccessfully": "Empresa actualizada correctamente",
+    "notFound": "Organización no encontrada",
+    "updatedSuccessfully": "Organización actualizada correctamente",
     "updateError": "Error al actualizar la empresa"
   }
 }

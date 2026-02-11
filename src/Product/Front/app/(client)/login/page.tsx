@@ -10,11 +10,12 @@ import { Button } from "@shared/components/shared/Button";
 import { ErrorMessage } from "@shared/components/ui/error-message";
 import { Building2, User, Lock, Loader2 } from "lucide-react";
 import { useTranslations } from 'next-intl';
+import { CLIENT_COMPANY_NAME } from "@/lib/legacy-constants";
 
 // Constante definitiva para autofill de credenciales de cliente
 // GUID de Company Cliente: 33333333-3333-3333-3333-333333333333
 const MOCK_CLIENT_CREDENTIALS = {
-  company: "Emp" + "resa Cliente",
+  company: CLIENT_COMPANY_NAME,
   username: "user_test",
   password: "user123",
 } as const;

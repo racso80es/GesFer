@@ -3,6 +3,7 @@ import { LoginPage } from '../page-objects/LoginPage';
 import { CompaniesPage } from '../page-objects/CompaniesPage';
 import { TestDataCleanup } from '../helpers/test-data-cleanup';
 import { appConfig } from '../../lib/config';
+import { DEMO_COMPANY_NAME } from '../../lib/legacy-constants';
 
 test.describe('Companies E2E Tests', () => {
   let cleanup: TestDataCleanup;
@@ -14,7 +15,7 @@ test.describe('Companies E2E Tests', () => {
 
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login('Emp' + 'resa Demo', 'admin', 'admin123');
+    await loginPage.login(DEMO_COMPANY_NAME, 'admin', 'admin123');
     await loginPage.verifyLoginSuccess();
 
     // Esperar navegación

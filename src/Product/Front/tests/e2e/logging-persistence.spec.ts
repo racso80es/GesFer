@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { ApiClient } from '../api/api-client';
+import { DEMO_COMPANY_NAME } from '../../lib/legacy-constants';
 
 // Configuración de URLs para tests
 const API_URL = process.env.API_URL || 'http://localhost:5000';
@@ -61,7 +62,7 @@ test.describe('Logging Persistence Test', () => {
     const passwordInput = page.locator('input[type="password"]');
     const loginButton = page.getByRole('button', { name: /iniciar.*sesión|login/i }).first();
     
-    await companyInput.fill('Emp' + 'resa Demo');
+    await companyInput.fill(DEMO_COMPANY_NAME);
     await usuarioInput.fill('usuario-inexistente');
     await passwordInput.fill('password-incorrecta');
     await loginButton.click();

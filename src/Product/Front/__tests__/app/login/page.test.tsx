@@ -2,6 +2,7 @@ import { render, screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import LoginPage from '@/app/(client)/login/page'
 import { useAuth } from '@/contexts/auth-context'
+import { CLIENT_COMPANY_NAME } from '@/lib/legacy-constants'
 
 // Mock the auth context
 jest.mock('@/contexts/auth-context')
@@ -55,7 +56,7 @@ describe('LoginPage', () => {
     const usuarioInput = screen.getByLabelText(/usuario|username/i) as HTMLInputElement
     const contraseñaInput = screen.getByLabelText(/contraseña|password/i) as HTMLInputElement
     
-    expect(companyInput.value).toBe('Company Cliente')
+    expect(companyInput.value).toBe(CLIENT_COMPANY_NAME)
     expect(usuarioInput.value).toBe('user_test')
     expect(contraseñaInput.value).toBe('user123')
   })
@@ -74,7 +75,7 @@ describe('LoginPage', () => {
     
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith({
-        company: 'Company Cliente',
+        company: CLIENT_COMPANY_NAME,
         username: 'user_test',
         password: 'user123',
       })
