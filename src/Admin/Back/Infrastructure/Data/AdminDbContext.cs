@@ -1,6 +1,7 @@
 using GesFer.Admin.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Common;
 using GesFer.Shared.Back.Domain.Entities;
+using GesFer.Shared.Back.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -32,22 +33,21 @@ public class AdminDbContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
-        // Configurar Sequential GUIDs
+        // Configurar Shared Entities (Sequential GUIDs + Soft Delete)
+        modelBuilder.ConfigureSharedEntities();
         modelBuilder.ConfigureSequentialGuids();
-
-        // Configurar Soft Delete
         modelBuilder.ConfigureSoftDelete();
     }
 
     public override int SaveChanges()
     {
-        ChangeTracker.UpdateAuditFields();
+        ChangeTracker.UpdateSharedAuditFields();
         return base.SaveChanges();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        ChangeTracker.UpdateAuditFields();
+        ChangeTracker.UpdateSharedAuditFields();
         return base.SaveChangesAsync(cancellationToken);
     }
 }

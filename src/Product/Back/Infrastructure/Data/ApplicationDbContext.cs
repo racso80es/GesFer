@@ -2,6 +2,7 @@ using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Common;
 using GesFer.Shared.Back.Domain.Services;
+using GesFer.Shared.Back.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -50,11 +51,8 @@ public class ApplicationDbContext : DbContext
         // Aplicar configuraciones de entidades
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
-        // Configurar Sequential GUIDs para todas las entidades que heredan de BaseEntity
-        modelBuilder.ConfigureSequentialGuids();
-
-        // Configurar Soft Delete global para todas las entidades que heredan de BaseEntity
-        modelBuilder.ConfigureSoftDelete();
+        // Configurar Shared Entities (Sequential GUIDs + Soft Delete)
+        modelBuilder.ConfigureSharedEntities();
 
         // Configurar UTF8 para MySQL
         ConfigureUtf8(modelBuilder);
@@ -97,13 +95,13 @@ public class ApplicationDbContext : DbContext
 
     public override int SaveChanges()
     {
-        ChangeTracker.UpdateAuditFields();
+        ChangeTracker.UpdateSharedAuditFields();
         return base.SaveChanges();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        ChangeTracker.UpdateAuditFields();
+        ChangeTracker.UpdateSharedAuditFields();
         return base.SaveChangesAsync(cancellationToken);
     }
 }
