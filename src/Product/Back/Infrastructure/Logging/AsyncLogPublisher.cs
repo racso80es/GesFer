@@ -34,6 +34,19 @@ public class AsyncLogPublisher : IAsyncLogPublisher
         _auditLogsEndpoint = _configuration["AdminApi:AuditLogsEndpoint"] ?? "/api/admin/audit-logs";
     }
 
+    private void AddAuthorizationHeader(HttpClient client)
+    {
+        var secret = _configuration["SharedSecret"];
+        if (!string.IsNullOrEmpty(secret))
+        {
+            if (client.DefaultRequestHeaders.Contains("X-Internal-Secret"))
+            {
+                client.DefaultRequestHeaders.Remove("X-Internal-Secret");
+            }
+            client.DefaultRequestHeaders.Add("X-Internal-Secret", secret);
+        }
+    }
+
     /// <summary>
     /// Publica un log de forma asíncrona
     /// </summary>
@@ -44,6 +57,7 @@ public class AsyncLogPublisher : IAsyncLogPublisher
             var httpClient = _httpClientFactory.CreateClient("AdminApi");
             httpClient.BaseAddress = new Uri(_adminApiBaseUrl);
             httpClient.Timeout = TimeSpan.FromSeconds(5); // Timeout corto para no bloquear
+            AddAuthorizationHeader(httpClient);
 
             var logData = new
             {
@@ -89,6 +103,7 @@ public class AsyncLogPublisher : IAsyncLogPublisher
             var httpClient = _httpClientFactory.CreateClient("AdminApi");
             httpClient.BaseAddress = new Uri(_adminApiBaseUrl);
             httpClient.Timeout = TimeSpan.FromSeconds(5); // Timeout corto para no bloquear
+            AddAuthorizationHeader(httpClient);
 
             var auditLogData = new
             {
