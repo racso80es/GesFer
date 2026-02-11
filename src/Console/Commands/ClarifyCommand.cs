@@ -17,9 +17,6 @@ public class ClarifyCommand : ICommandHandler<ClarifyInput, string>
     private readonly ISecurityScanner _security;
     private readonly LogService _logger;
 
-    // Required sections in a Spec
-    private readonly string[] _requiredSections = { "Context", "Goal", "Analysis", "Security", "Implementation Plan", "Verification" };
-
     public ClarifyCommand(IAuditorService auditor, ISecurityScanner security, LogService logger)
     {
         _auditor = auditor;
@@ -30,7 +27,7 @@ public class ClarifyCommand : ICommandHandler<ClarifyInput, string>
     public async Task<CommandResult<string>> HandleAsync(ClarifyInput command)
     {
         Console.WriteLine($"[Clarify] Iniciando proceso de clarificación...");
-        _logger.WriteLog($"[Clarify] Start process. Spec: {command.SpecPath}");
+        _logger.WriteLog($"[Clarify] Start process. Spec: {command.SpecLocation}");
 
         // 1. Audit Token Validation
         if (!_auditor.ValidateToken(command.Token))
@@ -41,169 +38,107 @@ public class ClarifyCommand : ICommandHandler<ClarifyInput, string>
             return CommandResult<string>.Fail(msg);
         }
 
-        // 2. Load Content
-        string contentToAnalyze = command.Context;
-        string specName = "AdHocContext";
-
-        if (!string.IsNullOrWhiteSpace(command.SpecPath))
+        // 2. Validate Spec Location
+        if (string.IsNullOrWhiteSpace(command.SpecLocation) || !File.Exists(command.SpecLocation))
         {
-            if (!File.Exists(command.SpecPath))
+            var msg = $"Archivo Spec no encontrado o ruta vacía: {command.SpecLocation}";
+            _logger.WriteError(msg);
+            return CommandResult<string>.Fail(msg);
+        }
+
+        string specName = Path.GetFileNameWithoutExtension(command.SpecLocation);
+        string specDir = Path.GetDirectoryName(command.SpecLocation) ?? string.Empty;
+
+        // 3. Determine and Enforce Output Directory Structure
+        string targetDir = specDir;
+
+        // Check if we are in a Feature directory context (Kalma2/Docs/Feature/...)
+        // and if the file is not already in its own dedicated folder.
+        // We look for "Feature" in the path and check if the parent folder name matches the spec name.
+        bool isFeatureContext = specDir.Contains("Feature", StringComparison.OrdinalIgnoreCase);
+        string parentDirName = new DirectoryInfo(specDir).Name;
+
+        if (isFeatureContext && !string.Equals(parentDirName, specName, StringComparison.OrdinalIgnoreCase))
+        {
+            // Migration Logic: Create dedicated folder and move spec
+            targetDir = Path.Combine(specDir, specName);
+            try
             {
-                var msg = $"Archivo Spec no encontrado: {command.SpecPath}";
-                _logger.WriteError(msg);
-                return CommandResult<string>.Fail(msg);
+                if (!Directory.Exists(targetDir))
+                {
+                    Directory.CreateDirectory(targetDir);
+                    _logger.WriteLog($"[Clarify] Created dedicated feature directory: {targetDir}");
+                }
+
+                string newSpecPath = Path.Combine(targetDir, Path.GetFileName(command.SpecLocation));
+                File.Move(command.SpecLocation, newSpecPath);
+                _logger.WriteLog($"[Clarify] Migrated spec file to: {newSpecPath}");
+
+                // Update spec location for further processing
+                command.SpecLocation = newSpecPath;
             }
-            contentToAnalyze = await File.ReadAllTextAsync(command.SpecPath);
-            specName = Path.GetFileNameWithoutExtension(command.SpecPath);
-        }
-
-        if (string.IsNullOrWhiteSpace(contentToAnalyze))
-        {
-            return CommandResult<string>.Fail("No hay contenido para analizar (SpecPath vacío o Context vacío).");
-        }
-
-        // 3. Gap Analysis
-        var gaps = IdentifyGaps(contentToAnalyze);
-
-        if (!gaps.Any())
-        {
-            Console.WriteLine("[Clarify] No se detectaron gaps obvios. El spec parece completo estructuralmente.");
-            _auditor.LogAccess("CLARIFY_ACTION", "Authorized", "SUCCESS", "No Gaps Found");
-            return CommandResult<string>.Ok("", "No se requieren clarificaciones.");
-        }
-
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine($"[Clarify] Se detectaron {gaps.Count} áreas que requieren clarificación:");
-        Console.ResetColor();
-
-        // 4. Interactive Dialogue & Security Scan
-        var clarifications = new Dictionary<string, string>();
-
-        foreach (var gap in gaps)
-        {
-            Console.WriteLine($"\n--- GAP DETECTADO: {gap.ToUpper()} ---");
-            Console.WriteLine($"Por favor, provee detalles para '{gap}' (o presiona Enter para omitir):");
-
-            Console.Write("> ");
-            var input = Console.ReadLine() ?? string.Empty;
-
-            if (string.IsNullOrWhiteSpace(input))
+            catch (Exception ex)
             {
-                Console.WriteLine("  (Omitido)");
-                continue;
-            }
-
-            // Security Scan on Input
-            var securityResult = _security.Scan(input);
-            if (securityResult.IsCritical)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"[SEGURIDAD] Entrada rechazada. Riesgo Crítico: {string.Join(", ", securityResult.Findings)}");
-                Console.ResetColor();
-                _auditor.LogAccess("CLARIFY_INPUT", "Authorized", "BLOCKED", $"Critical Risk in input for {gap}");
-                continue;
-            }
-            else if (securityResult.RiskLevel == "High")
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"[SEGURIDAD] Advertencia: {string.Join(", ", securityResult.Findings)}");
-                Console.ResetColor();
-            }
-
-            clarifications.Add(gap, input);
-        }
-
-        if (!clarifications.Any())
-        {
-            Console.WriteLine("\n[Clarify] No se registraron clarificaciones.");
-            return CommandResult<string>.Ok("", "Proceso finalizado sin cambios.");
-        }
-
-        // 5. Persistence
-        var outputPath = await SaveClarificationsAsync(specName, clarifications);
-
-        _auditor.LogAccess("CLARIFY_ACTION", "Authorized", "SUCCESS", $"Clarifications saved to {outputPath}");
-
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"\n[Clarify] Reporte generado exitosamente: {outputPath}");
-        Console.ResetColor();
-
-        return CommandResult<string>.Ok(outputPath, "Clarificaciones guardadas.");
-    }
-
-    private List<string> IdentifyGaps(string content)
-    {
-        var gaps = new List<string>();
-
-        // Check for missing sections
-        foreach (var section in _requiredSections)
-        {
-            // Simple heuristic: check if section header exists (case insensitive)
-            if (!content.Contains($"# {section}", StringComparison.OrdinalIgnoreCase) &&
-                !content.Contains($"## {section}", StringComparison.OrdinalIgnoreCase))
-            {
-                gaps.Add($"Missing Section: {section}");
+                _logger.WriteError($"[Clarify] Failed to migrate spec file structure: {ex.Message}", ex);
+                return CommandResult<string>.Fail($"Error migrando estructura de archivos: {ex.Message}");
             }
         }
 
-        // Check for TODOs
-        if (content.Contains("TODO", StringComparison.OrdinalIgnoreCase))
-        {
-            gaps.Add("Unresolved TODOs");
-        }
+        // 4. Generate Clarification File
+        string clarificationFileName = $"{specName}_CLARIFICATIONS.md";
+        string clarificationPath = Path.Combine(targetDir, clarificationFileName);
 
-        // Check for specific vague terms (simple heuristic)
-        if (content.Contains("TBD") || content.Contains("To Be Defined"))
-        {
-            gaps.Add("TBD / To Be Defined markers");
-        }
-
-        return gaps;
-    }
-
-    private async Task<string> SaveClarificationsAsync(string specName, Dictionary<string, string> clarifications)
-    {
         var sb = new StringBuilder();
-        sb.AppendLine($"# CLARIFICATION REPORT: {specName}");
-        sb.AppendLine($"**Date:** {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
-        sb.AppendLine($"**Agent:** Clarification-Specialist (via GesFer.Console)");
-        sb.AppendLine();
-        sb.AppendLine("## Resolved Gaps");
-        sb.AppendLine();
 
-        foreach (var kvp in clarifications)
+        // If file exists, append; otherwise create new
+        if (File.Exists(clarificationPath))
         {
-            sb.AppendLine($"### {kvp.Key}");
-            sb.AppendLine(kvp.Value);
             sb.AppendLine();
-        }
-
-        var fileName = $"{specName}_CLARIFICATIONS_{DateTime.UtcNow:yyyyMMdd-HHmm}.md";
-        // If specName came from a file path, we might want to save next to it.
-        // Assuming openspecs/specs/ structure for now based on context.
-        var outputDir = "openspecs/specs";
-
-        // If specName was a path, let's try to respect that directory if possible,
-        // otherwise default to openspecs/specs
-        if (specName.Contains(Path.DirectorySeparatorChar) || specName.Contains(Path.AltDirectorySeparatorChar))
-        {
-             // This is likely not happening due to Path.GetFileNameWithoutExtension above,
-             // but good for robustness if logic changes.
-             outputDir = Path.GetDirectoryName(specName) ?? "openspecs/specs";
-        }
-        else if (Directory.Exists("openspecs/specs"))
-        {
-            outputDir = "openspecs/specs";
+            sb.AppendLine($"---");
+            sb.AppendLine();
+            sb.AppendLine($"### Update: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
         }
         else
         {
-            outputDir = "docs/clarifications"; // Fallback
+            sb.AppendLine($"# CLARIFICATION REPORT: {specName}");
+            sb.AppendLine($"**Created:** {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
+            sb.AppendLine($"**Spec File:** {Path.GetFileName(command.SpecLocation)}");
+            sb.AppendLine();
         }
 
-        Directory.CreateDirectory(outputDir);
-        var outputPath = Path.Combine(outputDir, fileName);
+        if (!string.IsNullOrWhiteSpace(command.Content))
+        {
+            // Security Scan on Input
+            var securityResult = _security.Scan(command.Content);
+            if (securityResult.IsCritical)
+            {
+                 var msg = $"[SEGURIDAD] Entrada rechazada. Riesgo Crítico: {string.Join(", ", securityResult.Findings)}";
+                 Console.ForegroundColor = ConsoleColor.Red;
+                 Console.WriteLine(msg);
+                 Console.ResetColor();
+                 _auditor.LogAccess("CLARIFY_INPUT", "Authorized", "BLOCKED", msg);
+                 return CommandResult<string>.Fail(msg);
+            }
 
-        await File.WriteAllTextAsync(outputPath, sb.ToString());
-        return outputPath;
+            sb.AppendLine("## Input / Context");
+            sb.AppendLine(command.Content);
+            sb.AppendLine();
+        }
+        else
+        {
+            sb.AppendLine("## Analysis");
+            sb.AppendLine("No additional context provided. Pending manual review.");
+            sb.AppendLine();
+        }
+
+        // 5. Write to File
+        await File.AppendAllTextAsync(clarificationPath, sb.ToString());
+
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"[Clarify] Archivo de clarificación actualizado/creado: {clarificationPath}");
+        Console.ResetColor();
+        _auditor.LogAccess("CLARIFY_ACTION", "Authorized", "SUCCESS", $"Clarification saved to {clarificationPath}");
+
+        return CommandResult<string>.Ok(clarificationPath, "Clarificación registrada exitosamente.");
     }
 }

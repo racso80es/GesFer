@@ -8,19 +8,24 @@ Esta acción se implementa mediante el comando `GesFer.Console --clarify`.
 
 ### Sintaxis
 ```bash
-dotnet run --project src/Console/GesFer.Console.csproj -- --clarify --token <AUDITOR_TOKEN> [--spec-path <PATH> | --context <TEXT>]
+dotnet run --project src/Console/GesFer.Console.csproj -- --clarify --token <AUDITOR_TOKEN> --spec <SPEC_PATH> [--input <CONTENT> | --context <CONTENT>]
 ```
+
+### Argumentos
+*   `--token`: Token de autorización del auditor (`AUDITOR-PROCESS`).
+*   `--spec`: Ruta relativa o absoluta del archivo de especificación (.md) a clarificar.
+*   `--input` (o `--context`): Contenido de la clarificación, dudas o gaps identificados.
 
 ### Flujo de Ejecución
 1.  **Validación de Token:** Se verifica el token del auditor (`AUDITOR-PROCESS`).
-2.  **Análisis de Gaps:** Se escanea el contenido en busca de:
-    *   Secciones obligatorias faltantes (e.g., Security, Architecture).
-    *   Marcadores de deuda técnica ("TODO", "TBD").
-    *   Términos vagos o ambiguos.
-3.  **Diálogo Interactivo:** El sistema solicita al usuario (o agente) que complete la información faltante para cada gap detectado.
-4.  **Escaneo de Seguridad:** Cada entrada del usuario es analizada por el `SecurityScanner` para prevenir inyecciones o fugas de datos sensibles.
-5.  **Persistencia:** Las clarificaciones se guardan en un archivo Markdown anexo (`{SpecName}_CLARIFICATIONS.md`) en la carpeta `openspecs/specs/` (o la ruta correspondiente).
-6.  **Auditoría:** Todas las interacciones se registran en `docs/audits/ACCESS_LOG.md`.
+2.  **Validación de Ruta:** Se verifica que el archivo especificado en `--spec` exista.
+3.  **Determinación de Contexto:**
+    *   Si la especificación pertenece a una Feature (`Kalma2/Docs/Feature/`), se asegura que exista una carpeta dedicada para la feature (e.g., `Kalma2/Docs/Feature/{SpecName}/`).
+    *   Si no existe, se crea y se mueve el archivo original allí (migración automática).
+4.  **Generación de Clarificaciones:** Se crea un archivo `{SpecName}_CLARIFICATIONS.md` en la misma carpeta que la especificación original.
+5.  **Escaneo de Seguridad:** Cada entrada del usuario es analizada por el `SecurityScanner` para prevenir inyecciones o fugas de datos sensibles.
+6.  **Persistencia:** El contenido de la clarificación se añade al archivo generado.
+7.  **Auditoría:** Todas las interacciones se registran en `docs/audits/ACCESS_LOG.md`.
 
 ## Integración con Agentes
 El agente **Clarification Specialist** (`openspecs/agents/clarifier.json`) es el responsable de invocar esta acción cuando detecta especificaciones incompletas.
@@ -28,3 +33,4 @@ El agente **Clarification Specialist** (`openspecs/agents/clarifier.json`) es el
 ## Estándares de Calidad
 *   **Grado S+:** Requiere persistencia auditada y validación de seguridad en tiempo real.
 *   **Knowledge-Arch:** Los resultados alimentan directamente la "consciencia" del proyecto, evitando re-trabajo.
+*   **Estructura de Directorios:** En Features, cada especificación debe residir en su propia carpeta: `Kalma2/Docs/Feature/{SpecName}/{SpecName}.md` y `Kalma2/Docs/Feature/{SpecName}/{SpecName}_CLARIFICATIONS.md`.
