@@ -7,6 +7,7 @@ chcp 65001 >nul
 :: DESCRIPCIÓN: Lanzador oficial para la interfaz de usuario Electron (Calma-Desktop).
 :: AUTOR: Tekton Agent (Generado automáticamente)
 :: SEGURIDAD: Validación estricta de rutas y dependencias.
+:: ID: SPEC-ACCESIBILIDAD-ELECTRON-003
 :: =================================================================================================
 
 :: --- 1. CONFIGURACIÓN DE ENTORNO ---
@@ -41,6 +42,13 @@ if not exist "%APP_DIR%" (
     echo         "%APP_DIR%"
     goto :error_exit
 )
+
+if not exist "%APP_DIR%\package.json" (
+    echo [ERROR] No se encontró package.json en:
+    echo         "%APP_DIR%"
+    goto :error_exit
+)
+
 pushd "%APP_DIR%"
 echo    ✓ Directorio válido.
 
