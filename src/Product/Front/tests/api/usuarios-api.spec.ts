@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { ApiClient } from '../api/api-client';
 import { TestDataCleanup } from '../helpers/test-data-cleanup';
 import { appConfig } from '../../lib/config';
+import { DEMO_COMPANY_NAME } from '../../lib/legacy-constants';
 
 test.describe('API - Usuarios', () => {
   let apiClient: ApiClient;
@@ -14,8 +15,8 @@ test.describe('API - Usuarios', () => {
     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
     
     // Login antes de cada test
-    authToken = await apiClient.login('Emp' + 'resa Demo', 'admin', 'admin123');
-    await cleanup.setAuthToken('Emp' + 'resa Demo', 'admin', 'admin123');
+    authToken = await apiClient.login(DEMO_COMPANY_NAME, 'admin', 'admin123');
+    await cleanup.setAuthToken(DEMO_COMPANY_NAME, 'admin', 'admin123');
   });
 
   test.afterEach(async () => {
@@ -59,8 +60,8 @@ test.describe('API - Usuarios', () => {
   });
 
   test('debe crear un nuevo usuario y limpiarlo después', async () => {
-    // Primero obtener el companyId de la company "Emp" + "resa Demo" desde el login
-    const loginData = await apiClient.loginFull('Emp' + 'resa Demo', 'admin', 'admin123');
+    // Primero obtener el companyId de la company DEMO_COMPANY_NAME desde el login
+    const loginData = await apiClient.loginFull(DEMO_COMPANY_NAME, 'admin', 'admin123');
     const companyId = loginData.companyId;
 
     const newUserData = {

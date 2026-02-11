@@ -22,3 +22,4 @@
 [2026-02-10] [Refactor Kalma2 Structure] [Moved Kalma2 from src/Kalma2 to root ./Kalma2. Renamed core to Core. Updated scripts.] [Completed]
 [2026-02-10] [feat/e2e-product-back-mocked] [E2E Product Back con dependencias mockeadas: spec, clarificaciones, plan; suite test:e2e:api verificada contra mock (9 tests); documentación en docs/Feature/e2e-product-back-mocked.] [Completado]
 [2026-02-10] [Mejorar Accesibilidad Electron] [Se creó ejecutar-interface.bat como estándar. Se eliminaron scripts obsoletos (desktop/interfaz). Documentación completa en Docs/Feature/Mejorar_Accesibilidad_Electron.] [Completado]
+[2026-02-10] [Frontend Kaizen Audit Resolution] [Replaced local Product UI components with Shared library. Refactored 'Empresa' to 'Organización' in i18n/docs. Fixed audit violations in tests using legacy-constants. Fixed 'any' in api. Verified build & tests.] [Completed]

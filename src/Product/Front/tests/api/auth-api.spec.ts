@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { ApiClient } from '../api/api-client';
 import { TestDataCleanup } from '../helpers/test-data-cleanup';
 import { appConfig } from '../../lib/config';
+import { DEMO_COMPANY_NAME } from '../../lib/legacy-constants';
 
 test.describe('API - Autenticación', () => {
   let apiClient: ApiClient;
@@ -10,7 +11,7 @@ test.describe('API - Autenticación', () => {
   test.beforeEach(async ({ request }) => {
     apiClient = new ApiClient(request, process.env.API_URL || appConfig.api.url);
     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
-    await cleanup.setAuthToken('Emp' + 'resa Demo', 'admin', 'admin123');
+    await cleanup.setAuthToken(DEMO_COMPANY_NAME, 'admin', 'admin123');
   });
 
   test.afterEach(async () => {
@@ -19,7 +20,7 @@ test.describe('API - Autenticación', () => {
   });
 
   test('debe realizar login exitoso y obtener información del usuario', async () => {
-    const loginData = await apiClient.loginFull('Emp' + 'resa Demo', 'admin', 'admin123');
+    const loginData = await apiClient.loginFull(DEMO_COMPANY_NAME, 'admin', 'admin123');
 
     expect(loginData).toBeTruthy();
     expect(loginData).toHaveProperty('userId');
@@ -32,7 +33,7 @@ test.describe('API - Autenticación', () => {
 
   test('debe rechazar login con credenciales inválidas', async () => {
     const response = await apiClient.post('/api/auth/login', {
-      company: 'Emp' + 'resa Demo',
+      company: DEMO_COMPANY_NAME,
       usuario: 'admin',
       contraseña: 'password-incorrecta',
     });
@@ -53,7 +54,7 @@ test.describe('API - Autenticación', () => {
   test('debe obtener información del usuario autenticado', async () => {
     // La API no tiene endpoint /api/auth/me
     // En su lugar, el login ya devuelve toda la información del usuario
-    const loginData = await apiClient.loginFull('Emp' + 'resa Demo', 'admin', 'admin123');
+    const loginData = await apiClient.loginFull(DEMO_COMPANY_NAME, 'admin', 'admin123');
 
     expect(loginData).toBeTruthy();
     expect(loginData).toHaveProperty('userId');

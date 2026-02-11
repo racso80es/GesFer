@@ -3,6 +3,7 @@ import { LoginPage } from '../page-objects/LoginPage';
 import { DashboardPage } from '../page-objects/DashboardPage';
 import { TestDataCleanup } from '../helpers/test-data-cleanup';
 import { appConfig } from '../../lib/config';
+import { DEMO_COMPANY_NAME } from '../../lib/legacy-constants';
 
 test.describe('Login E2E Tests', () => {
   let cleanup: TestDataCleanup;
@@ -18,9 +19,9 @@ test.describe('Login E2E Tests', () => {
     });
     
     cleanup = new TestDataCleanup(request, process.env.API_URL || appConfig.api.url);
-    // Nota: "Emp" + "resa Demo" es el dato de seed actual, se mantiene como literal.
+    // Nota: DEMO_COMPANY_NAME es el dato de seed actual.
     // TODO: Actualizar seed para usar terminología "Organización" si es posible en el futuro.
-    await cleanup.setAuthToken('Emp' + 'resa Demo', 'admin', 'admin123');
+    await cleanup.setAuthToken(DEMO_COMPANY_NAME, 'admin', 'admin123');
   });
 
   test.afterEach(async () => {
@@ -35,7 +36,7 @@ test.describe('Login E2E Tests', () => {
     await loginPage.goto();
 
     // Realizar login
-    await loginPage.login('Emp' + 'resa Demo', 'admin', 'admin123');
+    await loginPage.login(DEMO_COMPANY_NAME, 'admin', 'admin123');
 
     // Verificar que el login fue exitoso
     await loginPage.verifyLoginSuccess();
@@ -51,7 +52,7 @@ test.describe('Login E2E Tests', () => {
     await loginPage.goto();
 
     // Intentar login con credenciales inválidas
-    await loginPage.login('Emp' + 'resa Demo', 'admin', 'password-incorrecta');
+    await loginPage.login(DEMO_COMPANY_NAME, 'admin', 'password-incorrecta');
 
     // Verificar que se muestra mensaje de error
     await loginPage.verifyErrorMessage();

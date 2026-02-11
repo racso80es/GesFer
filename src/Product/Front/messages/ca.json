@@ -31,7 +31,7 @@
   "navigation": {
     "dashboard": "Panell de control",
     "users": "Usuaris",
-    "companies": "Empreses",
+    "companies": "Organitzacions",
     "customers": "Clients",
     "systems": "Sistemes",
     "logs": "Logs"
@@ -94,14 +94,14 @@
     }
   },
   "companies": {
-    "title": "Empreses",
+    "title": "Organitzacions",
     "subtitle": "Gestiona les empreses del sistema",
     "newCompany": "Nova Organització",
     "createCompany": "Crear Nova Organització",
     "createDescription": "Completa el formulari per crear una nova organització",
     "editCompany": "Editar Organització",
     "editDescription": "Modifica la informació de l'organització",
-    "listTitle": "Llista d'Empreses",
+    "listTitle": "Llista d'Organitzacions",
     "listDescription": "{count} organització(s) trobada(s)",
     "noCompanies": "No hi ha empreses registrades",
     "createFirst": "Crear Primera Organització",
