@@ -5,43 +5,55 @@ import { TestDataCleanup } from '../helpers/test-data-cleanup';
 import { appConfig } from '../../lib/config';
 import { DEMO_COMPANY_NAME } from '../../lib/legacy-constants';
 
-test.describe('Companies E2E Tests', () => {
-  let cleanup: TestDataCleanup;
-  const createdCompanyNames: string[] = [];
+test.describe('My Company E2E Tests (Update Only)', () => {
+  const originalName = DEMO_COMPANY_NAME;
+  const updatedName = `${DEMO_COMPANY_NAME} Updated`;
 
-  test.beforeEach(async ({ page, request }) => {
-    // Usamos limpieza manual si es necesario, aunque Playwright suele limpiar contexto
-    // Aquí podríamos necesitar limpiar vía API si persistimos datos reales
-
+  test.beforeEach(async ({ page }) => {
+    // Login
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.login(DEMO_COMPANY_NAME, 'admin', 'admin123');
     await loginPage.verifyLoginSuccess();
-
-    // Esperar navegación
-    await page.waitForURL(/\/dashboard/, { timeout: 5000 });
   });
 
-  test('debe crear una nueva company correctamente', async ({ page }) => {
+  test.afterEach(async ({ page }) => {
+    // Intentar revertir cambios
+    try {
+      const companiesPage = new CompaniesPage(page);
+      await companiesPage.goto();
+      await companiesPage.updateCompany({
+          name: originalName,
+          address: 'Calle Falsa 123' // Default demo data
+      });
+    } catch (e) {
+      console.log('Cleanup failed', e);
+    }
+  });
+
+  test('debe cargar y actualizar los datos de mi organización', async ({ page }) => {
     const companiesPage = new CompaniesPage(page);
-    const uniqueId = Date.now().toString();
-    const newCompanyName = `Company Test E2E ${uniqueId}`;
 
-    // 1. Navegar a Companies
+    // 1. Navegar a Companies (ahora es Mi Organización)
     await companiesPage.goto();
+    await expect(companiesPage.title).toBeVisible();
 
-    // 2. Crear Company
-    await companiesPage.createCompany(
-        newCompanyName,
-        `B${uniqueId.substring(0, 8)}`, // Fake CIF
-        `test-${uniqueId}@example.com`,
-        'Calle Falsa 123'
-    );
+    // 2. Verificar que se cargan los datos (el nombre debería coincidir)
+    // Puede que tarde un poco en cargar el form
+    await expect(companiesPage.nameInput).toHaveValue(originalName, { timeout: 10000 });
 
-    // 3. Verificar que aparece en la lista
-    await companiesPage.verifyCompanyExists(newCompanyName);
+    // 3. Actualizar datos
+    await companiesPage.updateCompany({
+        name: updatedName,
+        address: 'Nueva Dirección 123'
+    });
 
-    // Guardar para limpieza (si implementamos limpieza vía API después)
-    createdCompanyNames.push(newCompanyName);
+    // 4. Verificar feedback (opcional, si hay toast/mensaje)
+    // await expect(page.getByText(/actualizada correctamente/i)).toBeVisible();
+
+    // 5. Verificar persistencia (recargar página)
+    await page.reload();
+    await expect(companiesPage.nameInput).toHaveValue(updatedName, { timeout: 10000 });
+    await expect(companiesPage.addressInput).toHaveValue('Nueva Dirección 123');
   });
 });

@@ -34,17 +34,24 @@ public static class DependencyInjection
 
         services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
         {
-            options.UseMySql(
-                connectionString,
-                new MySqlServerVersion(new Version(8, 0, 0)),
-                mysqlOptions =>
-                {
-                    mysqlOptions.EnableStringComparisonTranslations();
-                    mysqlOptions.EnableRetryOnFailure(
-                        maxRetryCount: 5,
-                        maxRetryDelay: TimeSpan.FromSeconds(30),
-                        errorNumbersToAdd: null);
-                });
+            if (environment?.IsEnvironment("Testing") == true)
+            {
+                options.UseInMemoryDatabase("GesFerProductDb");
+            }
+            else
+            {
+                options.UseMySql(
+                    connectionString,
+                    new MySqlServerVersion(new Version(8, 0, 0)),
+                    mysqlOptions =>
+                    {
+                        mysqlOptions.EnableStringComparisonTranslations();
+                        mysqlOptions.EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null);
+                    });
+            }
 
             if (isDevelopment)
             {
@@ -70,12 +77,20 @@ public static class DependencyInjection
         services.AddScoped<JsonDataSeeder>();
 
         // HttpClient para comunicación con Admin API
-        services.AddHttpClient<IAdminApiClient, GesFer.Product.Back.Infrastructure.Services.AdminApiClient>(client =>
+        if (environment?.IsEnvironment("Testing") == true)
         {
-            var adminApiBaseUrl = configuration["AdminApi:BaseUrl"] ?? "http://localhost:5001";
-            client.BaseAddress = new Uri(adminApiBaseUrl);
-            client.Timeout = TimeSpan.FromSeconds(5);
-        });
+            services.AddHttpClient();
+            services.AddScoped<IAdminApiClient, MockAdminApiClient>();
+        }
+        else
+        {
+            services.AddHttpClient<IAdminApiClient, GesFer.Product.Back.Infrastructure.Services.AdminApiClient>(client =>
+            {
+                var adminApiBaseUrl = configuration["AdminApi:BaseUrl"] ?? "http://localhost:5001";
+                client.BaseAddress = new Uri(adminApiBaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(5);
+            });
+        }
 
         // Servicio de logging asíncrono (Fire and Forget)
         services.AddSingleton<IAsyncLogPublisher, AsyncLogPublisher>();
