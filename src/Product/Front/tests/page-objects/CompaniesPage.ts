@@ -3,37 +3,25 @@ import { BasePage } from './BasePage';
 
 export class CompaniesPage extends BasePage {
   readonly title: Locator;
-  readonly newCompanyButton: Locator;
-  readonly companiesList: Locator;
-
-  // Modal Elements
-  readonly createModal: Locator;
   readonly nameInput: Locator;
   readonly taxIdInput: Locator;
   readonly emailInput: Locator;
   readonly addressInput: Locator;
   readonly saveButton: Locator;
-  readonly cancelButton: Locator;
 
   constructor(page: Page) {
     super(page);
 
-    this.title = page.getByRole('heading', { name: /companies|companies/i }).first();
-    this.newCompanyButton = page.getByRole('button', { name: /nova company|new company|crear|create/i }).first();
-    this.companiesList = page.locator('table'); // Más genérico si no tiene role table explícito, aunque debería
+    this.title = page.getByRole('heading', { name: /mi organización|organizaciones|empresas/i }).first();
 
-    // Modal - Ajustado selectores para ser más robustos
-    this.createModal = page.locator('div[role="dialog"]');
-
-    // Inputs dentro del modal
-    this.nameInput = this.createModal.locator('input[name="name"]');
-    this.taxIdInput = this.createModal.locator('input[name="taxId"]');
-    this.emailInput = this.createModal.locator('input[name="email"]');
-    this.addressInput = this.createModal.locator('input[name="address"]');
+    // Form Inputs (directly on page now)
+    this.nameInput = page.locator('#name').or(page.getByTestId('company-form-name'));
+    this.taxIdInput = page.locator('#taxId').or(page.getByTestId('company-form-taxId'));
+    this.emailInput = page.locator('#email').or(page.getByTestId('company-form-email'));
+    this.addressInput = page.locator('#address');
 
     // Botones
-    this.saveButton = this.createModal.getByRole('button', { name: /guardar|save|crear|create/i });
-    this.cancelButton = this.createModal.getByRole('button', { name: /cancel/i });
+    this.saveButton = page.getByRole('button', { name: /guardar|save|actualizar|update/i });
   }
 
   async goto() {
@@ -41,24 +29,23 @@ export class CompaniesPage extends BasePage {
     await this.waitForLoad();
   }
 
-  async openCreateModal() {
-    await this.newCompanyButton.click();
-    await expect(this.createModal).toBeVisible();
-  }
-
-  async createCompany(name: string, taxId: string, email: string, address: string) {
-    await this.openCreateModal();
-
-    await this.nameInput.fill(name);
-    await this.taxIdInput.fill(taxId);
-    await this.emailInput.fill(email);
-    await this.addressInput.fill(address);
+  async updateCompany(data: { name?: string; taxId?: string; email?: string; address?: string }) {
+    if (data.name) await this.nameInput.fill(data.name);
+    if (data.taxId) await this.taxIdInput.fill(data.taxId);
+    if (data.email) await this.emailInput.fill(data.email);
+    if (data.address) await this.addressInput.fill(data.address);
 
     await this.saveButton.click();
   }
 
-  async verifyCompanyExists(name: string) {
-    // Esperar a que la tabla se recargue o el elemento aparezca
-    await expect(this.companiesList).toContainText(name, { timeout: 10000 });
+  async verifySuccessMessage() {
+    await expect(this.page.locator('text=/actualizada correctamente|success/i')).toBeVisible({ timeout: 5000 });
+  }
+
+  async verifyCompanyData(data: { name?: string; taxId?: string; email?: string; address?: string }) {
+      if (data.name) await expect(this.nameInput).toHaveValue(data.name);
+      if (data.taxId) await expect(this.taxIdInput).toHaveValue(data.taxId);
+      if (data.email) await expect(this.emailInput).toHaveValue(data.email);
+      if (data.address) await expect(this.addressInput).toHaveValue(data.address);
   }
 }
