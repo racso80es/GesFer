@@ -10,7 +10,8 @@ namespace GesFer.Admin.IntegrationTests;
 /// Tests de integración para CompanyController (Admin API).
 /// Requiere X-Internal-Secret para autorización de sistema en el factory de tests.
 /// </summary>
-public class CompanyControllerTests : IClassFixture<AdminWebAppFactory>
+[Collection("AdminIntegrationTests")]
+public class CompanyControllerTests
 {
     private const string InternalSecret = "test-internal-secret";
     private readonly HttpClient _client;

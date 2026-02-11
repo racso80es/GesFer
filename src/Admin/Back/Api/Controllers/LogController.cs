@@ -1,10 +1,10 @@
-
-
-
+using GesFer.Admin.Api.Attributes;
+using GesFer.Admin.Back.Domain.Entities;
 using GesFer.Admin.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace GesFer.Admin.Api.Controllers;
 
@@ -13,7 +13,6 @@ namespace GesFer.Admin.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/admin/logs")]
-[Authorize(Policy = "AdminOnly")] // Requiere rol Admin
 public class LogController : ControllerBase
 {
     private readonly AdminDbContext _context;
@@ -28,9 +27,84 @@ public class LogController : ControllerBase
     }
 
     /// <summary>
+    /// Recibe un log desde otros servicios (System)
+    /// </summary>
+    [HttpPost]
+    [AuthorizeSystemOrAdmin]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ReceiveLog([FromBody] CreateLogDto dto)
+    {
+        try
+        {
+            var log = new Log
+            {
+                Level = dto.Level,
+                Message = dto.Message,
+                Exception = dto.Exception,
+                TimeStamp = dto.TimeStamp,
+                Properties = dto.Properties != null ? JsonSerializer.Serialize(dto.Properties) : null,
+                // Intentar extraer metadatos comunes de las propiedades si existen
+                Source = ExtractProperty(dto.Properties, "SourceContext"),
+                // CompanyId y UserId podrían venir en properties, pero por ahora lo dejamos simple
+            };
+
+            _context.Logs.Add(log);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al guardar log recibido");
+            // No devolvemos 500 para no afectar al emisor si es posible evitarlo,
+            // pero el emisor (Product) ya hace fire-and-forget.
+            return StatusCode(500, new { message = "Error interno al guardar log" });
+        }
+    }
+
+    /// <summary>
+    /// Recibe un log de auditoría desde otros servicios (System)
+    /// </summary>
+    [HttpPost("audit")] // /api/admin/logs/audit -> o debería ser /api/admin/audit-logs ? AsyncLogPublisher usa /api/admin/audit-logs por defecto en config.
+    // Pero en AsyncLogPublisher.cs: _auditLogsEndpoint = _configuration["AdminApi:AuditLogsEndpoint"] ?? "/api/admin/audit-logs";
+    // Si cambio la ruta aquí a "audit", la URL completa sería /api/admin/logs/audit.
+    // Voy a mantener la convención de rutas pero quizás deba cambiar la ruta base o usar una ruta absoluta.
+    // Mejor uso [Route("/api/admin/audit-logs")] para coincidir con el default de Product.
+    [Route("/api/admin/audit-logs")]
+    [AuthorizeSystemOrAdmin]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ReceiveAuditLog([FromBody] CreateAuditLogDto dto)
+    {
+        try
+        {
+            var auditLog = new AuditLog
+            {
+                CursorId = dto.CursorId,
+                Username = dto.Username,
+                Action = dto.Action,
+                HttpMethod = dto.HttpMethod,
+                Path = dto.Path,
+                AdditionalData = dto.AdditionalData,
+                ActionTimestamp = dto.ActionTimestamp
+            };
+
+            _context.AuditLogs.Add(auditLog);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al guardar audit log recibido");
+            return StatusCode(500, new { message = "Error interno al guardar audit log" });
+        }
+    }
+
+    /// <summary>
     /// Obtiene logs paginados con filtros opcionales
     /// </summary>
     [HttpGet]
+    [Authorize(Policy = "AdminOnly")]
     [ProducesResponseType(typeof(LogsPagedResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetLogs(
         [FromQuery] DateTime? fromDate = null,
@@ -109,6 +183,7 @@ public class LogController : ControllerBase
     /// Purga logs antiguos anteriores a la fecha límite especificada
     /// </summary>
     [HttpDelete]
+    [Authorize(Policy = "AdminOnly")]
     [ProducesResponseType(typeof(PurgeLogsResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> PurgeLogs([FromQuery] DateTime dateLimit)
@@ -146,9 +221,18 @@ public class LogController : ControllerBase
             return StatusCode(500, new { message = "Error interno del servidor", error = ex.Message });
         }
     }
+
+    private string? ExtractProperty(Dictionary<string, object>? properties, string key)
+    {
+        if (properties != null && properties.TryGetValue(key, out var value))
+        {
+            return value?.ToString();
+        }
+        return null;
+    }
 }
 
-// DTOs temporales
+// DTOs
 public class LogDto
 {
     public int Id { get; set; }
@@ -159,6 +243,26 @@ public class LogDto
     public string? Source { get; set; }
     public Guid? CompanyId { get; set; }
     public Guid? UserId { get; set; }
+}
+
+public class CreateLogDto
+{
+    public string Level { get; set; } = string.Empty;
+    public string Message { get; set; } = string.Empty;
+    public string? Exception { get; set; }
+    public DateTime TimeStamp { get; set; }
+    public Dictionary<string, object>? Properties { get; set; }
+}
+
+public class CreateAuditLogDto
+{
+    public string CursorId { get; set; } = string.Empty;
+    public string Username { get; set; } = string.Empty;
+    public string Action { get; set; } = string.Empty;
+    public string HttpMethod { get; set; } = string.Empty;
+    public string Path { get; set; } = string.Empty;
+    public string? AdditionalData { get; set; }
+    public DateTime ActionTimestamp { get; set; }
 }
 
 public class LogsPagedResponseDto

@@ -6,7 +6,8 @@ using Xunit;
 
 namespace GesFer.Admin.IntegrationTests;
 
-public class ReproductionTests : IClassFixture<AdminWebAppFactory>
+[Collection("AdminIntegrationTests")]
+public class ReproductionTests
 {
     private const string InternalSecret = "test-internal-secret";
     private readonly HttpClient _client;
@@ -27,6 +28,6 @@ public class ReproductionTests : IClassFixture<AdminWebAppFactory>
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var companies = await response.Content.ReadFromJsonAsync<List<CompanyDto>>();
         companies.Should().NotBeNull();
-        companies.Should().Contain(c => c.Name == "Empresa Demo", "La lista de empresas debe contener 'Empresa Demo' para que el usuario pueda verla.");
+        companies!.Should().Contain(c => c.Name == "Empresa Demo", "La lista de empresas debe contener 'Empresa Demo' para que el usuario pueda verla.");
     }
 }

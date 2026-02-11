@@ -5,7 +5,8 @@ using FluentAssertions;
 
 namespace GesFer.Admin.IntegrationTests;
 
-public class AdminAuthIntegrationTests : IClassFixture<AdminWebAppFactory>
+[Collection("AdminIntegrationTests")]
+public class AdminAuthIntegrationTests
 {
     private readonly AdminWebAppFactory _factory;
     private readonly HttpClient _client;
