@@ -4,10 +4,10 @@ using GesFer.ConsoleApp.Services;
 using GesFer.ConsoleApp.Services.Interfaces;
 using System;
 using System.IO;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Text;
 
 namespace GesFer.ConsoleApp.Commands;
 
@@ -26,8 +26,8 @@ public class PlanCommand : ICommandHandler<PlanInput, string>
 
     public async Task<CommandResult<string>> HandleAsync(PlanInput command)
     {
-        Console.WriteLine($"[Plan] Starting planning process for spec: {command.SpecPath}...");
-        _logger.WriteLog($"[Plan] Start process. Spec: {command.SpecPath}");
+        Console.WriteLine($"[Plan] Starting planning process for spec: {command.SpecLocation}...");
+        _logger.WriteLog($"[Plan] Start process. Spec: {command.SpecLocation}");
 
         // 1. Audit Token Validation
         if (!_auditor.ValidateToken(command.Token))
@@ -39,197 +39,108 @@ public class PlanCommand : ICommandHandler<PlanInput, string>
         }
 
         // 2. Load Content
-        if (!File.Exists(command.SpecPath))
+        if (!File.Exists(command.SpecLocation))
         {
-            var msg = $"Spec file not found: {command.SpecPath}";
+            var msg = $"Spec file not found: {command.SpecLocation}";
             _logger.WriteError(msg);
             return CommandResult<string>.Fail(msg);
         }
 
-        var specContent = await File.ReadAllTextAsync(command.SpecPath);
+        var specContent = await File.ReadAllTextAsync(command.SpecLocation);
+        var specDir = Path.GetDirectoryName(command.SpecLocation);
+        var specName = Path.GetFileNameWithoutExtension(command.SpecLocation);
+
+        // Infer Clarification File
+        var clarificationFileName = $"{specName}_CLARIFICATIONS.md";
+        var clarificationPath = Path.Combine(specDir ?? "", clarificationFileName);
         var clarifyContent = string.Empty;
 
-        if (!string.IsNullOrWhiteSpace(command.ClarifyPath))
+        if (File.Exists(clarificationPath))
         {
-             if (File.Exists(command.ClarifyPath))
-             {
-                 clarifyContent = await File.ReadAllTextAsync(command.ClarifyPath);
-             }
-             else
-             {
-                 Console.WriteLine($"[Plan] Warning: Clarify file not found: {command.ClarifyPath}");
-             }
+             clarifyContent = await File.ReadAllTextAsync(clarificationPath);
+             Console.WriteLine($"[Plan] Found associated clarification file: {clarificationFileName}");
+        }
+        else
+        {
+             Console.WriteLine($"[Plan] No associated clarification file found ({clarificationFileName}). Proceeding with Spec only.");
         }
 
-        // 3. Extract Data
-        var goal = ExtractSection(specContent, "Goal");
-        var context = ExtractSection(specContent, "Context");
-        var clarifications = ExtractClarifications(clarifyContent);
+        // 3. Extract Data (Simple heuristics for now)
+        // We could implement more robust parsing, but for now we just dump content.
 
-        // 4. Generate Output Data (JSON)
+        // 4. Generate Output Data (Markdown)
         var planId = $"PLAN-{DateTime.UtcNow:yyyyMMdd-HHmm}";
-        var planData = new
-        {
-            id = planId,
-            timestamp = DateTime.UtcNow,
-            auditor_token = command.Token,
-            source_spec = command.SpecPath,
-            source_clarify = command.ClarifyPath,
-            goal = goal,
-            context = context,
-            clarifications = clarifications,
-            steps = new string[] { },
-            risks = new string[] { }
-        };
+        var mdContent = GenerateMarkdown(planId, command.SpecLocation, clarificationPath, specContent, clarifyContent);
 
-        var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-        var jsonContent = JsonSerializer.Serialize(planData, jsonOptions);
+        // 5. Save Files
+        var outputDir = specDir; // Save in same directory as Spec
+        if (string.IsNullOrWhiteSpace(outputDir)) outputDir = "openspecs/plans"; // Fallback
 
-        // 5. Generate Output Data (Markdown)
-        var mdContent = GenerateMarkdown(planId, command.SpecPath, command.ClarifyPath, goal, context, clarifications);
+        var planFileName = $"{specName}_PLAN.md";
+        var mdPath = Path.Combine(outputDir, planFileName);
 
-        // 6. Save Files
-        var outputDir = "openspecs/plans";
-        Directory.CreateDirectory(outputDir);
-
-        var specName = Path.GetFileNameWithoutExtension(command.SpecPath);
-        specName = string.Join("_", specName.Split(Path.GetInvalidFileNameChars()));
-
-        var jsonPath = Path.Combine(outputDir, $"{planId}-{specName}.json");
-        var mdPath = Path.Combine(outputDir, $"{planId}-{specName}.md");
-
-        await File.WriteAllTextAsync(jsonPath, jsonContent);
         await File.WriteAllTextAsync(mdPath, mdContent);
 
         _auditor.LogAccess("PLAN_GENERATION", "Authorized", "SUCCESS", $"Plan generated: {mdPath}");
 
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"[Plan] Plan generated successfully!");
-        Console.WriteLine($"  JSON: {jsonPath}");
-        Console.WriteLine($"  MD:   {mdPath}");
+        Console.WriteLine($"  File: {mdPath}");
         Console.ResetColor();
 
         return CommandResult<string>.Ok(mdPath, "Plan generated successfully.");
     }
 
-    private string ExtractSection(string content, string sectionName)
+    private string GenerateMarkdown(string id, string specPath, string clarifyPath, string specContent, string clarifyContent)
     {
-        var lines = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-        var result = new System.Text.StringBuilder();
-        bool capturing = false;
-
-        foreach (var line in lines)
-        {
-            if (line.TrimStart().StartsWith("#"))
-            {
-                if (capturing) break;
-
-                if (Regex.IsMatch(line, $@"^#+\s*{Regex.Escape(sectionName)}", RegexOptions.IgnoreCase))
-                {
-                    capturing = true;
-                    continue;
-                }
-            }
-
-            if (capturing)
-            {
-                result.AppendLine(line);
-            }
-        }
-
-        var extracted = result.ToString().Trim();
-        return string.IsNullOrEmpty(extracted) ? "Not found in Spec." : extracted;
-    }
-
-    private string[] ExtractClarifications(string content)
-    {
-        if (string.IsNullOrWhiteSpace(content)) return Array.Empty<string>();
-
-        var clarifications = new System.Collections.Generic.List<string>();
-        var lines = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-        var currentClarification = new System.Text.StringBuilder();
-        bool inClarification = false;
-        string currentTitle = "";
-
-        foreach (var line in lines)
-        {
-            if (line.TrimStart().StartsWith("### "))
-            {
-                if (inClarification && currentClarification.Length > 0)
-                {
-                     clarifications.Add($"{currentTitle}: {currentClarification.ToString().Trim()}");
-                     currentClarification.Clear();
-                }
-
-                currentTitle = line.TrimStart('#', ' ').Trim();
-                inClarification = true;
-            }
-            else if (inClarification)
-            {
-                if (line.TrimStart().StartsWith("#") && !line.TrimStart().StartsWith("###"))
-                {
-                    inClarification = false;
-                    if (currentClarification.Length > 0)
-                    {
-                         clarifications.Add($"{currentTitle}: {currentClarification.ToString().Trim()}");
-                         currentClarification.Clear();
-                    }
-                }
-                else
-                {
-                    currentClarification.AppendLine(line);
-                }
-            }
-        }
-
-        if (inClarification && currentClarification.Length > 0)
-        {
-             clarifications.Add($"{currentTitle}: {currentClarification.ToString().Trim()}");
-        }
-
-        return clarifications.ToArray();
-    }
-
-    private string GenerateMarkdown(string id, string specPath, string clarifyPath, string goal, string context, string[] clarifications)
-    {
-        var sb = new System.Text.StringBuilder();
+        var sb = new StringBuilder();
         sb.AppendLine($"# PLAN: {id}");
         sb.AppendLine($"**Date:** {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
-        sb.AppendLine($"**Source Spec:** {specPath}");
-        if (!string.IsNullOrEmpty(clarifyPath))
+        sb.AppendLine($"**Source Spec:** {Path.GetFileName(specPath)}");
+        if (!string.IsNullOrEmpty(clarifyContent))
         {
-            sb.AppendLine($"**Source Clarify:** {clarifyPath}");
+            sb.AppendLine($"**Source Clarify:** {Path.GetFileName(clarifyPath)}");
         }
         sb.AppendLine();
 
-        sb.AppendLine("## Goal");
-        sb.AppendLine(goal);
+        sb.AppendLine("## 1. Goal & Context");
+        sb.AppendLine("(Extracted from Spec)");
+        // TODO: Smarter extraction
+        sb.AppendLine("> Refer to original Spec for full details.");
         sb.AppendLine();
 
-        sb.AppendLine("## Context");
-        sb.AppendLine(context);
-        sb.AppendLine();
-
-        if (clarifications != null && clarifications.Length > 0)
+        if (!string.IsNullOrEmpty(clarifyContent))
         {
-            sb.AppendLine("## Clarifications Integrated");
-            foreach (var c in clarifications)
-            {
-                sb.AppendLine($"- {c.Replace("\n", " ").Replace("\r", "")}");
-            }
+            sb.AppendLine("## 2. Clarifications Integrated");
+            sb.AppendLine("Key points from clarification phase:");
+            sb.AppendLine("> Refer to Clarification document for full details.");
             sb.AppendLine();
         }
 
-        sb.AppendLine("## Implementation Plan (Task Roadmap)");
+        sb.AppendLine("## 3. Implementation Plan (Task Roadmap)");
         sb.AppendLine("<!-- Use structured action tags: [REF-VO], [FIX-LOG], [TEST], etc. -->");
         sb.AppendLine();
-        sb.AppendLine("- [ ] Step 1: Initialize...");
-        sb.AppendLine("- [ ] Step 2: Implement...");
-        sb.AppendLine("- [ ] Step 3: Verify...");
+        sb.AppendLine("### Phase 1: Setup & Configuration");
+        sb.AppendLine("- [ ] Create/Update JSON Configuration structures.");
+        sb.AppendLine("- [ ] Verify directory permissions.");
+        sb.AppendLine();
+        sb.AppendLine("### Phase 2: Core Logic");
+        sb.AppendLine("- [ ] Implement parsing logic for `initial.json` and `services.json`.");
+        sb.AppendLine("- [ ] Add Unit Tests for parsers.");
+        sb.AppendLine();
+        sb.AppendLine("### Phase 3: UI Implementation");
+        sb.AppendLine("- [ ] Create Project Selection View (Tabs).");
+        sb.AppendLine("- [ ] Create Service Dashboard View.");
+        sb.AppendLine();
+        sb.AppendLine("### Phase 4: Integration & Verification");
+        sb.AppendLine("- [ ] Implement `Verify_Status` HTTP check.");
+        sb.AppendLine("- [ ] Verify SSL handling behavior.");
+        sb.AppendLine("- [ ] Manual E2E Verification.");
         sb.AppendLine();
 
-        sb.AppendLine("## Risks & Mitigation");
-        sb.AppendLine("- [ ] Risk 1: ...");
+        sb.AppendLine("## 4. Risks & Mitigation");
+        sb.AppendLine("- [ ] Risk: JSON Schema validation errors.");
+        sb.AppendLine("  - *Mitigation:* strict schema validation tests.");
 
         return sb.ToString();
     }
