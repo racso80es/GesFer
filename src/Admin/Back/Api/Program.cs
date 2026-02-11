@@ -1,5 +1,6 @@
 using GesFer.Admin.Api;
 using GesFer.Admin.Infrastructure.Data;
+using GesFer.Admin.Infrastructure.Services;
 using Serilog.Sinks.MySQL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -170,6 +171,28 @@ try
     });
 
     var app = builder.Build();
+
+    // Inicializar base de datos y seeds (Se ejecuta siempre para garantizar consistencia)
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        try
+        {
+            // Ejecutar migraciones si es necesario (o usar EnsureCreated si es InMemory/Dev)
+            var context = services.GetRequiredService<AdminDbContext>();
+            // En producción idealmente se usa 'dotnet ef database update', pero aquí simplificamos
+            // await context.Database.MigrateAsync();
+
+            var seeder = services.GetRequiredService<AdminJsonDataSeeder>();
+            await seeder.SeedCompaniesAsync();
+            await seeder.SeedAdminUsersAsync();
+            Log.Information("Seeds de Admin ejecutados correctamente.");
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Ocurrió un error al ejecutar los seeds de Admin.");
+        }
+    }
 
     // Configurar el pipeline HTTP
     if (app.Environment.IsDevelopment())
