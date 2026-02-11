@@ -17,7 +17,11 @@
     "jsx": "react-jsx",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["reflect-metadata", "node"]
+    "baseUrl": ".",
+    "paths": {
+      "inversify": ["node_modules/inversify"],
+      "reflect-metadata": ["node_modules/reflect-metadata"]
+    }
   },
   "include": ["src", "electron", "../../Core"],
   "references": [{ "path": "./tsconfig.node.json" }]
