@@ -22,4 +22,5 @@
 [2026-02-10] [Refactor Kalma2 Structure] [Moved Kalma2 from src/Kalma2 to root ./Kalma2. Renamed core to Core. Updated scripts.] [Completed]
 [2026-02-10] [feat/e2e-product-back-mocked] [E2E Product Back con dependencias mockeadas: spec, clarificaciones, plan; suite test:e2e:api verificada contra mock (9 tests); documentación en docs/Feature/e2e-product-back-mocked.] [Completado]
 [2026-02-10] [Mejorar Accesibilidad Electron] [Se creó ejecutar-interface.bat como estándar. Se eliminaron scripts obsoletos (desktop/interfaz). Documentación completa en Docs/Feature/Mejorar_Accesibilidad_Electron.] [Completado]
+[2026-02-11] [Auditoría Frontend] [FALLA CRÍTICA: 26 violaciones de 'empresa' detectadas] [Requiere Acción]
 [2026-02-10] [Refactor Shared DbContext Configuration] [Centralized EF Core configuration (Sequential GUIDs, Soft Delete, Audit Fields) in Shared/Back/Infrastructure/Persistence/DbContextExtensions.cs. Eliminated duplication in AdminDbContext and ApplicationDbContext. 0 Warnings.] [S+ Stable]
