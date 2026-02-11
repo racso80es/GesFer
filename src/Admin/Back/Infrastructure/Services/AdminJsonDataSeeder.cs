@@ -140,10 +140,10 @@ public class AdminJsonDataSeeder
             if (string.IsNullOrEmpty(userData.Password))
             {
                 string rawPassword;
-                if (_hostEnvironment.IsDevelopment())
+                if (_hostEnvironment.IsDevelopment() || _hostEnvironment.IsEnvironment("Testing"))
                 {
                     rawPassword = "admin123";
-                    _logger.LogWarning("[SEED ADMIN] ⚠️ DEVELOPMENT MODE: Setting fixed password '{Password}' for Admin '{Username}'", rawPassword, userData.Username);
+                    _logger.LogWarning("[SEED ADMIN] ⚠️ DEV/TEST MODE: Setting fixed password '{Password}' for Admin '{Username}'", rawPassword, userData.Username);
                 }
                 else
                 {

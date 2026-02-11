@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Net.Http.Json;
 using Xunit;
 
 namespace GesFer.Admin.IntegrationTests;
@@ -40,7 +41,7 @@ public class AdminWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
             services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
         });
 
-        builder.UseEnvironment("Development");
+        builder.UseEnvironment("Testing");
 
         // SharedSecret para tests (AuthorizeSystemOrAdmin)
         builder.ConfigureAppConfiguration((_, config) =>
@@ -67,5 +68,26 @@ public class AdminWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
     public new async Task DisposeAsync()
     {
         await base.DisposeAsync();
+    }
+
+    public async Task<string> GetAdminAccessTokenAsync()
+    {
+        var client = CreateClient();
+        var response = await client.PostAsJsonAsync("/api/admin/auth/login", new
+        {
+            Usuario = "admin",
+            Contraseña = "admin123"
+        });
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<GesFer.Admin.Api.Controllers.AdminLoginResponse>();
+        return result!.Token;
+    }
+
+    public async Task<HttpClient> GetAdminClientAsync()
+    {
+        var token = await GetAdminAccessTokenAsync();
+        var client = CreateClient();
+        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        return client;
     }
 }

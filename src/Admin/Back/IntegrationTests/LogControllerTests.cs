@@ -136,4 +136,73 @@ public class LogControllerTests
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
+
+    [Fact]
+    public async Task GetLogs_ShouldReturnPagedResults()
+    {
+        // Arrange - Create some logs first (via system auth)
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Remove("X-Internal-Secret");
+        client.DefaultRequestHeaders.Add("X-Internal-Secret", InternalSecret);
+
+        await client.PostAsJsonAsync("/api/admin/logs", new CreateLogDto
+        {
+            Level = "Error",
+            Message = "Test Error Log",
+            TimeStamp = DateTime.UtcNow
+        });
+
+        // Act - Get logs as Admin
+        var adminClient = await _factory.GetAdminClientAsync();
+        var response = await adminClient.GetAsync("/api/admin/logs?level=Error");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<LogsPagedResponseDto>();
+        result.Should().NotBeNull();
+        result!.Logs.Should().NotBeEmpty();
+        result.Logs.Should().Contain(l => l.Message == "Test Error Log");
+    }
+
+    [Fact]
+    public async Task PurgeLogs_ShouldDeleteOldLogs()
+    {
+        // Arrange - Create old log
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Remove("X-Internal-Secret");
+        client.DefaultRequestHeaders.Add("X-Internal-Secret", InternalSecret);
+
+        var oldDate = DateTime.UtcNow.AddDays(-30);
+        await client.PostAsJsonAsync("/api/admin/logs", new CreateLogDto
+        {
+            Level = "Information",
+            Message = "Old Log",
+            TimeStamp = oldDate
+        });
+
+        // Act - Purge logs older than 8 days
+        var adminClient = await _factory.GetAdminClientAsync();
+        var purgeDate = DateTime.UtcNow.AddDays(-8);
+
+        // Use ISO 8601 format for date query parameter
+        var response = await adminClient.DeleteAsync($"/api/admin/logs?dateLimit={purgeDate:O}");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<PurgeLogsResponseDto>();
+        result.Should().NotBeNull();
+        result!.DeletedCount.Should().BeGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task PurgeLogs_ShouldFail_WhenDateIsWithin7Days()
+    {
+        // Act - Try to purge logs from yesterday
+        var adminClient = await _factory.GetAdminClientAsync();
+        var purgeDate = DateTime.UtcNow.AddDays(-1);
+        var response = await adminClient.DeleteAsync($"/api/admin/logs?dateLimit={purgeDate:O}");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
 }
