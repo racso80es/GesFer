@@ -1,0 +1,28 @@
+# PR Skill - Ejecución automática en GitHub
+# Equivalente a pre-push local: Compilation Shield -> Doc rama -> Suite completa de tests.
+# Token de proceso se omite en CI (GITHUB_ACTIONS=true).
+
+name: PR Skill
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  pr-skill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: PR Skill (Compilación + Doc rama + Tests)
+        run: |
+          chmod +x scripts/skills/pr-skill.sh
+          ./scripts/skills/pr-skill.sh
