@@ -1,8 +1,8 @@
 {
   "companies": {
-    "listTitle": "Empresas",
-    "create": "Nueva Empresa",
-    "edit": "Editar Empresa",
+    "listTitle": "Organizaciones",
+    "create": "Nueva Organización",
+    "edit": "Editar Organización",
     "form": {
       "name": "Nombre",
       "nameRequired": "El nombre es obligatorio",

@@ -34,11 +34,11 @@ test.describe('Admin Frontend E2E (Full Stack Mock)', () => {
     await page.goto('/companies');
 
     // 2. Verify List (fetched from mock server)
-    await expect(page.getByText('Empresa Demo 1')).toBeVisible();
+    await expect(page.getByText('Organización Demo 1')).toBeVisible();
 
     // 3. Create New Company
     await page.goto('/companies/new');
-    await page.fill('input#name', 'Nueva Empresa Mock');
+    await page.fill('input#name', 'Nueva Organización Mock');
     await page.fill('input#address', 'Calle Mock 123');
     await page.fill('input#taxId', 'B12345678');
 

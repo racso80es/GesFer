@@ -55,11 +55,11 @@ export default function EditCompanyPage({ params }: EditCompanyPageProps) {
   };
 
   if (isLoading) return <div>Cargando...</div>;
-  if (!company) return <div>Empresa no encontrada</div>;
+  if (!company) return <div>Organización no encontrada</div>;
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-6">Editar Empresa</h1>
+      <h1 className="text-2xl font-bold mb-6">Editar Organización</h1>
       <div className="max-w-2xl bg-white p-6 rounded-lg shadow">
         <CompanyForm
           company={company}

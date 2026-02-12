@@ -269,6 +269,6 @@
     "loading": "Cargando...",
     "notFound": "Organización no encontrada",
     "updatedSuccessfully": "Organización actualizada correctamente",
-    "updateError": "Error al actualizar la empresa"
+    "updateError": "Error al actualizar la organización"
   }
 }
