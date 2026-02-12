@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -8,8 +7,6 @@ import { QueryProvider } from "@/lib/providers/query-provider";
 import { AuthProvider } from "@/contexts/auth-context";
 import { OverlayFix } from "@shared/components/ui/overlay-fix";
 import { locales } from "@/i18n";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "GesFer - Gestión de Chatarra",
@@ -35,7 +32,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body className={inter.className}>
+      <body>
         <OverlayFix />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <QueryProvider>
