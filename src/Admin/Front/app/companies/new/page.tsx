@@ -31,7 +31,7 @@ export default function NewCompanyPage() {
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-6">Nueva Empresa</h1>
+      <h1 className="text-2xl font-bold mb-6">Nueva Organización</h1>
       <div className="max-w-2xl bg-white p-6 rounded-lg shadow">
         <CompanyForm
           onSubmit={handleSubmit}

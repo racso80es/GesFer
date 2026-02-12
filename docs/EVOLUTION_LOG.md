@@ -27,3 +27,4 @@
 [2026-02-11] [Auditoría Frontend] [FALLA CRÍTICA: 26 violaciones de 'empresa' detectadas] [Requiere Acción]
 [2026-02-10] [Refactor Shared DbContext Configuration] [Centralized EF Core configuration (Sequential GUIDs, Soft Delete, Audit Fields) in Shared/Back/Infrastructure/Persistence/DbContextExtensions.cs. Eliminated duplication in AdminDbContext and ApplicationDbContext. 0 Warnings.] [S+ Stable]
 [2026-02-11] [Mejorar Accesibilidad Electron] [Se creó ejecutar-electron.bat según SPEC-ACCESIBILIDAD-ELECTRON-003. Se validó seguridad y dependencias.] [Completado]
+[2026-02-11] [Refactor Frontend Terminology & Admin Mock API] [Replaced 'Empresa' with 'Organización' across Product/Front and Admin/Front UI, Messages, and Tests. Updated Admin E2E Mock Data and Tests. Fixed 'any' usage in Admin API client. Verified with Admin E2E tests.] [Completed]

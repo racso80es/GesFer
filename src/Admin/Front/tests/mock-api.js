@@ -26,7 +26,7 @@ const MOCK_DASHBOARD = {
 const MOCK_COMPANIES = [
   {
     id: 'c1',
-    name: 'Empresa Demo 1',
+    name: 'Organización Demo 1',
     taxId: 'B12345678',
     address: 'Calle Principal 1',
     phone: '555-0001',
@@ -35,7 +35,7 @@ const MOCK_COMPANIES = [
   },
   {
     id: 'c2',
-    name: 'Empresa Demo 2',
+    name: 'Organización Demo 2',
     taxId: 'B87654321',
     address: 'Avenida Secundaria 2',
     phone: '555-0002',

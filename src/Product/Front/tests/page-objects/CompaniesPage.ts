@@ -12,7 +12,7 @@ export class CompaniesPage extends BasePage {
   constructor(page: Page) {
     super(page);
 
-    this.title = page.getByRole('heading', { name: /mi organización|organizaciones|empresas/i }).first();
+    this.title = page.getByRole('heading', { name: /mi organización|organizaciones/i }).first();
 
     // Form Inputs (directly on page now)
     this.nameInput = page.locator('#name').or(page.getByTestId('company-form-name'));

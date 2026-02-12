@@ -30,7 +30,7 @@ export function Sidebar({ onClose, isMobile = false }: SidebarProps) {
 
   const navigation = [
     { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-    { name: "Mi Empresa", href: "/my-company", icon: Building2 },
+    { name: "Mi Organización", href: "/my-company", icon: Building2 },
     { name: "Logs", href: "/admin/logs", icon: FileText },
   ];
 
