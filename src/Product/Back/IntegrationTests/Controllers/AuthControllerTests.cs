@@ -235,7 +235,7 @@ public class AuthControllerTests
         const string knownCompany = "Empresa Demo";
         const string knownUsername = "admin";
         const string knownPassword = "admin123";
-        const string expectedFixedHash = "$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW";
+        // const string expectedFixedHash = "$2a$11$IRkoFxAcLpHUIwLTqkJaHu6KYx.dgfGY.sFUIsCTY9xHPhL3jcpgW"; // Removed unused variable
 
         var request = new LoginRequestDto
         {
