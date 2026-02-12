@@ -7,7 +7,8 @@ import { IJudge, IAuditor, IImmutableStorage, IConscience } from '../conscience/
 import { JudgeService } from '../conscience/services/JudgeService';
 import { AuditorService } from '../conscience/services/AuditorService';
 import { ConscienceService } from '../conscience/services/ConscienceService';
-import { MockImmutableStorage } from '../conscience/infrastructure/MockImmutableStorage';
+// import { MockImmutableStorage } from '../conscience/infrastructure/MockImmutableStorage';
+import { IotaImmutableStorage } from '../conscience/infrastructure/IotaImmutableStorage';
 
 // Duality Imports
 import { IOperationalMode, IModeController } from '../duality/interfaces';
@@ -25,7 +26,8 @@ container.bind<IGreetingService>(TYPES.GreetingService).to(GreetingService);
 // Conscience Bindings
 container.bind<IJudge>(TYPES.Judge).to(JudgeService).inSingletonScope();
 container.bind<IAuditor>(TYPES.Auditor).to(AuditorService).inSingletonScope();
-container.bind<IImmutableStorage>(TYPES.ImmutableStorage).to(MockImmutableStorage).inSingletonScope();
+// Using IotaImmutableStorage which includes fallback to simulation
+container.bind<IImmutableStorage>(TYPES.ImmutableStorage).to(IotaImmutableStorage).inSingletonScope();
 container.bind<IConscience>(TYPES.Conscience).to(ConscienceService).inSingletonScope();
 
 // Duality Bindings
