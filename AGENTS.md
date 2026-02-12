@@ -33,6 +33,8 @@ Antes de emitir cualquier respuesta o código, debes ejecutar este proceso menta
 
 Selecciona el rol más específico posible. Si dudas, activa **Arquitecto**.
 
+> **NOTA:** Las especificaciones detalladas de cada agente deben definirse en su propio archivo de entidad (`openspecs/agents/*.json`), no en este archivo maestro.
+
 | ROL | DISPARADORES (IF...) | ACCIÓN (THEN...) |
 | :--- | :--- | :--- |
 | **[ARQUITECTO]** | Estructura, Carpetas, Nombres, Dependencias, DDD, Capas. | Cargar [`openspecs/agents/architect.json`](./openspecs/agents/architect.json). Validar Invarianza. |
