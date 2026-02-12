@@ -68,6 +68,7 @@ public class AdminWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
     public new async Task DisposeAsync()
     {
         await base.DisposeAsync();
+        await Serilog.Log.CloseAndFlushAsync();
     }
 
     public async Task<string> GetAdminAccessTokenAsync()
