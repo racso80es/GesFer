@@ -315,10 +315,10 @@ public static class DbInitializer
     /// </summary>
     private static async Task EnsureAdminUserAsync(ApplicationDbContext context, IServiceProvider services, ILogger logger)
     {
-        // Reglas:
+        // Reglas (solo seeds crean empresas y usuarios):
         // - Usar IgnoreQueryFilters para detectar admin aunque esté soft-deleted.
-        // - Si existe: reactivar y asegurar que tenga CompanyId y Company válida.
-        // - Si no existe: crear Company base (si hace falta) + crear admin.
+        // - Si existe: solo reparar (reactivar, rellenar password si vacío, CompanyId si inválido). No crear Company ni User.
+        // - Si no existe: fallar con mensaje claro; el admin debe definirse en demo-data.json o test-data.json.
 
         var sanitizer = services.GetRequiredService<ISensitiveDataSanitizer>();
         var environment = services.GetRequiredService<IHostEnvironment>();
@@ -329,10 +329,8 @@ public static class DbInitializer
         // const string AdminPassword = "admin123"; // REMOVED SECURITY RISK
         // const string FixedAdminHash = ...; // REMOVED SECURITY RISK
 
-        // Seeds de Testing (test-data.json) usan estos IDs para admin/empresa demo
+        // ID de empresa demo por si el admin viene de seeds con CompanyId vacío (solo reparación)
         var defaultCompanyId = Guid.Parse("11111111-1111-1111-1111-111111111115");
-        var defaultAdminUserId = Guid.Parse("99999999-9999-9999-9999-999999999999");
-        var defaultLanguageId = Guid.Parse("10000000-0000-0000-0000-000000000001");
 
         async Task EnsureCoreAsync()
         {
@@ -389,38 +387,15 @@ public static class DbInitializer
                     admin.CompanyId = defaultCompanyId;
                 }
 
-                // Asegurar que Company existe (si no, crear fallback)
+                // No crear Company: debe existir por seeds. Solo advertir si la referencia es inválida.
                 if (admin.Company == null)
                 {
-                    var existingCompany = await context.Companies
-                        .IgnoreQueryFilters()
-                        .FirstOrDefaultAsync(c => c.Id == admin.CompanyId);
-
+                    var existingCompany = await context.Companies.IgnoreQueryFilters().FirstOrDefaultAsync(c => c.Id == admin.CompanyId);
                     if (existingCompany == null)
                     {
-                        existingCompany = new Company
-                        {
-                            Id = admin.CompanyId,
-                            Name = "Empresa Demo",
-                            Address = "Calle Gran Vía, 1",
-                            Phone = "912345678",
-                            Email = Email.Create("demo@empresa.com"),
-                            LanguageId = defaultLanguageId,
-                            CreatedAt = DateTime.UtcNow,
-                            IsActive = true
-                        };
-
-                        try
-                        {
-                            existingCompany.TaxId = TaxId.Create("B87654323");
-                        }
-                        catch (ArgumentException ex)
-                        {
-                            // Si el TaxId falla por regla de dominio, mantener null y continuar.
-                            logger.LogWarning(ex, "[SEED] TaxId fallback inválido para Company demo. Se continuará sin TaxId.");
-                        }
-
-                        context.Companies.Add(existingCompany);
+                        logger.LogError("El usuario 'admin' tiene CompanyId {CompanyId} pero la empresa no existe. Incluya 'companies' en demo-data.json (o ejecute seeds de Admin si usa BD compartida).", admin.CompanyId);
+                        throw new InvalidOperationException(
+                            "El usuario 'admin' está referenciando una empresa inexistente. Defina empresas y usuarios únicamente mediante seeds (demo-data.json).");
                     }
                 }
 
@@ -428,64 +403,10 @@ public static class DbInitializer
                 return;
             }
 
-            // No existe: crear Company (si hace falta) + crear admin
-            var company = await context.Companies
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(c => c.Id == defaultCompanyId);
-
-            if (company == null)
-            {
-                company = new Company
-                {
-                    Id = defaultCompanyId,
-                    Name = "Empresa Demo",
-                    Address = "Calle Gran Vía, 1",
-                    Phone = "912345678",
-                    Email = Email.Create("demo@empresa.com"),
-                    LanguageId = defaultLanguageId,
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true
-                };
-
-                try
-                {
-                    company.TaxId = TaxId.Create("B87654323");
-                }
-                catch (ArgumentException ex)
-                {
-                    logger.LogWarning(ex, "[SEED] TaxId fallback inválido para Company demo. Se continuará sin TaxId.");
-                }
-
-                context.Companies.Add(company);
-            }
-            else if (company.DeletedAt != null)
-            {
-                company.DeletedAt = null;
-                company.IsActive = true;
-            }
-
-            var adminPassword = isTesting ? TestAdminPassword : sanitizer.GenerateRandomPassword();
-            var newAdmin = new User
-            {
-                Id = defaultAdminUserId,
-                CompanyId = defaultCompanyId,
-                Username = AdminUsername,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword),
-                FirstName = "Administrador",
-                LastName = "Sistema",
-                Email = Email.Create("admin@empresa.com"),
-                Phone = "912345678",
-                LanguageId = defaultLanguageId,
-                CreatedAt = DateTime.UtcNow,
-                IsActive = true
-            };
-
-            context.Users.Add(newAdmin);
-            await context.SaveChangesAsync();
-
-            logger.LogInformation("✅ Admin garantizado: '{Username}' creado con contraseña {Kind}", AdminUsername, isTesting ? "admin123 (Testing)" : "aleatoria");
-            if (!isTesting)
-                Console.WriteLine($"    ✅ Admin garantizado: '{AdminUsername}' creado. Clave: '{adminPassword}'");
+            // Admin no existe: no crear Company ni User en código. Solo seeds deben crearlos.
+            logger.LogError("El usuario 'admin' no existe en la BD. Debe estar definido en los seeds (demo-data.json o test-data.json).");
+            throw new InvalidOperationException(
+                "El usuario 'admin' debe estar definido en los seeds (demo-data.json o test-data.json). Toda la carga masiva de empresas y usuarios se realiza mediante seeds.");
         }
 
         // Pomelo MySQL suele habilitar estrategia de reintentos que requiere transacciones dentro de ExecutionStrategy.

@@ -10,22 +10,21 @@ import { Button } from "@shared/components/shared/Button";
 import { ErrorMessage } from "@shared/components/ui/error-message";
 import { Building2, User, Lock, Loader2 } from "lucide-react";
 import { useTranslations } from 'next-intl';
-import { CLIENT_COMPANY_NAME } from "@/lib/legacy-constants";
 
-// Constante definitiva para autofill de credenciales de cliente
-// GUID de Company Cliente: 33333333-3333-3333-3333-333333333333
-const MOCK_CLIENT_CREDENTIALS = {
-  company: CLIENT_COMPANY_NAME,
-  username: "user_test",
-  password: "user123",
-} as const;
+// Credenciales por defecto: desde env (coinciden con seeds demo-data.json) o fallback para desarrollo
+function getDefaultLoginCredentials(): { company: string; username: string; password: string } {
+  return {
+    company: process.env.NEXT_PUBLIC_DEFAULT_LOGIN_COMPANY ?? "Empresa Cliente",
+    username: process.env.NEXT_PUBLIC_DEFAULT_LOGIN_USER ?? "user_test",
+    password: process.env.NEXT_PUBLIC_DEFAULT_LOGIN_PASSWORD ?? "admin123",
+  };
+}
 
 export default function LoginPage() {
   const router = useRouter();
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const t = useTranslations('auth');
-  // Contexto CLIENTE: Autocompletado para login de cliente
-  const [formData, setFormData] = useState<{ company: string; username: string; password: string }>({ ...MOCK_CLIENT_CREDENTIALS });
+  const [formData, setFormData] = useState<{ company: string; username: string; password: string }>(() => getDefaultLoginCredentials());
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
