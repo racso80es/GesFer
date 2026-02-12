@@ -8,7 +8,8 @@
   "skills": [
     "git-operations",
     "dotnet-development",
-    "filesystem-ops"
+    "filesystem-ops",
+    "frontend-build"
   ],
   "constraints": [
     {

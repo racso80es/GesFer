@@ -1,0 +1,40 @@
+{
+  "spec_version": "1.0.0",
+  "skill_id": "frontend-build",
+  "name": "Frontend Build (Next.js)",
+  "description": "Scripts y comandos para compilar los frontends Product y Admin sin depender del binario next (dist/bin/next). Usar cuando la acción 1 de consola [4/12] o [5/12] falle con MODULE_NOT_FOUND.",
+  "owner": "tekton-developer",
+  "status": "Active",
+  "scripts": [
+    {
+      "id": "next-build-fallback-product",
+      "name_short": "Build Product",
+      "description": "Compila el frontend Product invocando next/dist/cli/next-build.js directamente.",
+      "path": "src/Product/Front/scripts/next-build-fallback.cjs",
+      "command": "node scripts/next-build-fallback.cjs",
+      "cwd": "src/Product/Front",
+      "npm_script": "npm run build"
+    },
+    {
+      "id": "next-build-fallback-admin",
+      "name_short": "Build Admin",
+      "description": "Compila el frontend Admin invocando next/dist/cli/next-build.js directamente.",
+      "path": "src/Admin/Front/scripts/next-build-fallback.cjs",
+      "command": "node scripts/next-build-fallback.cjs",
+      "cwd": "src/Admin/Front",
+      "npm_script": "npm run build"
+    }
+  ],
+  "rules": [
+    "El script 'build' en package.json de Product y Admin debe apuntar a node scripts/next-build-fallback.cjs.",
+    "Ejecutar desde la raíz del proyecto: Set-Location <cwd>; luego node scripts/next-build-fallback.cjs o npm run build.",
+    "Si MODULE_NOT_FOUND next/dist/bin/next persiste, reinstalar: Remove-Item -Recurse node_modules; npm install."
+  ],
+  "commands": {
+    "build_product": "Set-Location src/Product/Front; npm run build",
+    "build_admin": "Set-Location src/Admin/Front; npm run build",
+    "install_and_build_product": "Set-Location src/Product/Front; npm install; npm run build",
+    "install_and_build_admin": "Set-Location src/Admin/Front; npm install; npm run build"
+  },
+  "related_agents": ["tekton-developer", "frontend-architect"]
+}
