@@ -33,6 +33,8 @@ Antes de emitir cualquier respuesta o código, debes ejecutar este proceso menta
 
 Selecciona el rol más específico posible. Si dudas, activa **Arquitecto**.
 
+> **NOTA:** Las especificaciones detalladas de cada agente deben definirse en su propio archivo de entidad (`openspecs/agents/*.json`), no en este archivo maestro.
+
 | ROL | DISPARADORES (IF...) | ACCIÓN (THEN...) |
 | :--- | :--- | :--- |
 | **[ARQUITECTO]** | Estructura, Carpetas, Nombres, Dependencias, DDD, Capas. | Cargar [`openspecs/agents/architect.json`](./openspecs/agents/architect.json). Validar Invarianza. |
@@ -45,7 +47,7 @@ Selecciona el rol más específico posible. Si dudas, activa **Arquitecto**.
 | **[AUDITOR-FRONT]** | Auditoría, Accesibilidad, Lint, Frontend. | Cargar [`openspecs/agents/auditor/front.json`](./openspecs/agents/auditor/front.json). Generar reporte. |
 | **[AUDITOR-BACK]** | Auditoría, Backend, C#, Arquitectura, DbContext. | Cargar [`openspecs/agents/auditor/back.json`](./openspecs/agents/auditor/back.json). Generar reporte. |
 | **[AUDITOR-PROCESS]**| Git Hooks, Husky, Token, Hash, Process Interaction. | Cargar [`openspecs/agents/auditor/process-interaction.json`](./openspecs/agents/auditor/process-interaction.json). Validar Hash. |
-| **[KNOWLEDGE-ARCH]** | Documentación, Docs, Markdown, Guías, Conocimiento, Rutas. | Cargar [`openspecs/agents/knowledge-architect.json`](./openspecs/agents/knowledge-architect.json). Validar SSOT. Registrar Deuda Técnica en `docs/DeudaTecnica/`. |
+| **[KNOWLEDGE-ARCH]** | Documentación, Docs, Markdown, Guías, Conocimiento, Rutas. | Cargar [`openspecs/agents/knowledge-architect.json`](./openspecs/agents/knowledge-architect.json). Validar SSOT. |
 | **[CLARIFICADOR]**   | Ambigüedad, Gaps, Dudas, Requisitos incompletos, Spec. | Cargar [`openspecs/agents/clarifier.json`](./openspecs/agents/clarifier.json). Identificar y resolver gaps. |
 
 ---
