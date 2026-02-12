@@ -18,7 +18,7 @@ export async function GET(_request: NextRequest, { params }: Params) {
 
     if (!company) {
       return NextResponse.json(
-        { error: "Empresa no encontrada" },
+        { error: "Organización no encontrada" },
         { status: 404 }
       );
     }
@@ -27,7 +27,7 @@ export async function GET(_request: NextRequest, { params }: Params) {
   } catch (error) {
     console.error(`Error fetching company ${params.id}:`, error);
     return NextResponse.json(
-      { error: "Error al obtener la empresa" },
+      { error: "Error al obtener la organización" },
       { status: 500 }
     );
   }
@@ -46,7 +46,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
   } catch (error) {
     console.error(`Error updating company ${params.id}:`, error);
     return NextResponse.json(
-      { error: "Error al actualizar la empresa" },
+      { error: "Error al actualizar la organización" },
       { status: 500 }
     );
   }
@@ -64,7 +64,7 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
   } catch (error) {
     console.error(`Error deleting company ${params.id}:`, error);
     return NextResponse.json(
-      { error: "Error al eliminar la empresa" },
+      { error: "Error al eliminar la organización" },
       { status: 500 }
     );
   }

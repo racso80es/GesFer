@@ -9,7 +9,7 @@ import { CompanyForm } from "@/components/companies/company-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { myCompanyApi } from "@/lib/api/my-company";
 import { useTranslations } from 'next-intl';
-import type { UpdateCompany } from "@/lib/types/api";
+import type { UpdateCompany, CreateCompany } from "@/lib/types/api";
 import { useState } from "react";
 import { Building2 } from "lucide-react";
 
@@ -37,9 +37,9 @@ export default function MyCompanyPage() {
     },
   });
 
-  const handleUpdate = async (data: UpdateCompany) => {
+  const handleUpdate = async (data: CreateCompany | UpdateCompany) => {
     // Only pass relevant fields for update
-    await updateMutation.mutateAsync(data);
+    await updateMutation.mutateAsync(data as UpdateCompany);
   };
 
   return (

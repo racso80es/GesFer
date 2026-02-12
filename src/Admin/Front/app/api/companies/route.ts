@@ -15,7 +15,7 @@ export async function GET() {
   } catch (error) {
     console.error("Error fetching companies:", error);
     return NextResponse.json(
-      { error: "Error al obtener las empresas" },
+      { error: "Error al obtener las organizaciones" },
       { status: 500 }
     );
   }
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating company:", error);
     return NextResponse.json(
-      { error: "Error al crear la empresa" },
+      { error: "Error al crear la organización" },
       { status: 500 }
     );
   }

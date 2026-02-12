@@ -14,7 +14,7 @@ export default function MyCompanyPage() {
     const fetchCompany = async () => {
       try {
         const response = await fetch("/api/my-company");
-        if (!response.ok) throw new Error("Error al cargar la empresa");
+        if (!response.ok) throw new Error("Error al cargar la organización");
         const data = await response.json();
         setCompany(data);
       } catch (error) {
@@ -34,7 +34,7 @@ export default function MyCompanyPage() {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error("Error al actualizar la empresa");
+      if (!response.ok) throw new Error("Error al actualizar la organización");
 
       const updatedData = await response.json();
       setCompany(updatedData);
