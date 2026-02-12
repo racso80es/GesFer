@@ -2,7 +2,7 @@
 
 > **Sector del Reciclaje y Recuperación de Materiales (Ferralla)**
 
-GesFer es una plataforma ERP moderna diseñada para la gestión operativa y administrativa de empresas dedicadas al reciclaje, recuperación de chatarra y gestión de residuos metálicos. El proyecto está construido bajo una arquitectura de microservicios modulares y un enfoque de **Diseño Guiado por el Dominio (DDD)**.
+GesFer es una plataforma ERP moderna diseñada para la gestión operativa y administrativa de empresas dedicadas al reciclaje, recuperación de chatarra y gestión de residuos metálicos. El proyecto está construido bajo una arquitectura de microservicios modulares y un enfoque de **System Driven Design (SDD)**, donde el documento `CONSTITUTION.md` actúa como la ley central del negocio.
 
 ---
 
@@ -11,12 +11,13 @@ GesFer es una plataforma ERP moderna diseñada para la gestión operativa y admi
 El objetivo de GesFer es digitalizar y optimizar el flujo de trabajo en plantas de reciclaje, cubriendo desde la entrada de materiales (compras/pesaje) hasta su venta y expedición, pasando por la gestión de inventarios y tarifas complejas basadas en cotizaciones de mercado.
 
 ### Capacidades Clave
-*   **Gestión de Compras:** Albaranes de entrada, Facturas de compra, Autofacturas, rectificativas, etc.
-*   **Gestión de Ventas:** Albaranes de salida, Facturación a clientes.
-*   **Tarifas Dinámicas:** Gestión de precios por material, familia, grupo y cliente/proveedor
-*   **Maestros:** Artículos, Familias, Grupos, Clientes, Proveedores.
-*   **Seguridad:** Gestión granular de Usuarios y Permisos.
+*   **Gestión de Compras:** Albaranes de entrada con pesaje, Facturas de compra, Autofacturas y aplicación automática de **ISP** (Inversión del Sujeto Pasivo).
+*   **Gestión de Ventas:** Albaranes de salida, Facturación a clientes y consolidación de materiales.
+*   **Tarifas Dinámicas:** Gestión de precios por material, familia, grupo y cliente/proveedor, con soporte para personalización in-situ.
+*   **Cumplimiento Legal:** Generación automática del **Libro de Policía** y trazabilidad de residuos.
+*   **Seguridad:** Gestión granular de Usuarios y Permisos con registro de matrículas y documentos de identidad.
 *   **Auditoría:** Registro inmutable de acciones (Logs) para trazabilidad completa.
+
 ---
 
 ## 🏗 Arquitectura del Sistema
@@ -39,6 +40,8 @@ El repositorio sigue una estructura de **Monorepo** que alberga múltiples aplic
 │   ├── Core/          # Lógica de Negocio agnóstica (Typescript)
 │   └── Interfaces/    # Implementaciones de UI (Electron/Desktop)
 ├── docs/              # Documentación del Proyecto
+│   ├── DeudaTecnica/  # Registro centralizado de deuda técnica y funcional
+│   └── ...            # Otros registros de documentación
 └── infrastructure/    # Configuración de Despliegue e Infraestructura
 ```
 
@@ -125,13 +128,16 @@ ejecutar-electron.bat
 
 ## 🤖 Sistema Multi-Agente (AI)
 
-Este repositorio contiene un archivo `AGENTS.md` que define un protocolo estricto para la interacción con Agentes de Inteligencia Artificial. Define roles como **Arquitecto**, **Tekton** (Desarrollador), **Juez** (QA), entre otros. Cualquier contribución asistida por IA debe adherirse a estas leyes y flujos de trabajo.
+Este repositorio contiene un archivo `AGENTS.md` que define un protocolo estricto para la interacción con Agentes de Inteligencia Artificial.
+*   **Roles:** Arquitecto, Tekton (Desarrollador), Juez (QA), Knowledge Architect, etc.
+*   **Especificaciones:** Las reglas detalladas para cada agente se encuentran en `openspecs/agents/*.json`.
 
 ---
 
 ## 📚 Documentación Adicional
 
 Para más detalles, consulte el directorio `docs/`:
-*   `CONSTITUTION.md`: **Constitución de GesFer**. Principios fundamentales, reglas de negocio y flujos operativos. Incluye referencias a material audiovisual.
+*   `CONSTITUTION.md`: **Constitución de GesFer**. Principios fundamentales, reglas de negocio (precios, caja), flujos operativos (adquisición, venta) y cumplimiento legal. Incluye referencias a material audiovisual.
+*   `docs/DeudaTecnica/`: Registro centralizado de deuda técnica, funcional y legal detectada.
 *   `docs/EVOLUTION_LOG.md`: Registro de cambios y evolución del sistema.
-*   `docs/KAIZEN/`: Registros de mejora continua y análisis de deuda técnica.
+*   `docs/KAIZEN/`: Registros de mejora continua.
