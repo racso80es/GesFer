@@ -1,58 +1,54 @@
 # 📜 Constitución de GesFer: El Corazón del Sistema
 
-Este documento establece los principios fundamentales, flujos de negocio y reglas operativas que rigen el desarrollo y funcionamiento del sistema GesFer.
+Este documento establece los principios fundamentales, flujos de negocio y reglas operativas que rigen el desarrollo y funcionamiento del sistema GesFer. Representa la base del SDD (System Driven Design).
 
 ## 1. Propósito y Ciclo de Vida del Negocio
 
-GesFer es una solución integral diseñada para gestionar el ciclo de vida completo de una planta de reciclaje y recuperación de materiales (Chatarrería). El flujo operativo fundamental se rige por:
+GesFer es una solución integral para gestionar el ciclo de vida de una planta de reciclaje y recuperación de materiales. El flujo operativo fundamental se rige por:
 
-*   **Adquisición:** Compra de materiales (metales) a proveedores.
-*   **Gestión de Entrada:** Proceso disgregado que incluye pesaje, acumulación en albaranes y generación de tickets para pago.
-*   **Almacenamiento y Consolidación:** Acopio de material hasta alcanzar volúmenes óptimos de venta.
-*   **Comercialización:** Venta de material a clientes mayores (Fundiciones, Acerías, etc.).
+*   **Adquisición:** Compra de materiales a proveedores mediante un proceso de negociación y pesaje.
+*   **Gestión de Entrada:** Proceso que incluye el triaje, pesaje y acumulación en albaranes.
+*   **Almacenamiento:** Acopio de materiales clasificados (Férricos/No Férricos) hasta alcanzar volúmenes de venta.
+*   **Comercialización:** Venta a fundiciones y acerías con gestión de facturación específica.
 
 ## 2. Reglas de Oro Operativas (Lógica de Negocio)
 
-### Jerarquía de Precios
-Los precios se organizan en "Tarifas" (agrupaciones por nombre) que permiten asignar precios específicos a N artículos.
-*   La tarifa base define el precio de mercado general.
-*   Las tarifas específicas pueden asignarse a grupos de proveedores o clientes.
+### Jerarquía de Precios y Artículos
+Los precios se organizan en "Tarifas" que permiten asignar valores específicos a grupos de artículos.
 
-### Personalización del Proveedor
-*   Cada proveedor puede tener una tarifa por defecto asignada.
-*   El sistema permite la personalización de precios en tiempo real durante la operación de compra (negociación in-situ), prevaleciendo sobre la tarifa base.
+*   Los artículos deben estar estrictamente categorizados para asegurar la trazabilidad del residuo.
+*   La **Personalización In-situ** permite al operario ajustar el precio durante la compra si el estado del material lo requiere, prevaleciendo sobre la tarifa base.
 
-### Gestión Documental
-Es obligatorio el registro estricto de datos administrativos para cumplir con la normativa del sector:
-*   Escaneo y validación de DNI/CIF.
-*   Gestión de matrículas de vehículos asociados al proveedor/transportista.
-*   Trazabilidad de residuos.
+### Gestión de Entidades y Seguridad
+*   Es obligatorio el registro de DNI/CIF y matrículas de vehículos para cumplir con la ley de seguridad ciudadana.
+*   Cada proveedor puede tener condiciones comerciales y fiscales únicas (como la exención de IVA por ISP).
 
-### Cumplimiento Legal
-El sistema debe generar documentación específica requerida por las autoridades:
-*   Libros de Policía (Registro de entrada de materiales).
-*   Informes para la administración medioambiental.
-*   Facturación adaptada a la normativa fiscal vigente (Inversión del Sujeto Pasivo, etc.).
+### Flujo de Caja y Pagos
+*   Cada operación de compra genera un movimiento de caja que debe ser trazable y auditado diariamente.
+*   Los pagos se realizan tras la consolidación de tickets de pesaje en albaranes.
 
-## 3. Recursos Audiovisuales y Multimedia
+## 3. Cumplimiento Legal y Facturación
 
-Para profundizar en el entendimiento de los flujos operativos, se han incorporado los siguientes recursos multimedia que detallan puntos específicos del proyecto. Estos archivos se encuentran ubicados en `docs/Base_Constitution/Recursos/`.
+*   **Libro de Policía:** Registro automatizado de todas las entradas de material para inspección de autoridades.
+*   **Inversión del Sujeto Pasivo (ISP):** Aplicación automática de la normativa fiscal para el sector de la chatarra en facturación.
 
-### 🎥 Videos Explicativos de Funcionalidad
-Estos videos muestran la operativa esperada en módulos clave del sistema:
+## 4. Recursos Audiovisuales y Multimedia
 
-*   **Albaranes de Compra:** `docs/Base_Constitution/Recursos/Albaranescompra.mp4`
-*   **Gestión de Artículos:** `docs/Base_Constitution/Recursos/Articulos.mp4`
-*   **Control de Caja:** `docs/Base_Constitution/Recursos/Caja.mp4`
-*   **Proceso de Compra:** `docs/Base_Constitution/Recursos/Compra.mp4`
-*   **Facturación:** `docs/Base_Constitution/Recursos/Facturas.mp4`
-*   **Gestión de Proveedores:** `docs/Base_Constitution/Recursos/Proveedores.mp4`
+**Ubicación:** `docs/Base_Constitution/Recursos/`
 
-### 🎧 Notas de Audio de Contexto
-Grabaciones con detalles adicionales sobre la visión y especificidades del negocio:
+### Operativa
+Videos demostrativos de los flujos principales:
+*   [Albaranes de Compra](docs/Base_Constitution/Recursos/Albaranescompra.mp4)
+*   [Gestión de Artículos](docs/Base_Constitution/Recursos/Articulos.mp4)
+*   [Control de Caja](docs/Base_Constitution/Recursos/Caja.mp4)
+*   [Proceso de Compra](docs/Base_Constitution/Recursos/Compra.mp4)
+*   [Facturación](docs/Base_Constitution/Recursos/Facturas.mp4)
+*   [Gestión de Proveedores](docs/Base_Constitution/Recursos/Proveedores.mp4)
 
-*   `docs/Base_Constitution/Recursos/5794374201901064292.oga`
-*   `docs/Base_Constitution/Recursos/5794374201901064293.oga`
-*   `docs/Base_Constitution/Recursos/5794374201901064294.oga`
-*   `docs/Base_Constitution/Recursos/5794374201901064295.oga`
-*   `docs/Base_Constitution/Recursos/5794374201901064297.oga`
+### Visión
+Notas de audio con el contexto estratégico del negocio:
+*   [Entrada y Facturación](docs/Base_Constitution/Recursos/Entrada_y_Facturacion.oga)
+*   [Fundamentos del Negocio](docs/Base_Constitution/Recursos/Fundamentos.oga)
+*   [Identificación de Entidades](docs/Base_Constitution/Recursos/Identificación%20de%20Entidades%20del%20Sistema.oga)
+*   [Personalización de Precios](docs/Base_Constitution/Recursos/Personalización%20de%20Precios%20en%20la%20Compra.oga)
+*   [Tarifas y Artículos](docs/Base_Constitution/Recursos/Tarifas%20y%20Artículos.oga)
