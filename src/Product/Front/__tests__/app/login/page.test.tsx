@@ -2,7 +2,9 @@ import { render, screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import LoginPage from '@/app/(client)/login/page'
 import { useAuth } from '@/contexts/auth-context'
-import { CLIENT_COMPANY_NAME } from '@/lib/legacy-constants'
+// Valores por defecto del login (coinciden con seeds demo-data.json)
+const DEFAULT_LOGIN_COMPANY = 'Empresa Cliente'
+const DEFAULT_LOGIN_PASSWORD = 'admin123'
 
 // Mock the auth context
 jest.mock('@/contexts/auth-context')
@@ -56,9 +58,9 @@ describe('LoginPage', () => {
     const usuarioInput = screen.getByLabelText(/usuario|username/i) as HTMLInputElement
     const contraseñaInput = screen.getByLabelText(/contraseña|password/i) as HTMLInputElement
     
-    expect(companyInput.value).toBe(CLIENT_COMPANY_NAME)
+    expect(companyInput.value).toBe(DEFAULT_LOGIN_COMPANY)
     expect(usuarioInput.value).toBe('user_test')
-    expect(contraseñaInput.value).toBe('user123')
+    expect(contraseñaInput.value).toBe(DEFAULT_LOGIN_PASSWORD)
   })
 
   it('should handle form submission', async () => {
@@ -75,9 +77,9 @@ describe('LoginPage', () => {
     
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith({
-        company: CLIENT_COMPANY_NAME,
+        company: DEFAULT_LOGIN_COMPANY,
         username: 'user_test',
-        password: 'user123',
+        password: DEFAULT_LOGIN_PASSWORD,
       })
     })
   })

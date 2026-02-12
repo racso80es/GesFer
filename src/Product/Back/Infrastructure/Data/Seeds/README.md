@@ -54,8 +54,8 @@ El sistema de seeding es **completamente idempotente**:
 
 En modo **Development**, el seeding se ejecuta automáticamente al arrancar la aplicación:
 1. Se aplican las migraciones pendientes
-2. Se cargan los datos desde los archivos JSON
-3. Se crea/verifica el usuario administrativo (admin/admin123)
+2. Se cargan los datos desde los archivos JSON (empresas y usuarios **solo** vía seeds)
+3. Se verifica/repara el usuario administrativo si ya existe (no se crean empresas ni usuarios en código; deben estar en demo-data.json o test-data.json)
 
 ### Credenciales de prueba (demo-data.json)
 

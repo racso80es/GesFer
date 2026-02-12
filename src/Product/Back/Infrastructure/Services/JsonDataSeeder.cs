@@ -193,12 +193,18 @@ public class JsonDataSeeder
             return result;
         }
 
-        // CASCADA RESILIENTE: Companies son SSOT en Admin; Product usa los IDs ya existentes en BD.
+        // Empresas y usuarios solo vía seeds: cargar companies desde demo-data si vienen definidas.
+        if (data.Companies != null && data.Companies.Any())
+        {
+            await SeedCompaniesAsync(data.Companies);
+            await _context.SaveChangesAsync();
+            result.Entities.Add($"{data.Companies.Count} Company(ies)");
+        }
+
         var validCompanyIds = new HashSet<Guid>(await _context.Companies.IgnoreQueryFilters().Select(c => c.Id).ToListAsync());
         if (validCompanyIds.Count == 0)
-            _logger.LogWarning("[SEED] No hay companies en la BD. Ejecutar antes el seed de Admin (companies.json) si se usa BD compartida.");
+            _logger.LogWarning("[SEED] No hay companies en la BD. Incluir 'companies' en demo-data.json o ejecutar seed de Admin (companies.json) si se usa BD compartida.");
 
-        // CASCADA RESILIENTE: Crear HashSet de IDs válidos de usuarios para evitar referencias huérfanas
         var validUserIds = new HashSet<Guid>();
 
         // Seed Users
