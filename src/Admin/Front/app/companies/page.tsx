@@ -24,10 +24,10 @@ export default async function CompaniesPage() {
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Empresas</h1>
+        <h1 className="text-3xl font-bold">Organizaciones</h1>
         <Link href="/companies/new">
           <Button>
-            <Plus className="mr-2 h-4 w-4" /> Nueva Empresa
+            <Plus className="mr-2 h-4 w-4" /> Nueva Organización
           </Button>
         </Link>
       </div>
@@ -47,7 +47,7 @@ export default async function CompaniesPage() {
             {companies.length === 0 ? (
               <tr>
                 <td colSpan={5} className="text-center py-8 text-gray-500">
-                  No hay empresas registradas
+                  No hay organizaciones registradas
                 </td>
               </tr>
             ) : (

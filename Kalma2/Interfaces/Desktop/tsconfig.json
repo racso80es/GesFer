@@ -20,9 +20,10 @@
     "baseUrl": ".",
     "paths": {
       "inversify": ["node_modules/inversify"],
-      "reflect-metadata": ["node_modules/reflect-metadata"]
+      "reflect-metadata": ["node_modules/reflect-metadata"],
+      "@iota/sdk": ["node_modules/@iota/sdk"]
     }
   },
-  "include": ["src", "electron", "../../Core"],
+  "include": ["src", "electron", "../../Core", "../../Projects"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
