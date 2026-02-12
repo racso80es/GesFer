@@ -11,6 +11,13 @@ export interface IJudge {
 
 export interface IAuditor {
   verify(record: unknown): Promise<boolean>;
+  /**
+   * Registers a hash of a system process on the IOTA/Shimmer network.
+   * @param processId Unique identifier of the process (e.g., 'SPEC-001').
+   * @param data The data to hash and store.
+   * @returns The Block ID or Transaction Hash.
+   */
+  registerProcess(processId: string, data: unknown): Promise<string>;
 }
 
 export interface IImmutableStorage {
