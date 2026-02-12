@@ -257,16 +257,15 @@ public class AuthControllerTests
         userFromDb!.IsActive.Should().BeTrue(
             $"El usuario '{knownUsername}' debe estar activo");
         
-        userFromDb.PasswordHash.Should().Be(expectedFixedHash,
-            $"El hash de contraseña del usuario debe ser el hash fijo conocido. " +
-            $"Hash actual: {userFromDb.PasswordHash}, Hash esperado: {expectedFixedHash}. " +
-            $"Si el hash no coincide, ejecuta el script fix-admin-password.sql para corregirlo.");
+        // KAIZEN FIX: No comparar el string del hash directamente, ya que BCrypt genera salts aleatorios
+        // y el hash puede cambiar incluso para la misma contraseña si se regenera el seed.
+        // En su lugar, verificar funcionalmente que la contraseña coincide con el hash almacenado.
 
-        // Verificar que BCrypt puede verificar la contraseña con el hash conocido
-        var passwordVerification = BCrypt.Net.BCrypt.Verify(knownPassword, expectedFixedHash);
+        // Verificar que BCrypt puede verificar la contraseña con el hash almacenado en BD
+        var passwordVerification = BCrypt.Net.BCrypt.Verify(knownPassword, userFromDb.PasswordHash);
         passwordVerification.Should().BeTrue(
-            $"El hash conocido debe verificar correctamente la contraseña '{knownPassword}'. " +
-            $"Esto garantiza que el hash es válido y funcional.");
+            $"El hash almacenado en BD debe ser válido para la contraseña '{knownPassword}'. " +
+            $"Hash actual: {userFromDb.PasswordHash}.");
 
         // Act - Intentar login con las credenciales conocidas
         var response = await _client.PostAsJsonAsync("/api/auth/login", request);
@@ -277,10 +276,9 @@ public class AuthControllerTests
             $"Status recibido: {response.StatusCode}. " +
             $"Respuesta: {await response.Content.ReadAsStringAsync()}. " +
             $"Si este test falla, verifica:" +
-            $"\n1. Que el hash en la base de datos sea: {expectedFixedHash}" +
+            $"\n1. Que el hash en la base de datos sea válido para 'admin123'" +
             $"\n2. Que el usuario exista y esté activo" +
-            $"\n3. Que la empresa exista y esté activa" +
-            $"\n4. Ejecuta el script fix-admin-password.sql para corregir el hash si es necesario");
+            $"\n3. Que la empresa exista y esté activa");
 
         var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
         loginResponse.Should().NotBeNull("La respuesta de login no debe ser null");
