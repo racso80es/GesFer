@@ -39,6 +39,9 @@
     "tailwind-merge": "^2.2.1",
     "zod": "^4.3.5"
   },
+  "overrides": {
+    "pretty-format": "^29.7.0"
+  },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@testing-library/jest-dom": "^6.1.5",

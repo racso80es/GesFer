@@ -24,21 +24,38 @@ describe("Validación de IDs en APIs", () => {
 
   describe("companiesApi", () => {
     it("debe validar ID antes de getById", async () => {
-      await expect(companiesApi.getById("invalid-id")).rejects.toThrow(
-        "El ID de company no es válido"
-      );
+      let threw = false;
+      try {
+        await companiesApi.getById("invalid-id");
+      } catch (e: unknown) {
+        threw = true;
+        expect((e as Error).message).toContain("El ID de organización no es válido");
+      }
+      expect(threw).toBe(true);
       expect(apiClient.get).not.toHaveBeenCalled();
     });
 
     it("debe validar ID antes de update", async () => {
-      await expect(
-        companiesApi.update("11.1111-111111111111:1", { name: "Test", address: "Test" })
-      ).rejects.toThrow("El ID de company no es válido");
+      let threw = false;
+      try {
+        await companiesApi.update("11.1111-111111111111:1", { name: "Test", address: "Test" });
+      } catch (e: unknown) {
+        threw = true;
+        expect((e as Error).message).toContain("El ID de organización no es válido");
+      }
+      expect(threw).toBe(true);
       expect(apiClient.put).not.toHaveBeenCalled();
     });
 
     it("debe validar ID antes de delete", async () => {
-      await expect(companiesApi.delete("")).rejects.toThrow("El ID de company es requerido");
+      let threw = false;
+      try {
+        await companiesApi.delete("");
+      } catch (e: unknown) {
+        threw = true;
+        expect((e as Error).message).toContain("El ID de organización es requerido");
+      }
+      expect(threw).toBe(true);
       expect(apiClient.delete).not.toHaveBeenCalled();
     });
 
@@ -64,32 +81,54 @@ describe("Validación de IDs en APIs", () => {
 
   describe("usersApi", () => {
     it("debe validar ID antes de getById", async () => {
-      await expect(usersApi.getById("invalid-id")).rejects.toThrow(
-        "El ID de usuario no es válido"
-      );
+      let threw = false;
+      try {
+        await usersApi.getById("invalid-id");
+      } catch (e: unknown) {
+        threw = true;
+        expect((e as Error).message).toContain("El ID de usuario no es válido");
+      }
+      expect(threw).toBe(true);
       expect(apiClient.get).not.toHaveBeenCalled();
     });
 
     it("debe validar ID antes de update", async () => {
-      await expect(
-        usersApi.update("11.1111-111111111111:1", {
+      let threw = false;
+      try {
+        await usersApi.update("11.1111-111111111111:1", {
           username: "test",
           firstName: "Test",
           lastName: "User",
-        })
-      ).rejects.toThrow("El ID de usuario no es válido");
+        });
+      } catch (e: unknown) {
+        threw = true;
+        expect((e as Error).message).toContain("El ID de usuario no es válido");
+      }
+      expect(threw).toBe(true);
       expect(apiClient.put).not.toHaveBeenCalled();
     });
 
     it("debe validar ID antes de delete", async () => {
-      await expect(usersApi.delete("")).rejects.toThrow("El ID de usuario es requerido");
+      let threw = false;
+      try {
+        await usersApi.delete("");
+      } catch (e: unknown) {
+        threw = true;
+        expect((e as Error).message).toContain("El ID de usuario es requerido");
+      }
+      expect(threw).toBe(true);
       expect(apiClient.delete).not.toHaveBeenCalled();
     });
 
     it("debe validar companyId en getAll", async () => {
-      await expect(usersApi.getAll("invalid-company-id")).rejects.toThrow(
-        "El ID de company no es válido"
-      );
+      let threw = false;
+      try {
+        await usersApi.getAll("invalid-company-id");
+      } catch (e: unknown) {
+        threw = true;
+        expect((e as Error).message).toContain("El ID de company no es válido");
+      }
+      expect(threw).toBe(true);
       expect(apiClient.get).not.toHaveBeenCalled();
     });
 
