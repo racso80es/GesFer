@@ -4,27 +4,27 @@ Este documento establece los principios fundamentales, flujos de negocio y regla
 
 ## 1. Propósito y Ciclo de Vida del Negocio
 
-GesFer es una solución integral para gestionar el ciclo de vida de una planta de reciclaje y recuperación de materiales. El flujo operativo fundamental se rige por:
+GesFer es una solución integral para gestionar el ciclo de vida de una planta de reciclaje y recuperación de materiales (o de forma más genérica, la compra y venta de porductos). El flujo operativo fundamental se rige por:
 
 *   **Adquisición:** Compra de materiales a proveedores mediante un proceso de negociación y pesaje.
 *   **Gestión de Entrada:** Proceso que incluye el triaje, pesaje y acumulación en albaranes.
-*   **Almacenamiento:** Acopio de materiales clasificados (Férricos/No Férricos) hasta alcanzar volúmenes de venta.
+*   **Almacenamiento:** Acopio de materiales clasificados en famílias hasta alcanzar volúmenes de venta (según necesidades de usuario gesFer).*   
 *   **Comercialización:** Venta a fundiciones y acerías con gestión de facturación específica.
+*   **Deuda:** pendiene ampliar más detalles del ciclo de vida.
 
 ## 2. Reglas de Oro Operativas (Lógica de Negocio)
 
 ### Jerarquía de Precios y Artículos
 Los precios se organizan en "Tarifas" que permiten asignar valores específicos a grupos de artículos.
-
-*   Los artículos deben estar estrictamente categorizados para asegurar la trazabilidad del residuo.
+*   Los artículos deben estar estrictamente categorizados para asegurar la trazabilidad del residuo (familias).
 *   La **Personalización In-situ** permite al operario ajustar el precio durante la compra si el estado del material lo requiere, prevaleciendo sobre la tarifa base.
 
 ### Gestión de Entidades y Seguridad
 *   Es obligatorio el registro de DNI/CIF y matrículas de vehículos para cumplir con la ley de seguridad ciudadana.
-*   Cada proveedor puede tener condiciones comerciales y fiscales únicas (como la exención de IVA por ISP).
+*   Cada proveedor puede tener condiciones comerciales personalizafas mediante la asignación de tarifa por defecto.
 
 ### Flujo de Caja y Pagos
-*   Cada operación de compra genera un movimiento de caja que debe ser trazable y auditado diariamente.
+*   Cada operación de compra genera un movimiento de caja que debe ser trazable.
 *   Los pagos se realizan tras la consolidación de tickets de pesaje en albaranes.
 
 ## 3. Cumplimiento Legal y Facturación
