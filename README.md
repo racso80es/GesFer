@@ -132,6 +132,6 @@ Este repositorio contiene un archivo `AGENTS.md` que define un protocolo estrict
 ## 📚 Documentación Adicional
 
 Para más detalles, consulte el directorio `docs/`:
+*   `CONSTITUTION.md`: **Constitución de GesFer**. Principios fundamentales, reglas de negocio y flujos operativos. Incluye referencias a material audiovisual.
 *   `docs/EVOLUTION_LOG.md`: Registro de cambios y evolución del sistema.
 *   `docs/KAIZEN/`: Registros de mejora continua y análisis de deuda técnica.
-*   `Kalma2/CONSTITUTION.md`: Principios filosóficos y arquitectónicos de la nueva interfaz.
