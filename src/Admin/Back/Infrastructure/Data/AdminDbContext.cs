@@ -1,5 +1,4 @@
 using GesFer.Admin.Back.Domain.Entities;
-using GesFer.Shared.Back.Domain.Common;
 using GesFer.Shared.Back.Domain.Entities;
 using GesFer.Shared.Back.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -35,8 +34,6 @@ public class AdminDbContext : DbContext
 
         // Configurar Shared Entities (Sequential GUIDs + Soft Delete)
         modelBuilder.ConfigureSharedEntities();
-        modelBuilder.ConfigureSequentialGuids();
-        modelBuilder.ConfigureSoftDelete();
     }
 
     public override int SaveChanges()

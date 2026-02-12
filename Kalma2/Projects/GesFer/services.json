@@ -1,0 +1,28 @@
+[
+  {
+    "name": "BackEnd / Api / Swagger",
+    "family": "Product",
+    "environment": "Local",
+    "verifyStatusUrl": "https://localhost:3001/health",
+    "actions": [
+      {
+        "type": "access",
+        "label": "Access",
+        "url": "https://localhost:3001"
+      }
+    ]
+  },
+  {
+    "name": "FrontEnd / Cliente / Node",
+    "family": "Product",
+    "environment": "Local",
+    "verifyStatusUrl": "https://localhost:3000",
+    "actions": [
+      {
+        "type": "access",
+        "label": "Access",
+        "url": "https://localhost:3000"
+      }
+    ]
+  }
+]

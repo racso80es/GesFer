@@ -21,6 +21,8 @@ export default defineConfig({
       'inversify': path.resolve(__dirname, './node_modules/inversify'),
       'reflect-metadata/lite': path.resolve(__dirname, './node_modules/reflect-metadata/ReflectLite.js'),
       'reflect-metadata': path.resolve(__dirname, './node_modules/reflect-metadata/Reflect.js'),
+      '@iota/sdk': path.resolve(__dirname, './node_modules/@iota/sdk'),
+      '@iota/sdk-wasm/web/lib/index': path.resolve(__dirname, './node_modules/@iota/sdk-wasm/web/lib/index.js'),
     }
   },
   plugins: [
