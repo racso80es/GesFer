@@ -123,6 +123,88 @@ public static class DbInitializer
     }
 
     /// <summary>
+    /// Carga solo datos maestros (master-data.json). Orden de seeds: 1 - Maestros, 2 - Admin, 3 - Product.
+    /// </summary>
+    public static async Task SeedMasterDataAsync(ApplicationDbContext context, IServiceProvider services, ILogger logger)
+    {
+        var seeder = services.GetRequiredService<JsonDataSeeder>();
+        var result = await seeder.SeedMasterDataAsync();
+        if (result.Loaded && result.Entities.Any())
+            logger.LogInformation("Seeds maestros cargados: {Entities}", string.Join(", ", result.Entities));
+    }
+
+    /// <summary>
+    /// Carga solo datos de producto/demo (demo-data.json o test-data.json en Testing). Orden de seeds: 1 - Maestros, 2 - Admin, 3 - Product.
+    /// </summary>
+    public static async Task SeedDemoDataAsync(ApplicationDbContext context, IServiceProvider services, ILogger logger)
+    {
+        var seeder = services.GetRequiredService<JsonDataSeeder>();
+        var environment = services.GetRequiredService<IHostEnvironment>();
+        if (environment.EnvironmentName == "Testing")
+        {
+            await seeder.SeedTestDataAsync();
+            logger.LogInformation("test-data.json cargado (modo Testing)");
+        }
+        else
+        {
+            var result = await seeder.SeedDemoDataAsync();
+            if (result.Loaded && result.Entities.Any())
+                Console.WriteLine($"    Seeds cargados: {string.Join(", ", result.Entities)}");
+        }
+    }
+
+    /// <summary>
+    /// Garantiza usuario admin y ejecuta smoke test de integridad. Llamar tras cargar seeds en orden (master → admin → product).
+    /// </summary>
+    public static async Task EnsureAdminUserAndSmokeTestAsync(ApplicationDbContext context, IServiceProvider services, ILogger logger)
+    {
+        context.ChangeTracker.Clear();
+        await EnsureAdminUserAsync(context, services, logger);
+
+        var adminUser = await context.Users
+            .IgnoreQueryFilters()
+            .Include(u => u.Company)
+            .FirstOrDefaultAsync(u => u.Username == "admin");
+
+        if (adminUser == null)
+        {
+            var errorMessage = "🔥 FALLO CRÍTICO: Usuario 'admin' existe pero no se pudo cargar. Estado inconsistente detectado.";
+            logger.LogError(errorMessage);
+            Console.WriteLine($"    ❌ {errorMessage}");
+            throw new Exception(errorMessage);
+        }
+        if (adminUser.CompanyId == Guid.Empty || adminUser.CompanyId == default(Guid))
+        {
+            var errorMessage = $"🔥 FALLO CRÍTICO DE INTEGRIDAD REFERENCIAL: El usuario 'admin' no tiene CompanyId vinculado (CompanyId: {adminUser.CompanyId}). El sistema sería inaccesible. Revise la vinculación en demo-data.json.";
+            logger.LogError(errorMessage);
+            Console.WriteLine($"    ❌ {errorMessage}");
+            throw new Exception(errorMessage);
+        }
+        if (adminUser.Company == null)
+        {
+            var errorMessage = $"🔥 FALLO CRÍTICO DE INTEGRIDAD REFERENCIAL: El usuario 'admin' tiene CompanyId ({adminUser.CompanyId}) pero la empresa no existe en la base de datos. Revise la creación de empresas en demo-data.json.";
+            logger.LogError(errorMessage);
+            Console.WriteLine($"    ❌ {errorMessage}");
+            throw new Exception(errorMessage);
+        }
+        const string EXPECTED_ADMIN_COMPANY_NAME = "Empresa Admin";
+        const string EXPECTED_ADMIN_COMPANY_ID = "550e8400-e29b-41d4-a716-446655440000";
+        if (adminUser.Company.Name != EXPECTED_ADMIN_COMPANY_NAME)
+        {
+            logger.LogWarning("⚠️ ADVERTENCIA: El usuario 'admin' está vinculado a '{Name}' en lugar de '{Expected}'.", adminUser.Company.Name, EXPECTED_ADMIN_COMPANY_NAME);
+            Console.WriteLine($"    ⚠ ADVERTENCIA: admin vinculado a '{adminUser.Company.Name}'");
+        }
+        if (adminUser.CompanyId.ToString() != EXPECTED_ADMIN_COMPANY_ID)
+        {
+            logger.LogWarning("⚠️ ADVERTENCIA: El usuario 'admin' tiene CompanyId '{Id}' en lugar del esperado '{Expected}'.", adminUser.CompanyId, EXPECTED_ADMIN_COMPANY_ID);
+            Console.WriteLine($"    ⚠ ADVERTENCIA: CompanyId admin = {adminUser.CompanyId}");
+        }
+        var companyInfo = $" (Empresa: {adminUser.Company.Name}, CompanyId: {adminUser.CompanyId})";
+        logger.LogInformation("✅ Smoke Test Superado: Usuario 'admin' verificado correctamente{CompanyInfo}", companyInfo);
+        Console.WriteLine($"    ✅ Smoke Test Superado: Usuario 'admin' verificado{companyInfo}");
+    }
+
+    /// <summary>
     /// Aplica las migraciones pendientes de forma segura e idempotente.
     /// </summary>
     private static async Task ApplyMigrationsAsync(ApplicationDbContext context, ILogger logger)
@@ -240,7 +322,8 @@ public static class DbInitializer
     }
 
     /// <summary>
-    /// Carga datos iniciales desde archivos JSON de forma idempotente.
+    /// Carga datos iniciales desde archivos JSON de forma idempotente (orden interno: master → demo/test).
+    /// Para orden completo (master → admin → product) usar desde consola los métodos públicos en secuencia.
     /// </summary>
     private static async Task SeedDataFromJsonAsync(
         ApplicationDbContext context,
@@ -249,58 +332,8 @@ public static class DbInitializer
     {
         try
         {
-            var seeder = services.GetRequiredService<JsonDataSeeder>();
-            var environment = services.GetRequiredService<IHostEnvironment>();
-            var isTesting = environment.EnvironmentName == "Testing";
-
-            if (isTesting)
-            {
-                // En modo Testing, cargar solo test-data.json
-                logger.LogInformation("Modo Testing detectado: cargando test-data.json");
-                await seeder.SeedTestDataAsync();
-                logger.LogInformation("test-data.json cargado correctamente");
-            }
-            else
-            {
-                // En modo Development, cargar master-data.json y demo-data.json
-                // Cargar datos maestros y obtener resumen de entidades
-                var masterDataResult = await seeder.SeedMasterDataAsync();
-
-                // Cargar datos de demostración y obtener resumen de entidades
-                var demoDataResult = await seeder.SeedDemoDataAsync();
-
-                // Mostrar resumen conciso de entidades cargadas
-                if (masterDataResult.Loaded || demoDataResult.Loaded)
-                {
-                    var entities = new List<string>();
-
-                    if (masterDataResult.Loaded && masterDataResult.Entities.Any())
-                    {
-                        entities.AddRange(masterDataResult.Entities);
-                    }
-
-                    if (demoDataResult.Loaded && demoDataResult.Entities.Any())
-                    {
-                        entities.AddRange(demoDataResult.Entities);
-                    }
-
-                    if (entities.Any())
-                    {
-                        Console.WriteLine($"    Seeds cargados: {string.Join(", ", entities)}");
-                    }
-                }
-
-                // Registrar en log para debugging
-                if (masterDataResult.Loaded && demoDataResult.Loaded)
-                {
-                    logger.LogInformation("Todos los datos iniciales han sido cargados correctamente");
-                }
-                else
-                {
-                    logger.LogWarning("Algunos datos iniciales no se pudieron cargar. master-data.json: {MasterLoaded}, demo-data.json: {DemoLoaded}",
-                        masterDataResult.Loaded, demoDataResult.Loaded);
-                }
-            }
+            await SeedMasterDataAsync(context, services, logger);
+            await SeedDemoDataAsync(context, services, logger);
         }
         catch (Exception ex)
         {

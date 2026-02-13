@@ -1,0 +1,10 @@
+
+> calma-desktop@1.0.0 prebuild
+> node scripts/kaizen-check.js ../../CONSTITUTION.md
+
+--------------------------------------------------
+[KAIZEN] Initiating Pre-Compilation Protection Check...
+--------------------------------------------------
+[KAIZEN] Verifying Constitution at: /app/Kalma2/CONSTITUTION.md
+[KAIZEN FAILURE] CONSTITUTION.md missing. The Constitution is the foundation of Kalma2.
+Expected path: /app/Kalma2/CONSTITUTION.md

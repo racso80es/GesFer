@@ -4,7 +4,9 @@ using GesFer.Shared.Back.Domain.ValueObjects;
 namespace GesFer.Shared.Back.Domain.Entities;
 
 /// <summary>
-/// Entidad que representa una empresa (Tenant) en el sistema multi-tenant
+/// Entidad que representa una empresa (Tenant) en el sistema multi-tenant.
+/// Esta es la entidad base utilizada por Admin y Shared Kernel.
+/// Product extiende esta entidad para añadir colecciones específicas de negocio.
 /// </summary>
 public class Company : BaseEntity
 {
