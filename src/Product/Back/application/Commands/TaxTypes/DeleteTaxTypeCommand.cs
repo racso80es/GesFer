@@ -1,5 +1,5 @@
-using GesFer.Shared.Back.Application.Abstractions.Messaging;
+using GesFer.Application.Common.Interfaces;
 
-namespace GesFer.Product.Application.Commands.TaxTypes;
+namespace GesFer.Application.Commands.TaxTypes;
 
-public record DeleteTaxTypeCommand(Guid Id) : ICommand<Result>;
+public record DeleteTaxTypeCommand(Guid Id, Guid? CompanyId = null) : ICommand;

@@ -1,37 +1,60 @@
-using GesFer.Product.Application.Commands.TaxTypes;
+using System.Security.Claims;
+using GesFer.Application.Commands.TaxTypes;
+using GesFer.Application.Common.Interfaces;
 using GesFer.Product.Application.DTOs.TaxTypes;
-using GesFer.Product.Application.Queries.TaxTypes;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GesFer.Product.Back.Api.Controllers;
+namespace GesFer.Api.Controllers;
 
 [Route("api/tax-types")]
 [ApiController]
 [Authorize]
 public class TaxTypesController : ControllerBase
 {
-    private readonly ISender _sender;
+    private readonly ICommandHandler<GetAllTaxTypesCommand, List<TaxTypeDto>> _getAllHandler;
+    private readonly ICommandHandler<GetTaxTypeByIdCommand, TaxTypeDto?> _getByIdHandler;
+    private readonly ICommandHandler<CreateTaxTypeCommand, Guid> _createHandler;
+    private readonly ICommandHandler<UpdateTaxTypeCommand> _updateHandler;
+    private readonly ICommandHandler<DeleteTaxTypeCommand> _deleteHandler;
 
-    public TaxTypesController(ISender sender)
+    public TaxTypesController(
+        ICommandHandler<GetAllTaxTypesCommand, List<TaxTypeDto>> getAllHandler,
+        ICommandHandler<GetTaxTypeByIdCommand, TaxTypeDto?> getByIdHandler,
+        ICommandHandler<CreateTaxTypeCommand, Guid> createHandler,
+        ICommandHandler<UpdateTaxTypeCommand> updateHandler,
+        ICommandHandler<DeleteTaxTypeCommand> deleteHandler)
     {
-        _sender = sender;
+        _getAllHandler = getAllHandler;
+        _getByIdHandler = getByIdHandler;
+        _createHandler = createHandler;
+        _updateHandler = updateHandler;
+        _deleteHandler = deleteHandler;
+    }
+
+    private Guid GetCompanyId()
+    {
+        var companyIdClaim = User.FindFirst("company_id")?.Value ?? User.FindFirst("CompanyId")?.Value;
+        if (string.IsNullOrEmpty(companyIdClaim) || !Guid.TryParse(companyIdClaim, out var companyId))
+            throw new UnauthorizedAccessException("No se encontró el ID de empresa en el token del usuario.");
+        return companyId;
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<TaxTypeDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<TaxTypeDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetTaxTypes(CancellationToken cancellationToken)
     {
-        var query = new GetTaxTypesQuery();
-        var result = await _sender.Send(query, cancellationToken);
-
-        if (result.IsFailure)
+        try
         {
-            return BadRequest(result.Error);
+            var companyId = GetCompanyId();
+            var command = new GetAllTaxTypesCommand(companyId);
+            var result = await _getAllHandler.HandleAsync(command, cancellationToken);
+            return Ok(result);
         }
-
-        return Ok(result.Value);
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
     }
 
     [HttpGet("{id}")]
@@ -39,15 +62,19 @@ public class TaxTypesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetTaxTypeById(Guid id, CancellationToken cancellationToken)
     {
-        var query = new GetTaxTypeByIdQuery(id);
-        var result = await _sender.Send(query, cancellationToken);
-
-        if (result.IsFailure)
+        try
         {
-            return NotFound(result.Error);
+            var companyId = GetCompanyId();
+            var command = new GetTaxTypeByIdCommand(id, companyId);
+            var result = await _getByIdHandler.HandleAsync(command, cancellationToken);
+            if (result == null)
+                return NotFound();
+            return Ok(result);
         }
-
-        return Ok(result.Value);
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
     }
 
     [HttpPost]
@@ -55,15 +82,21 @@ public class TaxTypesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateTaxType([FromBody] CreateTaxTypeDto request, CancellationToken cancellationToken)
     {
-        var command = new CreateTaxTypeCommand(request);
-        var result = await _sender.Send(command, cancellationToken);
-
-        if (result.IsFailure)
+        try
         {
-            return BadRequest(result.Error);
+            var companyId = GetCompanyId();
+            var command = new CreateTaxTypeCommand(request, companyId);
+            var id = await _createHandler.HandleAsync(command, cancellationToken);
+            return CreatedAtAction(nameof(GetTaxTypeById), new { id }, id);
         }
-
-        return CreatedAtAction(nameof(GetTaxTypeById), new { id = result.Value }, result.Value);
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpPut("{id}")]
@@ -73,21 +106,25 @@ public class TaxTypesController : ControllerBase
     public async Task<IActionResult> UpdateTaxType(Guid id, [FromBody] UpdateTaxTypeDto request, CancellationToken cancellationToken)
     {
         if (id != request.Id)
-        {
             return BadRequest("ID mismatch");
-        }
 
-        var command = new UpdateTaxTypeCommand(request);
-        var result = await _sender.Send(command, cancellationToken);
-
-        if (result.IsFailure)
+        try
         {
-            return result.Error.Code == "TaxType.NotFound"
-                ? NotFound(result.Error)
-                : BadRequest(result.Error);
+            var companyId = GetCompanyId();
+            var command = new UpdateTaxTypeCommand(request, companyId);
+            await _updateHandler.HandleAsync(command, cancellationToken);
+            return NoContent();
         }
-
-        return NoContent();
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return ex.Message.Contains("no encontrado", StringComparison.OrdinalIgnoreCase)
+                ? NotFound(new { message = ex.Message })
+                : BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpDelete("{id}")]
@@ -95,14 +132,20 @@ public class TaxTypesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTaxType(Guid id, CancellationToken cancellationToken)
     {
-        var command = new DeleteTaxTypeCommand(id);
-        var result = await _sender.Send(command, cancellationToken);
-
-        if (result.IsFailure)
+        try
         {
-            return NotFound(result.Error);
+            var companyId = GetCompanyId();
+            var command = new DeleteTaxTypeCommand(id, companyId);
+            await _deleteHandler.HandleAsync(command, cancellationToken);
+            return NoContent();
         }
-
-        return NoContent();
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
     }
 }

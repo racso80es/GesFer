@@ -1,5 +1,6 @@
 # EVOLUTION LOG
 
+[2026-02-13] [Feature Article Families & Refactor TaxTypes] [Added ArticleFamily entity, API (CRUD), commands/handlers/DTOs, migration and configuration. Refactored TaxTypes: replaced GetTaxTypesQuery with GetAllTaxTypesCommand and GetTaxTypeByIdCommand. Updated seeds and snapshot. Audit doc EMERGENCY_ADMIN_PRODUCT_INTEGRITY_2026_02_13.md.] [Rama: feat-spec-article-family-*]
 [2026-02-06] [Refactor Auditoría en DashboardController] [Completado. Task.Run eliminado, reemplazado por await try-catch.] [S+ estable]
 [2026-02-06] [Extraer DashboardSummaryDto] [Completado. DTO movido a GesFer.Admin.Application.DTOs.] [S+ estable]
 [2026-02-07] [Refactor Frontend Terminology & Type Safety] [Eliminated 'Empresa' usage in favor of 'Organización'. Reduced 'any' usage in Product/Front.] [Completed]

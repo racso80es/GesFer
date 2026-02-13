@@ -28,6 +28,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Family> Families => Set<Family>();
     public DbSet<Article> Articles => Set<Article>();
     public DbSet<TaxType> TaxTypes => Set<TaxType>();
+    public DbSet<ArticleFamily> ArticleFamilies => Set<ArticleFamily>();
     public DbSet<Tariff> Tariffs => Set<Tariff>();
     public DbSet<TariffItem> TariffItems => Set<TariffItem>();
     public DbSet<Supplier> Suppliers => Set<Supplier>();

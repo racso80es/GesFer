@@ -1,6 +1,6 @@
-using GesFer.Shared.Back.Application.Abstractions.Messaging;
+using GesFer.Application.Common.Interfaces;
 using GesFer.Product.Application.DTOs.TaxTypes;
 
-namespace GesFer.Product.Application.Commands.TaxTypes;
+namespace GesFer.Application.Commands.TaxTypes;
 
-public record UpdateTaxTypeCommand(UpdateTaxTypeDto TaxType) : ICommand<Result>;
+public record UpdateTaxTypeCommand(UpdateTaxTypeDto TaxType, Guid? CompanyId = null) : ICommand;

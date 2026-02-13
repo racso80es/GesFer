@@ -139,6 +139,16 @@
       "id": "dddddddd-dddd-dddd-dddd-dddddddddd03",
       "key": "groups.delete",
       "description": "Eliminar grupos"
+    },
+    {
+      "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeee01",
+      "key": "article-families.read",
+      "description": "Consultar familias de artículos"
+    },
+    {
+      "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeee02",
+      "key": "article-families.manage",
+      "description": "Gestionar familias de artículos"
     }
   ],
   "groups": [
@@ -280,6 +290,16 @@
       "permissionId": "dddddddd-dddd-dddd-dddd-dddddddddd03"
     },
     {
+      "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeee11",
+      "groupId": "22222222-2222-2222-2222-222222222222",
+      "permissionId": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeee01"
+    },
+    {
+      "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeee12",
+      "groupId": "22222222-2222-2222-2222-222222222222",
+      "permissionId": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeee02"
+    },
+    {
       "id": "44444444-4444-4444-4444-444444444445",
       "groupId": "22222222-2222-2222-2222-222222222223",
       "permissionId": "33333333-3333-3333-3333-333333333333"
@@ -360,6 +380,16 @@
       "permissionId": "dddddddd-dddd-dddd-dddd-dddddddddd02"
     },
     {
+      "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeee21",
+      "groupId": "22222222-2222-2222-2222-222222222223",
+      "permissionId": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeee01"
+    },
+    {
+      "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeee22",
+      "groupId": "22222222-2222-2222-2222-222222222223",
+      "permissionId": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeee02"
+    },
+    {
       "id": "55555555-5555-5555-5555-555555555557",
       "groupId": "22222222-2222-2222-2222-222222222224",
       "permissionId": "33333333-3333-3333-3333-333333333333"
@@ -398,6 +428,11 @@
       "id": "cccccccc-cccc-cccc-cccc-cccccccccc06",
       "groupId": "22222222-2222-2222-2222-222222222224",
       "permissionId": "dddddddd-dddd-dddd-dddd-dddddddddd01"
+    },
+    {
+      "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeee31",
+      "groupId": "22222222-2222-2222-2222-222222222224",
+      "permissionId": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeee01"
     }
   ],
   "adminUsers": [

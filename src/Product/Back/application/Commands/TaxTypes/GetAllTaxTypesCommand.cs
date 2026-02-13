@@ -3,4 +3,4 @@ using GesFer.Product.Application.DTOs.TaxTypes;
 
 namespace GesFer.Application.Commands.TaxTypes;
 
-public record CreateTaxTypeCommand(CreateTaxTypeDto TaxType, Guid? CompanyId = null) : ICommand<Guid>;
+public record GetAllTaxTypesCommand(Guid? CompanyId = null) : ICommand<List<TaxTypeDto>>;

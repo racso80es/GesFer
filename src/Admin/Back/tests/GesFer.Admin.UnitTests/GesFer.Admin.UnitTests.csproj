@@ -25,7 +25,6 @@
     <ProjectReference Include="..\..\application\GesFer.Admin.Application.csproj" />
     <ProjectReference Include="..\..\domain\GesFer.Admin.Domain.csproj" />
     <ProjectReference Include="..\..\Infrastructure\GesFer.Admin.Infra.csproj" />
-    <ProjectReference Include="..\..\..\..\Product\Back\Infrastructure\GesFer.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Api\GesFer.Admin.Api.csproj" />
   </ItemGroup>
 
