@@ -9,8 +9,12 @@
     "git-operations",
     "dotnet-development",
     "filesystem-ops",
-    "frontend-build"
+    "frontend-build",
+    "invoke-command"
   ],
+  "execution_contract": {
+    "system_commands": "All system command execution (git, dotnet, npm, pwsh, etc.) MUST go through the invoke-command skill. Implementation: scripts/skills/Invoke-Command.ps1. Contract: scripts/skills/Invoke-Command.json. No direct shell execution for agent-triggered commands."
+  },
   "constraints": [
     {
       "rule": "Branching: Never in master. Use feat/ or fix/.",
@@ -18,6 +22,10 @@
     },
     {
       "rule": "Shell: Use pwsh (PowerShell). No bash.",
+      "severity": "CRITICAL"
+    },
+    {
+      "rule": "System commands: Execute only via scripts/skills/Invoke-Command.ps1 (invoke-command skill). Contract in scripts/skills/Invoke-Command.json.",
       "severity": "CRITICAL"
     },
     {
@@ -34,6 +42,7 @@
     "Backend (C#): Use try/catch in upper layers. Structured logging.",
     "Frontend (TS/React): No HTML native (<button>). Use Shared/components/ui/Button.",
     "Frontend (TS/React): Validation with Zod in all forms.",
-    "Post-Check: Run dotnet build (Back) / npm run build (Front) / validate-commit.ps1."
+"Post-Check: Run dotnet build (Back) / npm run build (Front) / validate-commit.ps1.",
+    "Execution contract: When invoking system commands (git, dotnet, npm, pwsh), use the invoke-command skill: .\\scripts\\skills\\Invoke-Command.ps1 -Command '<command>' [-Fase Accion]. Contract and implementation at scripts/skills/Invoke-Command.json and .ps1."
   ]
 }

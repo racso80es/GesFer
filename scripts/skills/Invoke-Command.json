@@ -3,7 +3,7 @@
     "script_id": "TEKTON-WRAP-001",
     "version": "1.0.0",
     "alias": "Interceptor de Ejecuciones de Sistema",
-    "location": "./Invoke-TektonCommand.ps1",
+    "location": "scripts/skills/Invoke-Command.ps1",
     "author": "Tormentosa",
     "project_context": "PROYECTO CALMA / GesFer"
   },

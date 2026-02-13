@@ -1,0 +1,15 @@
+{
+  "skill_id": "invoke-command",
+  "name": "Interceptor de Ejecuciones de Sistema",
+  "description": "Skill obligatoria para ejecutar comandos de sistema (git, dotnet, npm, pwsh, etc.) mediante un contrato implementado: telemetría, validación y registro por rama.",
+  "contract": {
+    "spec_location": "scripts/skills/Invoke-Command.json",
+    "implementation": "scripts/skills/Invoke-Command.ps1"
+  },
+  "rules": [
+    "MANDATORY: Cualquier comando de sistema que el agente deba ejecutar ha de invocarse a través de esta skill.",
+    "Interface: Usar el script con parámetros Command (obligatorio), Contexto (default GesFer), Fase (Triaje|Analisis|Evaluacion|Marcado|Accion).",
+    "Compliance: AC-001 validación sintáctica; registro en docs/diagnostics/{branch}/execution_history.json; alineación Protocolo Racso-Tormentosa."
+  ],
+  "usage_instruction": "Cuando sea necesario ejecutar un comando (git, dotnet build, npm run build, etc.), invocar: .\\scripts\\skills\\Invoke-Command.ps1 -Command '<comando>' [-Fase Accion]. No ejecutar comandos de sistema directamente en el shell sin pasar por esta skill."
+}
