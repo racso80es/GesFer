@@ -89,15 +89,30 @@ done
 # --- [CERTIFICACIÓN DOCUMENTACIÓN DE RAMA] (desde Unificar-Rama.ps1 / process-token-manager) ---
 # Regla de oro: ramas (salvo master/main) deben tener documentación
 if [ "$BRANCH" != "master" ] && [ "$BRANCH" != "main" ] && [ -n "$BRANCH" ]; then
-    slug=$(echo "$BRANCH" | sed 's/[\/\\]/-/g')
+    # Clean the branch name to remove dynamic suffixes (e.g., -123456789)
+    # The pattern matches a dash followed by a sequence of digits at the end of the string
+    clean_branch=$(echo "$BRANCH" | sed -E 's/-[0-9]+$//')
+    slug=$(echo "$clean_branch" | sed 's/[\/\\]/-/g')
+
     passport="docs/branches/${slug}.md"
     objective_doc="docs/branches/${slug}/OBJETIVO.md"
+
+    # Check for documentation with cleaned slug
     if [ -f "$passport" ] || [ -f "$objective_doc" ]; then
         echo "Documentación de rama encontrada ($passport o $objective_doc)."
     else
-        echo "ERROR: No se encuentra documentación de rama. Esperado: $passport o $objective_doc"
-        log_entry "BLOCKED" "Documentación de rama ausente ($slug)"
-        exit 1
+        # Fallback: check original slug just in case the numbers were intentional
+        original_slug=$(echo "$BRANCH" | sed 's/[\/\\]/-/g')
+        original_passport="docs/branches/${original_slug}.md"
+        original_objective="docs/branches/${original_slug}/OBJETIVO.md"
+
+        if [ -f "$original_passport" ] || [ -f "$original_objective" ]; then
+             echo "Documentación de rama encontrada ($original_passport o $original_objective)."
+        else
+            echo "ERROR: No se encuentra documentación de rama. Esperado: $passport o $objective_doc"
+            log_entry "BLOCKED" "Documentación de rama ausente ($slug)"
+            exit 1
+        fi
     fi
 fi
 
