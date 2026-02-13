@@ -9,9 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Product.Application.Handlers.TaxTypes;
 
-// Fix: ICommandHandler<TCommand, TResponse> where TCommand : ICommand<TResponse>
-// CreateTaxTypeCommand implements ICommand<Guid>, so TResponse is Guid
-public class CreateTaxTypeCommandHandler : ICommandHandler<CreateTaxTypeCommand, Guid>
+public class CreateTaxTypeCommandHandler : ICommandHandler<CreateTaxTypeCommand, Result<Guid>>
 {
     private readonly ApplicationDbContext _context;
     private readonly IUserContext _userContext;

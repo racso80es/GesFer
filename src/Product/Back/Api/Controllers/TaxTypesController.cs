@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GesFer.Product.Back.Api.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/tax-types")]
 [ApiController]
 [Authorize]
 public class TaxTypesController : ControllerBase
@@ -77,7 +77,7 @@ public class TaxTypesController : ControllerBase
             return BadRequest("ID mismatch");
         }
 
-        var command = new UpdateTaxTypeCommand(id, request);
+        var command = new UpdateTaxTypeCommand(request);
         var result = await _sender.Send(command, cancellationToken);
 
         if (result.IsFailure)

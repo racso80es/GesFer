@@ -1,16 +1,14 @@
-using GesFer.Product.Application.DTOs.TaxTypes;
 using GesFer.Product.Application.Queries.TaxTypes;
+using GesFer.Product.Application.DTOs.TaxTypes;
 using GesFer.Infrastructure.Data;
 using GesFer.Shared.Back.Application.Abstractions.Messaging;
 using GesFer.Shared.Back.Application.Abstractions.Authentication;
 using Microsoft.EntityFrameworkCore;
+using GesFer.Shared.Back.Domain.Common;
 
 namespace GesFer.Product.Application.Handlers.TaxTypes;
 
-// Fix: IQueryHandler<TQuery, TResponse> where TQuery : IQuery<TResponse>
-public class GetTaxTypesQueryHandler :
-    IQueryHandler<GetTaxTypesQuery, IReadOnlyList<TaxTypeDto>>,
-    IQueryHandler<GetTaxTypeByIdQuery, TaxTypeDto>
+public class GetTaxTypesQueryHandler : IQueryHandler<GetTaxTypesQuery, Result<IReadOnlyList<TaxTypeDto>>>
 {
     private readonly ApplicationDbContext _context;
     private readonly IUserContext _userContext;
@@ -25,13 +23,10 @@ public class GetTaxTypesQueryHandler :
     {
         var companyId = _userContext.CompanyId;
 
-        // Reverted to match original intent of filtering by Active status as requested in review
-        // Assuming IsDeleted check is implicit in BaseEntity or handled elsewhere if soft delete is enabled globally
-        // But for safety and restoring original logic:
         var taxTypes = await _context.TaxTypes
             .AsNoTracking()
             .Where(t => t.CompanyId == companyId && t.IsActive)
-            .OrderBy(t => t.Name)
+            .OrderBy(t => t.Code)
             .Select(t => new TaxTypeDto
             {
                 Id = t.Id,
@@ -47,6 +42,18 @@ public class GetTaxTypesQueryHandler :
             .ToListAsync(cancellationToken);
 
         return Result.Success<IReadOnlyList<TaxTypeDto>>(taxTypes);
+    }
+}
+
+public class GetTaxTypeByIdQueryHandler : IQueryHandler<GetTaxTypeByIdQuery, Result<TaxTypeDto>>
+{
+    private readonly ApplicationDbContext _context;
+    private readonly IUserContext _userContext;
+
+    public GetTaxTypeByIdQueryHandler(ApplicationDbContext context, IUserContext userContext)
+    {
+        _context = context;
+        _userContext = userContext;
     }
 
     public async Task<Result<TaxTypeDto>> Handle(GetTaxTypeByIdQuery request, CancellationToken cancellationToken)
@@ -72,7 +79,7 @@ public class GetTaxTypesQueryHandler :
 
         if (taxType == null)
         {
-            return Result.Failure<TaxTypeDto>(new Error("TaxType.NotFound", "The tax type was not found."));
+            return Result.Failure<TaxTypeDto>(new Error("TaxType.NotFound", "Tax type not found."));
         }
 
         return Result.Success(taxType);
