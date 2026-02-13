@@ -25,6 +25,24 @@ public class StockBenchmark
         _service = new StockService(_context);
 
         _articleIds = new List<Guid>();
+        var companyId = Guid.NewGuid();
+        var taxType = new TaxType
+        {
+            Id = Guid.NewGuid(),
+            Name = "IVA 21%",
+            Code = "T21",
+            Value = 21,
+            CompanyId = companyId
+        };
+        var articleFamily = new ArticleFamily
+        {
+            Id = Guid.NewGuid(),
+            Name = "Fam",
+            Code = "FAM01",
+            CompanyId = companyId,
+            TaxType = taxType
+        };
+
         for (int i = 0; i < ArticleCount; i++)
         {
             var article = new Article
@@ -33,8 +51,8 @@ public class StockBenchmark
                 Name = $"Article {i}",
                 Code = $"ART{i:000}",
                 Stock = 100,
-                CompanyId = Guid.NewGuid(),
-                Family = new Family { Name = "Fam", CompanyId = Guid.NewGuid() }
+                CompanyId = companyId,
+                ArticleFamily = articleFamily
             };
             _context.Articles.Add(article);
             _articleIds.Add(article.Id);
