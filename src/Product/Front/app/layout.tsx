@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
 import type { AbstractIntlMessages } from 'next-intl';
 import "./globals.css";
+import { Toaster } from "sonner";
 import { QueryProvider } from "@/lib/providers/query-provider";
 import { SessionProvider } from "@/lib/providers/session-provider";
 import { AuthProvider } from "@/contexts/auth-context";
@@ -59,6 +60,7 @@ export default async function RootLayout({
     <html lang={locale}>
       <body>
         <OverlayFix />
+        <Toaster richColors position="top-center" />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <SessionProvider>
             <QueryProvider>

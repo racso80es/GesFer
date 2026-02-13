@@ -13,6 +13,7 @@ import {
   Briefcase,
   Settings,
   Percent,
+  Layers,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -44,6 +45,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       icon: Settings,
       children: [
         { name: t('taxTypes'), href: "/maestros/tipotasa", icon: Percent },
+        { name: t('articleFamilies'), href: "/maestros/familias-articulos", icon: Layers },
       ]
     },
   ];

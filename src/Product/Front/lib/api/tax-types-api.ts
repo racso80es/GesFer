@@ -1,4 +1,4 @@
-import { fetchWithAuth } from "../auth";
+import { apiClient } from "./client";
 
 export interface TaxType {
   id: string;
@@ -31,30 +31,23 @@ const BASE_URL = "/api/tax-types";
 
 export const taxTypesApi = {
   getAll: async (): Promise<TaxType[]> => {
-    return fetchWithAuth(BASE_URL);
+    return apiClient.get<TaxType[]>(BASE_URL);
   },
 
   getById: async (id: string): Promise<TaxType> => {
-    return fetchWithAuth(`${BASE_URL}/${id}`);
+    return apiClient.get<TaxType>(`${BASE_URL}/${id}`);
   },
 
   create: async (data: CreateTaxTypeDto): Promise<string> => {
-    return fetchWithAuth(BASE_URL, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+    const created = await apiClient.post<TaxType>(BASE_URL, data);
+    return created?.id ?? "";
   },
 
   update: async (id: string, data: UpdateTaxTypeDto): Promise<void> => {
-    return fetchWithAuth(`${BASE_URL}/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
+    await apiClient.put<void>(`${BASE_URL}/${id}`, data);
   },
 
   delete: async (id: string): Promise<void> => {
-    return fetchWithAuth(`${BASE_URL}/${id}`, {
-      method: "DELETE",
-    });
+    await apiClient.delete<void>(`${BASE_URL}/${id}`);
   },
 };

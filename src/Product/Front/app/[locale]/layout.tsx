@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import "../globals.css";
+import { Toaster } from "sonner";
 import { QueryProvider } from "@/lib/providers/query-provider";
 import { AuthProvider } from "@/contexts/auth-context";
 import { OverlayFix } from "@shared/components/ui/overlay-fix";
@@ -34,6 +35,7 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body>
         <OverlayFix />
+        <Toaster richColors position="top-center" />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <QueryProvider>
             <AuthProvider>{children}</AuthProvider>

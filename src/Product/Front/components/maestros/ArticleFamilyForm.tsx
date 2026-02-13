@@ -20,34 +20,43 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@shared/components/ui/input";
-import { TaxType } from "@/lib/api/tax-types-api";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@shared/components/ui/select";
+import { ArticleFamily } from "@/lib/api/article-families-api";
+import { TaxType, taxTypesApi } from "@/lib/api/tax-types-api";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const formSchema = z.object({
   code: z.string().min(1, "codeRequired").max(10),
   name: z.string().min(1, "nameRequired").max(50),
   description: z.string().max(255).optional(),
-  value: z.coerce.number().min(0, "valuePositive"),
+  taxTypeId: z.string().min(1, "taxTypeRequired"),
 });
 
-interface TaxTypeFormProps {
+interface ArticleFamilyFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
-  initialData?: TaxType;
+  initialData?: ArticleFamily;
   isLoading?: boolean;
 }
 
-export function TaxTypeForm({
+export function ArticleFamilyForm({
   open,
   onOpenChange,
   onSubmit,
   initialData,
   isLoading,
-}: TaxTypeFormProps) {
-  const t = useTranslations("taxTypes");
+}: ArticleFamilyFormProps) {
+  const t = useTranslations("articleFamilies");
   const tCommon = useTranslations("common");
+  const [taxTypes, setTaxTypes] = useState<TaxType[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,9 +64,15 @@ export function TaxTypeForm({
       code: "",
       name: "",
       description: "",
-      value: 0,
+      taxTypeId: "",
     },
   });
+
+  useEffect(() => {
+    if (open) {
+      taxTypesApi.getAll().then(setTaxTypes).catch(() => setTaxTypes([]));
+    }
+  }, [open]);
 
   useEffect(() => {
     if (initialData) {
@@ -65,14 +80,14 @@ export function TaxTypeForm({
         code: initialData.code,
         name: initialData.name,
         description: initialData.description || "",
-        value: initialData.value,
+        taxTypeId: initialData.taxTypeId,
       });
     } else {
       form.reset({
         code: "",
         name: "",
         description: "",
-        value: 0,
+        taxTypeId: "",
       });
     }
   }, [initialData, form, open]);
@@ -119,13 +134,28 @@ export function TaxTypeForm({
             />
             <FormField
               control={form.control}
-              name="value"
+              name="taxTypeId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("value")}</FormLabel>
-                  <FormControl>
-                    <Input type="number" step="0.01" {...field} />
-                  </FormControl>
+                  <FormLabel>{t("taxType")}</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={!!initialData}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder={t("taxTypePlaceholder")} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {taxTypes.map((tt) => (
+                        <SelectItem key={tt.id} value={tt.id}>
+                          {tt.code} - {tt.name} ({tt.value}%)
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

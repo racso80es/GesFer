@@ -34,7 +34,31 @@
     "companies": "Companies",
     "customers": "Customers",
     "systems": "Systems",
-    "logs": "Logs"
+    "logs": "Logs",
+    "masters": "Masters",
+    "taxTypes": "Tax Types",
+    "articleFamilies": "Article Families"
+  },
+  "articleFamilies": {
+    "title": "Article Families",
+    "listTitle": "Article Families List",
+    "createTitle": "Create Article Family",
+    "editTitle": "Edit Article Family",
+    "code": "Code",
+    "name": "Name",
+    "description": "Description",
+    "taxType": "Tax Type",
+    "taxTypePlaceholder": "Select tax type",
+    "actions": "Actions",
+    "deleteConfirm": "Are you sure you want to delete this article family?",
+    "createSuccess": "Article family created successfully",
+    "updateSuccess": "Article family updated successfully",
+    "deleteSuccess": "Article family deleted successfully",
+    "validation": {
+      "codeRequired": "Code is required",
+      "nameRequired": "Name is required",
+      "taxTypeRequired": "Tax type is required"
+    }
   },
   "users": {
     "title": "Users",

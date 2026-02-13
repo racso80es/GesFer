@@ -40,6 +40,27 @@
       "valuePositive": "El valor debe ser positivo"
     }
   },
+  "articleFamilies": {
+    "title": "Familias de artículos",
+    "listTitle": "Listado de Familias de artículos",
+    "createTitle": "Crear Familia de artículos",
+    "editTitle": "Editar Familia de artículos",
+    "code": "Código",
+    "name": "Nombre",
+    "description": "Descripción",
+    "taxType": "Tipo de tasa",
+    "taxTypePlaceholder": "Seleccionar tipo de tasa",
+    "actions": "Acciones",
+    "deleteConfirm": "¿Estás seguro de que deseas eliminar esta familia de artículos?",
+    "createSuccess": "Familia de artículos creada correctamente",
+    "updateSuccess": "Familia de artículos actualizada correctamente",
+    "deleteSuccess": "Familia de artículos eliminada correctamente",
+    "validation": {
+      "codeRequired": "El código es obligatorio",
+      "nameRequired": "El nombre es obligatorio",
+      "taxTypeRequired": "El tipo de tasa es obligatorio"
+    }
+  },
   "auth": {
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
@@ -55,7 +76,10 @@
     "companies": "Organizaciones",
     "customers": "Clientes",
     "systems": "Sistemas",
-    "logs": "Logs"
+    "logs": "Logs",
+    "masters": "Maestros",
+    "taxTypes": "Tipos de Tasa",
+    "articleFamilies": "Familias de artículos"
   },
   "users": {
     "title": "Usuarios",

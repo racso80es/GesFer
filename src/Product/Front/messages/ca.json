@@ -34,7 +34,31 @@
     "companies": "Organitzacions",
     "customers": "Clients",
     "systems": "Sistemes",
-    "logs": "Logs"
+    "logs": "Logs",
+    "masters": "Mestres",
+    "taxTypes": "Tipus de Tasa",
+    "articleFamilies": "Famílies d'articles"
+  },
+  "articleFamilies": {
+    "title": "Famílies d'articles",
+    "listTitle": "Llistat de Famílies d'articles",
+    "createTitle": "Crear Família d'articles",
+    "editTitle": "Editar Família d'articles",
+    "code": "Codi",
+    "name": "Nom",
+    "description": "Descripció",
+    "taxType": "Tipus de taxa",
+    "taxTypePlaceholder": "Seleccionar tipus de taxa",
+    "actions": "Accions",
+    "deleteConfirm": "Estàs segur que vols eliminar aquesta família d'articles?",
+    "createSuccess": "Família d'articles creada correctament",
+    "updateSuccess": "Família d'articles actualitzada correctament",
+    "deleteSuccess": "Família d'articles eliminada correctament",
+    "validation": {
+      "codeRequired": "El codi és obligatori",
+      "nameRequired": "El nom és obligatori",
+      "taxTypeRequired": "El tipus de taxa és obligatori"
+    }
   },
   "users": {
     "title": "Usuaris",
