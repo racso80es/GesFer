@@ -20,17 +20,19 @@
     }
   ],
   "paths": {
-    "fixPath": "./docs/bugs/"
+    "fixPath": "./docs/bugs/",
+    "bugPath": "./docs/bugs/",
+    "featurePath": "./docs/features/"
   },
   "instructions": [
     "Map [EVO] -> docs/evolution/",
-    "Map [AUD] -> docs/audits/","Map [BUG]/[FIX] -> docs/bugs/{bug}/ (base: paths.fixPath)",
+    "Map [AUD] -> docs/audits/",
+    "Map [BUG]/[FIX] -> docs/bugs/{bug}/ (base: paths.fixPath)",
     "Map [TEC] -> docs/architecture/ & docs/infrastructure/",
     "Map [DEBT] -> docs/DeudaTecnica/",
     "Map [OPS] -> docs/tasks/",
-    "Map [SPEC] -> openspecs/",
+    "Map [SPEC] -> openspecs/",    
     "Audit documentation dispersion.",
-    "Consolidate audit reports into history.",
-    "Paths (e.g. fixPath) are SSOT for doc locations; other agents MUST consult this file for bug/fix paths."
+    "Consolidate audit reports into history."
   ]
 }
