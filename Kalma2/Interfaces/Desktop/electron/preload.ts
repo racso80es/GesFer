@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('calmaAPI', {
   runAudit: () => ipcRenderer.invoke('run-audit'),
   clearCache: () => ipcRenderer.invoke('clear-cache'),
   syncSpec: () => ipcRenderer.invoke('sync-spec'),
+  checkStatus: (url: string) => ipcRenderer.invoke('check-status', url),
 
   // Events
   onStatusChange: (callback: (status: any) => void) => {

@@ -17,24 +17,45 @@ interface ActionButtonProps {
 
 function App() {
   const [greeting, setGreeting] = useState<string>('')
-  // Using unknown instead of any for status until shape is defined
-  const [status, setStatus] = useState<Record<string, unknown>>({})
+  // Map of service status: serviceName -> boolean (true = UP, false = DOWN)
+  const [serviceStatus, setServiceStatus] = useState<Record<string, boolean>>({})
 
   // MCP State
   const [auditStatus, setAuditStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [auditHash, setAuditHash] = useState<string>('')
+  const [iotaLink, setIotaLink] = useState<string | null>(null)
 
   useEffect(() => {
     // DI Resolution
     const greetingService = container.get<IGreetingService>(TYPES.GreetingService)
     setGreeting(greetingService.getGreeting())
 
-    // Status subscription
-    const unsubscribe = window.calmaAPI.onStatusChange((newStatus: unknown) => {
-      setStatus(newStatus as Record<string, unknown>)
-    })
-    return () => unsubscribe()
+    // Initial check
+    checkAllServices();
+
+    // Poll every 5 seconds
+    const interval = setInterval(checkAllServices, 5000);
+    return () => clearInterval(interval);
   }, [])
+
+  const checkAllServices = async () => {
+    const newStatus: Record<string, boolean> = {};
+    for (const service of gesferServices) {
+        if (service.verifyStatusUrl) {
+            const isUp = await window.calmaAPI.checkStatus(service.verifyStatusUrl);
+            newStatus[service.name] = isUp;
+        }
+    }
+    setServiceStatus(prev => ({ ...prev, ...newStatus }));
+  }
+
+  // Group services by family
+  const servicesByFamily = gesferServices.reduce((acc, service) => {
+    const family = service.family || 'Other';
+    if (!acc[family]) acc[family] = [];
+    acc[family].push(service);
+    return acc;
+  }, {} as Record<string, typeof gesferServices>);
 
   const handleStartProduct = () => window.calmaAPI.startSequence(1)
   const handleStopAll = () => window.calmaAPI.stopAll()
@@ -46,20 +67,36 @@ function App() {
   // Golden Action: Auditor AP Registration
   const handleIotaAudit = async () => {
     setAuditStatus('loading')
+    setIotaLink(null)
     try {
         const auditor = container.get<IAuditor>(TYPES.Auditor)
         // Hash the current project config as the "Process" data
-        const hash = await auditor.registerProcess(`MCP-${gesferConfig.id.toUpperCase()}`, {
+        const result = await auditor.registerProcess(`MCP-${gesferConfig.id.toUpperCase()}`, {
              config: gesferConfig,
              services: gesferServices,
              timestamp: Date.now()
         })
-        setAuditHash(hash)
+
+        setAuditHash(result)
+
+        if (result.startsWith('iota:')) {
+            const blockId = result.split(':')[1];
+            // Shimmer Testnet Explorer
+            setIotaLink(`https://explorer.shimmer.network/testnet/block/${blockId}`);
+        }
+
         setAuditStatus('success')
     } catch (e) {
         console.error(e)
         setAuditStatus('error')
     }
+  }
+
+  const copyLink = () => {
+      if (iotaLink) {
+          navigator.clipboard.writeText(iotaLink);
+          // Optional: Add toast notification here
+      }
   }
 
   return (
@@ -88,6 +125,11 @@ function App() {
                     <div className="flex items-center gap-2 text-green-400 bg-green-900/20 px-3 py-1 rounded-full border border-green-900/50">
                         <span className="text-lg">✅</span>
                         <span className="text-xs font-mono truncate max-w-[150px]" title={auditHash}>{auditHash}</span>
+                        {iotaLink && (
+                            <button onClick={copyLink} className="text-xs font-bold underline hover:text-green-300 ml-2" title="Copy Explorer Link">
+                                🔗 LINK
+                            </button>
+                        )}
                         <span className="text-xs font-bold">VERIFIED</span>
                     </div>
                 )}
@@ -105,52 +147,55 @@ function App() {
       </section>
 
       <main className="grid grid-cols-2 gap-6">
-        {/* Iterate over services from JSON could be done here, but keeping hardcoded domains for now to match UI design */}
-
-        {/* Product Domain */}
-        <div className="rounded-xl border border-border bg-surface p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-primary">Product Domain</h2>
-            <button
-              onClick={handleStartProduct}
-              className="px-4 py-2 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition text-sm font-medium"
-            >
-              Start Sequence
-            </button>
-          </div>
-          <div className="space-y-3">
-             <div className="flex justify-between items-center text-sm text-gray-400 p-2 rounded bg-background/50">
-                <span>API (5000)</span>
-                <span className="text-red-400 text-xs font-mono">OFFLINE</span>
+        {Object.entries(servicesByFamily).map(([family, services]) => (
+             <div key={family} className="rounded-xl border border-border bg-surface p-6">
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-semibold text-primary">{family} Domain</h2>
+                    {family === 'Product' && (
+                        <button
+                          onClick={handleStartProduct}
+                          className="px-4 py-2 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition text-sm font-medium"
+                        >
+                          Start Sequence
+                        </button>
+                    )}
+                </div>
+                <div className="space-y-3">
+                    {services.map(service => {
+                        const isUp = serviceStatus[service.name];
+                        return (
+                            <div key={service.name} className="flex justify-between items-center text-sm text-gray-400 p-2 rounded bg-background/50">
+                                <div className="flex flex-col">
+                                    <span className="font-medium text-gray-300">{service.name}</span>
+                                    <span className="text-[10px] text-gray-500">{service.verifyStatusUrl}</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                     <span className={`text-xs font-mono font-bold ${isUp ? 'text-green-400' : 'text-red-400'}`}>
+                                        {isUp ? 'ONLINE' : 'OFFLINE'}
+                                     </span>
+                                     {service.actions?.map(action => (
+                                         <a
+                                            key={action.label}
+                                            href={action.url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className={`px-2 py-1 rounded text-[10px] uppercase font-bold tracking-wider transition
+                                                ${isUp
+                                                    ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 border border-blue-500/30'
+                                                    : 'bg-gray-700/50 text-gray-600 cursor-not-allowed'}
+                                            `}
+                                            onClick={(e) => !isUp && e.preventDefault()}
+                                         >
+                                            {action.label}
+                                         </a>
+                                     ))}
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
              </div>
-             <div className="flex justify-between items-center text-sm text-gray-400 p-2 rounded bg-background/50">
-                <span>Front (3000)</span>
-                <span className="text-red-400 text-xs font-mono">OFFLINE</span>
-             </div>
-          </div>
-        </div>
-
-        {/* Admin Domain */}
-        <div className="rounded-xl border border-border bg-surface p-6">
-           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-secondary">Admin Domain</h2>
-            <button
-              className="px-4 py-2 bg-secondary/20 text-secondary rounded-lg hover:bg-secondary/30 transition text-sm font-medium"
-            >
-              Start Sequence
-            </button>
-          </div>
-           <div className="space-y-3">
-             <div className="flex justify-between items-center text-sm text-gray-400 p-2 rounded bg-background/50">
-                <span>API (5010)</span>
-                <span className="text-red-400 text-xs font-mono">OFFLINE</span>
-             </div>
-             <div className="flex justify-between items-center text-sm text-gray-400 p-2 rounded bg-background/50">
-                <span>Front (3001)</span>
-                <span className="text-red-400 text-xs font-mono">OFFLINE</span>
-             </div>
-          </div>
-        </div>
+        ))}
       </main>
 
       <div className="mt-8">
