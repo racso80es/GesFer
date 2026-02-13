@@ -21,21 +21,21 @@
 ## 2. Propósito y Contexto
 
 ### 2.1. Objetivo (Goal)
-Permitir el mantenimiento del maestro **Familia de Artículo** (ArticleFamily): crear, listar, editar y eliminar familias de artículos con aislamiento por compañía. Cada familia se asocia a un **Tipo de Tasa** (TaxType) existente, lo que determina el tratamiento fiscal por defecto de los artículos de esa familia.
+Permitir el mantenimiento del maestro **Familia de Artículo** (ArticleFamily): crear, listar, editar y eliminar familias de artículos con aislamiento por compañía. Cada familia se asocia a un **Tipo de Tasa** (TaxType) existente, lo que determina el tratamiento fiscal por defecto de los artículos de esa familia. **Esta planificación incluye el reemplazo completo de la entidad legacy Family:** migración de datos, actualización de Article y de todo el código que usaba Family, y limpieza de la antigua entidad y seeds.
 
 ### 2.2. Alcance (Scope)
 *   **Incluido:**
     *   Entidad `ArticleFamily`, persistencia, API REST (CQRS), tests backend.
+    *   **Reemplazo de la antigua Family:** migración de `Article` (FamilyId → ArticleFamilyId); migración de datos (Family → ArticleFamily, IvaPercentage → TaxTypeId); eliminación de la entidad `Family`, tabla `Families`, configuración, seeds `families`/`FamilySeed`/`SeedFamiliesAsync`; actualización de todos los usos (albaranes de venta/compra usan `Article.ArticleFamily.TaxType.Value` para el porcentaje); limpieza de referencias en Company, DbContext, InitDatabase, etc.
     *   Página y componentes frontend bajo "Maestros > Familias de Artículos" (formulario en **modal**).
-    *   Seeds: clave `articleFamilies` en `demo-data.json`, DTO `ArticleFamilySeed`; orden coherente con dependencias (Companies desde Admin; TaxTypes antes que ArticleFamilies; no depende de Article).
+    *   Seeds: clave `articleFamilies` en `demo-data.json`, DTO `ArticleFamilySeed`; artículos en demo con `articleFamilyId`; orden coherente (Companies → TaxTypes → ArticleFamilies → Articles). Eliminación de clave `families` y lógica de Family en seeder.
     *   Permisos: **Consultar** (lectura) y **Gestionar** (crear, editar, eliminar). Menú según permiso.
     *   **Solo soft delete** para maestros (estándar Product).
     *   **Log de operaciones CRUD en BD** (respetando aislamiento Product DbContext: vía servicio/BD de auditoría).
     *   Traducciones (es, en, ca).
 *   **Fuera de Alcance:**
-    *   Entidad legacy **Family** queda sustituida por ArticleFamily; la migración de **Article** (FamilyId → ArticleFamilyId, IvaPercentage → TaxTypeId) se realiza en una **iteración posterior**.
-    *   Histórico de cambios de familia en artículos existentes.
-    *   Migración masiva de datos desde otros sistemas.
+    *   Histórico de cambios de familia en artículos existentes (auditoría histórica).
+    *   Migración masiva desde sistemas externos.
 
 ---
 
@@ -175,6 +175,7 @@ Incluir en la clave **`articleFamilies`** ejemplos que referencien los `taxTypes
 
 *   **Documento de objetivos:** `.docs/feature/article-family/objetive.md`
 *   **Clarificaciones:** `.docs/feature/article-family/SPEC-ARTICLE-FAMILY-CRUD_CLARIFICATIONS-PROPUESTA.md`
+*   **Plan de implementación:** `.docs/feature/article-family/PLAN-ARTICLE-FAMILY-CRUD.md` (incluye reemplazo de Family).
 *   **Plantilla usada:** Maestro CRUD (TaxType como referencia).
 *   **Ubicación final sugerida (tras validación):** `openspecs/specs/SPEC-GF-2026-ARTICLE-FAMILY.md` o `docs/Feature/article-family/SPEC-ARTICLE-FAMILY-CRUD.md` según convención del proyecto.
 

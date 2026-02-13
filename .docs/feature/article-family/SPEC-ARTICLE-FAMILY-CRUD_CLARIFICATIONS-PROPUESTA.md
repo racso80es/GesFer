@@ -17,7 +17,7 @@
   **A1.2:** N/A — no conviven. La UI "Familias de Artículos" es solo para ArticleFamily.
 
 - **Q1.3:** Si ArticleFamily sustituye a Family: ¿migración Article en esta SPEC o después?  
-  **A1.3:** Fuera de esta SPEC. La migración Article.FamilyId → Article.ArticleFamilyId y datos (IvaPercentage → TaxTypeId) se deja para una siguiente iteración.
+  **A1.3:** Inicialmente fuera de SPEC. **Actualización (planificación):** el reemplazo completo de Family queda incluido en esta planificación: migración Article.FamilyId → ArticleFamilyId, migración de datos, eliminación de Family y limpieza. Ver [PLAN-ARTICLE-FAMILY-CRUD.md](PLAN-ARTICLE-FAMILY-CRUD.md).
 
 ---
 
