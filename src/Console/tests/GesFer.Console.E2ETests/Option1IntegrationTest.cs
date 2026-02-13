@@ -110,13 +110,12 @@ public class Option1IntegrationTest
             _output.WriteLine($"Validation Error: {error}");
         }
 
-        // Assert specific checks
+        // Assert specific checks (Option 1 does not start API nor frontend, only Docker + DB + seeds)
         Assert.True(validationResult.Checks.ContainsKey("Docker") && validationResult.Checks["Docker"], "Docker check failed");
-        Assert.True(validationResult.Checks.ContainsKey("Backend") && validationResult.Checks["Backend"], "Backend API check failed");
         Assert.True(validationResult.Checks.ContainsKey("AdminUsers") && validationResult.Checks["AdminUsers"], "AdminUsers check failed");
+        Assert.True(validationResult.Checks.ContainsKey("SequentialGUIDs") && validationResult.Checks["SequentialGUIDs"], "SequentialGUIDs check failed");
 
-        // Note: We intentionally ignore ProductFront check because docker-compose.yml in option 1 usually doesn't start frontend,
-        // so validationResult.IsValid might be false due to Frontend check failure.
+        // Option 1 does not start API (Backend) nor frontend (ProductFront); we intentionally do not assert those.
     }
 
     private bool IsDockerAvailable()

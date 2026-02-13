@@ -78,14 +78,21 @@ public class MenuService
     }
 
     /// <summary>
-    /// Helper para leer tecla de forma segura en entornos no interactivos
+    /// Helper para leer tecla de forma segura en entornos no interactivos (incl. tests sin consola).
     /// </summary>
     private void SafeReadKey()
     {
-        if (!Console.IsInputRedirected)
-        {
-            Console.ReadKey();
-        }
+        if (Console.IsInputRedirected) return;
+        try { Console.ReadKey(); } catch (InvalidOperationException) { /* Sin consola (p. ej. dotnet test) */ }
+    }
+
+    /// <summary>
+    /// Limpia consola solo si la salida no está redirigida (evita excepción en tests/CI).
+    /// </summary>
+    private void SafeClear()
+    {
+        if (Console.IsOutputRedirected) return;
+        try { Console.Clear(); } catch (IOException) { } catch (InvalidOperationException) { }
     }
 
     /// <summary>
@@ -118,7 +125,7 @@ public class MenuService
     /// </summary>
     public void ShowMenu()
     {
-        Console.Clear();
+        SafeClear();
         Console.WriteLine(GetMainMenuTextForTesting());
         Console.Write("Opción: ");
     }
@@ -167,7 +174,7 @@ public class MenuService
             Console.WriteLine($"Error: {ex.Message}");
             Console.WriteLine("Presione cualquier tecla para continuar...");
             SafeReadKey();
-            return true;
+            return false;
         }
     }
 
@@ -178,7 +185,7 @@ public class MenuService
     {
         while (true)
         {
-            Console.Clear();
+            SafeClear();
             Console.WriteLine("========================================");
             Console.WriteLine("   Acciones Atómicas");
             Console.WriteLine("========================================");
@@ -280,7 +287,7 @@ public class MenuService
     /// </summary>
     private async Task ExecuteStartServicesMenuAsync()
     {
-        Console.Clear();
+        SafeClear();
         Console.WriteLine("========================================");
         Console.WriteLine("   Levantar Servicios (Granular)");
         Console.WriteLine("========================================");
@@ -336,7 +343,7 @@ public class MenuService
     /// </summary>
     private async Task<bool> ExecuteFullInitializationAsync(bool waitForInput = true)
     {
-        Console.Clear();
+        SafeClear();
         Console.WriteLine("========================================");
         Console.WriteLine("   Inicialización Completa GesFer");
         Console.WriteLine("========================================");
@@ -844,7 +851,7 @@ public class MenuService
     {
         try
         {
-            Console.Clear();
+            SafeClear();
         }
         catch (IOException)
         {
@@ -972,7 +979,7 @@ public class MenuService
     /// </summary>
     private async Task<bool> ExecuteDockerMenuAsync()
     {
-        Console.Clear();
+        SafeClear();
         Console.WriteLine("========================================");
         Console.WriteLine("   Gestión de Contenedores Docker");
         Console.WriteLine("========================================");
@@ -1016,7 +1023,7 @@ public class MenuService
     /// </summary>
     private async Task<bool> ExecuteMigrationsMenuAsync()
     {
-        Console.Clear();
+        SafeClear();
         Console.WriteLine("========================================");
         Console.WriteLine("   Gestión de Migraciones");
         Console.WriteLine("========================================");
@@ -1060,7 +1067,7 @@ public class MenuService
     /// </summary>
     private async Task<bool> ExecuteSeedsMenuAsync()
     {
-        Console.Clear();
+        SafeClear();
         Console.WriteLine("========================================");
         Console.WriteLine("   Ejecución de Seeds");
         Console.WriteLine("========================================");
@@ -1179,7 +1186,7 @@ public class MenuService
     /// </summary>
     private async Task<bool> ExecuteGoldenRulesComplianceAsync()
     {
-        Console.Clear();
+        SafeClear();
         Console.WriteLine("========================================");
         Console.WriteLine("   Cumplimiento de Reglas de Oro");
         Console.WriteLine("========================================");
@@ -1226,7 +1233,7 @@ public class MenuService
     /// </summary>
     private async Task<bool> ExecuteMigrationSquashAsync()
     {
-        Console.Clear();
+        SafeClear();
         Console.WriteLine("========================================");
         Console.WriteLine("   Squash de Migraciones");
         Console.WriteLine("========================================");
@@ -1347,7 +1354,7 @@ public class MenuService
     /// </summary>
     private async Task<bool> ExecuteTestsMenuAsync()
     {
-        Console.Clear();
+        SafeClear();
         Console.WriteLine("========================================");
         Console.WriteLine("   Ejecución de Tests");
         Console.WriteLine("========================================");
