@@ -91,8 +91,13 @@ public class SpecCommand : ICommandHandler<SpecInput, string>
             .Replace("{GOAL}", command.Content)
             .Replace("{SECURITY_ANALYSIS}", $"Nivel de Riesgo: {securityResult.RiskLevel}\nHallazgos:\n- " + string.Join("\n- ", securityResult.Findings));
 
-        // 5. Determine Output Path
+        // 5. Determine Output Path (debe venir del agente documental en fixes: knowledge-architect.json → paths.fixPath + bug-id)
         var baseDir = string.IsNullOrWhiteSpace(command.Context) ? "openspecs/specs" : command.Context;
+        if (string.IsNullOrWhiteSpace(command.Context))
+        {
+            Console.WriteLine("[Spec] --context no proporcionado; usando openspecs/specs. Para fixes, obtener ruta de openspecs/agents/knowledge-architect.json (paths.fixPath + bug-id).");
+            _logger.WriteLog("[Spec] Context empty; using default. For fixes use path from knowledge-architect (fixPath + bug-id).");
+        }
         var fileName = $"SPEC-{DateTime.UtcNow:yyyyMMdd-HHmm}-{SanitizeFilename(command.Title)}.md";
         var outputPath = Path.Combine(baseDir, fileName);
 

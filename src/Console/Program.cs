@@ -480,7 +480,7 @@ class Program
             Console.WriteLine("  5, --golden-rules         Verificar reglas de oro");
             Console.WriteLine("  8, --step8                Ejecutar paso 8 (Init DB)");
             Console.WriteLine("  11, --tests               Ejecutar tests");
-            Console.WriteLine("  --spec                    Generar Spec (requiere --token y --input, opcional --title, --context)");
+            Console.WriteLine("  --spec                    Generar Spec (requiere --token y --input; --context = ruta de persistencia, obtener del agente documental en fixes)");
             Console.WriteLine("  --clarify                 Clarificar Spec (requiere --token, --spec, --input)");
             Console.WriteLine("  --plan                    Generar Plan (requiere --token, --spec)");
             Console.WriteLine("  -v, --validate            Validar ecosistema");

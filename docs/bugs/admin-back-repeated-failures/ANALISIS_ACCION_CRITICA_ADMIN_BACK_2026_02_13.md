@@ -120,6 +120,7 @@ Se considera que el Admin Back **no es funcional** cuando al menos una de las si
 
 ## 8. Referencias
 
+- **SPEC del fix (esta carpeta):** `SPEC-admin-back-repeated-failures.md` — especificación formal del fix; ruta dada por agente documental (`paths.fixPath` + bug-id).
 - `docs/operations/FIX_PROCEDURE_SERVICES_OBJECTIVES.md`
 - `docs/operations/FIX_PROCEDURE_VALIDATION_RUN.md`
 - `docs/operations/FIX_PROCEDURE_SERVICES_CLARIFICATIONS.md`
