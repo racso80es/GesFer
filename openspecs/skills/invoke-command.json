@@ -11,5 +11,6 @@
     "Interface: Usar el script con parámetros Command (obligatorio), Contexto (default GesFer), Fase (Triaje|Analisis|Evaluacion|Marcado|Accion).",
     "Compliance: AC-001 validación sintáctica; registro en docs/diagnostics/{branch}/execution_history.json; alineación Protocolo Racso-Tormentosa."
   ],
-  "usage_instruction": "Cuando sea necesario ejecutar un comando (git, dotnet build, npm run build, etc.), invocar: .\\scripts\\skills\\Invoke-Command.ps1 -Command '<comando>' [-Fase Accion]. No ejecutar comandos de sistema directamente en el shell sin pasar por esta skill."
+  "scope_clarification": "Aplica siempre que el agente ejecute cualquier comando de sistema: sin excepción para git (status, add, commit, push, pull, branch, checkout), dotnet, npm, pwsh. No hay excepciones.",
+  "usage_instruction": "Cada vez que el agente deba ejecutar un comando (p. ej. git status, git add, git commit, dotnet build, npm run build), invocar: .\\scripts\\skills\\Invoke-Command.ps1 -Command '<comando>' [-Fase Accion]. Prohibido ejecutar comandos directamente en el shell."
 }

@@ -303,4 +303,33 @@ public class JsonDataSeederTests
         codes.Should().Contain("IVA21").And.Contain("IVA10").And.Contain("IVA4").And.Contain("EXENTO");
         values.Should().Contain(21).And.Contain(10).And.Contain(4).And.Contain(0);
     }
+
+    /// <summary>
+    /// Valida que demo-data.json contiene articleFamilies con campos requeridos (id, companyId, code, name, taxTypeId).
+    /// Kaizen: protege la estructura tras Fase 2.
+    /// </summary>
+    [Fact]
+    public void DemoData_ShouldContainArticleFamilies_WithRequiredFields()
+    {
+        var basePath = AppContext.BaseDirectory;
+        var seedsPath = Path.Combine(basePath, "Data", "Seeds");
+        var filePath = Path.Combine(seedsPath, "demo-data.json");
+        File.Exists(filePath).Should().BeTrue("demo-data.json debe estar en Data/Seeds");
+
+        var json = File.ReadAllText(filePath);
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+        root.TryGetProperty("articleFamilies", out var afProp).Should().BeTrue("demo-data debe tener clave articleFamilies");
+        var articleFamilies = afProp;
+        articleFamilies.GetArrayLength().Should().BeGreaterThan(0, "debe haber al menos una familia de artículos");
+
+        foreach (var item in articleFamilies.EnumerateArray())
+        {
+            item.TryGetProperty("id", out _).Should().BeTrue("cada articleFamily debe tener id");
+            item.TryGetProperty("companyId", out _).Should().BeTrue("cada articleFamily debe tener companyId");
+            item.TryGetProperty("code", out _).Should().BeTrue("cada articleFamily debe tener code");
+            item.TryGetProperty("name", out _).Should().BeTrue("cada articleFamily debe tener name");
+            item.TryGetProperty("taxTypeId", out _).Should().BeTrue("cada articleFamily debe tener taxTypeId");
+        }
+    }
 }
