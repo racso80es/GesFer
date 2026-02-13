@@ -389,36 +389,52 @@ public class MenuService
             return true;
         }
 
-        // 4 y 5. Verificar compilación de ambos frontends en paralelo (evita duplicar tiempo)
+        // 4 y 5. Verificar compilación de ambos frontends en paralelo (con reintento y aislamiento del error)
         var productFrontPath = Path.Combine(_logService.GetRootPath(), "src", "Product", "Front");
         var adminFrontPath = Path.Combine(_logService.GetRootPath(), "src", "Admin", "Front");
 
         Console.WriteLine("[4/12] y [5/12] Verificando compilación de Frontend Product y Admin en paralelo...");
-        Console.WriteLine("    (npm install y luego npm run build)");
-        var productTask = RunNpmCompilationCheckAsync(productFrontPath, "Frontend Product");
-        var adminTask = RunNpmCompilationCheckAsync(adminFrontPath, "Frontend Admin");
+        Console.WriteLine("    (npm install si hace falta, luego npm run build; reintento automático si falla)");
+        var productTask = RunNpmCompilationCheckAsync(productFrontPath, "Frontend Product", attempt: 1);
+        var adminTask = RunNpmCompilationCheckAsync(adminFrontPath, "Frontend Admin", attempt: 1);
         await Task.WhenAll(productTask, adminTask);
-        var (productOk, productError) = await productTask;
-        var (adminOk, adminError) = await adminTask;
+        var productResult = await productTask;
+        var adminResult = await adminTask;
 
-        // Resultados en orden para lectura clara
-        Console.WriteLine("[4/12] Frontend Product: " + (productOk ? "✓ compila correctamente" : "❌ ERROR"));
-        if (!productOk && !string.IsNullOrEmpty(productError))
+        void WriteFrontResult(string label, NpmCompilationResult r)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            foreach (var line in productError.Split('\n').TakeLast(15)) Console.WriteLine("    " + line);
-            Console.ResetColor();
+            var suffix = r.Attempt > 1 ? $" (reintento {r.Attempt})" : "";
+            Console.WriteLine(label + (r.Success ? $" ✓ compila correctamente{suffix}" : $" ❌ ERROR{suffix}"));
+            if (!r.Success && !string.IsNullOrEmpty(r.ErrorDetail))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                foreach (var line in r.ErrorDetail.Split('\n').TakeLast(15)) Console.WriteLine("    " + line);
+                Console.ResetColor();
+            }
         }
-        Console.WriteLine("[5/12] Frontend Admin: " + (adminOk ? "✓ compila correctamente" : "❌ ERROR"));
-        if (!adminOk && !string.IsNullOrEmpty(adminError))
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            foreach (var line in adminError.Split('\n').TakeLast(15)) Console.WriteLine("    " + line);
-            Console.ResetColor();
-        }
+
+        WriteFrontResult("[4/12] Frontend Product: ", productResult);
+        WriteFrontResult("[5/12] Frontend Admin: ", adminResult);
         Console.WriteLine();
 
-        if (!productOk || !adminOk)
+        // Reintento una vez solo para los que fallaron
+        if (!productResult.Success || !adminResult.Success)
+        {
+            Console.WriteLine("Reintento (1) para los frontends que fallaron...");
+            Task<NpmCompilationResult>? productRetryTask = null;
+            Task<NpmCompilationResult>? adminRetryTask = null;
+            if (!productResult.Success)
+                productRetryTask = RunNpmCompilationCheckAsync(productFrontPath, "Frontend Product", attempt: 2);
+            if (!adminResult.Success)
+                adminRetryTask = RunNpmCompilationCheckAsync(adminFrontPath, "Frontend Admin", attempt: 2);
+            if (productRetryTask != null) productResult = await productRetryTask;
+            if (adminRetryTask != null) adminResult = await adminRetryTask;
+            WriteFrontResult("[4/12] Frontend Product: ", productResult);
+            WriteFrontResult("[5/12] Frontend Admin: ", adminResult);
+            Console.WriteLine();
+        }
+
+        if (!productResult.Success || !adminResult.Success)
         {
             Console.WriteLine("Presione cualquier tecla para continuar...");
             SafeReadKey();
@@ -688,21 +704,52 @@ public class MenuService
     }
 
     /// <summary>
-    /// Ejecuta verificación de compilación npm (npm install y luego npm run build).
-    /// Devuelve (éxito, mensajeDeError). No escribe en consola para permitir ejecución en paralelo.
+    /// Indica si se puede omitir npm install (solo ejecutar build) porque node_modules existe
+    /// y está al día respecto a package.json y package-lock.json.
     /// </summary>
-    private async Task<(bool Success, string? ErrorDetail)> RunNpmCompilationCheckAsync(string projectPath, string projectName)
+    private static bool ShouldSkipNpmInstall(string projectPath)
+    {
+        var nodeModulesDir = Path.Combine(projectPath, "node_modules");
+        if (!Directory.Exists(nodeModulesDir))
+            return false;
+        var packageLock = Path.Combine(projectPath, "package-lock.json");
+        if (!File.Exists(packageLock))
+            return false;
+        try
+        {
+            var nodeModulesTime = Directory.GetLastWriteTimeUtc(nodeModulesDir);
+            var lockTime = File.GetLastWriteTimeUtc(packageLock);
+            return nodeModulesTime >= lockTime;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Resultado tipado de la compilación npm para aislamiento del error y reintento.
+    /// </summary>
+    private sealed record NpmCompilationResult(bool Success, string? ErrorDetail, int? ExitCode, int Attempt);
+
+    /// <summary>
+    /// Ejecuta verificación de compilación npm (npm install + build, o solo build si node_modules está al día).
+    /// Devuelve resultado tipado (Success, ErrorDetail, ExitCode, Attempt). No escribe en consola para permitir ejecución en paralelo.
+    /// </summary>
+    private async Task<NpmCompilationResult> RunNpmCompilationCheckAsync(string projectPath, string projectName, int attempt = 1)
     {
         if (!Directory.Exists(projectPath))
         {
             _logService.WriteLog($"Omisión: no existe directorio de {projectName} en {projectPath}");
-            return (true, null);
+            return new NpmCompilationResult(true, null, null, attempt);
         }
 
-        // Siempre ejecutar npm install antes de build para que dependencias nuevas (ej. next-intl) estén instaladas
+        var skipInstall = ShouldSkipNpmInstall(projectPath);
         var isWindows = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
         var fileName = isWindows ? "cmd" : "bash";
-        var installAndBuild = isWindows ? "npm install && npm run build" : "npm install && npm run build";
+        var installAndBuild = skipInstall ? "npm run build" : "npm install && npm run build";
+        if (skipInstall)
+            _logService.WriteLog($"{projectName} (intento {attempt}): omitiendo npm install, ejecutando solo build.");
         var arguments = isWindows
             ? $"/c cd \"{projectPath}\" && {installAndBuild}"
             : $"-c \"cd '{projectPath}' && {installAndBuild}\"";
@@ -723,31 +770,30 @@ public class MenuService
             if (buildProcessInstance == null)
             {
                 _logService.WriteError($"No se pudo iniciar proceso npm para {projectName}", null!);
-                return (true, null);
+                return new NpmCompilationResult(false, "No se pudo iniciar proceso npm", null, attempt);
             }
 
-            // Leer stdout/stderr en paralelo mientras el proceso corre para evitar deadlock
-            // (si se lee solo al final, los buffers se llenan y npm/dotnet se bloquean)
             var outputTask = buildProcessInstance.StandardOutput.ReadToEndAsync();
             var errorTask = buildProcessInstance.StandardError.ReadToEndAsync();
             await buildProcessInstance.WaitForExitAsync();
             var output = await outputTask;
             var error = await errorTask;
+            var exitCode = buildProcessInstance.ExitCode;
 
-            if (buildProcessInstance.ExitCode != 0)
+            if (exitCode != 0)
             {
-                _logService.WriteError($"{projectName} no compila. ExitCode: {buildProcessInstance.ExitCode}");
+                _logService.WriteError($"{projectName} no compila (intento {attempt}). ExitCode: {exitCode}");
                 _logService.WriteLog($"Salida: {output}\nERRORES: {error}");
                 var errorDetail = string.IsNullOrWhiteSpace(error) ? output : error;
-                return (false, errorDetail);
+                return new NpmCompilationResult(false, errorDetail, exitCode, attempt);
             }
-            _logService.WriteLog($"{projectName} compilada correctamente");
-            return (true, null);
+            _logService.WriteLog($"{projectName} compilada correctamente (intento {attempt})");
+            return new NpmCompilationResult(true, null, 0, attempt);
         }
         catch (Exception ex)
         {
-            _logService.WriteError($"Error al verificar compilación de {projectName}", ex);
-            return (true, null);
+            _logService.WriteError($"Error al verificar compilación de {projectName} (intento {attempt})", ex);
+            return new NpmCompilationResult(false, ex.Message, null, attempt);
         }
     }
 
@@ -766,16 +812,16 @@ public class MenuService
 
         Console.WriteLine("    Iniciando instalación de dependencias y build (puede tardar unos minutos)...");
 
-        var (success, errorDetail) = await RunNpmCompilationCheckAsync(projectPath, projectName);
+        var result = await RunNpmCompilationCheckAsync(projectPath, projectName);
 
-        if (!success)
+        if (!result.Success)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"    ❌ ERROR: {projectName} no compila. Abortando inicialización.");
             Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine("Errores de compilación:");
-            foreach (var line in (errorDetail ?? "").Split('\n').TakeLast(20))
+            foreach (var line in (result.ErrorDetail ?? "").Split('\n').TakeLast(20))
                 Console.WriteLine(line);
             Console.WriteLine();
             Console.WriteLine("Por favor, corrige los errores de compilación antes de continuar.");

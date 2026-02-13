@@ -103,9 +103,18 @@ if [ "$BRANCH" != "master" ] && [ "$BRANCH" != "main" ] && [ -n "$BRANCH" ]; the
     elif [ -f "$passport_cleaned" ] || [ -f "$objective_cleaned" ]; then
         echo "Documentación de rama encontrada (base limpia: $passport_cleaned o $objective_cleaned)."
     else
-        echo "ERROR: No se encuentra documentación de rama. Esperado: $passport_cleaned o $objective_cleaned (o base: $slug_base)"
-        log_entry "BLOCKED" "Documentación de rama ausente ($slug_base / $slug_cleaned)"
-        exit 1
+        # Intento de fallback: si el slug termina en dígitos (sufijo CI), probar sin ellos
+        base_slug=$(echo "$slug" | sed -E 's/-[0-9]+$//')
+        base_passport="docs/branches/${base_slug}.md"
+        base_objective="docs/branches/${base_slug}/OBJETIVO.md"
+
+        if [ "$base_slug" != "$slug" ] && { [ -f "$base_passport" ] || [ -f "$base_objective" ]; }; then
+            echo "Documentación de rama encontrada (fallback CI suffix): $base_passport o $base_objective."
+        else
+            echo "ERROR: No se encuentra documentación de rama. Esperado: $passport o $objective_doc"
+            log_entry "BLOCKED" "Documentación de rama ausente ($slug)"
+            exit 1
+        fi
     fi
 fi
 
