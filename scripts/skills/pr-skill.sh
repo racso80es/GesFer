@@ -89,11 +89,19 @@ done
 # --- [CERTIFICACIÓN DOCUMENTACIÓN DE RAMA] (desde Unificar-Rama.ps1 / process-token-manager) ---
 # Regla de oro: ramas (salvo master/main) deben tener documentación
 if [ "$BRANCH" != "master" ] && [ "$BRANCH" != "main" ] && [ -n "$BRANCH" ]; then
-    slug=$(echo "$BRANCH" | sed 's/[\/\\]/-/g')
-    passport="docs/branches/${slug}.md"
-    objective_doc="docs/branches/${slug}/OBJETIVO.md"
-    if [ -f "$passport" ] || [ -f "$objective_doc" ]; then
-        echo "Documentación de rama encontrada ($passport o $objective_doc)."
+    # Limpiar sufijos numéricos largos (e.g. timestamps de CI)
+    slug_base=$(echo "$BRANCH" | sed 's/[\/\\]/-/g')
+    slug_cleaned=$(echo "$slug_base" | sed -E 's/-[0-9]{10,}$//')
+
+    passport_base="docs/branches/${slug_base}.md"
+    objective_base="docs/branches/${slug_base}/OBJETIVO.md"
+    passport_cleaned="docs/branches/${slug_cleaned}.md"
+    objective_cleaned="docs/branches/${slug_cleaned}/OBJETIVO.md"
+
+    if [ -f "$passport_base" ] || [ -f "$objective_base" ]; then
+        echo "Documentación de rama encontrada ($passport_base o $objective_base)."
+    elif [ -f "$passport_cleaned" ] || [ -f "$objective_cleaned" ]; then
+        echo "Documentación de rama encontrada (base limpia: $passport_cleaned o $objective_cleaned)."
     else
         # Intento de fallback: si el slug termina en dígitos (sufijo CI), probar sin ellos
         base_slug=$(echo "$slug" | sed -E 's/-[0-9]+$//')
