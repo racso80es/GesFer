@@ -33,4 +33,4 @@ El agente **Clarification Specialist** (`openspecs/agents/clarifier.json`) es el
 ## Estándares de Calidad
 *   **Grado S+:** Requiere persistencia auditada y validación de seguridad en tiempo real.
 *   **Knowledge-Arch:** Los resultados alimentan directamente la "consciencia" del proyecto, evitando re-trabajo.
-*   **Estructura de Directorios:** En Features, cada especificación debe residir en su propia carpeta: `Kalma2/Docs/Feature/{SpecName}/{SpecName}.md` y `Kalma2/Docs/Feature/{SpecName}/{SpecName}_CLARIFICATIONS.md`.
+*   **Estructura de Directorios:** En Features, cada especificación debe residir en su propia carpeta, indicada por sub agente de coumentacion: `./Feature/{SpecName}/{SpecName}.md` y `./Feature/{SpecName}/{SpecName}_CLARIFICATIONS.md`.
