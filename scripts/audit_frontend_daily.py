@@ -17,7 +17,7 @@ REPORT_DIR = "docs/audits"
 EVOLUTION_LOG = "docs/EVOLUTION_LOG.md"
 
 def get_utc_date():
-    return datetime.datetime.utcnow().strftime("%Y-%m-%d")
+    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
 
 def scan_file(filepath):
     findings = {

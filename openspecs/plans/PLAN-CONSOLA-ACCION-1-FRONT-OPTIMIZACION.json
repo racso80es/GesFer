@@ -1,0 +1,19 @@
+{
+  "id": "PLAN-CONSOLA-ACCION-1-FRONT-OPTIM",
+  "timestamp": "2026-02-12",
+  "goal": "Optimizar pasos [4/12] y [5/12] de la Consola (compilación frontends Product y Admin): eficiencia, reintento ante fallo y aislamiento del error.",
+  "source_analysis": "docs/evolution/consola-accion-1-pasos-4-5-optimizacion.md",
+  "context": "La acción 1 ejecuta npm install + npm run build en ambos frontends en paralelo. Se detectaron ineficiencias (install siempre) y falta de reintento/aislamiento del error.",
+  "steps": [
+    "Paso 1: Omitir npm install cuando node_modules exista y no haya cambios en dependencias (solo npm run build).",
+    "Paso 2: Implementar reintento: si falla compilación de uno o ambos fronts, repetir una vez solo los que fallaron.",
+    "Paso 3: Aislar el error: resultado tipado (Success, ErrorDetail, ExitCode), mensaje claro, registro en _logService, no tragar excepciones en catch.",
+    "Paso 4 (opcional): Valorar install secuencial y build en paralelo para reducir contención I/O."
+  ],
+  "acceptance": [
+    "Si falla [4/12] o [5/12] una vez, se reintenta automáticamente una vez solo para los que fallaron.",
+    "Tras reintento, si sigue fallo: mensaje claro (proyecto, intento, detalle), log escrito, y flujo sale del paso con error.",
+    "El error de compilación es gestionable: tipo explícito y no return (true, null) cuando hubo fallo real."
+  ],
+  "code_location": "src/Console/Services/MenuService.cs (aprox. líneas 392-426 orquestación; 690-751 RunNpmCompilationCheckAsync)"
+}

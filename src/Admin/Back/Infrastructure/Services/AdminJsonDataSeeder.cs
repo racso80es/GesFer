@@ -104,6 +104,28 @@ public class AdminJsonDataSeeder
     }
 
     /// <summary>
+    /// Carga todos los seeds de Admin en orden: companies.json y luego admin-users.json.
+    /// Responsabilidad única: carga conjunta de datos Admin para BD compartida.
+    /// </summary>
+    public async Task<AdminSeedResult> SeedAllAsync()
+    {
+        var result = new AdminSeedResult();
+        var companiesResult = await SeedCompaniesAsync();
+        if (companiesResult.Loaded)
+        {
+            result.Loaded = true;
+            result.Entities.AddRange(companiesResult.Entities);
+        }
+        var usersResult = await SeedAdminUsersAsync();
+        if (usersResult.Loaded)
+        {
+            result.Loaded = true;
+            result.Entities.AddRange(usersResult.Entities);
+        }
+        return result;
+    }
+
+    /// <summary>
     /// Carga usuarios administrativos desde admin-users.json
     /// </summary>
     public async Task<AdminSeedResult> SeedAdminUsersAsync()
