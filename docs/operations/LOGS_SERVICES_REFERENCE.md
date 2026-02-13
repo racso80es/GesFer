@@ -16,7 +16,7 @@
 
 **Ubicación:** `logs/services/` (ruta absoluta: `C:\Proyectos\GesFer\logs\services`).
 
-**Origen:** Generados por el comando de consola **Opción 2 – Iniciar entorno local** (`StartLocalEnvironmentCommand`). Cada proceso (ProductApi, AdminApi, ProductFront, AdminFront) escribe su salida estándar y errores en un archivo por servicio:
+**Origen:** Generados por el script **`ejecutar-servicios.bat`** (y opcionalmente por el comando de consola **Opción 2 – Iniciar entorno local**). Cada proceso escribe su salida estándar y errores en un archivo por servicio con **formato estructurado** por línea: `timestamp|level|service|message` (timestamp ISO8601, level INFO|ERROR, service nombre, message). El script `scripts/run-service-with-log.ps1` realiza la persistencia.
 
 | Archivo          | Contenido                          |
 |------------------|------------------------------------|
@@ -24,6 +24,13 @@
 | `AdminApi.log`   | Salida/errores de la API Admin     |
 | `ProductFront.log` | Salida/errores del front Product |
 | `AdminFront.log`  | Salida/errores del front Admin   |
+
+**Formato de cada línea (estructurado):** `timestamp|level|service|message`
+
+- `timestamp`: ISO8601 (ej. `2026-02-13T14:30:00.0000000+01:00`).
+- `level`: `INFO` (salida estándar) o `ERROR` (salida de error).
+- `service`: nombre del servicio (`ProductApi`, `AdminApi`, `ProductFront`, etc.).
+- `message`: línea de salida del proceso (saltos de línea internos reemplazados por espacio).
 
 **Referencia para el agente de seguridad (#agente_seguridad):**
 

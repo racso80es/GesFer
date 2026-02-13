@@ -43,12 +43,17 @@ try
         {
             configuration
                 .MinimumLevel.Verbose()
-                .WriteTo.Console()
-                .WriteTo.MySQL(
+                .WriteTo.Console();
+            // MySQL sink opcional en dev: si no está disponible, evita 500 en Swagger/endpoints
+            var useMySqlLogging = builder.Configuration.GetValue<bool>("Serilog:UseMySql");
+            if (useMySqlLogging)
+            {
+                configuration.WriteTo.MySQL(
                     connectionString: connectionString,
                     tableName: "Logs",
                     restrictedToMinimumLevel: LogEventLevel.Verbose,
                     storeTimestampInUtc: true);
+            }
         }
         else
         {
@@ -100,6 +105,7 @@ try
                 Array.Empty<string>()
             }
         });
+        c.UseInlineDefinitionsForEnums();
     });
 
     // Configurar CORS
