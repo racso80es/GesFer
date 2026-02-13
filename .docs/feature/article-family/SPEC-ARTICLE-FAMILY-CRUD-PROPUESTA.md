@@ -26,10 +26,14 @@ Permitir el mantenimiento del maestro **Familia de Artículo** (ArticleFamily): 
 ### 2.2. Alcance (Scope)
 *   **Incluido:**
     *   Entidad `ArticleFamily`, persistencia, API REST (CQRS), tests backend.
-    *   Página y componentes frontend bajo "Maestros > Familias de Artículos".
-    *   Seeds de datos demo y traducciones (es, en, ca).
+    *   Página y componentes frontend bajo "Maestros > Familias de Artículos" (formulario en **modal**).
+    *   Seeds: clave `articleFamilies` en `demo-data.json`, DTO `ArticleFamilySeed`; orden coherente con dependencias (Companies desde Admin; TaxTypes antes que ArticleFamilies; no depende de Article).
+    *   Permisos: **Consultar** (lectura) y **Gestionar** (crear, editar, eliminar). Menú según permiso.
+    *   **Solo soft delete** para maestros (estándar Product).
+    *   **Log de operaciones CRUD en BD** (respetando aislamiento Product DbContext: vía servicio/BD de auditoría).
+    *   Traducciones (es, en, ca).
 *   **Fuera de Alcance:**
-    *   Cambios en la entidad Article o en otros módulos fuera de Product.
+    *   Entidad legacy **Family** queda sustituida por ArticleFamily; la migración de **Article** (FamilyId → ArticleFamilyId, IvaPercentage → TaxTypeId) se realiza en una **iteración posterior**.
     *   Histórico de cambios de familia en artículos existentes.
     *   Migración masiva de datos desde otros sistemas.
 
@@ -56,7 +60,7 @@ Permitir el mantenimiento del maestro **Familia de Artículo** (ArticleFamily): 
 1.  **Unicidad:** El par `(CompanyId, Code)` debe ser único.
 2.  **Multitenancy:** Todas las lecturas/escrituras filtradas por `CompanyId` (contexto de usuario).
 3.  **TaxType:** `TaxTypeId` debe existir y pertenecer a la misma `CompanyId`.
-4.  **Borrado:** Soft delete (IsActive = false / DeletedAt según convención actual del módulo Product).
+4.  **Borrado:** Solo soft delete (IsActive = false / DeletedAt). Estándar en Product para maestros.
 
 ---
 
@@ -68,24 +72,25 @@ Permitir el mantenimiento del maestro **Familia de Artículo** (ArticleFamily): 
 *   **Application:** DTOs en `application/DTOs/ArticleFamilies/` (Create, Update, Read). Commands en `application/Commands/ArticleFamilies/`. Queries en `application/Queries/ArticleFamilies/`. Handlers en `application/Handlers/ArticleFamilies/`.
 *   **API:** `ArticleFamiliesController` en `Api/Controllers/`.
 *   **Tests:** Unit en `GesFer.Product.UnitTests/ArticleFamilies/`, integración en `GesFer.Product.IntegrationTests/Controllers/ArticleFamiliesControllerTests.cs`.
-*   **Seeds:** Entrada en `Infrastructure/Data/Seeds/demo-data.json` y uso en `JsonDataSeeder` (orden: TaxTypes antes que ArticleFamilies para respetar FK).
+*   **Seeds:** Clave `articleFamilies` en `demo-data.json`, DTO `ArticleFamilySeed` en `JsonDataSeeder`. Orden: Companies (Admin/demo) antes; TaxTypes antes que ArticleFamilies (FK TaxTypeId). Validar que `companyId` sea coherente con dependencias (no depende de Article).
 
 ### 4.2. Frontend (Product.Front)
 *   **Types:** `src/Product/Front/lib/types/article-family.ts`
 *   **API:** `src/Product/Front/lib/api/article-families.ts`
 *   **I18n:** `locales/{es,en,ca}/translation.json` (claves para "Familia de Artículo", campos y mensajes de error).
 *   **Page:** `app/[locale]/(app)/maestros/familias-articulos/page.tsx`
-*   **Components:** `ArticleFamilyTable` (listado + acciones), `ArticleFamilyForm` (crear/editar con selector de TaxType).
+*   **Components:** `ArticleFamilyTable` (listado + acciones), `ArticleFamilyForm` en **modal** (drawer/sheet) para crear/editar con selector de TaxType. Por defecto los maestros usan modal (norma arquitecto frontend).
 *   **Navegación:** Entrada "Familias de Artículos" en Sidebar bajo "Maestros". Ruta: `/maestros/familias-articulos`.
 
 ---
 
 ## 5. Requisitos de Seguridad
 
-*   **Autorización:** Endpoints protegidos con `[Authorize]`; uso del contexto de usuario para `CompanyId`.
+*   **Autorización:** Endpoints protegidos con `[Authorize]`. Permisos granulares: **Consultar** (lectura) y **Gestionar** (crear, editar, eliminar). Por defecto los CRUD de maestros tienen estos dos permisos (regla agente seguridad). Menú visible según permiso.
 *   **Validación de entrada:** Validadores FluentValidation para Commands (Create/Update); rechazo de códigos duplicados y TaxTypeId inválido.
 *   **Privacidad:** No se consideran datos PII; solo datos maestros de negocio.
 *   **Consistencia:** No exponer datos de otras compañías (validación en handlers por CompanyId).
+*   **Borrado:** Solo soft delete (estándar Product para maestros).
 
 ---
 
@@ -98,7 +103,7 @@ Permitir el mantenimiento del maestro **Familia de Artículo** (ArticleFamily): 
     - [ ] Crear: validación de Code único y TaxType obligatorio.
     - [ ] Listar: solo registros de la compañía del usuario.
     - [ ] Editar: actualización de nombre, descripción y TaxType.
-    - [ ] Borrar: soft delete (o físico según estándar del módulo).
+    - [ ] Borrar: solo soft delete.
 - [ ] Seeds de demo cargados correctamente y visibles en UI (TaxTypes + ArticleFamilies).
 - [ ] Traducciones (es, en, ca) para etiquetas y errores.
 
@@ -130,10 +135,10 @@ Incluir en la clave `taxTypes` los tipos impositivos estándar en España, por c
 ```
 
 ### 7.2. ArticleFamilies en `demo-data.json`
-Incluir en la clave `articleFamilies` (o el nombre acordado para el DTO de seed) ejemplos que referencien los `taxTypes` anteriores, por ejemplo familias "Metales", "Plásticos", "Consumibles" con `taxTypeId` apuntando a IVA21 o IVA10 según corresponda.
+Incluir en la clave **`articleFamilies`** ejemplos que referencien los `taxTypes` anteriores (Metales, Plásticos, Consumibles) con `taxTypeId` apuntando a los Guids de TaxType del mismo `companyId`. Companies deben existir antes (Admin o demo-data); orden coherente con dependencias (TaxTypeId sí; Article no).
 
 *   **Estructura por ítem:** `id`, `companyId`, `code`, `name`, `description` (opcional), `taxTypeId` (Guid de un TaxType del mismo `companyId`).
-*   **Actualización del seeder:** Añadir método `SeedArticleFamiliesAsync` (o equivalente) y llamada tras `SeedTaxTypesAsync`; extender el DTO de seed de demo (ej. `ArticleFamilySeed`) en `JsonDataSeeder`.
+*   **Seeder:** DTO `ArticleFamilySeed`; método `SeedArticleFamiliesAsync`; llamada tras `SeedTaxTypesAsync`. Validar que `companyId` exista según arquitectura.
 
 ---
 
@@ -142,7 +147,7 @@ Incluir en la clave `articleFamilies` (o el nombre acordado para el DTO de seed)
 ### 8.1. Arquitecto (openspecs/agents/architect.json)
 *   **Fronteras:** Toda la lógica y datos de ArticleFamily permanecen en **Product**. Shared no importa Product/Admin; Product no importa Admin.
 *   **Ubicación estricta:** Entidad en `src/Product/Back/domain/Entities/`; persistencia en `src/Product/Back/Infrastructure/`; aplicación (Commands, Queries, Handlers, DTOs) en `src/Product/Back/application/`.
-*   **Value Objects:** Donde aplique (p. ej. códigos o identificadores con reglas), preferir ValueObjects del dominio en lugar de strings crudos; en seeds, validar formato antes de instanciar entidades.
+*   **Value Objects:** Para códigos de maestros (p. ej. ArticleFamily.Code) se documenta como **deuda técnica**: en esta iteración se usa string con FluentValidation; en el futuro introducir ValueObject (regla arquitecto: preferir ValueObjects donde aplique). En seeds, validar formato antes de instanciar.
 
 ### 8.2. Seguridad (openspecs/agents/security-engineer.json)
 *   **Validación de seeds:** Validar datos de `demo-data.json` (y cualquier MassLoad) **antes** de instanciar entidades: `Guid.TryParse` para Ids, `CompanyId` coherente con empresas existentes, `Value >= 0` para TaxType, longitudes máximas (Code, Name, Description). Si la validación falla, no crear entidades y registrar en log.
@@ -151,9 +156,10 @@ Incluir en la clave `articleFamilies` (o el nombre acordado para el DTO de seed)
 *   **Valoraciones sensibles:** No hay PII en TaxType/ArticleFamily; emails u otros datos sensibles en otros seeds deben usar ValueObjects (p. ej. Email) donde el agente de seguridad lo exija.
 
 ### 8.3. Auditoría (Backend, Proceso, QA)
-*   **Backend (auditor.back):** Product DbContext **no** debe incluir DbSets de Audit/Log (aislamiento). Uso consistente del patrón Command y async/await (evitar CS1998).
-*   **Proceso (auditor.process):** Interacciones que modifiquen documentación o ejecuten specs deben quedar registradas en `docs/audits/ACCESS_LOG.md` según protocolo.
-*   **QA Judge:** Para cerrar la rama/PR: documentación de rama presente, tests para la nueva lógica (unit + integración ArticleFamilies), compilación correcta. Ejecutar `scripts/validate-pr.ps1` y `dotnet test`. Si corresponde, generar `docs/audits/YYYYMMDD_HHMM_<BRANCH>_CLOSE.md`.
+*   **Log de operaciones en BD:** Las operaciones CRUD sobre ArticleFamily deben quedar registradas en BD (quién y cuándo). Product DbContext **no** alberga DbSets de Audit/Log (auditor.back); implementar vía servicio de auditoría o BD de auditoría separada.
+*   **Backend (auditor.back):** Patrón Command y async/await (evitar CS1998).
+*   **Proceso (auditor.process):** Registro en `docs/audits/ACCESS_LOG.md`.
+*   **QA Judge:** Documentación de rama, tests (unit + integración), compilación; `scripts/validate-pr.ps1`, `dotnet test`; si aplica, `docs/audits/YYYYMMDD_HHMM_<BRANCH>_CLOSE.md`.
 
 ---
 
@@ -168,6 +174,7 @@ Incluir en la clave `articleFamilies` (o el nombre acordado para el DTO de seed)
 ## 10. Trazabilidad
 
 *   **Documento de objetivos:** `.docs/feature/article-family/objetive.md`
+*   **Clarificaciones:** `.docs/feature/article-family/SPEC-ARTICLE-FAMILY-CRUD_CLARIFICATIONS-PROPUESTA.md`
 *   **Plantilla usada:** Maestro CRUD (TaxType como referencia).
 *   **Ubicación final sugerida (tras validación):** `openspecs/specs/SPEC-GF-2026-ARTICLE-FAMILY.md` o `docs/Feature/article-family/SPEC-ARTICLE-FAMILY-CRUD.md` según convención del proyecto.
 
