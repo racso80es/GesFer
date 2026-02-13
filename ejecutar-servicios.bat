@@ -10,13 +10,11 @@ echo.
 REM Cambiar al directorio raiz del proyecto
 cd /d "%~dp0"
 
-REM 1. Detener procesos existentes en los puertos
+REM 1. Detener procesos existentes en puertos y procesos dotnet/GesFer que bloquean DLLs
 echo [1/5] Verificando y cerrando procesos existentes...
 
-REM Usar PowerShell para cerrar procesos de forma mas confiable
-powershell -Command "$ports = @(5000, 5001, 5010, 5011, 3000, 3001); foreach ($port in $ports) { $connections = netstat -ano | Select-String \":$port.*LISTENING\"; foreach ($conn in $connections) { $pid = ($conn -split '\s+')[-1]; if ($pid -match '^\d+$') { Write-Host \"Cerrando proceso en puerto $port (PID: $pid)...\"; taskkill /PID $pid /F 2>$null } } }"
-
-echo    Verificacion completada
+REM Script PS1 evita VariableNotWritable ($PID es variable automática de solo lectura)
+powershell -ExecutionPolicy Bypass -File "%~dp0scripts\cerrar-procesos-servicios.ps1"
 echo.
 
 REM 2. Verificar rutas
