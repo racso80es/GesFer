@@ -66,11 +66,7 @@ public class LogController : ControllerBase
     /// <summary>
     /// Recibe un log de auditoría desde otros servicios (System)
     /// </summary>
-    [HttpPost("audit")] // /api/admin/logs/audit -> o debería ser /api/admin/audit-logs ? AsyncLogPublisher usa /api/admin/audit-logs por defecto en config.
-    // Pero en AsyncLogPublisher.cs: _auditLogsEndpoint = _configuration["AdminApi:AuditLogsEndpoint"] ?? "/api/admin/audit-logs";
-    // Si cambio la ruta aquí a "audit", la URL completa sería /api/admin/logs/audit.
-    // Voy a mantener la convención de rutas pero quizás deba cambiar la ruta base o usar una ruta absoluta.
-    // Mejor uso [Route("/api/admin/audit-logs")] para coincidir con el default de Product.
+    [HttpPost]
     [Route("/api/admin/audit-logs")]
     [AuthorizeSystemOrAdmin]
     [ProducesResponseType(StatusCodes.Status200OK)]

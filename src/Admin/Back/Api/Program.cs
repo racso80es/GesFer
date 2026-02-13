@@ -106,6 +106,7 @@ try
             }
         });
         c.UseInlineDefinitionsForEnums();
+        c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
     });
 
     // Configurar CORS
@@ -201,9 +202,10 @@ try
     }
 
     // Configurar el pipeline HTTP
-    if (app.Environment.IsDevelopment())
+    if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
     {
-        app.UseDeveloperExceptionPage();
+        if (app.Environment.IsDevelopment())
+            app.UseDeveloperExceptionPage();
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
@@ -212,8 +214,9 @@ try
         });
     }
 
-    // Redirección HTTP → HTTPS antes de routing (seguridad: todos los entornos; Development: puerto 5011).
-    if (!app.Environment.IsEnvironment("Testing"))
+    // Redirección HTTP → HTTPS: omitir en Development para que Swagger funcione solo con HTTP (5010).
+    // Si se redirige a 5011 y el perfil solo enlaza 5010, el fetch de swagger.json falla con 500/Fetch error.
+    if (!app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing"))
     {
         app.UseHttpsRedirection();
     }

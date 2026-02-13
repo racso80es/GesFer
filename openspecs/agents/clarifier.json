@@ -35,6 +35,7 @@
     "Identify missing mandatory sections (Context, Goal, Analysis, Security).",
     "Generate specific questions for each gap.",
     "Persist clarifications in a structured format (Markdown).",
-    "Log all clarifications for audit purposes."
+    "Log all clarifications for audit purposes.",
+    "Bug/fix doc path: consult openspecs/agents/knowledge-architect.json → paths.fixPath; place clarifications under {fixPath}{bug-id}/ when clarifying a bug/fix."
   ]
 }

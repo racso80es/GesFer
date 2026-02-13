@@ -43,6 +43,7 @@
     "Frontend (TS/React): No HTML native (<button>). Use Shared/components/ui/Button.",
     "Frontend (TS/React): Validation with Zod in all forms.",
 "Post-Check: Run dotnet build (Back) / npm run build (Front) / validate-commit.ps1.",
-    "Execution contract: Every system command (including git status, git add, git commit, git push, dotnet build, npm run, etc.) MUST be run via: .\\scripts\\skills\\Invoke-Command.ps1 -Command '<command>' [-Fase Accion]. Never run git or other system commands directly in the shell."
+    "Execution contract: Every system command (including git status, git add, git commit, git push, dotnet build, npm run, etc.) MUST be run via: .\\scripts\\skills\\Invoke-Command.ps1 -Command '<command>' [-Fase Accion]. Never run git or other system commands directly in the shell.",
+    "Bug/fix doc path: consult openspecs/agents/knowledge-architect.json → paths.fixPath; place under {fixPath}{bug-id}/."
   ]
 }

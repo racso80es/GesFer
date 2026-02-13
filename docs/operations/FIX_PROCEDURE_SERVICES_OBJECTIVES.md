@@ -1,9 +1,10 @@
 # Procedimiento de fix: Servicios y dependencias
 
-**Fase:** Obtención de objetivos  
+**Fase:** Obtención de objetivos → **Clarificación** (2026-02-13)  
 **Fecha inicio:** 2026-02-13  
 **Rama:** fix/services-modules-db-serilog (o la que se use para el fix)  
-**Base:** Análisis de logs en `logs/services/` y reporte de fallos críticos.
+**Base:** Análisis de logs en `logs/services/` y reporte de fallos críticos.  
+**Clarificaciones:** `docs/operations/FIX_PROCEDURE_SERVICES_CLARIFICATIONS.md` (gaps, preguntas objetivas, seguridad).
 
 ---
 
@@ -59,21 +60,42 @@
 
 ## 2. Resumen de acciones recomendadas (checklist)
 
-- [ ] **Front-ends:** `npm install` en `src\Admin\Front` y `src\Product\Front`.
-- [ ] **Base de datos:** MySQL en ejecución; ScrapDb accesible con credenciales configuradas.
-- [ ] **AdminApi – logs:** Asegurar que `POST /api/admin/logs` sea aceptado (controlador, redirección, autorización).
-- [ ] **ProductApi – Serilog:** Corregir sintaxis/paquete Serilog (Async); evitar referencia a método inexistente.
-- [ ] **HTTPS/EOF:** Revisar redirección 307 y certificado de desarrollo si persisten cierres inesperados.
+- [x] **Front-ends:** `npm install` — script `scripts/install-front-dependencies.ps1`; `ejecutar-servicios.bat` ejecuta instalación si falta `node_modules\next`.
+- [ ] **Base de datos:** MySQL en ejecución; ScrapDb accesible (operativo; no automatizado en este fix).
+- [x] **AdminApi – logs:** Cliente nombrado "AdminApi" en ProductApi; SharedSecret igual en Admin y Product (dev); POST /api/admin/logs con header X-Internal-Secret debe devolver 200.
+- [x] **ProductApi – Serilog:** Añadido paquete `Serilog.Sinks.Async` para que el método Async exista si la configuración lo referencia.
+- [ ] **HTTPS/EOF:** Revisar redirección 307 y certificado de desarrollo si persisten cierres inesperados (pendiente).
 
 ---
 
-## 3. Referencias
+## 3. Fases del procedimiento
+
+- [x] Obtención de objetivos
+- [x] **Clarificación** — ver `FIX_PROCEDURE_SERVICES_CLARIFICATIONS.md` (20 preguntas, gaps, seguridad)
+- [x] **Implementación (parcial)** — ver sección 4
+- [ ] Verificación / cierre
+
+---
+
+## 4. Cambios implementados (2026-02-13)
+
+| Área | Cambio |
+|------|--------|
+| **ProductApi** | Registro de `HttpClient` nombrado `"AdminApi"` en `DependencyInjection.cs` para `AsyncLogPublisher`. BaseUrl por defecto 5010. |
+| **ProductApi** | `appsettings.Development.json`: añadido `SharedSecret` (mismo valor que Admin para desarrollo). |
+| **AdminApi** | `appsettings.Development.json`: `SharedSecret` añadido; connection string unificado a `User`/`Password` y opciones AllowUserVariables/AllowLoadLocalInfile. |
+| **ProductApi** | `GesFer.Api.csproj`: referencia a `Serilog.Sinks.Async` (v1.5.0) para evitar error "Unable to find a method called Async". |
+| **Fronts** | Nuevo script `scripts/install-front-dependencies.ps1` (npm install en Product/Front y Admin/Front). |
+| **ejecutar-servicios.bat** | Paso opcional 1b: si no existe `node_modules\next` en Product/Front, se ejecuta `install-front-dependencies.ps1` antes de arrancar servicios. |
+
+## 5. Referencias
 
 - Análisis de logs: `docs/operations/ANALISIS_LOGS_SERVICIOS_4.md`
 - Logs de servicios: `docs/operations/LOGS_SERVICES_REFERENCE.md`
 - AdminApi LogController: `src/Admin/Back/Api/Controllers/LogController.cs` (ya expone `[HttpPost]` en ruta base; investigar 405).
 - Puerto Admin API: 5010 (HTTP), 5011 (HTTPS); referencias a 5049 corregidas.
+- Clarificaciones: `docs/operations/FIX_PROCEDURE_SERVICES_CLARIFICATIONS.md`
 
 ---
 
-*Documento vivo para la fase de obtención de objetivos del procedimiento de fix. Actualizar al cerrar o redefinir objetivos.*
+*Documento vivo del procedimiento de fix. Actualizar al cerrar objetivos o completar fases.*

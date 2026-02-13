@@ -45,27 +45,39 @@ function Write-StructuredLog {
 # Encabezado de sesión en el log
 Write-StructuredLog -Level "INFO" -Message "=== Sesion iniciada: $Command en $WorkingDir ==="
 
-# Parsear comando: primer token = ejecutable, resto = argumentos
+# En Windows, npm/npx son .cmd; ProcessStartInfo con FileName="npm" no los encuentra.
+# Usar cmd /c "comando" para que el shell resuelva npm.cmd correctamente.
 $parts = $Command -split "\s+", 2
 $exe = $parts[0]
-$args = if ($parts.Length -gt 1) { $parts[1] } else { "" }
+$exeArgs = if ($parts.Length -gt 1) { $parts[1] } else { "" }
 
-$psi = New-Object System.Diagnostics.ProcessStartInfo
-$psi.FileName = $exe
-$psi.Arguments = $args
-$psi.WorkingDirectory = $WorkingDir
-$psi.UseShellExecute = $false
-$psi.RedirectStandardOutput = $true
-$psi.RedirectStandardError = $true
-$psi.CreateNoWindow = $false
-$psi.StandardOutputEncoding = [System.Text.Encoding]::UTF8
-$psi.StandardErrorEncoding = [System.Text.Encoding]::UTF8
+$useCmd = $exe -match '^(npm|npx|node)$'
+if ($useCmd) {
+    $psi = New-Object System.Diagnostics.ProcessStartInfo
+    $psi.FileName = "cmd.exe"
+    $psi.Arguments = "/c `"$Command`""
+    $psi.WorkingDirectory = $WorkingDir
+    $psi.UseShellExecute = $false
+    $psi.RedirectStandardOutput = $true
+    $psi.RedirectStandardError = $true
+    $psi.CreateNoWindow = $false
+    $psi.StandardOutputEncoding = [System.Text.Encoding]::UTF8
+    $psi.StandardErrorEncoding = [System.Text.Encoding]::UTF8
+} else {
+    $psi = New-Object System.Diagnostics.ProcessStartInfo
+    $psi.FileName = $exe
+    $psi.Arguments = $exeArgs
+    $psi.WorkingDirectory = $WorkingDir
+    $psi.UseShellExecute = $false
+    $psi.RedirectStandardOutput = $true
+    $psi.RedirectStandardError = $true
+    $psi.CreateNoWindow = $false
+    $psi.StandardOutputEncoding = [System.Text.Encoding]::UTF8
+    $psi.StandardErrorEncoding = [System.Text.Encoding]::UTF8
+}
 
 $process = New-Object System.Diagnostics.Process
 $process.StartInfo = $psi
-
-$stdoutDone = $false
-$stderrDone = $false
 
 $onStdout = {
     if ($EventArgs.Data -ne $null) {
@@ -94,11 +106,24 @@ $eventData = @{ ServiceName = $ServiceName; LogFile = $logFile }
 $stdoutHandler = Register-ObjectEvent -InputObject $process -EventName OutputDataReceived -Action $onStdout -MessageData $eventData
 $stderrHandler = Register-ObjectEvent -InputObject $process -EventName ErrorDataReceived -Action $onStderr -MessageData $eventData
 
-$process.Start() | Out-Null
-$process.BeginOutputReadLine()
-$process.BeginErrorReadLine()
+try {
+    if (-not $process.Start()) {
+        Write-StructuredLog -Level "ERROR" -Message "No se pudo iniciar el proceso."
+        Unregister-Event -SourceIdentifier $stdoutHandler.Name -ErrorAction SilentlyContinue
+        Unregister-Event -SourceIdentifier $stderrHandler.Name -ErrorAction SilentlyContinue
+        exit 1
+    }
+    $process.BeginOutputReadLine()
+    $process.BeginErrorReadLine()
+    $process.WaitForExit()
+} catch {
+    Write-StructuredLog -Level "ERROR" -Message "Excepcion al iniciar proceso: $($_.Exception.Message)"
+    Write-Host $_.Exception.Message -ForegroundColor Red
+    Unregister-Event -SourceIdentifier $stdoutHandler.Name -ErrorAction SilentlyContinue
+    Unregister-Event -SourceIdentifier $stderrHandler.Name -ErrorAction SilentlyContinue
+    exit 1
+}
 
-$process.WaitForExit()
 Start-Sleep -Milliseconds 200
 Unregister-Event -SourceIdentifier $stdoutHandler.Name -ErrorAction SilentlyContinue
 Unregister-Event -SourceIdentifier $stderrHandler.Name -ErrorAction SilentlyContinue
