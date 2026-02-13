@@ -84,9 +84,15 @@ public static class DependencyInjection
         }
         else
         {
+            var adminApiBaseUrl = configuration["AdminApi:BaseUrl"] ?? "http://localhost:5010";
             services.AddHttpClient<IAdminApiClient, GesFer.Product.Back.Infrastructure.Services.AdminApiClient>(client =>
             {
-                var adminApiBaseUrl = configuration["AdminApi:BaseUrl"] ?? "http://localhost:5001";
+                client.BaseAddress = new Uri(adminApiBaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(5);
+            });
+            // Cliente nombrado "AdminApi" para AsyncLogPublisher (envío de logs a Admin API)
+            services.AddHttpClient("AdminApi", client =>
+            {
                 client.BaseAddress = new Uri(adminApiBaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(5);
             });

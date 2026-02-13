@@ -16,5 +16,5 @@ El comando `StartLocalEnvironmentCommand` es capaz de iniciar los servicios nece
 
 ## Recomendación
 Mejorar la robustez de `StartLocalEnvironmentCommand` implementando una verificación proactiva de puertos antes del inicio de servicios.
-- Detectar procesos escuchando en los puertos críticos (5000, 5049, 3000, 3001).
+- Detectar procesos escuchando en los puertos críticos (5000, 5010, 3000, 3001).
 - Terminar dichos procesos automáticamente para asegurar un arranque limpio ("Clean Start").

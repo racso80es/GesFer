@@ -34,7 +34,7 @@ public class AdminApiClientTests
         };
         var json = JsonSerializer.Serialize(expectedDto);
         var handler = new MockHttpMessageHandler(HttpStatusCode.OK, json);
-        var client = new HttpClient(handler) { BaseAddress = new Uri("http://localhost:5049") };
+        var client = new HttpClient(handler) { BaseAddress = new Uri("http://localhost:5010") };
         var logger = LoggerFactory.Create(_ => { }).CreateLogger<AdminApiClient>();
         var config = new ConfigurationBuilder().Build();
         var apiClient = new AdminApiClient(client, logger, config);
@@ -52,7 +52,7 @@ public class AdminApiClientTests
     public async Task GetCompanyAsync_When404_ReturnsNull()
     {
         var handler = new MockHttpMessageHandler(HttpStatusCode.NotFound, "{}");
-        var client = new HttpClient(handler) { BaseAddress = new Uri("http://localhost:5049") };
+        var client = new HttpClient(handler) { BaseAddress = new Uri("http://localhost:5010") };
         var logger = LoggerFactory.Create(_ => { }).CreateLogger<AdminApiClient>();
         var config = new ConfigurationBuilder().Build();
         var apiClient = new AdminApiClient(client, logger, config);
@@ -76,7 +76,7 @@ public class AdminApiClientTests
         };
         var json = JsonSerializer.Serialize(responseDto);
         var handler = new MockHttpMessageHandler(HttpStatusCode.OK, json);
-        var client = new HttpClient(handler) { BaseAddress = new Uri("http://localhost:5049") };
+        var client = new HttpClient(handler) { BaseAddress = new Uri("http://localhost:5010") };
         var logger = LoggerFactory.Create(_ => { }).CreateLogger<AdminApiClient>();
         var config = new ConfigurationBuilder().Build();
         var apiClient = new AdminApiClient(client, logger, config);

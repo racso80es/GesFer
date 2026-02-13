@@ -40,9 +40,11 @@ public class StockBenchmark
             Name = "Fam",
             Code = "FAM01",
             CompanyId = companyId,
+            TaxTypeId = taxType.Id,
             TaxType = taxType
         };
-
+        _context.TaxTypes.Add(taxType);
+        _context.ArticleFamilies.Add(articleFamily);
         for (int i = 0; i < ArticleCount; i++)
         {
             var article = new Article
@@ -52,6 +54,7 @@ public class StockBenchmark
                 Code = $"ART{i:000}",
                 Stock = 100,
                 CompanyId = companyId,
+                ArticleFamilyId = articleFamily.Id,
                 ArticleFamily = articleFamily
             };
             _context.Articles.Add(article);

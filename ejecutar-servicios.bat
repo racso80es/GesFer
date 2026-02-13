@@ -21,6 +21,14 @@ REM Script PS1 evita VariableNotWritable ($PID es variable automática de solo l
 powershell -ExecutionPolicy Bypass -File "%~dp0scripts\cerrar-procesos-servicios.ps1"
 echo.
 
+REM 1b. Si falta el ejecutable de Next en Product Front, instalar dependencias (docs/operations/FIX_PROCEDURE_SERVICES_OBJECTIVES.md)
+set "productFrontPath=%~dp0src\Product\Front"
+if not exist "!productFrontPath!\node_modules\next\dist\bin\next" (
+    echo [1b/5] Instalando dependencias en Fronts \(npm install\)...
+    powershell -ExecutionPolicy Bypass -File "%~dp0scripts\install-front-dependencies.ps1"
+    echo.
+)
+
 REM 2. Verificar rutas
 echo [2/5] Verificando rutas...
 set "productApiPath=%~dp0src\Product\Back\Api"

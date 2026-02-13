@@ -27,6 +27,7 @@
   "instructions": [
     "Circuit Breaker: If you fail 3 times, STOP. Generate AUDIT_FAIL.md and ask for human help.",
     "Audit Format: Generate docs/audits/YYYYMMDD_HHMM_<BRANCH>_CLOSE.md.",
-    "Mandatory Commands: pwsh scripts/validate-pr.ps1, dotnet test."
+    "Mandatory Commands: pwsh scripts/validate-pr.ps1, dotnet test.",
+    "Bug/fix doc path: consult openspecs/agents/knowledge-architect.json → paths.fixPath; expect docs under {fixPath}{bug-id}/."
   ]
 }
