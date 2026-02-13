@@ -8,7 +8,7 @@ Implementar una gestión robusta de procesos y puertos en `StartLocalEnvironment
 ### 1. Limpieza de Recursos (Robustez)
 - **Contexto**: `src/Console/Commands/StartLocalEnvironmentCommand.cs`
 - **Acción**:
-  1. Implementar `CheckPortAvailability` para verificar si los puertos 5000, 5049, 3000 y 3001 están libres.
+  1. Implementar `CheckPortAvailability` para verificar si los puertos 5000, 5010, 3000 y 3001 están libres.
   2. Implementar `KillProcessOnPort` (Windows/Linux compatible, o al menos funcional en el entorno de desarrollo actual) para terminar procesos que bloqueen dichos puertos.
   3. Ejecutar estas comprobaciones al inicio del método `HandleAsync`.
 

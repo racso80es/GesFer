@@ -118,7 +118,7 @@ public class StartLocalEnvironmentCommand : ICommandHandler<StartLocalEnvironmen
             Console.WriteLine("Servicios:");
             Console.ForegroundColor = ConsoleColor.Green;
             if (input.StartProductApi) Console.WriteLine($"  ➜ Back Product:  {productApiConfig.Url ?? "http://localhost:5000"}");
-            if (input.StartAdminApi) Console.WriteLine($"  ➜ Back Admin:    {adminApiConfig.Url ?? "http://localhost:5049"}");
+            if (input.StartAdminApi) Console.WriteLine($"  ➜ Back Admin:    {adminApiConfig.Url ?? "http://localhost:5010"}");
             if (input.StartProductFront) Console.WriteLine($"  ➜ Front Product: http://localhost:{productFrontPort}");
             if (input.StartAdminFront) Console.WriteLine($"  ➜ Front Admin:   http://localhost:{adminFrontPort}");
             Console.ResetColor();
