@@ -1,5 +1,13 @@
 import pino from 'pino';
 
+// Interface para propiedades del log para evitar el uso de any
+interface LogProperties {
+  [key: string]: unknown;
+  err?: { stack?: string };
+  error?: { stack?: string };
+  source?: string;
+}
+
 // Determinar el nivel mínimo según el entorno
 const getMinLevel = (): pino.Level => {
   const env = process.env.NODE_ENV || 'development';
@@ -12,7 +20,7 @@ const getMinLevel = (): pino.Level => {
 class TelemetryTransport {
   private apiUrl: string;
   private enabled: boolean;
-  private queue: Array<{ level: number; message: string; exception?: string; properties?: Record<string, any>; source?: string; timestamp?: Date; clientInfo?: Record<string, any> }> = [];
+  private queue: Array<{ level: number; message: string; exception?: string; properties?: LogProperties; source?: string; timestamp?: Date; clientInfo?: Record<string, unknown> }> = [];
   private flushInterval: NodeJS.Timeout | null = null;
   private readonly FLUSH_INTERVAL_MS = 5000; // Flush cada 5 segundos
   private readonly MAX_QUEUE_SIZE = 100;
@@ -47,10 +55,10 @@ class TelemetryTransport {
     level: number;
     message: string;
     exception?: string;
-    properties?: Record<string, any>;
+    properties?: LogProperties;
     source?: string;
     timestamp?: Date;
-    clientInfo?: Record<string, any>;
+    clientInfo?: Record<string, unknown>;
   }) {
     if (!this.enabled) {
       return;
@@ -124,11 +132,11 @@ const telemetryHook = {
     
     // Extraer información del log
     const message = typeof msg === 'string' ? msg : JSON.stringify(msg);
-    const properties = typeof obj === 'object' && obj !== null ? (obj as Record<string, any>) : {};
+    const properties = typeof obj === 'object' && obj !== null ? (obj as LogProperties) : {};
     const exception = properties.err?.stack || properties.error?.stack || undefined;
     
     // Obtener información del cliente
-    const clientInfo: Record<string, any> = {
+    const clientInfo: Record<string, unknown> = {
       userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
       url: typeof window !== 'undefined' ? window.location.href : undefined,
       timestamp: new Date().toISOString(),
