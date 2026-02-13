@@ -1,5 +1,4 @@
-using System;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -13,66 +12,6 @@ namespace GesFer.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "AdminUsers",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Username = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    PasswordHash = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    FirstName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Role = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastLoginAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    LastLoginIp = table.Column<string>(type: "varchar(45)", maxLength: 45, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AdminUsers", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "AuditLogs",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    CursorId = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Username = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Action = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    HttpMethod = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Path = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    AdditionalData = table.Column<string>(type: "varchar(2000)", maxLength: 2000, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ActionTimestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AuditLogs", x => x.Id);
-                })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
@@ -114,36 +53,6 @@ namespace GesFer.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Languages", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Logs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Level = table.Column<string>(type: "varchar(128)", maxLength: 128, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Message = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Template = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Exception = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Properties = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    TimeStamp = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Source = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CompanyId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
-                    UserId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
-                    ClientInfo = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Logs", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -306,6 +215,10 @@ namespace GesFer.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Name = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     TaxId = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true)
@@ -320,11 +233,7 @@ namespace GesFer.Infrastructure.Migrations
                     CityId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
                     StateId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
                     CountryId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
-                    LanguageId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    LanguageId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
@@ -471,6 +380,37 @@ namespace GesFer.Infrastructure.Migrations
                     table.PrimaryKey("PK_Tariffs", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Tariffs_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "TaxTypes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    CompanyId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Code = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Value = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaxTypes", x => x.Id);
+                    table.CheckConstraint("CK_TaxType_Value", "`Value` >= 0");
+                    table.ForeignKey(
+                        name: "FK_TaxTypes_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "Id",
@@ -728,6 +668,42 @@ namespace GesFer.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "ArticleFamilies",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    CompanyId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Code = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    TaxTypeId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArticleFamilies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ArticleFamilies_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ArticleFamilies_TaxTypes_TaxTypeId",
+                        column: x => x.TaxTypeId,
+                        principalTable: "TaxTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "UserGroups",
                 columns: table => new
                 {
@@ -976,15 +952,15 @@ namespace GesFer.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AdminUsers_Role",
-                table: "AdminUsers",
-                column: "Role");
+                name: "IX_ArticleFamilies_CompanyId_Code",
+                table: "ArticleFamilies",
+                columns: new[] { "CompanyId", "Code" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_AdminUsers_Username",
-                table: "AdminUsers",
-                column: "Username",
-                unique: true);
+                name: "IX_ArticleFamilies_TaxTypeId",
+                table: "ArticleFamilies",
+                column: "TaxTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_Code",
@@ -1006,26 +982,6 @@ namespace GesFer.Infrastructure.Migrations
                 name: "IX_Articles_Name",
                 table: "Articles",
                 column: "Name");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AuditLogs_ActionTimestamp",
-                table: "AuditLogs",
-                column: "ActionTimestamp");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AuditLogs_CursorId",
-                table: "AuditLogs",
-                column: "CursorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AuditLogs_CursorId_ActionTimestamp",
-                table: "AuditLogs",
-                columns: new[] { "CursorId", "ActionTimestamp" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AuditLogs_Username",
-                table: "AuditLogs",
-                column: "Username");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cities_StateId",
@@ -1146,36 +1102,6 @@ namespace GesFer.Infrastructure.Migrations
                 name: "IX_Languages_Name",
                 table: "Languages",
                 column: "Name");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Logs_CompanyId",
-                table: "Logs",
-                column: "CompanyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Logs_CompanyId_TimeStamp",
-                table: "Logs",
-                columns: new[] { "CompanyId", "TimeStamp" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Logs_Level",
-                table: "Logs",
-                column: "Level");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Logs_Level_TimeStamp",
-                table: "Logs",
-                columns: new[] { "Level", "TimeStamp" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Logs_TimeStamp",
-                table: "Logs",
-                column: "TimeStamp");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Logs_UserId",
-                table: "Logs",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Permissions_Key",
@@ -1339,6 +1265,18 @@ namespace GesFer.Infrastructure.Migrations
                 columns: new[] { "CompanyId", "Name" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_TaxTypes_CompanyId_Code",
+                table: "TaxTypes",
+                columns: new[] { "CompanyId", "Code" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaxTypes_CompanyId_Name",
+                table: "TaxTypes",
+                columns: new[] { "CompanyId", "Name" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserGroups_GroupId",
                 table: "UserGroups",
                 column: "GroupId");
@@ -1396,16 +1334,10 @@ namespace GesFer.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AdminUsers");
-
-            migrationBuilder.DropTable(
-                name: "AuditLogs");
+                name: "ArticleFamilies");
 
             migrationBuilder.DropTable(
                 name: "GroupPermissions");
-
-            migrationBuilder.DropTable(
-                name: "Logs");
 
             migrationBuilder.DropTable(
                 name: "PurchaseDeliveryNoteLines");
@@ -1421,6 +1353,9 @@ namespace GesFer.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserPermissions");
+
+            migrationBuilder.DropTable(
+                name: "TaxTypes");
 
             migrationBuilder.DropTable(
                 name: "PurchaseDeliveryNotes");

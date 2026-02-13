@@ -1,0 +1,53 @@
+{
+  "metadata": {
+    "script_id": "TEKTON-WRAP-001",
+    "version": "1.0.0",
+    "alias": "Interceptor de Ejecuciones de Sistema",
+    "location": "./Invoke-TektonCommand.ps1",
+    "author": "Tormentosa",
+    "project_context": "PROYECTO CALMA / GesFer"
+  },
+  "operational_rules": {
+    "mandatory_execution": true,
+    "max_retries": 6,
+    "ac_001_validation": "active",
+    "documentation_rule": "Gold - Branch Specific",
+    "protocol_alignment": "Protocolo Racso-Tormentosa v1.3"
+  },
+  "interface": {
+    "parameters": {
+      "Command": {
+        "type": "string",
+        "description": "Comando de sistema a ejecutar (git, dotnet, etc.)",
+        "required": true
+      },
+      "Contexto": {
+        "type": "string",
+        "default": "GesFer",
+        "description": "Identificador del proyecto de ejecución"
+      },
+      "Fase": {
+        "type": "enum",
+        "options": ["Triaje", "Análisis", "Evaluación de Situación", "Marcado de Cambios", "Acción"],
+        "default": "Acción",
+        "description": "Fase actual del protocolo de trabajo"
+      }
+    }
+  },
+  "logging_structure": {
+    "destination": "docs/diagnostics/{branch_name}/execution_history.json",
+    "fields": [
+      "Timestamp",
+      "Fase",
+      "Command",
+      "Status",
+      "Output",
+      "Branch"
+    ]
+  },
+  "compliance_checks": [
+    "AC-001: Validación sintáctica de logs y rutas",
+    "S+ Grade: Registro de fallos para análisis de Kaizen",
+    "Audit Log: Registro mandatorio en EVOLUTION_LOG.md"
+  ]
+}

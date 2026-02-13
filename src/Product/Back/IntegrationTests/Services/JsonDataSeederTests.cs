@@ -271,4 +271,36 @@ public class JsonDataSeederTests
             }
         }
     }
+
+    /// <summary>
+    /// Valida que demo-data.json contiene taxTypes con los códigos habituales en España
+    /// (IVA21, IVA10, IVA4, EXENTO) según la spec ArticleFamily.
+    /// </summary>
+    [Fact]
+    public void DemoData_ShouldContainTaxTypes_WithSpainCodes()
+    {
+        var basePath = AppContext.BaseDirectory;
+        var seedsPath = Path.Combine(basePath, "Data", "Seeds");
+        var filePath = Path.Combine(seedsPath, "demo-data.json");
+        File.Exists(filePath).Should().BeTrue("demo-data.json debe estar en Data/Seeds (copiado por el proyecto de tests)");
+
+        var json = File.ReadAllText(filePath);
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+        root.TryGetProperty("taxTypes", out var taxTypesProp).Should().BeTrue("demo-data debe tener clave taxTypes");
+        var taxTypes = taxTypesProp;
+        taxTypes.GetArrayLength().Should().Be(4, "debe haber 4 tipos de impuesto (IVA21, IVA10, IVA4, EXENTO)");
+
+        var codes = new List<string>();
+        var values = new List<decimal>();
+        foreach (var item in taxTypes.EnumerateArray())
+        {
+            if (item.TryGetProperty("code", out var code))
+                codes.Add(code.GetString() ?? "");
+            if (item.TryGetProperty("value", out var value))
+                values.Add(value.GetDecimal());
+        }
+        codes.Should().Contain("IVA21").And.Contain("IVA10").And.Contain("IVA4").And.Contain("EXENTO");
+        values.Should().Contain(21).And.Contain(10).And.Contain(4).And.Contain(0);
+    }
 }
