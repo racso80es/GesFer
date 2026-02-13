@@ -95,6 +95,7 @@ Si tras actualizar el código el login Admin sigue fallando: comprobar que la AP
 |--------------------------|----------------|--------|
 | "Credenciales inválidas" / "Credenciales administrativas inválidas" | Usuario/contraseña incorrectos o API devuelve 401 | Verificar credenciales y que el usuario exista en la BD. |
 | "No se pudo conectar con la API..." / "No se pudo conectar con el servidor..." | API no responde o URL incorrecta | Comprobar que las APIs estén en **HTTPS** (5001, 5011) y que `NEXT_PUBLIC_API_URL` / `ADMIN_API_URL` sean **https://localhost:5001** y **https://localhost:5011**. |
+| **Internal Server Error** en `/swagger/v1/swagger.json` (Admin API) | Serilog escribe en MySQL (tabla Logs); si la BD no está lista o la tabla no existe, el sink puede fallar | Asegurar que MySQL esté en ejecución y que las migraciones estén aplicadas (tabla `Logs` en ScrapDb). Reiniciar la API Admin. |
 | Página en blanco o "Cargando..." indefinido | AuthContext o middleware colgado | Refrescar; revisar consola del navegador y que la API responda por HTTPS. |
 | Tras login correcto no redirige a dashboard | Bug de redirección (corregido) | Asegurarse de tener los últimos cambios en las páginas de login. |
 
