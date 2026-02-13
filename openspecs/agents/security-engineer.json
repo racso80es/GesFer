@@ -25,6 +25,14 @@
     {
       "rule": "Auth Separation: admin_ vs auth_ tokens.",
       "severity": "CRITICAL"
+    },
+    {
+      "rule": "Product masters: Soft delete only. Standard for Product module maestros (no physical delete).",
+      "severity": "HIGH"
+    },
+    {
+      "rule": "Default CRUD permissions: 1=Consult (read), 2=Manage (create, edit, delete). Maestros use these two by default.",
+      "severity": "HIGH"
     }
   ],
   "instructions": [

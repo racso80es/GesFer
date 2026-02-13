@@ -32,6 +32,10 @@
     {
       "rule": "No Bloat: Reject new libraries unless necessary.",
       "severity": "MEDIUM"
+    },
+    {
+      "rule": "Maestros (CRUD): Default UI for create/edit is modal (drawer or sheet) from list page, not dedicated routes.",
+      "severity": "HIGH"
     }
   ],
   "instructions": [
