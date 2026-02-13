@@ -6,6 +6,7 @@ export interface CalmaAPI {
   runAudit: () => Promise<void>;
   clearCache: () => Promise<void>;
   syncSpec: () => Promise<void>;
+  checkStatus: (url: string) => Promise<boolean>;
   onStatusChange: (callback: (status: unknown) => void) => () => void;
 }
 

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Tray, Menu, ipcMain, nativeImage } from 'electron';
+import { app, BrowserWindow, Tray, Menu, ipcMain, nativeImage, net } from 'electron';
 import path from 'node:path';
 import Store from 'electron-store';
 
@@ -88,6 +88,9 @@ app.on('window-all-closed', () => {
 });
 
 app.whenReady().then(() => {
+  // Allow self-signed certificates for localhost development
+  app.commandLine.appendSwitch('ignore-certificate-errors');
+
   createWindow();
   createTray();
 
@@ -121,6 +124,19 @@ app.whenReady().then(() => {
 
   ipcMain.handle('sync-spec', () => {
     console.log('IPC: sync-spec');
+  });
+
+  ipcMain.handle('check-status', (_, url) => {
+    return new Promise((resolve) => {
+      const request = net.request(url);
+      request.on('response', (response) => {
+        resolve(response.statusCode >= 200 && response.statusCode < 400);
+      });
+      request.on('error', () => {
+        resolve(false);
+      });
+      request.end();
+    });
   });
 });
 

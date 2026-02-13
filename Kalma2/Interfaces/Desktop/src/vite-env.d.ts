@@ -8,6 +8,7 @@ interface CalmaAPI {
   runAudit: () => Promise<any>;
   clearCache: () => Promise<any>;
   syncSpec: () => Promise<any>;
+  checkStatus: (url: string) => Promise<boolean>;
   onStatusChange: (callback: (status: any) => void) => () => void;
 }
 
