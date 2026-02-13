@@ -87,27 +87,28 @@ while [ $attempt -le "$RETRY_MAX" ]; do
 done
 
 # --- [CERTIFICACIÓN DOCUMENTACIÓN DE RAMA] (desde Unificar-Rama.ps1 / process-token-manager) ---
-# Regla de oro: ramas (salvo master/main y sus variantes automáticas) deben tener documentación
-case "$BRANCH" in
-    master*|main*)
-        echo "ℹ Saltando verificación de documentación para rama protegida/automática: $BRANCH"
-        ;;
-    "")
-        # Rama vacía, ignorar
-        ;;
-    *)
-        slug=$(echo "$BRANCH" | sed 's/[\/\\]/-/g')
-        passport="docs/branches/${slug}.md"
-        objective_doc="docs/branches/${slug}/OBJETIVO.md"
-        if [ -f "$passport" ] || [ -f "$objective_doc" ]; then
-            echo "Documentación de rama encontrada ($passport o $objective_doc)."
+# Regla de oro: ramas (salvo master/main) deben tener documentación
+if [ "$BRANCH" != "master" ] && [ "$BRANCH" != "main" ] && [ -n "$BRANCH" ]; then
+    slug=$(echo "$BRANCH" | sed 's/[\/\\]/-/g')
+    passport="docs/branches/${slug}.md"
+    objective_doc="docs/branches/${slug}/OBJETIVO.md"
+    if [ -f "$passport" ] || [ -f "$objective_doc" ]; then
+        echo "Documentación de rama encontrada ($passport o $objective_doc)."
+    else
+        # Intento de fallback: si el slug termina en dígitos (sufijo CI), probar sin ellos
+        base_slug=$(echo "$slug" | sed -E 's/-[0-9]+$//')
+        base_passport="docs/branches/${base_slug}.md"
+        base_objective="docs/branches/${base_slug}/OBJETIVO.md"
+
+        if [ "$base_slug" != "$slug" ] && { [ -f "$base_passport" ] || [ -f "$base_objective" ]; }; then
+            echo "Documentación de rama encontrada (fallback CI suffix): $base_passport o $base_objective."
         else
             echo "ERROR: No se encuentra documentación de rama. Esperado: $passport o $objective_doc"
             log_entry "BLOCKED" "Documentación de rama ausente ($slug)"
             exit 1
         fi
-        ;;
-esac
+    fi
+fi
 
 # --- Suite completa de tests ---
 echo "🧪 [SKILL] Ejecutando SUITE COMPLETA de Tests..."

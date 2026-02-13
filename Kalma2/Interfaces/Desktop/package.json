@@ -5,7 +5,7 @@
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/kaizen-check.js ../../CONSTITUTION.md",
+    "prebuild": "node scripts/kaizen-check.js ../../../CONSTITUTION.md",
     "build": "tsc && vite build && electron-builder",
     "preview": "vite preview"
   },
