@@ -49,4 +49,60 @@ public class SensitiveDataSanitizerTests
         email.Should().EndWith($"@{domain}");
         email.Should().NotBeNullOrEmpty();
     }
+
+    [Fact]
+    public void Sanitize_ShouldReturnInput()
+    {
+        // Arrange
+        var sanitizer = new SensitiveDataSanitizer();
+        string input = "test input";
+
+        // Act
+        var result = sanitizer.Sanitize(input);
+
+        // Assert
+        result.Should().Be(input);
+    }
+
+    [Fact]
+    public void GenerateRandomPassword_ShouldThrowException_WhenLengthIsInvalid()
+    {
+        // Arrange
+        var sanitizer = new SensitiveDataSanitizer();
+        int length = 0;
+
+        // Act
+        Action act = () => sanitizer.GenerateRandomPassword(length);
+
+        // Assert
+        act.Should().Throw<ArgumentOutOfRangeException>();
+    }
+
+    [Fact]
+    public void GenerateRandomEmail_ShouldReturnUniqueEmails()
+    {
+        // Arrange
+        var sanitizer = new SensitiveDataSanitizer();
+
+        // Act
+        var email1 = sanitizer.GenerateRandomEmail();
+        var email2 = sanitizer.GenerateRandomEmail();
+
+        // Assert
+        email1.Should().NotBe(email2);
+    }
+
+    [Fact]
+    public void GenerateRandomEmail_ShouldUsePrefix_WhenProvided()
+    {
+        // Arrange
+        var sanitizer = new SensitiveDataSanitizer();
+        string prefix = "myuser";
+
+        // Act
+        var email = sanitizer.GenerateRandomEmail(prefix: prefix);
+
+        // Assert
+        email.Should().StartWith(prefix);
+    }
 }
