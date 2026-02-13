@@ -3,4 +3,5 @@ using GesFer.Product.Application.DTOs.TaxTypes;
 
 namespace GesFer.Product.Application.Commands.TaxTypes;
 
-public record UpdateTaxTypeCommand(UpdateTaxTypeDto TaxType) : ICommand<Result>;
+// Fix: Update returns Result (no value), so implement non-generic ICommand
+public record UpdateTaxTypeCommand(Guid Id, UpdateTaxTypeDto TaxType) : ICommand;

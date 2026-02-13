@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -28,6 +29,7 @@
     <ProjectReference Include="..\domain\GesFer.Domain.csproj" />
     <ProjectReference Include="..\..\..\Shared\Back\GesFer.Shared.Back.Domain.csproj" />
     <ProjectReference Include="..\..\..\Shared\Back\Infrastructure\GesFer.Shared.Back.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Back\GesFer.Shared.Back.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

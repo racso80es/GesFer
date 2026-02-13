@@ -77,7 +77,7 @@ public class TaxTypesController : ControllerBase
             return BadRequest("ID mismatch");
         }
 
-        var command = new UpdateTaxTypeCommand(request);
+        var command = new UpdateTaxTypeCommand(id, request);
         var result = await _sender.Send(command, cancellationToken);
 
         if (result.IsFailure)
