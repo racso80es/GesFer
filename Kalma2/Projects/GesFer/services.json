@@ -3,12 +3,12 @@
     "name": "BackEnd / Api / Swagger",
     "family": "Product",
     "environment": "Local",
-    "verifyStatusUrl": "https://localhost:3001/health",
+    "verifyStatusUrl": "https://localhost:5000/health",
     "actions": [
       {
         "type": "access",
         "label": "Access",
-        "url": "https://localhost:3001"
+        "url": "https://localhost:5000"
       }
     ]
   },
@@ -22,6 +22,32 @@
         "type": "access",
         "label": "Access",
         "url": "https://localhost:3000"
+      }
+    ]
+  },
+  {
+    "name": "BackEnd / Api / Swagger",
+    "family": "Admin",
+    "environment": "Local",
+    "verifyStatusUrl": "https://localhost:5010/health",
+    "actions": [
+      {
+        "type": "access",
+        "label": "Access",
+        "url": "https://localhost:5010"
+      }
+    ]
+  },
+  {
+    "name": "FrontEnd / Cliente / Node",
+    "family": "Admin",
+    "environment": "Local",
+    "verifyStatusUrl": "https://localhost:3001",
+    "actions": [
+      {
+        "type": "access",
+        "label": "Access",
+        "url": "https://localhost:3001"
       }
     ]
   }

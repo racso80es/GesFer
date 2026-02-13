@@ -13,9 +13,6 @@
     <Compile Remove="Infrastructure\**" />
     <EmbeddedResource Remove="Infrastructure\**" />
     <None Remove="Infrastructure\**" />
-    <Compile Remove="Abstractions\**" />
-    <EmbeddedResource Remove="Abstractions\**" />
-    <None Remove="Abstractions\**" />
   </ItemGroup>
 
 </Project>
