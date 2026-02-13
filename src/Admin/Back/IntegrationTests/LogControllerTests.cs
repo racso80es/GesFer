@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using GesFer.Admin.Api.Controllers;
+using GesFer.Admin.Application.Dtos.Logs;
 using Xunit;
 
 namespace GesFer.Admin.IntegrationTests;

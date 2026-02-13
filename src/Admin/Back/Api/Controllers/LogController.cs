@@ -1,4 +1,5 @@
 using GesFer.Admin.Api.Attributes;
+using GesFer.Admin.Application.Dtos.Logs;
 using GesFer.Admin.Back.Domain.Entities;
 using GesFer.Admin.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -230,52 +231,4 @@ public class LogController : ControllerBase
         }
         return null;
     }
-}
-
-// DTOs
-public class LogDto
-{
-    public int Id { get; set; }
-    public string Level { get; set; } = string.Empty;
-    public string Message { get; set; } = string.Empty;
-    public string? Exception { get; set; }
-    public DateTime TimeStamp { get; set; }
-    public string? Source { get; set; }
-    public Guid? CompanyId { get; set; }
-    public Guid? UserId { get; set; }
-}
-
-public class CreateLogDto
-{
-    public string Level { get; set; } = string.Empty;
-    public string Message { get; set; } = string.Empty;
-    public string? Exception { get; set; }
-    public DateTime TimeStamp { get; set; }
-    public Dictionary<string, object>? Properties { get; set; }
-}
-
-public class CreateAuditLogDto
-{
-    public string CursorId { get; set; } = string.Empty;
-    public string Username { get; set; } = string.Empty;
-    public string Action { get; set; } = string.Empty;
-    public string HttpMethod { get; set; } = string.Empty;
-    public string Path { get; set; } = string.Empty;
-    public string? AdditionalData { get; set; }
-    public DateTime ActionTimestamp { get; set; }
-}
-
-public class LogsPagedResponseDto
-{
-    public List<LogDto> Logs { get; set; } = new();
-    public int TotalCount { get; set; }
-    public int PageNumber { get; set; }
-    public int PageSize { get; set; }
-    public int TotalPages { get; set; }
-}
-
-public class PurgeLogsResponseDto
-{
-    public int DeletedCount { get; set; }
-    public DateTime DateLimit { get; set; }
 }

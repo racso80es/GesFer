@@ -50,6 +50,7 @@ public class AuditLogServiceTests
         log.HttpMethod.Should().Be(httpMethod);
         log.Path.Should().Be(path);
         log.AdditionalData.Should().Be(additionalData);
+        // KZ-BACK-002: Usar aserción de rango para evitar flakiness en tests de tiempo
         log.ActionTimestamp.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(2));
         log.IsActive.Should().BeTrue();
     }

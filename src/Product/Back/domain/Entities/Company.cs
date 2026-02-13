@@ -4,7 +4,9 @@ using GesFer.Shared.Back.Domain.ValueObjects;
 namespace GesFer.Product.Back.Domain.Entities;
 
 /// <summary>
-/// Entidad que representa una empresa (Tenant) en el sistema multi-tenant
+/// Entidad que representa una empresa (Tenant) en el sistema multi-tenant.
+/// Esta clase extiende la entidad base de Shared para incluir las colecciones específicas de Product.
+/// Usar alias explícito si se requiere acceso a la entidad base en el mismo contexto.
 /// </summary>
 public class Company : GesFer.Shared.Back.Domain.Entities.Company
 {
