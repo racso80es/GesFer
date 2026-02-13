@@ -3,6 +3,7 @@ using System;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GesFer.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260213143407_AddArticleFamilyIdToArticle")]
+    partial class AddArticleFamilyIdToArticle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +28,7 @@ namespace GesFer.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("ArticleFamilyId")
+                    b.Property<Guid?>("ArticleFamilyId")
                         .HasColumnType("char(36)");
 
                     b.Property<decimal>("BuyPrice")
@@ -49,6 +52,9 @@ namespace GesFer.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("char(36)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -76,6 +82,8 @@ namespace GesFer.Infrastructure.Migrations
                     b.HasIndex("ArticleFamilyId");
 
                     b.HasIndex("Code");
+
+                    b.HasIndex("FamilyId");
 
                     b.HasIndex("Name");
 
@@ -282,6 +290,47 @@ namespace GesFer.Infrastructure.Migrations
                     b.HasIndex("CompanyId", "Name");
 
                     b.ToTable("Customers", (string)null);
+                });
+
+            modelBuilder.Entity("GesFer.Product.Back.Domain.Entities.Family", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<decimal>("IvaPercentage")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId", "Name");
+
+                    b.ToTable("Families", (string)null);
                 });
 
             modelBuilder.Entity("GesFer.Product.Back.Domain.Entities.Group", b =>
@@ -1279,8 +1328,7 @@ namespace GesFer.Infrastructure.Migrations
                     b.HasOne("GesFer.Product.Back.Domain.Entities.ArticleFamily", "ArticleFamily")
                         .WithMany()
                         .HasForeignKey("ArticleFamilyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GesFer.Product.Back.Domain.Entities.Company", "Company")
                         .WithMany("Articles")
@@ -1288,9 +1336,17 @@ namespace GesFer.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("GesFer.Product.Back.Domain.Entities.Family", "Family")
+                        .WithMany("Articles")
+                        .HasForeignKey("FamilyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("ArticleFamily");
 
                     b.Navigation("Company");
+
+                    b.Navigation("Family");
                 });
 
             modelBuilder.Entity("GesFer.Product.Back.Domain.Entities.ArticleFamily", b =>
@@ -1394,6 +1450,17 @@ namespace GesFer.Infrastructure.Migrations
                     b.Navigation("SellTariff");
 
                     b.Navigation("State");
+                });
+
+            modelBuilder.Entity("GesFer.Product.Back.Domain.Entities.Family", b =>
+                {
+                    b.HasOne("GesFer.Product.Back.Domain.Entities.Company", "Company")
+                        .WithMany("Families")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("GesFer.Product.Back.Domain.Entities.GroupPermission", b =>
@@ -1757,6 +1824,8 @@ namespace GesFer.Infrastructure.Migrations
 
                     b.Navigation("Customers");
 
+                    b.Navigation("Families");
+
                     b.Navigation("Suppliers");
 
                     b.Navigation("Tariffs");
@@ -1767,6 +1836,11 @@ namespace GesFer.Infrastructure.Migrations
             modelBuilder.Entity("GesFer.Product.Back.Domain.Entities.Customer", b =>
                 {
                     b.Navigation("SalesDeliveryNotes");
+                });
+
+            modelBuilder.Entity("GesFer.Product.Back.Domain.Entities.Family", b =>
+                {
+                    b.Navigation("Articles");
                 });
 
             modelBuilder.Entity("GesFer.Product.Back.Domain.Entities.Group", b =>

@@ -8,7 +8,7 @@ namespace GesFer.Product.Back.Domain.Entities;
 public class Article : BaseEntity
 {
     public Guid CompanyId { get; set; }
-    public Guid FamilyId { get; set; }
+    public Guid ArticleFamilyId { get; set; }
     public string Code { get; set; } = string.Empty; // 10 caracteres, único, obligatorio
     public string Name { get; set; } = string.Empty; // 50 caracteres, obligatorio
     public string? Description { get; set; } // 255 caracteres, opcional
@@ -18,7 +18,7 @@ public class Article : BaseEntity
 
     // Navegación
     public Company Company { get; set; } = null!;
-    public Family Family { get; set; } = null!;
+    public ArticleFamily ArticleFamily { get; set; } = null!;
     public ICollection<TariffItem> TariffItems { get; set; } = new List<TariffItem>();
     public ICollection<PurchaseDeliveryNoteLine> PurchaseDeliveryNoteLines { get; set; } = new List<PurchaseDeliveryNoteLine>();
     public ICollection<SalesDeliveryNoteLine> SalesDeliveryNoteLines { get; set; } = new List<SalesDeliveryNoteLine>();

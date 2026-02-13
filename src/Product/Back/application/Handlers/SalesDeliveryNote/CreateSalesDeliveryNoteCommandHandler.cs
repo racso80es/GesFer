@@ -37,7 +37,7 @@ public class CreateSalesDeliveryNoteCommandHandler : ICommandHandler<CreateSales
         // Optimización: Cargar todos los artículos necesarios en una sola consulta
         var articleIds = command.Lines.Select(l => l.ArticleId).Distinct().ToList();
         var articles = await _context.Articles
-            .Include(a => a.Family)
+            .Include(a => a.ArticleFamily).ThenInclude(af => af.TaxType)
             .Where(a => articleIds.Contains(a.Id) && a.CompanyId == command.CompanyId && a.DeletedAt == null)
             .ToDictionaryAsync(a => a.Id, cancellationToken);
 
@@ -79,7 +79,7 @@ public class CreateSalesDeliveryNoteCommandHandler : ICommandHandler<CreateSales
 
             // Calcular importes
             var subtotal = lineDto.Quantity * price;
-            var ivaAmount = subtotal * (article.Family.IvaPercentage / 100);
+            var ivaAmount = subtotal * (article.ArticleFamily.TaxType.Value / 100);
             var total = subtotal + ivaAmount;
 
             var line = new SalesDeliveryNoteLine

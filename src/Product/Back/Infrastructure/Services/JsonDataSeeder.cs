@@ -238,14 +238,15 @@ public class JsonDataSeeder
             result.Entities.Add($"{data.TaxTypes.Count} TaxType(s)");
         }
 
-        // Seed Families
-        if (data.Families != null && data.Families.Any())
+        // Seed ArticleFamilies (tras TaxTypes)
+        if (data.ArticleFamilies != null && data.ArticleFamilies.Any())
         {
-            await SeedFamiliesAsync(data.Families);
-            result.Entities.Add($"{data.Families.Count} Family(ies)");
+            await SeedArticleFamiliesAsync(data.ArticleFamilies);
+            await _context.SaveChangesAsync();
+            result.Entities.Add($"{data.ArticleFamilies.Count} ArticleFamily(ies)");
         }
 
-        // Seed Articles
+        // Seed Articles (requieren articleFamilyId)
         if (data.Articles != null && data.Articles.Any())
         {
             await SeedArticlesAsync(data.Articles);
@@ -1014,27 +1015,28 @@ public class JsonDataSeeder
         await _context.SaveChangesAsync();
     }
 
-    private async Task SeedFamiliesAsync(List<FamilySeed> families)
+    private async Task SeedArticleFamiliesAsync(List<ArticleFamilySeed> articleFamilies)
     {
-        foreach (var familyData in families)
+        foreach (var afData in articleFamilies)
         {
-            var existing = await _context.Families
+            var existing = await _context.ArticleFamilies
                 .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(f => f.Id == Guid.Parse(familyData.Id));
+                .FirstOrDefaultAsync(af => af.Id == Guid.Parse(afData.Id));
 
             if (existing == null)
             {
-                var family = new Family
+                var af = new ArticleFamily
                 {
-                    Id = Guid.Parse(familyData.Id),
-                    CompanyId = Guid.Parse(familyData.CompanyId),
-                    Name = familyData.Name,
-                    Description = familyData.Description,
-                    IvaPercentage = familyData.IvaPercentage,
+                    Id = Guid.Parse(afData.Id),
+                    CompanyId = Guid.Parse(afData.CompanyId),
+                    Code = afData.Code,
+                    Name = afData.Name,
+                    Description = afData.Description,
+                    TaxTypeId = Guid.Parse(afData.TaxTypeId),
                     CreatedAt = DateTime.UtcNow,
                     IsActive = true
                 };
-                _context.Families.Add(family);
+                _context.ArticleFamilies.Add(af);
             }
             else if (existing.DeletedAt != null)
             {
@@ -1055,11 +1057,13 @@ public class JsonDataSeeder
 
             if (existing == null)
             {
+                if (string.IsNullOrEmpty(articleData.ArticleFamilyId))
+                    continue;
                 var article = new Article
                 {
                     Id = Guid.Parse(articleData.Id),
                     CompanyId = Guid.Parse(articleData.CompanyId),
-                    FamilyId = Guid.Parse(articleData.FamilyId),
+                    ArticleFamilyId = Guid.Parse(articleData.ArticleFamilyId),
                     Code = articleData.Code,
                     Name = articleData.Name,
                     Description = articleData.Description,
@@ -1336,7 +1340,7 @@ public class JsonDataSeeder
         public List<UserGroupSeed>? UserGroups { get; set; }
         public List<UserPermissionSeed>? UserPermissions { get; set; }
         public List<TaxTypeSeed>? TaxTypes { get; set; }
-        public List<FamilySeed>? Families { get; set; }
+        public List<ArticleFamilySeed>? ArticleFamilies { get; set; }
         public List<ArticleSeed>? Articles { get; set; }
         public List<SupplierSeed>? Suppliers { get; set; }
         public List<CustomerSeed>? Customers { get; set; }
@@ -1435,20 +1439,21 @@ public class JsonDataSeeder
         public decimal Value { get; set; }
     }
 
-    private class FamilySeed
+    private class ArticleFamilySeed
     {
         public string Id { get; set; } = string.Empty;
         public string CompanyId { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public decimal IvaPercentage { get; set; }
+        public string TaxTypeId { get; set; } = string.Empty;
     }
 
     private class ArticleSeed
     {
         public string Id { get; set; } = string.Empty;
         public string CompanyId { get; set; } = string.Empty;
-        public string FamilyId { get; set; } = string.Empty;
+        public string? ArticleFamilyId { get; set; }
         public string Code { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }

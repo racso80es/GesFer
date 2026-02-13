@@ -69,7 +69,7 @@ try
             "PurchaseDeliveryNoteLines", "PurchaseDeliveryNotes", "PurchaseInvoices",
             "TariffItems", "Articles", "Suppliers", "Customers",
             "UserGroups", "UserPermissions", "GroupPermissions", 
-            "Users", "Groups", "Permissions", "Families", "Tariffs", "Companies",
+            "Users", "Groups", "Permissions", "ArticleFamilies", "Tariffs", "Companies",
             "PostalCodes", "Cities", "States", "Countries", "Languages"
         };
         foreach (var tableName in tablesToDrop)

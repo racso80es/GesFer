@@ -46,9 +46,9 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
             .HasForeignKey(a => a.CompanyId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(a => a.Family)
-            .WithMany(f => f.Articles)
-            .HasForeignKey(a => a.FamilyId)
+        builder.HasOne(a => a.ArticleFamily)
+            .WithMany()
+            .HasForeignKey(a => a.ArticleFamilyId)
             .OnDelete(DeleteBehavior.Restrict);
 
         // Índices
