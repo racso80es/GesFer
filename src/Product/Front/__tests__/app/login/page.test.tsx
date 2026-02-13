@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import LoginPage from '@/app/(client)/login/page'
 import { useAuth } from '@/contexts/auth-context'
 // Valores por defecto del login (coinciden con seeds demo-data.json)
-const DEFAULT_LOGIN_COMPANY = 'Empresa Cliente'
+const DEFAULT_LOGIN_COMPANY = 'Organización Cliente'
 const DEFAULT_LOGIN_PASSWORD = 'admin123'
 
 // Mock the auth context

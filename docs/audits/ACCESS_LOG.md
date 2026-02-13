@@ -34,3 +34,5 @@
 | 2026-02-11 16:13:29 | PLAN_GENERATION | Unknown | DENIED | Invalid Token |
 | 2026-02-11 16:14:12 | PLAN_GENERATION | Unknown | DENIED | Invalid Token |
 | 2026-02-11 16:15:34 | PLAN_GENERATION | Unknown | DENIED | Invalid Token |
+| 2026-02-13 05:10:08 | google-labs-jules[bot] | jules-14051810782647728844-8231c2ec | PUSH/PR | BLOCKED | Token inválido o expirado |
+| 2026-02-13 05:10:31 | google-labs-jules[bot] | jules-14051810782647728844-8231c2ec | PUSH/PR | SUCCESS | Suite Completa validada |

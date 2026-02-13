@@ -198,20 +198,32 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                 try
                 {
                     var migrationsBefore = await context.Database.GetAppliedMigrationsAsync();
+
+                    // 1) Migraciones Product (crean tablas compartidas, p. ej. Companies)
+                    await context.Database.MigrateAsync();
                     
-                    await DbInitializer.InitializeAsync(serviceProvider, isDevelopment: true);
-                    
+                    // 2) Migraciones Admin
                     if (isDetailed) _logService.WriteLog("Aplicando migraciones de Admin...");
                     await adminContext.Database.MigrateAsync();
 
-                    // Cargar datos de seed para Admin
+                    // Orden de carga de seeds: 1 - Maestros, 2 - Admin, 3 - Product
+                    // 3) Datos maestros (siempre)
+                    if (isDetailed) _logService.WriteLog("Cargando datos maestros...");
+                    await DbInitializer.SeedMasterDataAsync(context, scopedServices, logger);
+
+                    // 4) Datos Admin (companies + admin-users) de forma conjunta
                     if (isDetailed) _logService.WriteLog("Cargando seeds de Admin...");
-                    var adminSeedResult = await adminSeeder.SeedAdminUsersAsync();
-                    if (adminSeedResult.Loaded)
+                    var adminSeedResult = await adminSeeder.SeedAllAsync();
+                    if (adminSeedResult.Loaded && adminSeedResult.Entities.Any())
                     {
-                        var info = $"✓ Seeds Admin cargados: {string.Join(", ", adminSeedResult.Entities)}";
+                        var info = $"✓ Seeds Admin: {string.Join(", ", adminSeedResult.Entities)}";
                         result.Data.Information.Add(info);
                     }
+
+                    // 5) Datos Product (demo-data)
+                    if (isDetailed) _logService.WriteLog("Cargando datos de producto (demo)...");
+                    await DbInitializer.SeedDemoDataAsync(context, scopedServices, logger);
+                    await DbInitializer.EnsureAdminUserAndSmokeTestAsync(context, scopedServices, logger);
 
                     var migrationsAfter = await context.Database.GetAppliedMigrationsAsync();
                     var appliedMigrations = migrationsAfter.Except(migrationsBefore).ToList();
