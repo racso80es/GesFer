@@ -11,6 +11,8 @@ import {
   Menu,
   X,
   Briefcase,
+  Settings,
+  Percent,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -36,6 +38,14 @@ export function MainLayout({ children }: MainLayoutProps) {
     { name: t('companies'), href: "/companies", icon: Briefcase },
     { name: t('users'), href: "/usuarios", icon: Users },
     { name: t('customers'), href: "/clientes", icon: Building2 },
+    {
+      name: t('masters'),
+      href: "#masters",
+      icon: Settings,
+      children: [
+        { name: t('taxTypes'), href: "/maestros/tipotasa", icon: Percent },
+      ]
+    },
   ];
 
   const handleLogout = () => {

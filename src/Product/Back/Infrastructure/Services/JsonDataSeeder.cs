@@ -231,6 +231,13 @@ public class JsonDataSeeder
             result.Entities.Add($"{data.UserPermissions.Count} UserPermission(s)");
         }
 
+        // Seed TaxTypes
+        if (data.TaxTypes != null && data.TaxTypes.Any())
+        {
+            await SeedTaxTypesAsync(data.TaxTypes);
+            result.Entities.Add($"{data.TaxTypes.Count} TaxType(s)");
+        }
+
         // Seed Families
         if (data.Families != null && data.Families.Any())
         {
@@ -975,6 +982,38 @@ public class JsonDataSeeder
         // para garantizar persistencia inmediata y evitar problemas de concurrencia
     }
 
+    private async Task SeedTaxTypesAsync(List<TaxTypeSeed> taxTypes)
+    {
+        foreach (var taxTypeData in taxTypes)
+        {
+            var existing = await _context.TaxTypes
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(t => t.Id == Guid.Parse(taxTypeData.Id));
+
+            if (existing == null)
+            {
+                var taxType = new TaxType
+                {
+                    Id = Guid.Parse(taxTypeData.Id),
+                    CompanyId = Guid.Parse(taxTypeData.CompanyId),
+                    Code = taxTypeData.Code,
+                    Name = taxTypeData.Name,
+                    Description = taxTypeData.Description,
+                    Value = taxTypeData.Value,
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = true
+                };
+                _context.TaxTypes.Add(taxType);
+            }
+            else if (existing.DeletedAt != null)
+            {
+                existing.DeletedAt = null;
+                existing.IsActive = true;
+            }
+        }
+        await _context.SaveChangesAsync();
+    }
+
     private async Task SeedFamiliesAsync(List<FamilySeed> families)
     {
         foreach (var familyData in families)
@@ -1296,6 +1335,7 @@ public class JsonDataSeeder
         public List<UserSeed>? Users { get; set; }
         public List<UserGroupSeed>? UserGroups { get; set; }
         public List<UserPermissionSeed>? UserPermissions { get; set; }
+        public List<TaxTypeSeed>? TaxTypes { get; set; }
         public List<FamilySeed>? Families { get; set; }
         public List<ArticleSeed>? Articles { get; set; }
         public List<SupplierSeed>? Suppliers { get; set; }
@@ -1383,6 +1423,16 @@ public class JsonDataSeeder
         public string Id { get; set; } = string.Empty;
         public string UserId { get; set; } = string.Empty;
         public string PermissionId { get; set; } = string.Empty;
+    }
+
+    private class TaxTypeSeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string CompanyId { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public decimal Value { get; set; }
     }
 
     private class FamilySeed

@@ -19,6 +19,27 @@
     "yes": "Sí",
     "no": "No"
   },
+  "taxTypes": {
+    "title": "Tipos de Tasa",
+    "listTitle": "Listado de Tipos de Tasa",
+    "createTitle": "Crear Tipo de Tasa",
+    "editTitle": "Editar Tipo de Tasa",
+    "code": "Código",
+    "name": "Nombre",
+    "value": "Valor (%)",
+    "description": "Descripción",
+    "actions": "Acciones",
+    "deleteConfirm": "¿Estás seguro de que deseas eliminar este tipo de tasa?",
+    "createSuccess": "Tipo de tasa creado correctamente",
+    "updateSuccess": "Tipo de tasa actualizado correctamente",
+    "deleteSuccess": "Tipo de tasa eliminado correctamente",
+    "validation": {
+      "codeRequired": "El código es obligatorio",
+      "nameRequired": "El nombre es obligatorio",
+      "valueRequired": "El valor es obligatorio",
+      "valuePositive": "El valor debe ser positivo"
+    }
+  },
   "auth": {
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
