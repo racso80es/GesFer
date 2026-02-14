@@ -120,6 +120,7 @@ La tabla **Logs** debe ser propiedad de Admin (igual que AdminUsers y AuditLogs)
 
 - **Feature previa:** `docs/Feature/separate-company-management/` (Admin SSOT para Company, Product consumidor).
 - **Clarificaciones:** `docs/Feature/company-managed-by-admin/SPEC-COMPANY-MANAGED-BY-ADMIN_CLARIFICATIONS.md` (deuda técnica Company no compartida, testeos, validaciones).
+- **Plan:** `docs/Feature/company-managed-by-admin/PLAN-COMPANY-MANAGED-BY-ADMIN.md` (fases Logs, Company, tests, validaciones, deuda).
 - **Deuda técnica:** `docs/DeudaTecnica/DEBT-COMPANY-NO-COMPARTIDA.md` (Company no ha de estar en Shared; Admin y Product con dominios propios).
 - **Análisis Logs:** `docs/technical/architecture/ANALISIS-TABLA-LOGS-SERILOG.md` (creación tabla, campos, relación Serilog, valoración crear tabla en Admin).
 - **Acción:** `openspecs/actions/feature.md`.

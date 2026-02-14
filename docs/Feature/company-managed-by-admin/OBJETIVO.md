@@ -23,7 +23,8 @@ Refinar y fijar que las tablas **Companies** y **Logs** sean responsabilidad del
 - **Fase 1:** Documentación con objetivos (este OBJETIVO.md).
 - **Fase 2:** Especificación técnica (SPEC-COMPANY-MANAGED-BY-ADMIN.md: Company + Logs).
 - **Fase 3:** Clarificación (SPEC-COMPANY-MANAGED-BY-ADMIN_CLARIFICATIONS.md): deuda técnica Company no compartida, testeos y validaciones.
-- **Fase 4–6:** Plan, implementación y cierre según `openspecs/actions/feature.md`.
+- **Fase 4:** Planificación (PLAN-COMPANY-MANAGED-BY-ADMIN.md): fases Logs, Company, tests, validaciones, deuda técnica.
+- **Fase 5–6:** Implementación y cierre según `openspecs/actions/feature.md`.
 
 ## Deuda técnica
 - **Company no compartida:** Admin ha de tener su dominio y modelo Company; clientes API (Product) el suyo, sin entidad Company en Shared. Detalle: `docs/DeudaTecnica/DEBT-COMPANY-NO-COMPARTIDA.md`.
@@ -31,6 +32,7 @@ Refinar y fijar que las tablas **Companies** y **Logs** sean responsabilidad del
 ## Referencias
 - `docs/Feature/separate-company-management/` (feature previa: Admin SSOT, Product consumidor).
 - `docs/Feature/company-managed-by-admin/SPEC-COMPANY-MANAGED-BY-ADMIN_CLARIFICATIONS.md` (clarificaciones, testing, validaciones).
+- `docs/Feature/company-managed-by-admin/PLAN-COMPANY-MANAGED-BY-ADMIN.md` (plan de implementación).
 - `docs/DeudaTecnica/DEBT-COMPANY-NO-COMPARTIDA.md` (deuda técnica).
 - `openspecs/actions/feature.md`
 - `docs/technical/architecture/ANALISIS-TABLA-LOGS-SERILOG.md` (patrón análogo: tabla Logs en Admin).
