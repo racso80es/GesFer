@@ -157,12 +157,45 @@ public class LogControllerTests
         var adminClient = await _factory.GetAdminClientAsync();
         var response = await adminClient.GetAsync("/api/admin/logs?level=Error");
 
-        // Assert
+        // Assert - contrato de respuesta y forma
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var result = await response.Content.ReadFromJsonAsync<LogsPagedResponseDto>();
         result.Should().NotBeNull();
-        result!.Logs.Should().NotBeEmpty();
+        result!.Logs.Should().NotBeNull();
+        result.TotalCount.Should().BeGreaterThan(0);
+        result.PageNumber.Should().Be(1);
+        result.PageSize.Should().Be(50);
+        result.TotalPages.Should().BeGreaterThan(0);
+        result.Logs.Should().NotBeEmpty();
         result.Logs.Should().Contain(l => l.Message == "Test Error Log");
+    }
+
+    [Fact]
+    public async Task GetLogs_WithoutAdminAuth_ShouldReturn401()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Remove("X-Internal-Secret");
+        client.DefaultRequestHeaders.Remove("Authorization");
+
+        var response = await client.GetAsync("/api/admin/logs");
+
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task GetLogs_EmptyResult_ShouldReturn200WithCorrectShape()
+    {
+        var adminClient = await _factory.GetAdminClientAsync();
+        var response = await adminClient.GetAsync("/api/admin/logs?level=NonExistentLevelXYZ");
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<LogsPagedResponseDto>();
+        result.Should().NotBeNull();
+        result!.Logs.Should().NotBeNull().And.BeEmpty();
+        result.TotalCount.Should().Be(0);
+        result.PageNumber.Should().Be(1);
+        result.PageSize.Should().Be(50);
+        result.TotalPages.Should().Be(0);
     }
 
     [Fact]

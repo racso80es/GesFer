@@ -23,8 +23,8 @@ export const authConfig: NextAuthConfig = {
         }
 
         try {
-          const apiUrl = process.env.ADMIN_API_URL || "https://localhost:5011";
-          const loginUrl = `${apiUrl}/api/admin/auth/login`;
+          const apiUrl = (process.env.ADMIN_API_URL || "http://localhost:5010").replace(/\/+$/, "");
+          const loginUrl = apiUrl.endsWith("/api") ? `${apiUrl}/admin/auth/login` : `${apiUrl}/api/admin/auth/login`;
 
           const { ok, status, data, errorText } = await serverPostJson<{
             userId?: string;

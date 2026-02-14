@@ -123,19 +123,14 @@ public class LogController : ControllerBase
 
             var query = _context.Logs.AsQueryable();
 
-            // Aplicar filtros
             if (fromDate.HasValue)
                 query = query.Where(l => l.TimeStamp >= fromDate.Value);
-
             if (toDate.HasValue)
                 query = query.Where(l => l.TimeStamp <= toDate.Value);
-
             if (!string.IsNullOrWhiteSpace(level))
                 query = query.Where(l => l.Level == level);
-
             if (companyId.HasValue)
                 query = query.Where(l => l.CompanyId == companyId.Value);
-
             if (userId.HasValue)
                 query = query.Where(l => l.UserId == userId.Value);
 

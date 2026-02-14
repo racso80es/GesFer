@@ -237,7 +237,8 @@ try
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Error fatal al iniciar la aplicación");
+    Log.Fatal(ex, "Error fatal al iniciar la aplicación: {Message}. Inner: {Inner}",
+        ex.Message, ex.InnerException?.Message ?? "(ninguno)");
     throw;
 }
 finally

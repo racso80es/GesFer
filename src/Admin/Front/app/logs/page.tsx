@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getAdminApiWithToken } from "@/lib/api/admin-api-server";
+import { headers } from "next/headers";
 import { auth } from "@/auth";
 
 export interface LogEntry {
@@ -27,22 +27,39 @@ export default async function LogsPage() {
     redirect("/login");
   }
 
-  const api = getAdminApiWithToken(session.accessToken);
   let data: LogsPagedResponse | null = null;
+  let loadError: string | null = null;
 
   try {
-    const raw = await api.get<LogsPagedResponse & { Logs?: LogEntry[]; TotalCount?: number }>(
-      "/admin/logs?pageNumber=1&pageSize=100"
-    );
-    data = {
-      logs: raw.logs ?? raw.Logs ?? [],
-      totalCount: raw.totalCount ?? raw.TotalCount ?? 0,
-      pageNumber: 1,
-      pageSize: 100,
-      totalPages: 1,
-    };
+    const baseUrl =
+      process.env.NEXTAUTH_URL ??
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3001");
+    const cookie = (await headers()).get("cookie") ?? "";
+    const res = await fetch(`${baseUrl}/api/admin/logs?pageNumber=1&pageSize=100`, {
+      cache: "no-store",
+      headers: { cookie },
+    });
+    if (!res.ok) {
+      let errBody = await res.text();
+      let detail = "";
+      try {
+        const j = JSON.parse(errBody);
+        detail = j.detail ? ` — ${j.detail}` : "";
+      } catch {
+        if (errBody) detail = ` — ${errBody.slice(0, 200)}`;
+      }
+      console.error("GET /api/admin/logs failed:", res.status, errBody);
+      loadError =
+        res.status === 401
+          ? "Sesión no válida o expirada. Cierra sesión e inicia de nuevo."
+          : `Error al cargar logs (${res.status})${detail}. Comprueba que la API Admin esté en ejecución en el puerto 5010.`;
+    } else {
+      data = await res.json();
+    }
   } catch (error) {
     console.error("Error fetching logs:", error);
+    loadError =
+      "No se pudo conectar con el servidor. Comprueba que la API Admin esté en ejecución (puerto 5010) y vuelve a iniciar sesión si es necesario.";
   }
 
   const logs = data?.logs ?? [];
@@ -56,6 +73,12 @@ export default async function LogsPage() {
           Total: {totalCount} registros
         </p>
       </div>
+
+      {loadError && (
+        <div className="mb-4 rounded-md bg-red-50 border border-red-200 p-4 text-red-800 text-sm">
+          {loadError}
+        </div>
+      )}
 
       <div className="bg-white rounded-md border shadow overflow-x-auto">
         <table className="w-full min-w-[800px]">
@@ -82,7 +105,7 @@ export default async function LogsPage() {
                   colSpan={4}
                   className="text-center py-8 text-gray-500"
                 >
-                  No hay logs o no se pudo conectar con la API Admin.
+                  {loadError ? "No se pudieron cargar los logs." : "No hay logs registrados."}
                 </td>
               </tr>
             ) : (
