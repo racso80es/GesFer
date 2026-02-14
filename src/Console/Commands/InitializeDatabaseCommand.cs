@@ -150,7 +150,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             {
                 var scope = serviceProvider.CreateScope();
                 var scopedServices = scope.ServiceProvider;
-                var context = scopedServices.GetRequiredService<ApplicationDbContext>();
+                var productContext = scopedServices.GetRequiredService<ApplicationDbContext>();
                 var adminContext = scopedServices.GetRequiredService<AdminDbContext>();
                 var adminSeeder = scopedServices.GetRequiredService<AdminJsonDataSeeder>();
                 var logger = scopedServices.GetRequiredService<ILogger<InitializeDatabaseCommand>>();
@@ -159,10 +159,10 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                 
                 try
                 {
-                    if (await context.Database.CanConnectAsync())
+                    if (await productContext.Database.CanConnectAsync())
                     {
                         if (isDetailed) logger.LogInformation("Eliminando base de datos completamente...");
-                        await context.Database.EnsureDeletedAsync();
+                        await productContext.Database.EnsureDeletedAsync();
                         if (isDetailed) logger.LogInformation("Base de datos eliminada completamente");
                     }
                     else
@@ -197,19 +197,19 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                 
                 try
                 {
-                    var migrationsBefore = await context.Database.GetAppliedMigrationsAsync();
+                    var migrationsBefore = await productContext.Database.GetAppliedMigrationsAsync();
 
                     // 1) Migraciones Admin
                     if (isDetailed) _logService.WriteLog("Aplicando migraciones de Admin...");
                     await adminContext.Database.MigrateAsync();
 
                     // 2) Migraciones Product (crean tablas compartidas, p. ej. Companies)
-                    await context.Database.MigrateAsync();
+                    await productContext.Database.MigrateAsync();
 
                     // Orden de carga de seeds: 1 - Maestros, 2 - Admin, 3 - Product
                     // 3) Datos maestros (siempre)
                     if (isDetailed) _logService.WriteLog("Cargando datos maestros...");
-                    await DbInitializer.SeedMasterDataAsync(context, scopedServices, logger);
+                    await DbInitializer.SeedMasterDataAsync(productContext, scopedServices, logger);
 
                     // 4) Datos Admin (companies + admin-users) de forma conjunta
                     if (isDetailed) _logService.WriteLog("Cargando seeds de Admin...");
@@ -222,10 +222,10 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
 
                     // 5) Datos Product (demo-data)
                     if (isDetailed) _logService.WriteLog("Cargando datos de producto (demo)...");
-                    await DbInitializer.SeedDemoDataAsync(context, scopedServices, logger);
-                    await DbInitializer.EnsureAdminUserAndSmokeTestAsync(context, scopedServices, logger);
+                    await DbInitializer.SeedDemoDataAsync(productContext, scopedServices, logger);
+                    await DbInitializer.EnsureAdminUserAndSmokeTestAsync(productContext, scopedServices, logger);
 
-                    var migrationsAfter = await context.Database.GetAppliedMigrationsAsync();
+                    var migrationsAfter = await productContext.Database.GetAppliedMigrationsAsync();
                     var appliedMigrations = migrationsAfter.Except(migrationsBefore).ToList();
                     
                     if (appliedMigrations.Any() && isDetailed)
@@ -265,18 +265,18 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                 
                 try
                 {
-                    if (await context.Database.CanConnectAsync())
+                    if (await productContext.Database.CanConnectAsync())
                     {
                         var tableNames = new List<string>();
-                        using var command = context.Database.GetDbConnection().CreateCommand();
+                        using var command = productContext.Database.GetDbConnection().CreateCommand();
                         command.CommandText = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'ScrapDb' ORDER BY table_name;";
-                        context.Database.OpenConnection();
+                        productContext.Database.OpenConnection();
                         using var reader = await command.ExecuteReaderAsync();
                         while (await reader.ReadAsync())
                         {
                             tableNames.Add(reader.GetString(0));
                         }
-                        context.Database.CloseConnection();
+                        productContext.Database.CloseConnection();
                         
                         if (isDetailed)
                         {
@@ -289,37 +289,37 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                         {
                             var seedInfo = new List<string>();
 
-                            var languageCount = await context.Languages.CountAsync();
+                            var languageCount = await productContext.Languages.CountAsync();
                             if (languageCount > 0) seedInfo.Add($"  • {languageCount} Language(s)");
 
-                            var permissionCount = await context.Permissions.CountAsync();
+                            var permissionCount = await productContext.Permissions.CountAsync();
                             if (permissionCount > 0) seedInfo.Add($"  • {permissionCount} Permission(s)");
 
-                            var groupCount = await context.Groups.CountAsync();
+                            var groupCount = await productContext.Groups.CountAsync();
                             if (groupCount > 0) seedInfo.Add($"  • {groupCount} Group(s)");
 
-                            var groupPermissionCount = await context.GroupPermissions.CountAsync();
+                            var groupPermissionCount = await productContext.GroupPermissions.CountAsync();
                             if (groupPermissionCount > 0) seedInfo.Add($"  • {groupPermissionCount} GroupPermission(s)");
 
                             var adminUserCount = await adminContext.AdminUsers.CountAsync();
                             if (adminUserCount > 0) seedInfo.Add($"  • {adminUserCount} AdminUser(s)");
 
-                            var companyCount = await context.Companies.CountAsync();
+                            var companyCount = await adminContext.Companies.CountAsync();
                             if (companyCount > 0) seedInfo.Add($"  • {companyCount} Company(ies)");
 
-                            var userCount = await context.Users.CountAsync();
+                            var userCount = await productContext.Users.CountAsync();
                             if (userCount > 0) seedInfo.Add($"  • {userCount} User(s)");
 
-                            var userGroupCount = await context.UserGroups.CountAsync();
+                            var userGroupCount = await productContext.UserGroups.CountAsync();
                             if (userGroupCount > 0) seedInfo.Add($"  • {userGroupCount} UserGroup(s)");
 
-                            var userPermissionCount = await context.UserPermissions.CountAsync();
+                            var userPermissionCount = await productContext.UserPermissions.CountAsync();
                             if (userPermissionCount > 0) seedInfo.Add($"  • {userPermissionCount} UserPermission(s)");
 
-                            var supplierCount = await context.Suppliers.CountAsync();
+                            var supplierCount = await productContext.Suppliers.CountAsync();
                             if (supplierCount > 0) seedInfo.Add($"  • {supplierCount} Supplier(s)");
 
-                            var customerCount = await context.Customers.CountAsync();
+                            var customerCount = await productContext.Customers.CountAsync();
                             if (customerCount > 0) seedInfo.Add($"  • {customerCount} Customer(s)");
 
                             if (seedInfo.Any())

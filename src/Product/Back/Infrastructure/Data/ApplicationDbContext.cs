@@ -1,10 +1,6 @@
 using GesFer.Product.Back.Domain.Entities;
-using GesFer.Shared.Back.Domain.Entities;
-using GesFer.Shared.Back.Domain.Common;
-using GesFer.Shared.Back.Domain.Services;
 using GesFer.Shared.Back.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace GesFer.Infrastructure.Data;
 
@@ -18,7 +14,6 @@ public class ApplicationDbContext : DbContext
     }
 
     // DbSets - Solo entidades del dominio Product
-    public DbSet<GesFer.Product.Back.Domain.Entities.Company> Companies => Set<GesFer.Product.Back.Domain.Entities.Company>();
     public DbSet<User> Users => Set<User>();
     public DbSet<Group> Groups => Set<Group>();
     public DbSet<Permission> Permissions => Set<Permission>();
