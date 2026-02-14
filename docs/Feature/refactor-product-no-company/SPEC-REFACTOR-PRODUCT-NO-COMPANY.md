@@ -26,8 +26,7 @@ Se ha eliminado la dependencia de Product sobre Company. Product debe consumir e
 |------|-----------|--------|
 | Objetivos | [REFACTOR-PRODUCT-NO-COMPANY-PHASE-OBJECTIVES.md](./REFACTOR-PRODUCT-NO-COMPANY-PHASE-OBJECTIVES.md) | Completada |
 | Clarificación | [REFACTOR-PRODUCT-NO-COMPANY_CLARIFICATIONS.md](./REFACTOR-PRODUCT-NO-COMPANY_CLARIFICATIONS.md) | Completada |
-| Análisis de impacto | Pendiente | - |
-| Plan de migración | Pendiente | - |
+| Planificación | [PLAN-REFACTOR-PRODUCT-NO-COMPANY.md](./PLAN-REFACTOR-PRODUCT-NO-COMPANY.md) | Completada |
 | Implementación | Pendiente | - |
 
 ## 5. Referencias
