@@ -51,3 +51,10 @@ export interface IConscience {
    */
   record(event: unknown): Promise<string>;
 }
+
+export interface IWalletProvider {
+  /**
+   * Returns the secret manager configuration or instance for signing.
+   */
+  getSecretManager(): Promise<unknown>; // Returns SecretManager type from @iota/sdk
+}

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { container, TYPES } from '../../../Core/di/container'
 import { IGreetingService } from './services/GreetingService'
-import { IAuditor } from '../../../Core/conscience/interfaces'
 
 // Import Project Configuration (MCP)
 import gesferConfig from '../../../Projects/GesFer/initial.json'
@@ -60,7 +59,7 @@ function App() {
   const handleStartProduct = () => window.calmaAPI.startSequence(1)
   const handleStopAll = () => window.calmaAPI.stopAll()
 
-  const runAudit = () => window.calmaAPI.runAudit()
+  const runAudit = () => window.calmaAPI.runAudit({ processId: 'MANUAL-AUDIT', timestamp: Date.now() })
   const clearCache = () => window.calmaAPI.clearCache()
   const syncSpec = () => window.calmaAPI.syncSpec()
 
@@ -69,20 +68,21 @@ function App() {
     setAuditStatus('loading')
     setIotaLink(null)
     try {
-        const auditor = container.get<IAuditor>(TYPES.Auditor)
-        // Hash the current project config as the "Process" data
-        const result = await auditor.registerProcess(`MCP-${gesferConfig.id.toUpperCase()}`, {
+        const payload = {
+             processId: `MCP-${gesferConfig.id.toUpperCase()}`,
              config: gesferConfig,
              services: gesferServices,
              timestamp: Date.now()
-        })
+        };
+
+        const result = await window.calmaAPI.runAudit(payload);
 
         setAuditHash(result)
 
         if (result.startsWith('iota:')) {
             const blockId = result.split(':')[1];
-            // Shimmer Testnet Explorer
-            setIotaLink(`https://explorer.shimmer.network/testnet/block/${blockId}`);
+            // IOTA Rebased Testnet Explorer
+            setIotaLink(`https://explorer.iota.org/testnet/block/${blockId}`);
         }
 
         setAuditStatus('success')

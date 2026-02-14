@@ -7,7 +7,7 @@ contextBridge.exposeInMainWorld('calmaAPI', {
   updateSettings: (key: string, value: any) => ipcRenderer.invoke('update-settings', key, value),
 
   // Quick Actions
-  runAudit: () => ipcRenderer.invoke('run-audit'),
+  runAudit: (payload: any) => ipcRenderer.invoke('run-audit', payload),
   clearCache: () => ipcRenderer.invoke('clear-cache'),
   syncSpec: () => ipcRenderer.invoke('sync-spec'),
   checkStatus: (url: string) => ipcRenderer.invoke('check-status', url),
