@@ -31,9 +31,16 @@ export default async function LogsPage() {
   let data: LogsPagedResponse | null = null;
 
   try {
-    data = await api.get<LogsPagedResponse>(
+    const raw = await api.get<LogsPagedResponse & { Logs?: LogEntry[]; TotalCount?: number }>(
       "/admin/logs?pageNumber=1&pageSize=100"
     );
+    data = {
+      logs: raw.logs ?? raw.Logs ?? [],
+      totalCount: raw.totalCount ?? raw.TotalCount ?? 0,
+      pageNumber: 1,
+      pageSize: 100,
+      totalPages: 1,
+    };
   } catch (error) {
     console.error("Error fetching logs:", error);
   }
