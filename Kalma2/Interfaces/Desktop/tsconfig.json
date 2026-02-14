@@ -22,7 +22,8 @@
       "inversify": ["node_modules/inversify"],
       "reflect-metadata": ["node_modules/reflect-metadata"],
       "@iota/sdk": ["node_modules/@iota/sdk"]
-    }
+    },
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": ["src", "electron", "../../Core", "../../Projects"],
   "references": [{ "path": "./tsconfig.node.json" }]
