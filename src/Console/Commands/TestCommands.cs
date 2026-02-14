@@ -48,7 +48,7 @@ public class RunUnitTestsCommand : ICommandHandler<RunUnitTestsInput, bool>
                 continue;
             }
 
-            var success = await ExecuteProcessAsync("dotnet", $"test \"{projectPath}\" --nologo", $"Backend: {Path.GetFileNameWithoutExtension(project)}");
+            var success = await ExecuteProcessAsync("dotnet", $"test \"{projectPath}\" --nologo --logger \"trx;LogFileName={Path.GetFileNameWithoutExtension(project)}_results.trx\"", $"Backend: {Path.GetFileNameWithoutExtension(project)}");
             if (!success) result.Success = false;
         }
 
