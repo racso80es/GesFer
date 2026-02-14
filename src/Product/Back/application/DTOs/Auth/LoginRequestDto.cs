@@ -12,19 +12,34 @@ public class LoginRequestDto
     /// </summary>
     /// <example>Empresa Demo</example>
     [DefaultValue("Empresa Demo")]
-    public string Empresa { get; set; } = "Empresa Demo";
+    public string? Empresa { get; set; } = "Empresa Demo";
+
+    /// <summary>
+    /// Company name (English property for compatibility)
+    /// </summary>
+    public string? Company { get; set; }
 
     /// <summary>
     /// Nombre de usuario
     /// </summary>
     /// <example>admin</example>
     [DefaultValue("admin")]
-    public string Usuario { get; set; } = "admin";
+    public string? Usuario { get; set; } = "admin";
+
+    /// <summary>
+    /// Username (English property for compatibility)
+    /// </summary>
+    public string? Username { get; set; }
 
     /// <summary>
     /// Contraseña del usuario
     /// </summary>
     /// <example>admin123</example>
     [DefaultValue("admin123")]
-    public string Contraseña { get; set; } = "admin123";
+    public string? Contraseña { get; set; } = "admin123";
+
+    /// <summary>
+    /// Password (English property for compatibility)
+    /// </summary>
+    public string? Password { get; set; }
 }

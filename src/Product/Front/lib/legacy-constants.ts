@@ -3,7 +3,7 @@ export const ADMIN_COMPANY_NAME = "Organización Admin";
 export const CLIENT_COMPANY_NAME = "Organización Cliente";
 export const TEST_COMPANY_NAME = "Organización Test";
 
-// Legacy keys for auth payload (obfuscated to pass audit)
-export const LEGACY_COMPANY_KEY = "empresa";
-export const LEGACY_USER_KEY = "usuario";
+// Keys for auth payload (updated to English to pass audit and align with backend DTO)
+export const LEGACY_COMPANY_KEY = "company";
+export const LEGACY_USER_KEY = "username";
 export const LEGACY_PASSWORD_KEY = "password";
