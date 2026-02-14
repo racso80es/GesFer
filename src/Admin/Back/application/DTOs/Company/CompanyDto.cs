@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace GesFer.Admin.Application.DTOs.Company;
 
 /// <summary>
@@ -26,10 +28,22 @@ public class CompanyDto
 /// </summary>
 public class CreateCompanyDto
 {
+    [Required(ErrorMessage = "El nombre es obligatorio")]
+    [MaxLength(200)]
     public string Name { get; set; } = string.Empty;
+
+    [MaxLength(50)]
     public string? TaxId { get; set; }
-    public string Address { get; set; } = string.Empty; // Obligatorio
+
+    [Required(ErrorMessage = "La dirección es obligatoria")]
+    [MaxLength(500)]
+    public string Address { get; set; } = string.Empty;
+
+    [MaxLength(50)]
     public string? Phone { get; set; }
+
+    [EmailAddress]
+    [MaxLength(200)]
     public string? Email { get; set; }
     public Guid? PostalCodeId { get; set; }
     public Guid? CityId { get; set; }
@@ -43,10 +57,22 @@ public class CreateCompanyDto
 /// </summary>
 public class UpdateCompanyDto
 {
+    [Required(ErrorMessage = "El nombre es obligatorio")]
+    [MaxLength(200)]
     public string Name { get; set; } = string.Empty;
+
+    [MaxLength(50)]
     public string? TaxId { get; set; }
-    public string Address { get; set; } = string.Empty; // Obligatorio
+
+    [Required(ErrorMessage = "La dirección es obligatoria")]
+    [MaxLength(500)]
+    public string Address { get; set; } = string.Empty;
+
+    [MaxLength(50)]
     public string? Phone { get; set; }
+
+    [EmailAddress]
+    [MaxLength(200)]
     public string? Email { get; set; }
     public Guid? PostalCodeId { get; set; }
     public Guid? CityId { get; set; }

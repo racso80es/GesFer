@@ -8,18 +8,30 @@ namespace GesFer.Admin.IntegrationTests;
 
 /// <summary>
 /// Tests de integración para CompanyController (Admin API).
-/// Requiere X-Internal-Secret para autorización de sistema en el factory de tests.
+/// Cubre autorización por X-Internal-Secret (sistema) y por JWT Admin (rol Admin).
 /// </summary>
 [Collection("AdminIntegrationTests")]
 public class CompanyControllerTests
 {
     private const string InternalSecret = "test-internal-secret";
+    private readonly AdminWebAppFactory _factory;
     private readonly HttpClient _client;
 
     public CompanyControllerTests(AdminWebAppFactory factory)
     {
+        _factory = factory;
         _client = factory.CreateClient();
         _client.DefaultRequestHeaders.Add("X-Internal-Secret", InternalSecret);
+    }
+
+    [Fact]
+    public async Task GetAll_WithAdminJwt_ShouldReturn200()
+    {
+        var adminClient = await _factory.GetAdminClientAsync();
+        var response = await adminClient.GetAsync("/api/company");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var companies = await response.Content.ReadFromJsonAsync<List<CompanyDto>>();
+        companies.Should().NotBeNull();
     }
 
     [Fact]

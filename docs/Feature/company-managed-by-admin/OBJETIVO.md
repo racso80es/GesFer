@@ -26,6 +26,9 @@ Refinar y fijar que las tablas **Companies** y **Logs** sean responsabilidad del
 - **Fase 4:** Planificación (PLAN-COMPANY-MANAGED-BY-ADMIN.md): fases Logs, Company, tests, validaciones, deuda técnica.
 - **Fase 5–6:** Implementación y cierre según `openspecs/actions/feature.md`.
 
+## Estado de implementación (avance)
+- **Fase 3 (Tests)** y **Fase 4 (Validaciones)** completadas: tests de integración Admin (Company, Logs), validaciones en DTOs Company (DataAnnotations) y en LogController.ReceiveLog (Level/Message). Detalle en PLAN-COMPANY-MANAGED-BY-ADMIN.md y EVOLUTION_LOG.md.
+
 ## Deuda técnica
 - **Company no compartida:** Admin ha de tener su dominio y modelo Company; clientes API (Product) el suyo, sin entidad Company en Shared. Detalle: `docs/DeudaTecnica/DEBT-COMPANY-NO-COMPARTIDA.md`.
 

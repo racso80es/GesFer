@@ -8,7 +8,7 @@
 | :--- | :--- |
 | **ID** | SPEC-COMPANY-MANAGED-BY-ADMIN |
 | **Rama sugerida** | feat/company-managed-by-admin |
-| **Estado** | Draft |
+| **Estado** | En implementación (Fase 3–4 completadas) |
 | **Alcance** | Company (tabla y CRUD desde Admin) + Logs (tabla en Admin, Serilog, API) |
 
 ## 2. Objetivo y contexto

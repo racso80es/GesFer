@@ -239,4 +239,19 @@ public class LogControllerTests
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task GetLogs_WithPageSize_ShouldRespectPageSize()
+    {
+        var adminClient = await _factory.GetAdminClientAsync();
+        var response = await adminClient.GetAsync("/api/admin/logs?pageNumber=1&pageSize=10");
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<LogsPagedResponseDto>();
+        result.Should().NotBeNull();
+        result!.PageSize.Should().Be(10);
+        result.PageNumber.Should().Be(1);
+        result.Logs.Should().NotBeNull();
+        result.Logs!.Count.Should().BeLessThanOrEqualTo(10);
+    }
 }

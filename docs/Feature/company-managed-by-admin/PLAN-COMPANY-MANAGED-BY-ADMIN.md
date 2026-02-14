@@ -47,18 +47,18 @@ Este plan ordena las tareas para cumplir la SPEC (tablas Company y Logs en Admin
 ## Fase 3: Tests
 
 ### 3.1 Admin – Company
-- [ ] Tests **unitarios** de handlers: CreateCompany, UpdateCompany, DeleteCompany, GetCompanyById, GetAllCompanies (cuando no estén cubiertos).
-- [ ] Tests de **integración** de `CompanyController`: CRUD con auth Admin (JWT); Get/Update con Shared Secret (X-Internal-Secret). Validación de respuestas 200/201/404/401.
+- [x] Tests **unitarios** de handlers: CreateCompany, UpdateCompany, DeleteCompany, GetCompanyById, GetAllCompanies (cuando no estén cubiertos).
+- [x] Tests de **integración** de `CompanyController`: CRUD con auth Admin (JWT); Get/Update con Shared Secret (X-Internal-Secret). Validación de respuestas 200/201/404/401.
 - **Entregable:** Cobertura de Company en Admin mantenida o mejorada; tests en verde.
 
 ### 3.2 Admin – Logs
-- [ ] Tests de **integración** de `LogController`: GET /api/admin/logs (200, contrato: TotalCount, PageNumber, PageSize, TotalPages, Logs); GET sin auth (401); POST con Shared Secret (200); DELETE purga con dateLimit (200 y límite 7 días); DELETE con fecha &lt; 7 días (400).
-- [ ] No reducir cobertura existente (LogControllerTests actuales).
+- [x] Tests de **integración** de `LogController`: GET /api/admin/logs (200, contrato: TotalCount, PageNumber, PageSize, TotalPages, Logs); GET sin auth (401); POST con Shared Secret (200); DELETE purga con dateLimit (200 y límite 7 días); DELETE con fecha &lt; 7 días (400).
+- [x] No reducir cobertura existente (LogControllerTests actuales).
 - **Entregable:** Tests de LogController verdes; contrato y reglas de negocio cubiertos.
 
 ### 3.3 Product – MyCompany y logs
-- [ ] Tests de **integración** de `MyCompanyController`: GET /api/my-company y PUT /api/my-company (delegación a Admin API; mock o API real según configuración). Comportamiento ante 401 o Admin API no disponible.
-- [ ] Verificar tests de envío de logs a Admin (AsyncLogPublisher / AdminApiLogSink) si existen; añadir si faltan.
+- [x] Tests de **integración** de `MyCompanyController`: GET /api/my-company y PUT /api/my-company (delegación a Admin API; mock o API real según configuración). Comportamiento ante 401 o Admin API no disponible.
+- [x] Verificar tests de envío de logs a Admin (AsyncLogPublisher / AdminApiLogSink) si existen; añadir si faltan.
 - **Entregable:** Tests de MyCompany y flujo de logs Product→Admin en verde.
 
 ---
@@ -66,13 +66,13 @@ Este plan ordena las tareas para cumplir la SPEC (tablas Company y Logs en Admin
 ## Fase 4: Validaciones
 
 ### 4.1 Company (Admin)
-- [ ] Definir y aplicar **validación de entrada** en DTOs y endpoints: nombre obligatorio, TaxId/Email formatos válidos (ValueObjects o DataAnnotations/FluentValidation), direcciones, etc.
-- [ ] Documentar reglas de negocio validadas (ej. en clarificaciones o en código).
+- [x] Definir y aplicar **validación de entrada** en DTOs y endpoints: nombre obligatorio, TaxId/Email formatos válidos (ValueObjects o DataAnnotations/FluentValidation), direcciones, etc.
+- [x] Documentar reglas de negocio validadas (ej. en clarificaciones o en código).
 - **Entregable:** Validaciones explícitas en creación/actualización de Company; reglas documentadas.
 
 ### 4.2 Logs (Admin)
-- [ ] Validación de parámetros de GET (pageNumber, pageSize, fechas); de DELETE (dateLimit, regla &gt; 7 días); de POST (nivel, mensaje, timestamp).
-- [ ] Reglas de negocio (purga solo &gt; 7 días) ya implementadas; cubiertas por tests (Fase 3.2).
+- [x] Validación de parámetros de GET (pageNumber, pageSize, fechas); de DELETE (dateLimit, regla &gt; 7 días); de POST (nivel, mensaje, timestamp).
+- [x] Reglas de negocio (purga solo &gt; 7 días) ya implementadas; cubiertas por tests (Fase 3.2).
 - **Entregable:** Parámetros de logs validados; sin regresión en purga.
 
 ---
