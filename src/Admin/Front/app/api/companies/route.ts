@@ -6,16 +6,18 @@ import { auth } from "@/auth";
 export async function GET() {
   try {
     const session = await auth();
-    if (!session?.accessToken) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    const accessToken = session?.accessToken ?? (session as { accessToken?: string } | null)?.accessToken;
+    if (!accessToken) {
+      return NextResponse.json({ error: "No autorizado", detail: "Falta token en la sesión" }, { status: 401 });
     }
-    const api = getAdminApiWithToken(session.accessToken);
+    const api = getAdminApiWithToken(accessToken);
     const companies = await api.get<Company[]>("/company");
     return NextResponse.json(companies);
   } catch (error) {
-    console.error("Error fetching companies:", error);
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("Error fetching companies:", message, error);
     return NextResponse.json(
-      { error: "Error al obtener las organizaciones" },
+      { error: "Error al obtener las organizaciones", detail: message },
       { status: 500 }
     );
   }

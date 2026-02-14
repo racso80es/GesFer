@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { Button } from "../../components/ui/button";
 import { Plus, Pencil } from "lucide-react";
-import { getAdminApiWithToken } from "@/lib/api/admin-api-server";
 import { Company } from "@/lib/types/api";
 import { auth } from "@/auth";
 
@@ -12,13 +12,39 @@ export default async function CompaniesPage() {
     redirect("/login");
   }
 
-  const api = getAdminApiWithToken(session.accessToken);
   let companies: Company[] = [];
+  let loadError: string | null = null;
 
   try {
-    companies = await api.get<Company[]>("/company");
+    const baseUrl =
+      process.env.NEXTAUTH_URL ??
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3001");
+    const cookie = (await headers()).get("cookie") ?? "";
+    const res = await fetch(`${baseUrl}/api/companies`, {
+      cache: "no-store",
+      headers: { cookie },
+    });
+    if (!res.ok) {
+      let errBody = await res.text();
+      let detail = "";
+      try {
+        const j = JSON.parse(errBody);
+        detail = j.detail ? ` — ${j.detail}` : "";
+      } catch {
+        if (errBody) detail = ` — ${errBody.slice(0, 200)}`;
+      }
+      console.error("GET /api/companies failed:", res.status, errBody);
+      loadError =
+        res.status === 401
+          ? "Sesión no válida o expirada. Cierra sesión e inicia de nuevo."
+          : `Error al cargar organizaciones (${res.status})${detail}. Comprueba que la API Admin esté en ejecución en el puerto 5010.`;
+    } else {
+      companies = await res.json();
+    }
   } catch (error) {
     console.error("Error fetching companies:", error);
+    loadError =
+      "No se pudo conectar con el servidor. Comprueba que la API Admin esté en ejecución (puerto 5010) y vuelve a iniciar sesión si es necesario.";
   }
 
   return (
@@ -32,6 +58,11 @@ export default async function CompaniesPage() {
         </Link>
       </div>
 
+      {loadError && (
+        <div className="mb-4 rounded-md bg-red-50 border border-red-200 p-4 text-red-800 text-sm">
+          {loadError}
+        </div>
+      )}
       <div className="bg-white rounded-md border shadow">
         <table className="w-full">
           <thead>
@@ -47,7 +78,7 @@ export default async function CompaniesPage() {
             {companies.length === 0 ? (
               <tr>
                 <td colSpan={5} className="text-center py-8 text-gray-500">
-                  No hay organizaciones registradas
+                  {loadError ? "No se pudieron cargar los datos." : "No hay organizaciones registradas"}
                 </td>
               </tr>
             ) : (

@@ -35,6 +35,13 @@ public class LogController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> ReceiveLog([FromBody] CreateLogDto dto)
     {
+        if (dto == null)
+            return BadRequest(new { message = "El cuerpo de la petición es obligatorio" });
+        if (string.IsNullOrWhiteSpace(dto.Level))
+            return BadRequest(new { message = "Level es obligatorio" });
+        if (string.IsNullOrWhiteSpace(dto.Message))
+            return BadRequest(new { message = "Message es obligatorio" });
+
         try
         {
             var log = new Log
@@ -123,19 +130,14 @@ public class LogController : ControllerBase
 
             var query = _context.Logs.AsQueryable();
 
-            // Aplicar filtros
             if (fromDate.HasValue)
                 query = query.Where(l => l.TimeStamp >= fromDate.Value);
-
             if (toDate.HasValue)
                 query = query.Where(l => l.TimeStamp <= toDate.Value);
-
             if (!string.IsNullOrWhiteSpace(level))
                 query = query.Where(l => l.Level == level);
-
             if (companyId.HasValue)
                 query = query.Where(l => l.CompanyId == companyId.Value);
-
             if (userId.HasValue)
                 query = query.Where(l => l.UserId == userId.Value);
 
