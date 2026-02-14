@@ -1,0 +1,38 @@
+{
+  "spec_version": "1.0.0",
+  "skill_id": "frontend-test",
+  "name": "Frontend Unit Testing",
+  "description": "Standardized commands for running Unit Tests in Frontend projects (Desktop, Product, Admin).",
+  "owner": "qa-judge",
+  "status": "Active",
+  "scripts": [
+    {
+      "id": "test-desktop-unit",
+      "name_short": "Test Desktop Unit",
+      "description": "Runs Vitest for Kalma2 Desktop Interface.",
+      "path": "Kalma2/Interfaces/Desktop",
+      "command": "npm run test:run",
+      "cwd": "Kalma2/Interfaces/Desktop",
+      "npm_script": "test:run"
+    },
+    {
+      "id": "test-desktop-coverage",
+      "name_short": "Test Desktop Coverage",
+      "description": "Runs Vitest coverage for Kalma2 Desktop Interface.",
+      "path": "Kalma2/Interfaces/Desktop",
+      "command": "npm run test:coverage",
+      "cwd": "Kalma2/Interfaces/Desktop",
+      "npm_script": "test:coverage"
+    },
+    {
+      "id": "test-desktop-e2e",
+      "name_short": "Test Desktop E2E",
+      "description": "Runs Playwright E2E tests for Kalma2 Desktop Interface (Requires Display/Xvfb).",
+      "path": "Kalma2/Interfaces/Desktop",
+      "command": "npm run e2e",
+      "cwd": "Kalma2/Interfaces/Desktop",
+      "npm_script": "e2e"
+    }
+  ],
+  "related_agents": ["qa-judge", "tekton-developer"]
+}
