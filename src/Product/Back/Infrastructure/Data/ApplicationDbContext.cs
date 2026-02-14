@@ -14,6 +14,7 @@ public class ApplicationDbContext : DbContext
     }
 
     // DbSets - Solo entidades del dominio Product
+    public DbSet<Company> Companies => Set<Company>();
     public DbSet<User> Users => Set<User>();
     public DbSet<Group> Groups => Set<Group>();
     public DbSet<Permission> Permissions => Set<Permission>();
