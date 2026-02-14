@@ -199,12 +199,12 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                 {
                     var migrationsBefore = await context.Database.GetAppliedMigrationsAsync();
 
-                    // 1) Migraciones Product (crean tablas compartidas, p. ej. Companies)
-                    await context.Database.MigrateAsync();
-                    
-                    // 2) Migraciones Admin
+                    // 1) Migraciones Admin
                     if (isDetailed) _logService.WriteLog("Aplicando migraciones de Admin...");
                     await adminContext.Database.MigrateAsync();
+
+                    // 2) Migraciones Product (crean tablas compartidas, p. ej. Companies)
+                    await context.Database.MigrateAsync();
 
                     // Orden de carga de seeds: 1 - Maestros, 2 - Admin, 3 - Product
                     // 3) Datos maestros (siempre)

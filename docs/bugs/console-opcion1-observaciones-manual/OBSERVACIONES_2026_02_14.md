@@ -11,15 +11,13 @@
 La tabla `Logs` no existe en la base de datos al consultar (p. ej. página Admin `/logs`).
 
 ### Causa identificada
-La tabla `Logs` se crea mediante **migraciones de Admin** (`AdminDbContext`), no de Product. Hay dos flujos:
+La tabla `Logs` pertenece al **dominio Admin** y se crea mediante **migraciones de Admin** (`AdminDbContext`), no de Product. La **Opción 7** (Aplicar migraciones) solo ejecuta migraciones de Product, por lo que Logs no se crea.
 
 | Flujo | Migraciones aplicadas | Tabla Logs |
 |-------|------------------------|------------|
 | **Opción 1** (Inicialización completa) | Product + Admin | ✅ Creada |
 | **Opción 3.4** (Inicialización Completa BD) | Product + Admin | ✅ Creada |
 | **Opción 7** (Aplicar migraciones) | Solo Product | ❌ No creada |
-
-Si se usó **Opción 7** sin haber ejecutado antes Opción 1 o 3.4, la tabla `Logs` nunca se crea.
 
 ### Migraciones relevantes
 - `AdminDbContext`: `20260214110000_CreateLogsTableIfNotExists`, `20260214120000_AddMissingColumnsToLogs`
@@ -77,6 +75,6 @@ Las páginas de Familias de artículos y Tipos de tasa (TaxTypes) no muestran da
 
 | Problema | Estado | Acción |
 |----------|--------|--------|
-| Tabla Logs | Documentado | Ejecutar Opción 1 o 3.4 (no solo Opción 7) |
+| Tabla Logs | Documentado | Ejecutar Opción 1 o 3.4 (dominio Admin) |
 | 404 Empresa | Corregido | `product-api.ts` usa puerto 5000 por defecto |
 | Familias/Tasas vacías | Investigación | Verificar API URL, token company_id y seeds |
