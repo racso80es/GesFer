@@ -54,7 +54,7 @@ function getLocaleFromUser(request: NextRequest): Locale {
 const publicRoutes = ['/login', '/api/auth'];
 
 // Rutas que requieren autenticación
-const protectedRoutes = ['/dashboard', '/usuarios', '/clientes', '/companies'];
+const protectedRoutes = ['/dashboard', '/usuarios', '/clientes', '/companies', '/maestros'];
 
 /**
  * Normaliza la URL base corrigiendo localhost.com a localhost
@@ -137,6 +137,14 @@ export default async function middleware(request: NextRequest) {
     if (authenticated) {
       return NextResponse.redirect(new URL('/dashboard', baseUrl));
     }
+  }
+
+  // Si la ruta no es una API, reescribir internamente para incluir el locale
+  // Esto permite que Next.js resuelva correctamente la ruta bajo la estructura app/[locale]/...
+  if (!pathname.startsWith('/api/')) {
+    const locale = getLocaleFromUser(request);
+    // Usar rewrite en lugar de redirect para mantener la URL limpia en el navegador
+    return NextResponse.rewrite(new URL(`/${locale}${pathname}${request.nextUrl.search}`, request.url));
   }
   
   // Continuar con la request normalmente
