@@ -1,5 +1,5 @@
 export const getAdminApi = () => {
-  const baseUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || "http://localhost:5001/api";
+  const baseUrl = process.env.NEXT_PUBLIC_ADMIN_API_URL || "http://localhost:5010/api";
 
   const request = async <T>(path: string, options: RequestInit = {}): Promise<T> => {
     const url = `${baseUrl}${path}`;

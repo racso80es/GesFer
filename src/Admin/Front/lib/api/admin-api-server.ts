@@ -6,7 +6,7 @@ export function getAdminApiWithToken(accessToken: string | undefined) {
   const baseUrl =
     process.env.NEXT_PUBLIC_ADMIN_API_URL ||
     process.env.ADMIN_API_URL ||
-    "http://localhost:5001/api";
+    "http://localhost:5010/api";
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
