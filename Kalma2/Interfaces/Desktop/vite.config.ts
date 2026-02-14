@@ -31,6 +31,25 @@ export default defineConfig({
       {
         // Main-Process entry file of the Electron App.
         entry: 'electron/main.ts',
+        vite: {
+          esbuild: {
+            tsconfigRaw: {
+              compilerOptions: {
+                experimentalDecorators: true
+              }
+            }
+          },
+          build: {
+            rollupOptions: {
+              external: [
+                'reflect-metadata',
+                '@iota/sdk',
+                'electron-store',
+                'inversify'
+              ]
+            }
+          }
+        }
       },
       {
         entry: 'electron/preload.ts',

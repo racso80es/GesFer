@@ -5,7 +5,7 @@ interface CalmaAPI {
   stopAll: () => Promise<any>;
   getSettings: () => Promise<any>;
   updateSettings: (key: string, value: any) => Promise<any>;
-  runAudit: () => Promise<any>;
+  runAudit: (payload: any) => Promise<any>;
   clearCache: () => Promise<any>;
   syncSpec: () => Promise<any>;
   checkStatus: (url: string) => Promise<boolean>;

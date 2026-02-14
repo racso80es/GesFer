@@ -1,6 +1,15 @@
 import { app, BrowserWindow, Tray, Menu, ipcMain, nativeImage, net } from 'electron';
 import path from 'node:path';
 import Store from 'electron-store';
+import 'reflect-metadata';
+
+// Core Imports (Node Environment)
+import { containerNode, TYPES } from '../../../Core/di/container.node';
+import { IAuditor, IWalletProvider } from '../../../Core/conscience/interfaces';
+import { WalletService } from './services/WalletService';
+
+// Configure Container for Main Process
+containerNode.bind<IWalletProvider>(TYPES.WalletProvider).to(WalletService).inSingletonScope();
 
 process.env.DIST = path.join(__dirname, '../dist');
 process.env.VITE_PUBLIC = app.isPackaged ? process.env.DIST : path.join(process.env.DIST, '../public');
@@ -114,8 +123,19 @@ app.whenReady().then(() => {
     console.log('IPC: stop-all');
   });
 
-  ipcMain.handle('run-audit', () => {
-    console.log('IPC: run-audit');
+  ipcMain.handle('run-audit', async (_, payload) => {
+    console.log('IPC: run-audit', payload);
+    try {
+      const auditor = containerNode.get<IAuditor>(TYPES.Auditor);
+      // Construct a Process ID if not provided, or use the one from payload
+      const processId = payload.processId || `PROC-${Date.now()}`;
+
+      const result = await auditor.registerProcess(processId, payload);
+      return result;
+    } catch (error) {
+      console.error('IPC: run-audit failed', error);
+      throw error;
+    }
   });
 
   ipcMain.handle('clear-cache', () => {
