@@ -20,6 +20,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<UserGroup> UserGroups => Set<UserGroup>();
     public DbSet<UserPermission> UserPermissions => Set<UserPermission>();
     public DbSet<GroupPermission> GroupPermissions => Set<GroupPermission>();
+    public DbSet<Company> Companies => Set<Company>();
     public DbSet<Article> Articles => Set<Article>();
     public DbSet<TaxType> TaxTypes => Set<TaxType>();
     public DbSet<ArticleFamily> ArticleFamilies => Set<ArticleFamily>();
