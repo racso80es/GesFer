@@ -22,7 +22,7 @@
 
 ## 3. Acciones Kaizen (Hoja de Ruta para el Executor)
 
-### Acción 1: Corregir ApplicationDbContext (Prioridad Alta)
+### Acción 1: Corregir ApplicationDbContext (Prioridad Alta) [COMPLETADA]
 **Instrucción**: Agregar la propiedad `DbSet<Company>` faltante en el contexto de base de datos.
 
 ```csharp
@@ -32,9 +32,10 @@
 public DbSet<Company> Companies => Set<Company>();
 ```
 
+**Estado**: ✅ **Resuelto**. Se ha inyectado el `DbSet` para solucionar errores de compilación críticos en `JsonDataSeeder` y `DbInitializer`.
 **Definition of Done (DoD)**:
-- El archivo `ApplicationDbContext.cs` compila y expone `Companies`.
-- Los servicios pueden inyectar `ApplicationDbContext` y acceder a `.Companies` sin errores.
+- [x] El archivo `ApplicationDbContext.cs` compila y expone `Companies`.
+- [x] Los servicios pueden inyectar `ApplicationDbContext` y acceder a `.Companies` sin errores.
 
 ### Acción 2: Optimizar SeedCommand (Prioridad Media)
 **Instrucción**: Eliminar el wrapper `Task.Run` innecesario en la opción `SeedLevel.Test`.
