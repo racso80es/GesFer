@@ -2,6 +2,7 @@ using GesFer.Application.Commands.Supplier;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Supplier;
 using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.Supplier;
@@ -9,18 +10,18 @@ namespace GesFer.Application.Handlers.Supplier;
 public class CreateSupplierCommandHandler : ICommandHandler<CreateSupplierCommand, SupplierDto>
 {
     private readonly ApplicationDbContext _context;
+    private readonly IAdminApiClient _adminApiClient;
 
-    public CreateSupplierCommandHandler(ApplicationDbContext context)
+    public CreateSupplierCommandHandler(ApplicationDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
+        _adminApiClient = adminApiClient;
     }
 
     public async Task<SupplierDto> HandleAsync(CreateSupplierCommand command, CancellationToken cancellationToken = default)
     {
-        // Validar que la empresa existe
-        var companyExists = await _context.Companies
-            .AnyAsync(c => c.Id == command.Dto.CompanyId && c.DeletedAt == null, cancellationToken);
-        if (!companyExists)
+        var company = await _adminApiClient.GetCompanyAsync(command.Dto.CompanyId);
+        if (company == null)
             throw new InvalidOperationException($"No se encontró la empresa con ID {command.Dto.CompanyId}");
 
         // Validar que no exista un proveedor con el mismo nombre en la misma empresa

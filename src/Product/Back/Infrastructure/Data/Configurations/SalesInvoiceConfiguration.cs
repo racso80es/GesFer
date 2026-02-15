@@ -35,12 +35,7 @@ public class SalesInvoiceConfiguration : IEntityTypeConfiguration<SalesInvoice>
             .IsRequired()
             .HasConversion<int>();
 
-        // Relaciones
-        builder.HasOne(si => si.Company)
-            .WithMany()
-            .HasForeignKey(si => si.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        // CompanyId: FK a Companies (Admin); sin navegación
         // Índices
         builder.HasIndex(si => new { si.CompanyId, si.InvoiceNumber })
             .IsUnique();

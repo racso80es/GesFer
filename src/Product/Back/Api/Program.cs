@@ -27,6 +27,7 @@ try
     Log.Information("Iniciando aplicación GesFer API");
 
     var builder = WebApplication.CreateBuilder(args);
+    builder.Configuration.AddJsonFile("appsettings.Seed.json", optional: true, reloadOnChange: false);
 
     // Configurar Serilog
     // NOTA: Los logs NO se escriben directamente a BD en Product

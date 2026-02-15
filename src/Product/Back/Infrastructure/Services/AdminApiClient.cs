@@ -24,6 +24,26 @@ public class AdminApiClient : IAdminApiClient
         }
     }
 
+    public async Task<AdminCompanyDto?> GetCompanyByNameAsync(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return null;
+        try
+        {
+            var encoded = Uri.EscapeDataString(name.Trim());
+            var response = await _httpClient.GetAsync($"api/company/by-name?name={encoded}");
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                return null;
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<AdminCompanyDto>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener empresa por nombre desde Admin API");
+            throw;
+        }
+    }
+
     public async Task<AdminCompanyDto?> GetCompanyAsync(Guid id)
     {
         try

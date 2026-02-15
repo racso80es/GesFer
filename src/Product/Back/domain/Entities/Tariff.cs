@@ -18,8 +18,7 @@ public class Tariff : BaseEntity
     public string? Description { get; set; }
     public TariffType Type { get; set; } // Compra o Venta
 
-    // Navegación
-    public Company Company { get; set; } = null!;
+    // Navegación (CompanyId FK a Admin)
     public ICollection<TariffItem> TariffItems { get; set; } = new List<TariffItem>();
     public ICollection<Supplier> Suppliers { get; set; } = new List<Supplier>();
     public ICollection<Customer> Customers { get; set; } = new List<Customer>();

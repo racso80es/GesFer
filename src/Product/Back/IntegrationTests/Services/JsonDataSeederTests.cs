@@ -5,6 +5,7 @@ using GesFer.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Services;
 using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -44,6 +45,11 @@ public class JsonDataSeederTests
             builder.AddConsole();
             builder.SetMinimumLevel(LogLevel.Warning); // Solo warnings y errores para el test
         });
+
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Seed:CompanyId"] = "11111111-1111-1111-1111-111111111115" })
+            .Build();
+        services.AddSingleton<IConfiguration>(config);
 
         // Registrar JsonDataSeeder
         services.AddScoped<JsonDataSeeder>();
@@ -100,6 +106,11 @@ public class JsonDataSeederTests
             builder.SetMinimumLevel(LogLevel.Warning);
         });
 
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Seed:CompanyId"] = "11111111-1111-1111-1111-111111111115" })
+            .Build();
+        services.AddSingleton<IConfiguration>(config);
+
         services.AddScoped<JsonDataSeeder>();
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
         services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
@@ -142,6 +153,11 @@ public class JsonDataSeederTests
             builder.AddConsole();
             builder.SetMinimumLevel(LogLevel.Warning);
         });
+
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Seed:CompanyId"] = "11111111-1111-1111-1111-111111111115" })
+            .Build();
+        services.AddSingleton<IConfiguration>(config);
 
         services.AddScoped<JsonDataSeeder>();
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
@@ -250,13 +266,6 @@ public class JsonDataSeederTests
                 .CountAsync();
             
             userCount.Should().Be(0, "No debe haber usuarios insertados porque la empresa padre fue rechazada");
-
-            // Verificar que la empresa inválida tampoco fue insertada
-            var companyCount = await context.Companies
-                .IgnoreQueryFilters()
-                .CountAsync();
-            
-            companyCount.Should().Be(0, "La empresa inválida no debe haber sido insertada");
         }
         finally
         {

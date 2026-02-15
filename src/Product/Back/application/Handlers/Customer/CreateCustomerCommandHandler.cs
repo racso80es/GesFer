@@ -3,6 +3,7 @@ using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Customer;
 using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.Customer;
@@ -10,18 +11,18 @@ namespace GesFer.Application.Handlers.Customer;
 public class CreateCustomerCommandHandler : ICommandHandler<CreateCustomerCommand, CustomerDto>
 {
     private readonly ApplicationDbContext _context;
+    private readonly IAdminApiClient _adminApiClient;
 
-    public CreateCustomerCommandHandler(ApplicationDbContext context)
+    public CreateCustomerCommandHandler(ApplicationDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
+        _adminApiClient = adminApiClient;
     }
 
     public async Task<CustomerDto> HandleAsync(CreateCustomerCommand command, CancellationToken cancellationToken = default)
     {
-        // Validar que la empresa existe
-        var companyExists = await _context.Companies
-            .AnyAsync(c => c.Id == command.Dto.CompanyId && c.DeletedAt == null, cancellationToken);
-        if (!companyExists)
+        var company = await _adminApiClient.GetCompanyAsync(command.Dto.CompanyId);
+        if (company == null)
             throw new InvalidOperationException($"No se encontró la empresa con ID {command.Dto.CompanyId}");
 
         // Validar que no exista un cliente con el mismo nombre en la misma empresa

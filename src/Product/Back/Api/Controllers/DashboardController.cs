@@ -53,13 +53,7 @@ public class DashboardController : ControllerBase
         {
             var summary = new DashboardSummaryDto
             {
-                // TotalCompanies se gestiona en Admin ahora, pero Product tiene copia local?
-                // NO, Product ya no tiene Companies (solo referencia en Shared, pero DbContext filtra).
-                // Sin embargo, ApplicationDbContext tiene DbSet<Company>.
-                // Admin es SSOT de Companies, así que Admin puede contarlas directamente en su BD.
-                // Product cuenta Users, Articles, Suppliers, Customers.
-
-                TotalCompanies = await _context.Companies.CountAsync(), // Product ve las que se han replicado/creado
+                // TotalCompanies: métrica eliminada; Companies es SSOT en Admin, Product no la expone.
                 TotalUsers = await _context.Users.CountAsync(),
                 ActiveUsers = await _context.Users.CountAsync(u => u.IsActive && u.DeletedAt == null),
                 TotalArticles = await _context.Articles.CountAsync(),

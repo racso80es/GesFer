@@ -25,8 +25,7 @@ public class User : BaseEntity
     public Guid? CountryId { get; set; }
     public Guid? LanguageId { get; set; }
 
-    // Navegación
-    public Company Company { get; set; } = null!;
+    // Navegación (CompanyId FK a Companies en Admin; datos de empresa vía Admin API)
     public GesFer.Shared.Back.Domain.Entities.PostalCode? PostalCode { get; set; }
     public GesFer.Shared.Back.Domain.Entities.City? City { get; set; }
     public GesFer.Shared.Back.Domain.Entities.State? State { get; set; }

@@ -22,8 +22,7 @@ public class Supplier : BaseEntity
     public Guid? StateId { get; set; }
     public Guid? CountryId { get; set; }
 
-    // Navegación
-    public Company Company { get; set; } = null!;
+    // Navegación (CompanyId FK a Admin)
     public Tariff? BuyTariff { get; set; }
     public GesFer.Shared.Back.Domain.Entities.PostalCode? PostalCode { get; set; }
     public GesFer.Shared.Back.Domain.Entities.City? City { get; set; }

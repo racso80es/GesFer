@@ -29,12 +29,7 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
         builder.Property(s => s.Email)
             .HasMaxLength(200);
 
-        // Relaciones
-        builder.HasOne(s => s.Company)
-            .WithMany(c => c.Suppliers)
-            .HasForeignKey(s => s.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        // CompanyId: FK a Companies (Admin); sin navegación
         builder.HasOne(s => s.BuyTariff)
             .WithMany(t => t.Suppliers)
             .HasForeignKey(s => s.BuyTariffId)

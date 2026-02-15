@@ -22,12 +22,7 @@ public class SalesDeliveryNoteConfiguration : IEntityTypeConfiguration<SalesDeli
             .IsRequired()
             .HasConversion<int>();
 
-        // Relaciones
-        builder.HasOne(sdn => sdn.Company)
-            .WithMany()
-            .HasForeignKey(sdn => sdn.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        // CompanyId: FK a Companies (Admin); sin navegación
         builder.HasOne(sdn => sdn.Customer)
             .WithMany(c => c.SalesDeliveryNotes)
             .HasForeignKey(sdn => sdn.CustomerId)

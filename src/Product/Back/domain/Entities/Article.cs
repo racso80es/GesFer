@@ -16,8 +16,7 @@ public class Article : BaseEntity
     public decimal SellPrice { get; set; } // Precio de venta (positivo)
     public decimal Stock { get; set; } = 0; // Stock actual del artículo
 
-    // Navegación
-    public Company Company { get; set; } = null!;
+    // Navegación (CompanyId FK a Admin)
     public ArticleFamily ArticleFamily { get; set; } = null!;
     public ICollection<TariffItem> TariffItems { get; set; } = new List<TariffItem>();
     public ICollection<PurchaseDeliveryNoteLine> PurchaseDeliveryNoteLines { get; set; } = new List<PurchaseDeliveryNoteLine>();

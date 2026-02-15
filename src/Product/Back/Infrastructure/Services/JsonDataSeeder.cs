@@ -1,10 +1,11 @@
 using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.ValueObjects;
-using Company = GesFer.Product.Back.Domain.Entities.Company;
+using GesFer.Infrastructure.Configuration;
 using GesFer.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using BCrypt.Net;
@@ -28,16 +29,19 @@ public class JsonDataSeeder
     private readonly ApplicationDbContext _context;
     private readonly ILogger<JsonDataSeeder> _logger;
     private readonly ISensitiveDataSanitizer _sanitizer;
+    private readonly IConfiguration _configuration;
     private readonly string _seedsPath;
 
     public JsonDataSeeder(
         ApplicationDbContext context,
         ILogger<JsonDataSeeder> logger,
-        ISensitiveDataSanitizer sanitizer)
+        ISensitiveDataSanitizer sanitizer,
+        IConfiguration configuration)
     {
         _context = context;
         _logger = logger;
         _sanitizer = sanitizer;
+        _configuration = configuration;
 
         // Obtener la ruta de los archivos de seed
         // Ubicación canónica: src/Product/Back/Infrastructure/Data/Seeds/
@@ -193,17 +197,10 @@ public class JsonDataSeeder
             return result;
         }
 
-        // Empresas y usuarios solo vía seeds: cargar companies desde demo-data si vienen definidas.
-        if (data.Companies != null && data.Companies.Any())
-        {
-            await SeedCompaniesAsync(data.Companies);
-            await _context.SaveChangesAsync();
-            result.Entities.Add($"{data.Companies.Count} Company(ies)");
-        }
-
-        var validCompanyIds = new HashSet<Guid>(await _context.Companies.IgnoreQueryFilters().Select(c => c.Id).ToListAsync());
+        // Companies: SSOT en Admin. Product usa CompanyId desde config (Seed:CompanyId).
+        var validCompanyIds = SeedConfig.GetValidCompanyIds(_configuration);
         if (validCompanyIds.Count == 0)
-            _logger.LogWarning("[SEED] No hay companies en la BD. Incluir 'companies' en demo-data.json o ejecutar seed de Admin (companies.json) si se usa BD compartida.");
+            _logger.LogWarning("[SEED] Seed:CompanyId no configurado. Configurar en appsettings.Seed.json o Seed:CompanyId.");
 
         var validUserIds = new HashSet<Guid>();
 
@@ -344,18 +341,10 @@ public class JsonDataSeeder
             _logger.LogInformation("Cities sembrados: {Count}", data.Cities.Count);
         }
 
-        // 4. Companies: SSOT en Admin. Product usa los IDs ya existentes en BD (ejecutar seed de Admin antes).
-        // EN TESTING: Si test-data.json incluye companies, las cargamos para asegurar el entorno.
-        if (data.Companies != null && data.Companies.Any())
-        {
-            await SeedCompaniesAsync(data.Companies);
-            await _context.SaveChangesAsync();
-            _logger.LogInformation("Companies sembradas: {Count}", data.Companies.Count);
-        }
-
-        var validCompanyIds = new HashSet<Guid>(await _context.Companies.IgnoreQueryFilters().Select(c => c.Id).ToListAsync());
+        // 4. Companies: SSOT en Admin. Product usa CompanyId desde config (Seed:CompanyId).
+        var validCompanyIds = SeedConfig.GetValidCompanyIds(_configuration);
         if (validCompanyIds.Count == 0)
-            _logger.LogWarning("[SEED] No hay companies en la BD. Ejecutar antes el seed de Admin (companies.json) si se usa BD compartida.");
+            _logger.LogWarning("[SEED] Seed:CompanyId no configurado. Configurar en appsettings.Seed.json para test-data.");
 
         // CASCADA RESILIENTE: Crear HashSet de IDs válidos de usuarios para evitar referencias huérfanas
         var validUserIds = new HashSet<Guid>();
@@ -634,75 +623,6 @@ public class JsonDataSeeder
         }
         await _context.SaveChangesAsync();
         _logger.LogInformation("GroupPermissions sembrados: {Count}", groupPermissions.Count);
-    }
-
-    private async Task SeedCompaniesAsync(List<CompanySeed> companies)
-    {
-        foreach (var companyData in companies)
-        {
-            var existing = await _context.Companies
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(c => c.Id == Guid.Parse(companyData.Id));
-
-            if (existing == null)
-            {
-                // Validar y convertir TaxId si se proporciona
-                TaxId? taxId = null;
-                if (!string.IsNullOrWhiteSpace(companyData.TaxId))
-                {
-                    try
-                    {
-                        taxId = TaxId.Create(companyData.TaxId);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        _logger.LogWarning("[SEED] Violación de Dominio - TaxId inválido en Company '{Name}' (Id: {Id}): {Error}. Registro ignorado.",
-                            companyData.Name, companyData.Id, ex.Message);
-                        continue;
-                    }
-                }
-
-                // Validar y convertir Email si se proporciona
-                Email? email = null;
-                if (!string.IsNullOrWhiteSpace(companyData.Email))
-                {
-                    try
-                    {
-                        email = Email.Create(companyData.Email);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        _logger.LogWarning("[SEED] Violación de Dominio - Email inválido en Company '{Name}' (Id: {Id}): {Error}. Registro ignorado.",
-                            companyData.Name, companyData.Id, ex.Message);
-                        continue;
-                    }
-                }
-
-                var company = new Company
-                {
-                    Id = Guid.Parse(companyData.Id),
-                    Name = companyData.Name,
-                    TaxId = taxId,
-                    Address = companyData.Address,
-                    Phone = companyData.Phone,
-                    Email = email,
-                    LanguageId = Guid.Parse(companyData.LanguageId),
-                    CreatedAt = DateTime.UtcNow,
-                    IsActive = true
-                };
-                _context.Companies.Add(company);
-                _logger.LogInformation("[SEED] Cargado registro específico para test: Company '{Name}' (Id: {Id})",
-                    companyData.Name, companyData.Id);
-            }
-            else if (existing.DeletedAt != null)
-            {
-                existing.DeletedAt = null;
-                existing.IsActive = true;
-                _logger.LogInformation("[SEED] Reactivado registro existente: Company '{Name}' (Id: {Id})",
-                    companyData.Name, companyData.Id);
-            }
-        }
-        await _context.SaveChangesAsync();
     }
 
     private async Task SeedUsersAsync(List<UserSeed> users, HashSet<Guid> validCompanyIds, HashSet<Guid> validUserIds)

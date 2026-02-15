@@ -57,7 +57,10 @@ public class SetupServiceTests
         _serviceProviderMock.Setup(x => x.GetService(typeof(ILogger<SetupService>))).Returns(_loggerMock.Object);
 
         // Setup JsonDataSeeder (using concrete class as we cannot mock it easily, but it handles missing files gracefully)
-        var jsonSeeder = new JsonDataSeeder(_dbContext, _seederLoggerMock.Object, _sanitizerMock.Object);
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Seed:CompanyId"] = "11111111-1111-1111-1111-111111111115" })
+            .Build();
+        var jsonSeeder = new JsonDataSeeder(_dbContext, _seederLoggerMock.Object, _sanitizerMock.Object, config);
         _serviceProviderMock.Setup(x => x.GetService(typeof(JsonDataSeeder))).Returns(jsonSeeder);
 
         _serviceProviderMock.Setup(x => x.GetService(typeof(ISequentialGuidGenerator))).Returns(_guidGeneratorMock.Object);

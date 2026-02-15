@@ -18,8 +18,14 @@ public class MockAdminApiClient : IAdminApiClient
 
     public Task<AdminCompanyDto?> GetCompanyAsync(Guid id)
     {
-        // Return the mock company regardless of ID for simplicity in testing
         return Task.FromResult<AdminCompanyDto?>(_mockCompany);
+    }
+
+    public Task<AdminCompanyDto?> GetCompanyByNameAsync(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return Task.FromResult<AdminCompanyDto?>(null);
+        var match = string.Equals(_mockCompany.Name, name.Trim(), StringComparison.OrdinalIgnoreCase);
+        return Task.FromResult<AdminCompanyDto?>(match ? _mockCompany : null);
     }
 
     public Task<AdminCompanyDto> UpdateCompanyAsync(Guid id, AdminUpdateCompanyDto dto)

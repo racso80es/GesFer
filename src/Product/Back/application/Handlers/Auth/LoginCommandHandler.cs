@@ -37,20 +37,8 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponseDt
         if (user == null)
             return null;
 
-        // Verificar que la empresa esté cargada
-        if (user.Company == null)
-        {
-            throw new InvalidOperationException($"La empresa del usuario {user.Username} no está disponible.");
-        }
-
-        // Obtener todos los permisos del usuario (directos + de grupos)
         var permissions = await _authService.GetUserPermissionsAsync(user.Id);
-
-        // Resolver el idioma de forma segura, manejando nulls
-        var resolvedLanguageId = user.LanguageId
-            ?? user.Company?.LanguageId
-            ?? user.Company?.Country?.LanguageId
-            ?? user.Country?.LanguageId;
+        var resolvedLanguageId = user.LanguageId ?? user.Country?.LanguageId;
 
         // Cursor ID es el UserId convertido a string
         var cursorId = user.Id.ToString();
@@ -71,10 +59,10 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponseDt
             FirstName = user.FirstName,
             LastName = user.LastName,
             CompanyId = user.CompanyId,
-            CompanyName = user.Company?.Name ?? string.Empty,
+            CompanyName = command.Empresa,
             UserLanguageId = user.LanguageId,
-            CompanyLanguageId = user.Company?.LanguageId,
-            CountryLanguageId = user.Company?.Country?.LanguageId ?? user.Country?.LanguageId,
+            CompanyLanguageId = null,
+            CountryLanguageId = user.Country?.LanguageId,
             EffectiveLanguageId = resolvedLanguageId,
             Permissions = permissions.ToList(),
             Token = token,
