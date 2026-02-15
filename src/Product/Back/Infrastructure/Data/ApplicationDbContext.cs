@@ -14,14 +14,13 @@ public class ApplicationDbContext : DbContext
     }
 
     // DbSets - Solo entidades del dominio Product
-    public DbSet<Company> Companies => Set<Company>();
+    public DbSet<GesFer.Product.Back.Domain.Entities.Company> Companies => Set<GesFer.Product.Back.Domain.Entities.Company>();
     public DbSet<User> Users => Set<User>();
     public DbSet<Group> Groups => Set<Group>();
     public DbSet<Permission> Permissions => Set<Permission>();
     public DbSet<UserGroup> UserGroups => Set<UserGroup>();
     public DbSet<UserPermission> UserPermissions => Set<UserPermission>();
     public DbSet<GroupPermission> GroupPermissions => Set<GroupPermission>();
-    public DbSet<Company> Companies => Set<Company>();
     public DbSet<Article> Articles => Set<Article>();
     public DbSet<TaxType> TaxTypes => Set<TaxType>();
     public DbSet<ArticleFamily> ArticleFamilies => Set<ArticleFamily>();
@@ -35,7 +34,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<SalesDeliveryNote> SalesDeliveryNotes => Set<SalesDeliveryNote>();
     public DbSet<SalesDeliveryNoteLine> SalesDeliveryNoteLines => Set<SalesDeliveryNoteLine>();
     public DbSet<SalesInvoice> SalesInvoices => Set<SalesInvoice>();
-    public DbSet<GesFer.Product.Back.Domain.Entities.Company> Companies => Set<GesFer.Product.Back.Domain.Entities.Company>();
     public DbSet<GesFer.Shared.Back.Domain.Entities.Country> Countries => Set<GesFer.Shared.Back.Domain.Entities.Country>();
     public DbSet<GesFer.Shared.Back.Domain.Entities.Language> Languages => Set<GesFer.Shared.Back.Domain.Entities.Language>();
     public DbSet<GesFer.Shared.Back.Domain.Entities.State> States => Set<GesFer.Shared.Back.Domain.Entities.State>();
