@@ -136,13 +136,18 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
         }
         else if (scope == SeedScope.Shared || scope == SeedScope.Product)
         {
-            return level switch
+            switch (level)
             {
-                SeedLevel.Master => (await seeder.SeedMasterDataAsync()).Loaded,
-                SeedLevel.Demo => (await seeder.SeedDemoDataAsync()).Loaded,
-                SeedLevel.Test => await Task.Run(async () => { await seeder.SeedTestDataAsync(); return true; }),
-                _ => false
-            };
+                case SeedLevel.Master:
+                    return (await seeder.SeedMasterDataAsync()).Loaded;
+                case SeedLevel.Demo:
+                    return (await seeder.SeedDemoDataAsync()).Loaded;
+                case SeedLevel.Test:
+                    await seeder.SeedTestDataAsync();
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         return false;
