@@ -56,6 +56,6 @@ Lista de etiquetas que se usarán en la fase de implementación:
 
 ## 7. Trazabilidad de Auditoría
 
-*   **Fecha de Creación:** 2026-02-09
+*   **Fecha de Creación:** YYYY-MM-DD hh:mm
 *   **Evento:** Generación inicial mediante `GesFer.Console --spec`.
 *   **Referencia de Log:** `docs/audits/ACCESS_LOG.md`

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ControllerRenderProps } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -38,6 +39,8 @@ const formSchema = z.object({
   description: z.string().max(255).optional(),
   taxTypeId: z.string().min(1, "taxTypeRequired"),
 });
+
+type FormValues = z.infer<typeof formSchema>;
 
 interface ArticleFamilyFormProps {
   open: boolean;
@@ -109,7 +112,7 @@ export function ArticleFamilyForm({
             <FormField
               control={form.control}
               name="code"
-              render={({ field }) => (
+              render={({ field }: { field: ControllerRenderProps<FormValues, "code"> }) => (
                 <FormItem>
                   <FormLabel>{t("code")}</FormLabel>
                   <FormControl>
@@ -122,7 +125,7 @@ export function ArticleFamilyForm({
             <FormField
               control={form.control}
               name="name"
-              render={({ field }) => (
+              render={({ field }: { field: ControllerRenderProps<FormValues, "name"> }) => (
                 <FormItem>
                   <FormLabel>{t("name")}</FormLabel>
                   <FormControl>
@@ -135,7 +138,7 @@ export function ArticleFamilyForm({
             <FormField
               control={form.control}
               name="taxTypeId"
-              render={({ field }) => (
+              render={({ field }: { field: ControllerRenderProps<FormValues, "taxTypeId"> }) => (
                 <FormItem>
                   <FormLabel>{t("taxType")}</FormLabel>
                   <Select
@@ -163,7 +166,7 @@ export function ArticleFamilyForm({
             <FormField
               control={form.control}
               name="description"
-              render={({ field }) => (
+              render={({ field }: { field: ControllerRenderProps<FormValues, "description"> }) => (
                 <FormItem>
                   <FormLabel>{t("description")}</FormLabel>
                   <FormControl>

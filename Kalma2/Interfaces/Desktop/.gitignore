@@ -1,9 +1,0 @@
-node_modules
-dist
-dist-electron
-release
-*.log
-coverage
-test-results
-playwright-report
-blob-report
