@@ -15,8 +15,7 @@ public class PurchaseInvoice : BaseEntity
     public decimal Total { get; set; }
     public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
 
-    // Navegación
-    public Company Company { get; set; } = null!;
+    // Navegación (CompanyId FK a Admin)
     public ICollection<PurchaseDeliveryNote> PurchaseDeliveryNotes { get; set; } = new List<PurchaseDeliveryNote>();
 }
 

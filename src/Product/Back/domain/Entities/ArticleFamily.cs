@@ -14,6 +14,6 @@ public class ArticleFamily : BaseEntity
     public string? Description { get; set; }
     public Guid TaxTypeId { get; set; }
 
-    public Company Company { get; set; } = null!;
+    // CompanyId FK a Admin
     public TaxType TaxType { get; set; } = null!;
 }

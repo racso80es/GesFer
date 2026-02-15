@@ -23,12 +23,7 @@ public class TariffConfiguration : IEntityTypeConfiguration<Tariff>
             .IsRequired()
             .HasConversion<int>();
 
-        // Relaciones
-        builder.HasOne(t => t.Company)
-            .WithMany(c => c.Tariffs)
-            .HasForeignKey(t => t.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        // CompanyId: FK a Companies (Admin); sin navegación
         // Índices
         builder.HasIndex(t => new { t.CompanyId, t.Name });
     }

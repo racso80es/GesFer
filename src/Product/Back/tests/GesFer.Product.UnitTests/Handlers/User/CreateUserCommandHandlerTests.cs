@@ -3,15 +3,17 @@ using GesFer.Application.Commands.User;
 using GesFer.Application.DTOs.User;
 using GesFer.Application.Handlers.User;
 using GesFer.Infrastructure.Data;
-using GesFer.Product.Back.Domain.Entities;
+using GesFer.Product.Back.Infrastructure.DTOs;
+using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace GesFer.Product.UnitTests.Handlers.User;
 
 public class CreateUserCommandHandlerTests
 {
     private readonly ApplicationDbContext _context;
-    private readonly CreateUserCommandHandler _handler;
+    private readonly Mock<IAdminApiClient> _adminApiMock;
 
     public CreateUserCommandHandlerTests()
     {
@@ -20,24 +22,18 @@ public class CreateUserCommandHandlerTests
             .Options;
 
         _context = new ApplicationDbContext(options);
-        _handler = new CreateUserCommandHandler(_context);
+        _adminApiMock = new Mock<IAdminApiClient>();
     }
 
     [Fact]
     public async Task HandleAsync_WithValidData_ShouldCreateUser()
     {
-        // Arrange
         var companyId = Guid.NewGuid();
-        var company = new GesFer.Product.Back.Domain.Entities.Company
-        {
-            Id = companyId,
-            Name = "Test Company",
-            CreatedAt = DateTime.UtcNow,
-            IsActive = true,
-            Address = "Test Address" // Required field
-        };
-        _context.Companies.Add(company);
-        await _context.SaveChangesAsync();
+        _adminApiMock
+            .Setup(x => x.GetCompanyAsync(companyId))
+            .ReturnsAsync(new AdminCompanyDto { Id = companyId, Name = "Test Company" });
+
+        var handler = new CreateUserCommandHandler(_context, _adminApiMock.Object);
 
         var command = new CreateUserCommand(new CreateUserDto
         {
@@ -50,13 +46,12 @@ public class CreateUserCommandHandlerTests
             Address = "Test Address"
         });
 
-        // Act
-        var result = await _handler.HandleAsync(command);
+        var result = await handler.HandleAsync(command);
 
-        // Assert
         result.Should().NotBeNull();
         result.Username.Should().Be("testuser");
         result.CompanyId.Should().Be(companyId);
+        result.CompanyName.Should().Be("Test Company");
         result.Email.Should().Be("test@example.com");
 
         var userInDb = await _context.Users.FirstOrDefaultAsync(u => u.Username == "testuser");
@@ -67,18 +62,19 @@ public class CreateUserCommandHandlerTests
     [Fact]
     public async Task HandleAsync_WhenCompanyDoesNotExist_ShouldThrowException()
     {
-        // Arrange
+        _adminApiMock.Setup(x => x.GetCompanyAsync(It.IsAny<Guid>())).ReturnsAsync((AdminCompanyDto?)null);
+
+        var handler = new CreateUserCommandHandler(_context, _adminApiMock.Object);
+
         var command = new CreateUserCommand(new CreateUserDto
         {
-            CompanyId = Guid.NewGuid(), // Non-existent
+            CompanyId = Guid.NewGuid(),
             Username = "testuser",
             Password = "Password123!"
         });
 
-        // Act
-        Func<Task> act = async () => await _handler.HandleAsync(command);
+        Func<Task> act = async () => await handler.HandleAsync(command);
 
-        // Assert
         await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("*No se encontró la empresa*");
     }

@@ -40,12 +40,7 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
             .HasPrecision(18, 4)
             .HasDefaultValue(0);
 
-        // Relaciones
-        builder.HasOne(a => a.Company)
-            .WithMany(c => c.Articles)
-            .HasForeignKey(a => a.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        // CompanyId: FK a tabla Companies (Admin); sin navegación en Product
         builder.HasOne(a => a.ArticleFamily)
             .WithMany()
             .HasForeignKey(a => a.ArticleFamilyId)

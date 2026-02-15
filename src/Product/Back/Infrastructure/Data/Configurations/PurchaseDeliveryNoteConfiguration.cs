@@ -22,12 +22,7 @@ public class PurchaseDeliveryNoteConfiguration : IEntityTypeConfiguration<Purcha
             .IsRequired()
             .HasConversion<int>();
 
-        // Relaciones
-        builder.HasOne(pdn => pdn.Company)
-            .WithMany()
-            .HasForeignKey(pdn => pdn.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        // CompanyId: FK a Companies (Admin); sin navegación
         builder.HasOne(pdn => pdn.Supplier)
             .WithMany(s => s.PurchaseDeliveryNotes)
             .HasForeignKey(pdn => pdn.SupplierId)

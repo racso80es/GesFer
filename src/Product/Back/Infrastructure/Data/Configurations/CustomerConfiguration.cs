@@ -51,12 +51,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                 email => email.HasValue ? email.Value.Value : null,
                 value => ConvertStringToEmail(value));
 
-        // Relaciones
-        builder.HasOne(c => c.Company)
-            .WithMany(comp => comp.Customers)
-            .HasForeignKey(c => c.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        // CompanyId: FK a Companies (Admin); sin navegación
         builder.HasOne(c => c.SellTariff)
             .WithMany(t => t.Customers)
             .HasForeignKey(c => c.SellTariffId)

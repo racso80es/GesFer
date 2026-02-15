@@ -26,8 +26,7 @@ public class PurchaseDeliveryNote : BaseEntity
     public BillingStatus BillingStatus { get; set; } = BillingStatus.Pending;
     public Guid? PurchaseInvoiceId { get; set; } // Nullable hasta que se facture
 
-    // Navegación
-    public Company Company { get; set; } = null!;
+    // Navegación (CompanyId FK a Admin)
     public Supplier Supplier { get; set; } = null!;
     public PurchaseInvoice? PurchaseInvoice { get; set; }
     public ICollection<PurchaseDeliveryNoteLine> Lines { get; set; } = new List<PurchaseDeliveryNoteLine>();

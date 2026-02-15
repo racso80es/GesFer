@@ -1,5 +1,6 @@
 using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
+using GesFer.Product.Back.Infrastructure.Services;
 using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Shared.Back.Domain.Services;
@@ -58,58 +59,37 @@ public static class DbInitializer
             // CRÍTICO: Garantizar usuario admin de forma idempotente y atómica (especialmente en Testing)
             await EnsureAdminUserAsync(context, services, logger);
 
-            // SMOKE TEST: Verificación de Integridad de Acceso (ignorar filtros por si estaba soft-deleted)
+            // SMOKE TEST: Verificación de Integridad de Acceso
             var adminUser = await context.Users
                 .IgnoreQueryFilters()
-                .Include(u => u.Company)
                 .FirstOrDefaultAsync(u => u.Username == "admin");
 
-            // KAIZEN: Verificación adicional de integridad referencial
             if (adminUser == null)
             {
-                var errorMessage = "🔥 FALLO CRÍTICO: Usuario 'admin' existe pero no se pudo cargar. Estado inconsistente detectado.";
-                logger.LogError(errorMessage);
-                Console.WriteLine($"    ❌ {errorMessage}");
-                throw new Exception(errorMessage);
+                logger.LogError("🔥 FALLO CRÍTICO: Usuario 'admin' existe pero no se pudo cargar.");
+                throw new Exception("Usuario 'admin' no encontrado.");
             }
-
-            // KAIZEN: Verificar que el admin tenga CompanyId vinculado
-            if (adminUser.CompanyId == Guid.Empty || adminUser.CompanyId == default(Guid))
+            if (adminUser.CompanyId == Guid.Empty || adminUser.CompanyId == default)
             {
-                var errorMessage = $"🔥 FALLO CRÍTICO DE INTEGRIDAD REFERENCIAL: El usuario 'admin' no tiene CompanyId vinculado (CompanyId: {adminUser.CompanyId}). El sistema sería inaccesible. Revise la vinculación en demo-data.json.";
-                logger.LogError(errorMessage);
-                Console.WriteLine($"    ❌ {errorMessage}");
-                throw new Exception(errorMessage);
+                logger.LogError("🔥 FALLO CRÍTICO: El usuario 'admin' no tiene CompanyId vinculado.");
+                throw new Exception("Usuario 'admin' sin CompanyId.");
             }
 
-            // KAIZEN: Verificar que la empresa vinculada existe
-            if (adminUser.Company == null)
+            // Empresa: verificar vía Admin API (Product no conoce BD de empresa)
+            var adminClient = services.GetService<IAdminApiClient>();
+            string? companyName = null;
+            if (adminClient != null)
             {
-                var errorMessage = $"🔥 FALLO CRÍTICO DE INTEGRIDAD REFERENCIAL: El usuario 'admin' tiene CompanyId ({adminUser.CompanyId}) pero la empresa no existe en la base de datos. Revise la creación de empresas en demo-data.json.";
-                logger.LogError(errorMessage);
-                Console.WriteLine($"    ❌ {errorMessage}");
-                throw new Exception(errorMessage);
+                var company = await adminClient.GetCompanyAsync(adminUser.CompanyId);
+                if (company == null)
+                {
+                    logger.LogError("🔥 FALLO CRÍTICO: La empresa {CompanyId} del admin no existe en Admin API.", adminUser.CompanyId);
+                    throw new Exception("Empresa del admin no encontrada en Admin API.");
+                }
+                companyName = company.Name;
             }
 
-            // KAIZEN: Verificar que la empresa vinculada es "Empresa Admin" con el GUID correcto
-            const string EXPECTED_ADMIN_COMPANY_NAME = "Empresa Admin";
-            const string EXPECTED_ADMIN_COMPANY_ID = "550e8400-e29b-41d4-a716-446655440000";
-
-            if (adminUser.Company.Name != EXPECTED_ADMIN_COMPANY_NAME)
-            {
-                var warningMessage = $"⚠️ ADVERTENCIA: El usuario 'admin' está vinculado a '{adminUser.Company.Name}' en lugar de '{EXPECTED_ADMIN_COMPANY_NAME}'. Esto puede causar problemas de autenticación.";
-                logger.LogWarning(warningMessage);
-                Console.WriteLine($"    ⚠ {warningMessage}");
-            }
-
-            if (adminUser.CompanyId.ToString() != EXPECTED_ADMIN_COMPANY_ID)
-            {
-                var warningMessage = $"⚠️ ADVERTENCIA: El usuario 'admin' tiene CompanyId '{adminUser.CompanyId}' en lugar del esperado '{EXPECTED_ADMIN_COMPANY_ID}'. Verifique la sincronización en demo-data.json.";
-                logger.LogWarning(warningMessage);
-                Console.WriteLine($"    ⚠ {warningMessage}");
-            }
-
-            var companyInfo = $" (Empresa: {adminUser.Company.Name}, CompanyId: {adminUser.CompanyId})";
+            var companyInfo = $" (Empresa: {companyName ?? adminUser.CompanyId.ToString()}, CompanyId: {adminUser.CompanyId})";
             logger.LogInformation("✅ Smoke Test Superado: Usuario 'admin' verificado correctamente{CompanyInfo}", companyInfo);
             Console.WriteLine($"    ✅ Smoke Test Superado: Usuario 'admin' verificado{companyInfo}");
 
@@ -163,7 +143,6 @@ public static class DbInitializer
 
         var adminUser = await context.Users
             .IgnoreQueryFilters()
-            .Include(u => u.Company)
             .FirstOrDefaultAsync(u => u.Username == "admin");
 
         if (adminUser == null)
@@ -180,26 +159,33 @@ public static class DbInitializer
             Console.WriteLine($"    ❌ {errorMessage}");
             throw new Exception(errorMessage);
         }
-        if (adminUser.Company == null)
+        string? companyName = null;
+        var adminClient = services.GetService<IAdminApiClient>();
+        if (adminClient != null)
         {
-            var errorMessage = $"🔥 FALLO CRÍTICO DE INTEGRIDAD REFERENCIAL: El usuario 'admin' tiene CompanyId ({adminUser.CompanyId}) pero la empresa no existe en la base de datos. Revise la creación de empresas en demo-data.json.";
-            logger.LogError(errorMessage);
-            Console.WriteLine($"    ❌ {errorMessage}");
-            throw new Exception(errorMessage);
+            var company = await adminClient.GetCompanyAsync(adminUser.CompanyId);
+            if (company == null)
+            {
+                var errorMessage = $"🔥 FALLO CRÍTICO DE INTEGRIDAD REFERENCIAL: El usuario 'admin' tiene CompanyId ({adminUser.CompanyId}) pero la empresa no existe en Admin API. Revise la vinculación en demo-data.json.";
+                logger.LogError(errorMessage);
+                Console.WriteLine($"    ❌ {errorMessage}");
+                throw new Exception(errorMessage);
+            }
+            companyName = company.Name;
         }
         const string EXPECTED_ADMIN_COMPANY_NAME = "Empresa Admin";
         const string EXPECTED_ADMIN_COMPANY_ID = "550e8400-e29b-41d4-a716-446655440000";
-        if (adminUser.Company.Name != EXPECTED_ADMIN_COMPANY_NAME)
+        if (companyName != null && companyName != EXPECTED_ADMIN_COMPANY_NAME)
         {
-            logger.LogWarning("⚠️ ADVERTENCIA: El usuario 'admin' está vinculado a '{Name}' en lugar de '{Expected}'.", adminUser.Company.Name, EXPECTED_ADMIN_COMPANY_NAME);
-            Console.WriteLine($"    ⚠ ADVERTENCIA: admin vinculado a '{adminUser.Company.Name}'");
+            logger.LogWarning("⚠️ ADVERTENCIA: El usuario 'admin' está vinculado a '{Name}' en lugar de '{Expected}'.", companyName, EXPECTED_ADMIN_COMPANY_NAME);
+            Console.WriteLine($"    ⚠ ADVERTENCIA: admin vinculado a '{companyName}'");
         }
         if (adminUser.CompanyId.ToString() != EXPECTED_ADMIN_COMPANY_ID)
         {
             logger.LogWarning("⚠️ ADVERTENCIA: El usuario 'admin' tiene CompanyId '{Id}' en lugar del esperado '{Expected}'.", adminUser.CompanyId, EXPECTED_ADMIN_COMPANY_ID);
             Console.WriteLine($"    ⚠ ADVERTENCIA: CompanyId admin = {adminUser.CompanyId}");
         }
-        var companyInfo = $" (Empresa: {adminUser.Company.Name}, CompanyId: {adminUser.CompanyId})";
+        var companyInfo = $" (Empresa: {companyName ?? adminUser.CompanyId.ToString()}, CompanyId: {adminUser.CompanyId})";
         logger.LogInformation("✅ Smoke Test Superado: Usuario 'admin' verificado correctamente{CompanyInfo}", companyInfo);
         Console.WriteLine($"    ✅ Smoke Test Superado: Usuario 'admin' verificado{companyInfo}");
     }
@@ -394,41 +380,35 @@ public static class DbInitializer
 
             var admin = await context.Users
                 .IgnoreQueryFilters()
-                .Include(u => u.Company)
                 .FirstOrDefaultAsync(u => u.Username == AdminUsername);
 
             if (admin != null)
             {
-                // Reactivar si estaba borrado lógicamente
                 if (admin.DeletedAt != null)
                 {
                     admin.DeletedAt = null;
                     admin.IsActive = true;
                 }
-
-                // Blindaje mínimo: password hash no vacío (y compatible con login)
                 if (string.IsNullOrWhiteSpace(admin.PasswordHash))
                 {
                     var newPwd = isTesting ? TestAdminPassword : sanitizer.GenerateRandomPassword();
                     admin.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPwd);
                     logger.LogWarning("[ENSURE ADMIN] 🔐 Set password for existing admin (was empty): {Kind}", isTesting ? "admin123 (Testing)" : "random");
                 }
-
-                // Si CompanyId es inválido, forzar a la empresa demo
                 if (admin.CompanyId == Guid.Empty || admin.CompanyId == default(Guid))
                 {
                     admin.CompanyId = defaultCompanyId;
                 }
 
-                // No crear Company: debe existir por seeds. Solo advertir si la referencia es inválida.
-                if (admin.Company == null)
+                // Empresa: validar vía Admin API (Product no conoce BD)
+                var adminClient = services.GetService<IAdminApiClient>();
+                if (adminClient != null)
                 {
-                    var existingCompany = await context.Companies.IgnoreQueryFilters().FirstOrDefaultAsync(c => c.Id == admin.CompanyId);
-                    if (existingCompany == null)
+                    var company = await adminClient.GetCompanyAsync(admin.CompanyId);
+                    if (company == null)
                     {
-                        logger.LogError("El usuario 'admin' tiene CompanyId {CompanyId} pero la empresa no existe. Incluya 'companies' en demo-data.json (o ejecute seeds de Admin si usa BD compartida).", admin.CompanyId);
-                        throw new InvalidOperationException(
-                            "El usuario 'admin' está referenciando una empresa inexistente. Defina empresas y usuarios únicamente mediante seeds (demo-data.json).");
+                        logger.LogError("El usuario 'admin' tiene CompanyId {CompanyId} pero la empresa no existe en Admin API.", admin.CompanyId);
+                        throw new InvalidOperationException("El usuario 'admin' está referenciando una empresa inexistente. Ejecute seeds de Admin.");
                     }
                 }
 

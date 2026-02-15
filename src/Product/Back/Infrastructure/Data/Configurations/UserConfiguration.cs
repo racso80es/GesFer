@@ -49,12 +49,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Address)
             .HasMaxLength(500);
 
-        // Relaciones
-        builder.HasOne(u => u.Company)
-            .WithMany(c => c.Users)
-            .HasForeignKey(u => u.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        // CompanyId: FK a tabla Companies (Admin); sin navegación en Product
         // Relaciones de dirección (opcionales)
         builder.HasOne(u => u.PostalCode)
             .WithMany()

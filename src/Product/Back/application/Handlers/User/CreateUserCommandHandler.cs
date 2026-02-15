@@ -4,6 +4,7 @@ using GesFer.Application.DTOs.User;
 using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.User;
@@ -11,18 +12,17 @@ namespace GesFer.Application.Handlers.User;
 public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserDto>
 {
     private readonly ApplicationDbContext _context;
+    private readonly IAdminApiClient _adminApiClient;
 
-    public CreateUserCommandHandler(ApplicationDbContext context)
+    public CreateUserCommandHandler(ApplicationDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
+        _adminApiClient = adminApiClient;
     }
 
     public async Task<UserDto> HandleAsync(CreateUserCommand command, CancellationToken cancellationToken = default)
     {
-        // Validar que la empresa existe
-        var company = await _context.Companies
-            .FirstOrDefaultAsync(c => c.Id == command.Dto.CompanyId && c.DeletedAt == null, cancellationToken);
-
+        var company = await _adminApiClient.GetCompanyAsync(command.Dto.CompanyId);
         if (company == null)
             throw new InvalidOperationException($"No se encontró la empresa con ID {command.Dto.CompanyId}");
 
@@ -109,18 +109,15 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserD
         _context.Users.Add(user);
         await _context.SaveChangesAsync(cancellationToken);
 
-        // Cargar la empresa para obtener el nombre
-        await _context.Entry(user).Reference(u => u.Company).LoadAsync(cancellationToken);
-
         return new UserDto
         {
             Id = user.Id,
             CompanyId = user.CompanyId,
-            CompanyName = user.Company.Name,
+            CompanyName = company.Name,
             Username = user.Username,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Email = user.Email,
+            Email = user.Email.HasValue ? user.Email.Value.Value : null,
             Phone = user.Phone,
             Address = user.Address,
             PostalCodeId = user.PostalCodeId,

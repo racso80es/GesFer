@@ -4,6 +4,7 @@ using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Shared.Back.Domain.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -33,6 +34,12 @@ public class DbInitializerTests
         var dbName = Guid.NewGuid().ToString();
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseInMemoryDatabase(databaseName: dbName));
+
+        // IConfiguration (JsonDataSeeder usa SeedConfig.GetValidCompanyIds)
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Seed:CompanyId"] = "11111111-1111-1111-1111-111111111115" })
+            .Build();
+        services.AddSingleton<IConfiguration>(config);
 
         // Dependencies
         services.AddScoped<JsonDataSeeder>();

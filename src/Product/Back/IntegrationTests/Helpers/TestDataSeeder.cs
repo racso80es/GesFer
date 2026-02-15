@@ -1,8 +1,7 @@
-using GesFer.Product.Back.Domain.Entities;
 using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
-using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace GesFer.IntegrationTests.Helpers;
@@ -15,10 +14,9 @@ public static class TestDataSeeder
     /// <summary>
     /// Inserta datos de prueba en la base de datos desde test-data.json
     /// </summary>
-    public static async Task SeedTestDataAsync(ApplicationDbContext context)
+    public static async Task SeedTestDataAsync(ApplicationDbContext context, IConfiguration? configuration = null)
     {
-        // Limpiar datos existentes usando IgnoreQueryFilters para incluir soft-deleted
-        var existingCompanies = await context.Companies.IgnoreQueryFilters().ToListAsync();
+        // Companies: SSOT en Admin; Product no borra Companies. Limpiar solo datos de Product.
         var existingUsers = await context.Users.IgnoreQueryFilters().ToListAsync();
         var existingGroups = await context.Groups.IgnoreQueryFilters().ToListAsync();
         var existingPermissions = await context.Permissions.IgnoreQueryFilters().ToListAsync();
@@ -28,7 +26,6 @@ public static class TestDataSeeder
         var existingSuppliers = await context.Suppliers.IgnoreQueryFilters().ToListAsync();
         var existingCustomers = await context.Customers.IgnoreQueryFilters().ToListAsync();
         
-        context.Companies.RemoveRange(existingCompanies);
         context.Users.RemoveRange(existingUsers);
         context.Groups.RemoveRange(existingGroups);
         context.Permissions.RemoveRange(existingPermissions);
@@ -40,11 +37,13 @@ public static class TestDataSeeder
         await context.SaveChangesAsync();
 
         // Usar JsonDataSeeder para cargar datos de prueba desde test-data.json
-        // Crear un logger mínimo usando LoggerFactory
         var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
         var logger = loggerFactory.CreateLogger<JsonDataSeeder>();
         var sanitizer = new GesFer.Shared.Back.Domain.Services.SensitiveDataSanitizer();
-        var jsonDataSeeder = new JsonDataSeeder(context, logger, sanitizer);
+        var config = configuration ?? new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Seed:CompanyId"] = "11111111-1111-1111-1111-111111111115" })
+            .Build();
+        var jsonDataSeeder = new JsonDataSeeder(context, logger, sanitizer, config);
         await jsonDataSeeder.SeedTestDataAsync();
 
         // Nota: AuditLogs no se crean aquí porque son generados automáticamente

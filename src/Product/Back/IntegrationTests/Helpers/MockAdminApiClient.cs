@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Linq;
 using GesFer.Product.Back.Infrastructure.DTOs;
 using GesFer.Product.Back.Infrastructure.Services;
 
@@ -34,6 +35,14 @@ public class MockAdminApiClient : IAdminApiClient
     public Task<AdminCompanyDto?> GetCompanyAsync(Guid id)
     {
         return Task.FromResult(Store.TryGetValue(id, out var dto) ? dto : null);
+    }
+
+    public Task<AdminCompanyDto?> GetCompanyByNameAsync(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return Task.FromResult<AdminCompanyDto?>(null);
+        var n = name.Trim();
+        var dto = Store.Values.FirstOrDefault(c => string.Equals(c.Name, n, StringComparison.OrdinalIgnoreCase));
+        return Task.FromResult<AdminCompanyDto?>(dto);
     }
 
     public Task<AdminCompanyDto> UpdateCompanyAsync(Guid id, AdminUpdateCompanyDto dto)

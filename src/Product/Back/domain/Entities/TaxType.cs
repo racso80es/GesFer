@@ -13,6 +13,5 @@ public class TaxType : BaseEntity
     public string? Description { get; set; }
     public decimal Value { get; set; } // Valor porcentual (ej. 21.00 para 21%)
 
-    // Navegación
-    public Company Company { get; set; } = null!;
+    // CompanyId FK a Admin; sin navegación
 }

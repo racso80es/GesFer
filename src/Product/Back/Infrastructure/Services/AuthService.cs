@@ -1,4 +1,5 @@
 using GesFer.Product.Back.Domain.Entities;
+using GesFer.Product.Back.Infrastructure.Services;
 using GesFer.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
@@ -18,41 +19,31 @@ public interface IAuthService
 public class AuthService : IAuthService
 {
     private readonly ApplicationDbContext _context;
+    private readonly IAdminApiClient _adminApiClient;
 
-    public AuthService(ApplicationDbContext context)
+    public AuthService(ApplicationDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
+        _adminApiClient = adminApiClient;
     }
 
     /// <summary>
-    /// Autentica un usuario verificando empresa, usuario y contraseña
+    /// Autentica un usuario verificando empresa (vía Admin API), usuario y contraseña
     /// </summary>
     public async Task<User?> AuthenticateAsync(string companyName, string username, string password)
     {
-        // Normalizar los parámetros de búsqueda (trim)
         var normalizedCompanyName = companyName?.Trim() ?? string.Empty;
         var normalizedUsername = username?.Trim() ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(normalizedCompanyName) || string.IsNullOrWhiteSpace(normalizedUsername))
             return null;
 
-        // Buscar el usuario con la empresa incluida
-        // Verificar primero que la empresa exista y esté activa
-        // MySQL con collation utf8mb4_unicode_ci hace comparaciones case-insensitive por defecto
-        var company = await _context.Companies
-            .Where(c => c.Name == normalizedCompanyName && c.IsActive && c.DeletedAt == null)
-            .FirstOrDefaultAsync();
-
-        if (company == null)
+        // Empresa: única fuente Admin API; Product solo conoce la que le corresponde (por nombre en login)
+        var company = await _adminApiClient.GetCompanyByNameAsync(normalizedCompanyName);
+        if (company == null || !company.IsActive)
             return null;
 
-        // Buscar el usuario con la empresa cargada
         var user = await _context.Users
-            .Include(u => u.Company)
-                .ThenInclude(c => c!.Language)
-            .Include(u => u.Company)
-                .ThenInclude(c => c!.Country)
-                    .ThenInclude(c => c!.Language)
             .Include(u => u.Country)
                 .ThenInclude(c => c!.Language)
             .Include(u => u.Language)

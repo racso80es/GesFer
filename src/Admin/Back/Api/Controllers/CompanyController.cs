@@ -46,6 +46,31 @@ public class CompanyController : ControllerBase
     }
 
     /// <summary>
+    /// Obtiene una empresa por nombre (para Product: login y contexto de una sola empresa).
+    /// </summary>
+    [HttpGet("by-name")]
+    [ProducesResponseType(typeof(CompanyDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetByName([FromQuery] string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return BadRequest(new { message = "El parámetro name es obligatorio" });
+        try
+        {
+            var command = new GetCompanyByNameCommand(name);
+            var result = await _mediator.Send(command);
+            if (result == null)
+                return NotFound(new { message = $"No se encontró la empresa con nombre '{name}'" });
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener empresa por nombre {Name}", name);
+            return StatusCode(500, new { message = "Error interno del servidor" });
+        }
+    }
+
+    /// <summary>
     /// Obtiene una empresa por ID
     /// </summary>
     [HttpGet("{id}")]

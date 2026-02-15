@@ -35,12 +35,7 @@ public class PurchaseInvoiceConfiguration : IEntityTypeConfiguration<PurchaseInv
             .IsRequired()
             .HasConversion<int>();
 
-        // Relaciones
-        builder.HasOne(pi => pi.Company)
-            .WithMany()
-            .HasForeignKey(pi => pi.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        // CompanyId: FK a Companies (Admin); sin navegación
         // Índices
         builder.HasIndex(pi => new { pi.CompanyId, pi.InvoiceNumber })
             .IsUnique();

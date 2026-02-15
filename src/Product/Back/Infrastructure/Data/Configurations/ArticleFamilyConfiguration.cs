@@ -23,11 +23,7 @@ public class ArticleFamilyConfiguration : IEntityTypeConfiguration<ArticleFamily
         builder.Property(af => af.Description)
             .HasMaxLength(500);
 
-        builder.HasOne(af => af.Company)
-            .WithMany()
-            .HasForeignKey(af => af.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        // CompanyId: FK a Companies (Admin); sin navegación
         builder.HasOne(af => af.TaxType)
             .WithMany()
             .HasForeignKey(af => af.TaxTypeId)

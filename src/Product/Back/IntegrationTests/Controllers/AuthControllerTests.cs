@@ -248,8 +248,9 @@ public class AuthControllerTests
         using var scope = _fixture.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
+        var demoCompanyId = Guid.Parse("11111111-1111-1111-1111-111111111115");
         var userFromDb = await context.Users
-            .FirstOrDefaultAsync(u => u.Username == knownUsername && u.Company!.Name == knownCompany);
+            .FirstOrDefaultAsync(u => u.Username == knownUsername && u.CompanyId == demoCompanyId);
         
         userFromDb.Should().NotBeNull(
             $"El usuario '{knownUsername}' de la empresa '{knownCompany}' debe existir en la base de datos de prueba");

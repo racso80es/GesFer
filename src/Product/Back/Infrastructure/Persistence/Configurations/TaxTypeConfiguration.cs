@@ -30,12 +30,7 @@ public class TaxTypeConfiguration : IEntityTypeConfiguration<TaxType>
             .IsRequired()
             .HasPrecision(18, 2); // 2 decimales para porcentaje (ej. 21.00)
 
-        // Relaciones
-        builder.HasOne(t => t.Company)
-            .WithMany() // No necesitamos colección de TaxTypes en Company por ahora
-            .HasForeignKey(t => t.CompanyId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+        // CompanyId: FK a Companies (Admin); sin navegación
         // Índices de Unicidad por Empresa
         builder.HasIndex(t => new { t.CompanyId, t.Code })
             .IsUnique();

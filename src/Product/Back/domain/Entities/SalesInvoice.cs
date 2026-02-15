@@ -15,8 +15,7 @@ public class SalesInvoice : BaseEntity
     public decimal Total { get; set; }
     public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
 
-    // Navegación
-    public Company Company { get; set; } = null!;
+    // Navegación (CompanyId FK a Admin)
     public ICollection<SalesDeliveryNote> SalesDeliveryNotes { get; set; } = new List<SalesDeliveryNote>();
 }
 

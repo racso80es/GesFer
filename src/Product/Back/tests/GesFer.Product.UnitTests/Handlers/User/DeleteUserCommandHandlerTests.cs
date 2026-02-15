@@ -20,14 +20,12 @@ public class DeleteUserCommandHandlerTests
 
         using var context = new ApplicationDbContext(options);
 
-        var company = new GesFer.Product.Back.Domain.Entities.Company { Id = Guid.NewGuid(), Name = "Company" };
-        context.Companies.Add(company);
-
+        var companyId = Guid.NewGuid();
         var user = new GesFer.Product.Back.Domain.Entities.User
         {
             Id = Guid.NewGuid(),
             Username = "user",
-            CompanyId = company.Id,
+            CompanyId = companyId,
             IsActive = true
         };
         context.Users.Add(user);

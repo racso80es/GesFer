@@ -3,6 +3,7 @@ using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.User;
 using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.User;
@@ -10,16 +11,17 @@ namespace GesFer.Application.Handlers.User;
 public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserDto>
 {
     private readonly ApplicationDbContext _context;
+    private readonly IAdminApiClient _adminApiClient;
 
-    public UpdateUserCommandHandler(ApplicationDbContext context)
+    public UpdateUserCommandHandler(ApplicationDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
+        _adminApiClient = adminApiClient;
     }
 
     public async Task<UserDto> HandleAsync(UpdateUserCommand command, CancellationToken cancellationToken = default)
     {
         var user = await _context.Users
-            .Include(u => u.Company)
             .FirstOrDefaultAsync(u => u.Id == command.Id && u.DeletedAt == null, cancellationToken);
 
         if (user == null)
@@ -106,15 +108,16 @@ public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserD
 
         await _context.SaveChangesAsync(cancellationToken);
 
+        var company = await _adminApiClient.GetCompanyAsync(user.CompanyId);
         return new UserDto
         {
             Id = user.Id,
             CompanyId = user.CompanyId,
-            CompanyName = user.Company.Name,
+            CompanyName = company?.Name ?? string.Empty,
             Username = user.Username,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Email = user.Email,
+            Email = user.Email.HasValue ? user.Email.Value.Value : null,
             Phone = user.Phone,
             Address = user.Address,
             PostalCodeId = user.PostalCodeId,
