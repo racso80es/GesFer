@@ -5,10 +5,10 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 ## Pendientes
 
 ### [Alta] Fix Console Build / Missing DbSet Companies
-*   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_14.md`
-*   **Descripción:** `GesFer.Console` falla al compilar debido a errores `CS1061` en `GesFer.Infrastructure`. `ApplicationDbContext` carece de `DbSet<Company>`.
+*   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_14.md`, `docs/audits/AUDITORIA_KAIZEN_2026_02_15.md`
+*   **Descripción:** `GesFer.Console` falla al compilar debido a errores `CS1061` en `GesFer.Infrastructure`. `ApplicationDbContext` carece de `DbSet<Company>` adecuado (falta entidad en Product).
 *   **Impacto:** Bloquea la funcionalidad de la consola y la inicialización de datos.
-*   **Estado:** En Progreso (Rama `kaizen/console-stabilization`)
+*   **Estado:** En Progreso (Rama `kaizen/console-stabilization`) - Iniciando implementación de `Company.cs`.
 
 ### [Alta] Fix Benchmark Compilation Errors
 *   **Origen:** `docs/audits/AUDITORIA_BACKEND_2026_02_14.md`
