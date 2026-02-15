@@ -13,6 +13,8 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:node": "vitest run -c vitest.config.node.ts",
+    "test:node:coverage": "vitest run -c vitest.config.node.ts --coverage",
     "test:e2e": "playwright test",
     "e2e": "npm run build:fast && playwright test"
   },
