@@ -38,6 +38,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<GesFer.Shared.Back.Domain.Entities.State> States => Set<GesFer.Shared.Back.Domain.Entities.State>();
     public DbSet<GesFer.Shared.Back.Domain.Entities.City> Cities => Set<GesFer.Shared.Back.Domain.Entities.City>();
     public DbSet<GesFer.Shared.Back.Domain.Entities.PostalCode> PostalCodes => Set<GesFer.Shared.Back.Domain.Entities.PostalCode>();
+    public DbSet<GesFer.Product.Back.Domain.Entities.Company> Companies => Set<GesFer.Product.Back.Domain.Entities.Company>();
     // NOTA: AuditLog, Log y AdminUser se gestionan en el dominio Admin
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

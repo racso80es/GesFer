@@ -13,10 +13,9 @@ import {
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
-import { ArticleFamily, articleFamiliesApi } from "@/lib/api/article-families-api";
-import { ArticleFamilyForm } from "@/components/maestros/ArticleFamilyForm";
+import { TaxType, CreateTaxTypeDto, taxTypesApi } from "@/lib/api/tax-types-api";
+import { TaxTypeForm } from "@/components/masters/TaxTypeForm";
 import { toast } from "sonner";
-import { useAuth } from "@/contexts/auth-context";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,83 +27,69 @@ import {
   AlertDialogTitle,
 } from "@shared/components/ui/alert-dialog";
 
-export default function ArticleFamiliesPage() {
-  const t = useTranslations("articleFamilies");
+export default function TaxTypesPage() {
+  const t = useTranslations("taxTypes");
   const tCommon = useTranslations("common");
-  const { user } = useAuth();
-  const [families, setFamilies] = useState<ArticleFamily[]>([]);
+  const [taxTypes, setTaxTypes] = useState<TaxType[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingFamily, setEditingFamily] = useState<ArticleFamily | undefined>();
+  const [editingTaxType, setEditingTaxType] = useState<TaxType | undefined>();
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const fetchFamilies = async () => {
+  const fetchTaxTypes = async () => {
     try {
-      const data = await articleFamiliesApi.getAll();
-      setFamilies(data);
+      const data = await taxTypesApi.getAll();
+      setTaxTypes(data);
     } catch (error) {
-      toast.error("Error loading article families");
+      toast.error("Error loading tax types");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchFamilies();
+    fetchTaxTypes();
   }, []);
 
   const handleCreate = () => {
-    setEditingFamily(undefined);
+    setEditingTaxType(undefined);
     setIsFormOpen(true);
   };
 
-  const handleEdit = (item: ArticleFamily) => {
-    setEditingFamily(item);
+  const handleEdit = (taxType: TaxType) => {
+    setEditingTaxType(taxType);
     setIsFormOpen(true);
   };
 
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      await articleFamiliesApi.delete(deleteId);
+      await taxTypesApi.delete(deleteId);
       toast.success(t("deleteSuccess"));
-      fetchFamilies();
+      fetchTaxTypes();
     } catch (error) {
-      toast.error("Error deleting article family");
+      toast.error("Error deleting tax type");
     } finally {
       setDeleteId(null);
     }
   };
 
-  const handleFormSubmit = async (values: { code: string; name: string; description?: string; taxTypeId: string }) => {
-    if (!user?.companyId) {
-      toast.error("Usuario sin organización");
-      return;
-    }
+  const handleFormSubmit = async (values: CreateTaxTypeDto) => {
     try {
-      if (editingFamily) {
-        await articleFamiliesApi.update(editingFamily.id, {
-          id: editingFamily.id,
-          code: values.code,
-          name: values.name,
-          description: values.description,
-          taxTypeId: values.taxTypeId,
+      if (editingTaxType) {
+        await taxTypesApi.update(editingTaxType.id, {
+          ...values,
+          id: editingTaxType.id,
         });
         toast.success(t("updateSuccess"));
       } else {
-        await articleFamiliesApi.create({
-          companyId: user.companyId,
-          code: values.code,
-          name: values.name,
-          description: values.description,
-          taxTypeId: values.taxTypeId,
-        });
+        await taxTypesApi.create(values);
         toast.success(t("createSuccess"));
       }
       setIsFormOpen(false);
-      fetchFamilies();
+      fetchTaxTypes();
     } catch (error) {
-      toast.error("Error saving article family");
+      toast.error("Error saving tax type");
     }
   };
 
@@ -125,7 +110,7 @@ export default function ArticleFamiliesPage() {
               <TableRow>
                 <TableHead>{t("code")}</TableHead>
                 <TableHead>{t("name")}</TableHead>
-                <TableHead>{t("taxType")}</TableHead>
+                <TableHead>{t("value")}</TableHead>
                 <TableHead>{t("description")}</TableHead>
                 <TableHead className="w-[100px]">{t("actions")}</TableHead>
               </TableRow>
@@ -134,21 +119,21 @@ export default function ArticleFamiliesPage() {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-10">
-                    {tCommon("loading")}
+                    Loading...
                   </TableCell>
                 </TableRow>
-              ) : families.length === 0 ? (
+              ) : taxTypes.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-10">
                     No records found
                   </TableCell>
                 </TableRow>
               ) : (
-                families.map((item) => (
+                taxTypes.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.code}</TableCell>
                     <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.taxTypeName ?? item.taxTypeId}</TableCell>
+                    <TableCell>{item.value}%</TableCell>
                     <TableCell>{item.description}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
@@ -156,6 +141,7 @@ export default function ArticleFamiliesPage() {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleEdit(item)}
+                          aria-label={tCommon("edit")}
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
@@ -164,6 +150,7 @@ export default function ArticleFamiliesPage() {
                           size="icon"
                           className="text-destructive"
                           onClick={() => setDeleteId(item.id)}
+                          aria-label={tCommon("delete")}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -176,25 +163,25 @@ export default function ArticleFamiliesPage() {
           </Table>
         </div>
 
-        <ArticleFamilyForm
+        <TaxTypeForm
           open={isFormOpen}
           onOpenChange={setIsFormOpen}
           onSubmit={handleFormSubmit}
-          initialData={editingFamily}
+          initialData={editingTaxType}
         />
 
         <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>{tCommon("confirm")}</AlertDialogTitle>
+              <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
               <AlertDialogDescription>
                 {t("deleteConfirm")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                {tCommon("delete")}
+                Delete
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
