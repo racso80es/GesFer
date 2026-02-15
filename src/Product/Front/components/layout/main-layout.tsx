@@ -44,8 +44,8 @@ export function MainLayout({ children }: MainLayoutProps) {
       href: "#masters",
       icon: Settings,
       children: [
-        { name: t('taxTypes'), href: "/maestros/tipotasa", icon: Percent },
-        { name: t('articleFamilies'), href: "/maestros/familias-articulos", icon: Layers },
+        { name: t('taxTypes'), href: "/masters/tax-types", icon: Percent },
+        { name: t('articleFamilies'), href: "/masters/article-families", icon: Layers },
       ]
     },
   ];

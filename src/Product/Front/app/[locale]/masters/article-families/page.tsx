@@ -13,9 +13,10 @@ import {
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
-import { TaxType, taxTypesApi } from "@/lib/api/tax-types-api";
-import { TaxTypeForm } from "@/components/maestros/TaxTypeForm";
+import { ArticleFamily, articleFamiliesApi } from "@/lib/api/article-families-api";
+import { ArticleFamilyForm } from "@/components/masters/ArticleFamilyForm";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/auth-context";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,68 +28,83 @@ import {
   AlertDialogTitle,
 } from "@shared/components/ui/alert-dialog";
 
-export default function TaxTypesPage() {
-  const t = useTranslations("taxTypes");
-  const [taxTypes, setTaxTypes] = useState<TaxType[]>([]);
+export default function ArticleFamiliesPage() {
+  const t = useTranslations("articleFamilies");
+  const tCommon = useTranslations("common");
+  const { user } = useAuth();
+  const [families, setFamilies] = useState<ArticleFamily[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingTaxType, setEditingTaxType] = useState<TaxType | undefined>();
+  const [editingFamily, setEditingFamily] = useState<ArticleFamily | undefined>();
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const fetchTaxTypes = async () => {
+  const fetchFamilies = async () => {
     try {
-      const data = await taxTypesApi.getAll();
-      setTaxTypes(data);
+      const data = await articleFamiliesApi.getAll();
+      setFamilies(data);
     } catch (error) {
-      toast.error("Error loading tax types");
+      toast.error("Error loading article families");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTaxTypes();
+    fetchFamilies();
   }, []);
 
   const handleCreate = () => {
-    setEditingTaxType(undefined);
+    setEditingFamily(undefined);
     setIsFormOpen(true);
   };
 
-  const handleEdit = (taxType: TaxType) => {
-    setEditingTaxType(taxType);
+  const handleEdit = (item: ArticleFamily) => {
+    setEditingFamily(item);
     setIsFormOpen(true);
   };
 
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      await taxTypesApi.delete(deleteId);
+      await articleFamiliesApi.delete(deleteId);
       toast.success(t("deleteSuccess"));
-      fetchTaxTypes();
+      fetchFamilies();
     } catch (error) {
-      toast.error("Error deleting tax type");
+      toast.error("Error deleting article family");
     } finally {
       setDeleteId(null);
     }
   };
 
-  const handleFormSubmit = async (values: any) => {
+  const handleFormSubmit = async (values: { code: string; name: string; description?: string; taxTypeId: string }) => {
+    if (!user?.companyId) {
+      toast.error("Usuario sin organización");
+      return;
+    }
     try {
-      if (editingTaxType) {
-        await taxTypesApi.update(editingTaxType.id, {
-          ...values,
-          id: editingTaxType.id,
+      if (editingFamily) {
+        await articleFamiliesApi.update(editingFamily.id, {
+          id: editingFamily.id,
+          code: values.code,
+          name: values.name,
+          description: values.description,
+          taxTypeId: values.taxTypeId,
         });
         toast.success(t("updateSuccess"));
       } else {
-        await taxTypesApi.create(values);
+        await articleFamiliesApi.create({
+          companyId: user.companyId,
+          code: values.code,
+          name: values.name,
+          description: values.description,
+          taxTypeId: values.taxTypeId,
+        });
         toast.success(t("createSuccess"));
       }
       setIsFormOpen(false);
-      fetchTaxTypes();
+      fetchFamilies();
     } catch (error) {
-      toast.error("Error saving tax type");
+      toast.error("Error saving article family");
     }
   };
 
@@ -109,7 +125,7 @@ export default function TaxTypesPage() {
               <TableRow>
                 <TableHead>{t("code")}</TableHead>
                 <TableHead>{t("name")}</TableHead>
-                <TableHead>{t("value")}</TableHead>
+                <TableHead>{t("taxType")}</TableHead>
                 <TableHead>{t("description")}</TableHead>
                 <TableHead className="w-[100px]">{t("actions")}</TableHead>
               </TableRow>
@@ -118,21 +134,21 @@ export default function TaxTypesPage() {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-10">
-                    Loading...
+                    {tCommon("loading")}
                   </TableCell>
                 </TableRow>
-              ) : taxTypes.length === 0 ? (
+              ) : families.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-10">
                     No records found
                   </TableCell>
                 </TableRow>
               ) : (
-                taxTypes.map((item) => (
+                families.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.code}</TableCell>
                     <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.value}%</TableCell>
+                    <TableCell>{item.taxTypeName ?? item.taxTypeId}</TableCell>
                     <TableCell>{item.description}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
@@ -160,25 +176,25 @@ export default function TaxTypesPage() {
           </Table>
         </div>
 
-        <TaxTypeForm
+        <ArticleFamilyForm
           open={isFormOpen}
           onOpenChange={setIsFormOpen}
           onSubmit={handleFormSubmit}
-          initialData={editingTaxType}
+          initialData={editingFamily}
         />
 
         <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+              <AlertDialogTitle>{tCommon("confirm")}</AlertDialogTitle>
               <AlertDialogDescription>
                 {t("deleteConfirm")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
               <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                Delete
+                {tCommon("delete")}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
