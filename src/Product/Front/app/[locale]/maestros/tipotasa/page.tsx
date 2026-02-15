@@ -13,7 +13,7 @@ import {
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
-import { TaxType, taxTypesApi } from "@/lib/api/tax-types-api";
+import { TaxType, CreateTaxTypeDto, taxTypesApi } from "@/lib/api/tax-types-api";
 import { TaxTypeForm } from "@/components/maestros/TaxTypeForm";
 import { toast } from "sonner";
 import {
@@ -29,6 +29,7 @@ import {
 
 export default function TaxTypesPage() {
   const t = useTranslations("taxTypes");
+  const tCommon = useTranslations("common");
   const [taxTypes, setTaxTypes] = useState<TaxType[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -73,7 +74,7 @@ export default function TaxTypesPage() {
     }
   };
 
-  const handleFormSubmit = async (values: any) => {
+  const handleFormSubmit = async (values: CreateTaxTypeDto) => {
     try {
       if (editingTaxType) {
         await taxTypesApi.update(editingTaxType.id, {
@@ -140,6 +141,7 @@ export default function TaxTypesPage() {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleEdit(item)}
+                          aria-label={tCommon("edit")}
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
@@ -148,6 +150,7 @@ export default function TaxTypesPage() {
                           size="icon"
                           className="text-destructive"
                           onClick={() => setDeleteId(item.id)}
+                          aria-label={tCommon("delete")}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

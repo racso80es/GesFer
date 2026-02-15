@@ -18,7 +18,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@shared/components/ui/form";
 import { Input } from "@shared/components/ui/input";
 import {
   Select,

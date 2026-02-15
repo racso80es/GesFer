@@ -9,7 +9,7 @@ import {
   FormProvider,
   useFormContext,
 } from "react-hook-form";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "../../lib/utils/cn";
 
 const Form = FormProvider;
 
@@ -43,11 +43,14 @@ const useFormField = () => {
   const fieldState = formContext.formState.errors[fieldContext?.name];
 
   return {
+    id: fieldContext?.name,
     name: fieldContext?.name,
     formItemId: `${fieldContext?.name}-form-item`,
     formDescriptionId: `${fieldContext?.name}-form-item-description`,
     formMessageId: `${fieldContext?.name}-form-item-message`,
-    ...fieldState,
+    error: fieldState,
+    isDirty: formContext.formState.dirtyFields[fieldContext?.name],
+    isTouched: formContext.formState.touchedFields[fieldContext?.name],
   };
 };
 
@@ -66,30 +69,48 @@ FormItem.displayName = "FormItem";
 const FormLabel = React.forwardRef<
   HTMLLabelElement,
   React.LabelHTMLAttributes<HTMLLabelElement>
->(({ className, ...props }, ref) => (
-  <label
-    ref={ref}
-    className={cn(
-      "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-      className
-    )}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  const { error, formItemId } = useFormField();
+
+  return (
+    <label
+      ref={ref}
+      className={cn(
+        "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+        error && "text-destructive",
+        className
+      )}
+      htmlFor={formItemId}
+      {...props}
+    />
+  );
+});
 FormLabel.displayName = "FormLabel";
 
 const FormControl = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ ...props }, ref) => <div ref={ref} {...props} />);
+  HTMLElement,
+  React.HTMLAttributes<HTMLElement>
+>(({ className, children, ...props }, ref) => {
+  const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
+  const child = React.Children.only(children) as React.ReactElement;
+
+  return React.cloneElement(child, {
+    id: formItemId,
+    "aria-describedby": !error
+      ? `${formDescriptionId}`
+      : `${formDescriptionId} ${formMessageId}`,
+    "aria-invalid": !!error,
+    className: cn(child.props.className, className),
+    ...props
+  });
+});
 FormControl.displayName = "FormControl";
 
 const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
-  const formField = useFormField();
-  const error = formField as { message?: string };
+  const { error, formMessageId } = useFormField();
   const body = (error?.message && typeof error.message === "string"
     ? error.message
     : null) ?? children;
@@ -99,6 +120,7 @@ const FormMessage = React.forwardRef<
   return (
     <p
       ref={ref}
+      id={formMessageId}
       className={cn("text-sm font-medium text-destructive", className)}
       {...props}
     >
