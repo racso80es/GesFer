@@ -26,7 +26,8 @@ public class GoldenRulesComplianceService
         _stateFilePath = Path.Combine(_rootPath, ".golden-rules-state.json");
         _entitiesPath = Path.Combine(_rootPath, "src", "Product", "Back", "domain", "Entities");
         _seedsPath = Path.Combine(_rootPath, "src"); // Simplificado para usar rutas relativas desde src
-        _testsPath = Path.Combine(_rootPath, "src", "Product", "Back", "IntegrationTests");
+        // KAIZEN: Ampliar búsqueda de tests a todo Product/Back para incluir tests modernos y legacy
+        _testsPath = Path.Combine(_rootPath, "src", "Product", "Back");
     }
 
     /// <summary>
@@ -402,6 +403,17 @@ public class GoldenRulesComplianceService
             }
         }
 
+        // KAIZEN: Buscar en JsonDataSeeder (donde están TaxType, Article, etc.)
+        var jsonDataSeederPath = Path.Combine(_seedsPath, "Product", "Back", "Infrastructure", "Services", "JsonDataSeeder.cs");
+        if (File.Exists(jsonDataSeederPath))
+        {
+            var content = await File.ReadAllTextAsync(jsonDataSeederPath);
+            if (content.Contains(entityName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
         // Si la entidad no necesita seeding explícito (como entidades de relación), considerar sincronizado
         var noSeedEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine" };
         if (noSeedEntities.Contains(entityName))
@@ -417,8 +429,9 @@ public class GoldenRulesComplianceService
     /// </summary>
     private async Task<bool> CheckTestsSyncAsync(string entityName, List<string> properties)
     {
-        // Buscar en TestDataSeeder
-        var testSeederPath = Path.Combine(_testsPath, "Helpers", "TestDataSeeder.cs");
+        // Buscar en TestDataSeeder (ubicado en IntegrationTests/Helpers)
+        // Nota: _testsPath ahora apunta a src/Product/Back, así que ajustamos la ruta relativa
+        var testSeederPath = Path.Combine(_testsPath, "IntegrationTests", "Helpers", "TestDataSeeder.cs");
         if (File.Exists(testSeederPath))
         {
             var content = await File.ReadAllTextAsync(testSeederPath);
@@ -428,11 +441,22 @@ public class GoldenRulesComplianceService
             }
         }
 
-        // Buscar tests específicos de la entidad
-        var testFiles = Directory.GetFiles(_testsPath, $"*{entityName}*Tests.cs", SearchOption.AllDirectories);
-        if (testFiles.Any())
+        // KAIZEN: Buscar tests específicos de la entidad en todo Product/Back (incluye IntegrationTests y tests/)
+        // Usar SearchOption.AllDirectories busca recursivamente
+        try
         {
-            return true;
+            if (Directory.Exists(_testsPath))
+            {
+                var testFiles = Directory.GetFiles(_testsPath, $"*{entityName}*Tests.cs", SearchOption.AllDirectories);
+                if (testFiles.Any())
+                {
+                    return true;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logService.WriteError($"Error buscando tests para {entityName} en {_testsPath}", ex);
         }
 
         // Si la entidad no necesita tests explícitos, considerar sincronizado
