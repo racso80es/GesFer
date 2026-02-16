@@ -4,6 +4,7 @@ import { CompanyForm } from "../../components/companies/company-form";
 import { CreateCompany, UpdateCompany, Company } from "@/lib/types/api";
 import { useEffect, useState } from "react";
 import { useTranslations } from 'next-intl';
+import { toast } from "sonner";
 
 export default function MyCompanyPage() {
   const [company, setCompany] = useState<Company | null>(null);
@@ -38,10 +39,10 @@ export default function MyCompanyPage() {
 
       const updatedData = await response.json();
       setCompany(updatedData);
-      alert(t('updatedSuccessfully'));
+      toast.success(t('updatedSuccessfully'));
     } catch (error) {
       console.error(error);
-      alert(t('updateError'));
+      toast.error(t('updateError'));
     }
   };
 
