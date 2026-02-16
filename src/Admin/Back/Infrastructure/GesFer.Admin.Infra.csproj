@@ -22,7 +22,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 
-    <ProjectReference Include="..\application\GesFer.Admin.Application.csproj" />
     <ProjectReference Include="..\domain\GesFer.Admin.Domain.csproj" />
     <ProjectReference Include="..\..\..\Shared\Back\GesFer.Shared.Back.Domain.csproj" />
     <ProjectReference Include="..\..\..\Shared\Back\Infrastructure\GesFer.Shared.Back.Infrastructure.csproj" />

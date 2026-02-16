@@ -1,6 +1,6 @@
 using GesFer.Admin.Application.Commands.Company;
 using GesFer.Admin.Application.DTOs.Company;
-using GesFer.Admin.Application.Common.Interfaces;
+using GesFer.Admin.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.ValueObjects;
 using MediatR;
@@ -10,9 +10,9 @@ namespace GesFer.Admin.Application.Handlers.Company;
 
 public class CreateCompanyHandler : IRequestHandler<CreateCompanyCommand, CompanyDto>
 {
-    private readonly IAdminDbContext _context;
+    private readonly AdminDbContext _context;
 
-    public CreateCompanyHandler(IAdminDbContext context)
+    public CreateCompanyHandler(AdminDbContext context)
     {
         _context = context;
     }
