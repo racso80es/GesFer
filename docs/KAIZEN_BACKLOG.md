@@ -4,24 +4,24 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 
 ## Pendientes
 
+(Ninguna acción pendiente prioritaria por el momento)
+
+## Completadas
+
 ### [Alta] Fix Console Build / Missing DbSet Companies
 *   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_14.md`, `docs/audits/AUDITORIA_KAIZEN_2026_02_15.md`
 *   **Descripción:** `GesFer.Console` falla al compilar debido a errores `CS1061` en `GesFer.Infrastructure`. `ApplicationDbContext` carece de `DbSet<Company>` adecuado (falta entidad en Product).
 *   **Impacto:** Bloquea la funcionalidad de la consola y la inicialización de datos.
-*   **Estado:** En Progreso (Rama `kaizen/console-stabilization`) - Iniciando implementación de `Company.cs`.
+*   **Estado:** Completado - `Company.cs` implementado y `ApplicationDbContext` actualizado.
 
 ### [Alta] Fix Benchmark Compilation Errors
 *   **Origen:** `docs/audits/AUDITORIA_BACKEND_2026_02_14.md`
 *   **Descripción:** El proyecto `GesFer.Performance.Benchmarks` falla al compilar debido a cambios en el dominio (`Article.Family` -> `Article.ArticleFamily`).
 *   **Impacto:** Bloquea la construcción de la solución completa.
-*   **Estado:** En Progreso (Rama `kaizen/2026-02-14-fix-benchmark-compilation`)
+*   **Estado:** Completado - Compilación verificada exitosa.
 
-### [Media] Fix "The Wall" Violation in Admin Tests
+### [Media] Fix "The Wall" Violation in Admin Application
 *   **Origen:** `docs/audits/AUDITORIA_BACKEND_2026_02_13.md`
-*   **Descripción:** `GesFer.Admin.UnitTests` referencia indebidamente a `GesFer.Infrastructure` (Product context).
+*   **Descripción:** `GesFer.Admin.Application` referenciaba indebidamente a `GesFer.Admin.Infra`, violando Clean Architecture.
 *   **Impacto:** Compromete la integridad arquitectónica y el aislamiento de contextos.
-*   **Estado:** Pendiente
-
-## Completadas
-
-(Ninguna acción completada en este ciclo aún)
+*   **Estado:** Completado - Se introdujo `IAdminDbContext` en Application, se eliminó la referencia a Infra, y se actualizó la inyección de dependencias.

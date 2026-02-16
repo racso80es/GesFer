@@ -1,6 +1,6 @@
 using GesFer.Admin.Application.Commands.Company;
 using GesFer.Admin.Application.DTOs.Company;
-using GesFer.Admin.Infrastructure.Data;
+using GesFer.Admin.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,9 +8,9 @@ namespace GesFer.Admin.Application.Handlers.Company;
 
 public class GetCompanyByIdHandler : IRequestHandler<GetCompanyByIdCommand, CompanyDto?>
 {
-    private readonly AdminDbContext _context;
+    private readonly IAdminDbContext _context;
 
-    public GetCompanyByIdHandler(AdminDbContext context)
+    public GetCompanyByIdHandler(IAdminDbContext context)
     {
         _context = context;
     }
