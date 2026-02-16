@@ -25,3 +25,20 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 *   **Descripción:** `GesFer.Admin.Application` referenciaba indebidamente a `GesFer.Admin.Infra`, violando Clean Architecture.
 *   **Impacto:** Compromete la integridad arquitectónica y el aislamiento de contextos.
 *   **Estado:** Completado - Se introdujo `IAdminDbContext` en Application, se eliminó la referencia a Infra, y se actualizó la inyección de dependencias.
+*   **Estado:** Pendiente
+
+### [Alta] Increase Unit Test Coverage in Product Domain
+*   **Origen:** `docs/audits/AUDITORIA_TESTS_2026_02_16.md`
+*   **Descripción:** La cobertura en `GesFer.Product.UnitTests` es crítica (~12%).
+*   **Impacto:** Riesgo alto de regresiones en la lógica de negocio central.
+*   **Estado:** Pendiente
+
+### [Media] Verify Architecture Test Coverage Reporting
+*   **Origen:** `docs/audits/AUDITORIA_TESTS_2026_02_16.md`
+*   **Descripción:** `GesFer.Architecture.Tests` reporta 0% de cobertura a pesar de tener una base válida grande.
+*   **Impacto:** Falsos positivos en métricas de salud.
+*   **Estado:** Pendiente
+
+## Completadas
+
+(Ninguna acción completada en este ciclo aún)
