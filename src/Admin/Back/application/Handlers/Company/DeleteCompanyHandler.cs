@@ -1,5 +1,5 @@
 using GesFer.Admin.Application.Commands.Company;
-using GesFer.Admin.Infrastructure.Data;
+using GesFer.Admin.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,9 +7,9 @@ namespace GesFer.Admin.Application.Handlers.Company;
 
 public class DeleteCompanyHandler : IRequestHandler<DeleteCompanyCommand>
 {
-    private readonly AdminDbContext _context;
+    private readonly IAdminDbContext _context;
 
-    public DeleteCompanyHandler(AdminDbContext context)
+    public DeleteCompanyHandler(IAdminDbContext context)
     {
         _context = context;
     }

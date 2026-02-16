@@ -1,12 +1,13 @@
 using GesFer.Admin.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Entities;
 using GesFer.Shared.Back.Infrastructure.Persistence;
+using GesFer.Admin.Application.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace GesFer.Admin.Infrastructure.Data;
 
-public class AdminDbContext : DbContext
+public class AdminDbContext : DbContext, IAdminDbContext
 {
     public AdminDbContext(DbContextOptions<AdminDbContext> options) : base(options)
     {

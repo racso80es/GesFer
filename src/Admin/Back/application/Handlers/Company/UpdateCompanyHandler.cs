@@ -1,6 +1,6 @@
 using GesFer.Admin.Application.Commands.Company;
 using GesFer.Admin.Application.DTOs.Company;
-using GesFer.Admin.Infrastructure.Data;
+using GesFer.Admin.Application.Common.Interfaces;
 using GesFer.Shared.Back.Domain.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,9 +9,9 @@ namespace GesFer.Admin.Application.Handlers.Company;
 
 public class UpdateCompanyHandler : IRequestHandler<UpdateCompanyCommand, CompanyDto>
 {
-    private readonly AdminDbContext _context;
+    private readonly IAdminDbContext _context;
 
-    public UpdateCompanyHandler(AdminDbContext context)
+    public UpdateCompanyHandler(IAdminDbContext context)
     {
         _context = context;
     }
