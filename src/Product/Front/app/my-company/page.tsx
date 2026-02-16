@@ -4,7 +4,7 @@ import { CompanyForm } from "../../components/companies/company-form";
 import { CreateCompany, UpdateCompany, Company } from "@/lib/types/api";
 import { useEffect, useState } from "react";
 import { useTranslations } from 'next-intl';
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
 export default function MyCompanyPage() {
   const [company, setCompany] = useState<Company | null>(null);

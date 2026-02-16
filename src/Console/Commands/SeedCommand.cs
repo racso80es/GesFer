@@ -167,7 +167,7 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
 
         // Connection string
         var connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
 
         // DbContext Product
         services.AddDbContext<ApplicationDbContext>(options =>
