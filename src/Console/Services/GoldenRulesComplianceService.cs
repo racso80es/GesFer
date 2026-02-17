@@ -447,10 +447,28 @@ public class GoldenRulesComplianceService
         {
             if (Directory.Exists(_testsPath))
             {
-                var testFiles = Directory.GetFiles(_testsPath, $"*{entityName}*Tests.cs", SearchOption.AllDirectories);
-                if (testFiles.Any())
+                var pluralEntityName = Pluralize(entityName);
+
+                // Buscar todos los archivos de test y filtrar con Regex para mayor precisión
+                // Esto evita falsos positivos (ej: ArticleFamily matching Article)
+                var allTestFiles = Directory.GetFiles(_testsPath, "*Tests.cs", SearchOption.AllDirectories);
+
+                var patterns = new[]
                 {
-                    return true;
+                    $".*{Regex.Escape(entityName)}(Controller)?Tests\\.cs$",
+                    $".*{Regex.Escape(pluralEntityName)}(Controller)?Tests\\.cs$"
+                };
+
+                foreach (var file in allTestFiles)
+                {
+                    var fileName = Path.GetFileName(file);
+                    foreach (var pattern in patterns)
+                    {
+                        if (Regex.IsMatch(fileName, pattern, RegexOptions.IgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
                 }
             }
         }
@@ -467,6 +485,38 @@ public class GoldenRulesComplianceService
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Pluraliza una palabra en inglés de forma simple
+    /// </summary>
+    private string Pluralize(string word)
+    {
+        if (string.IsNullOrEmpty(word)) return word;
+
+        if (word.EndsWith("y", StringComparison.OrdinalIgnoreCase))
+        {
+            // Check if vowel before y
+            if (word.Length > 1)
+            {
+                var before = word[word.Length - 2];
+                if ("aeiouAEIOU".IndexOf(before) == -1)
+                {
+                    return word.Substring(0, word.Length - 1) + "ies";
+                }
+            }
+        }
+
+        if (word.EndsWith("s", StringComparison.OrdinalIgnoreCase) ||
+            word.EndsWith("x", StringComparison.OrdinalIgnoreCase) ||
+            word.EndsWith("z", StringComparison.OrdinalIgnoreCase) ||
+            word.EndsWith("ch", StringComparison.OrdinalIgnoreCase) ||
+            word.EndsWith("sh", StringComparison.OrdinalIgnoreCase))
+        {
+            return word + "es";
+        }
+
+        return word + "s";
     }
 
     /// <summary>
