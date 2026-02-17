@@ -91,7 +91,6 @@ public static class DbInitializer
 
             var companyInfo = $" (Empresa: {companyName ?? adminUser.CompanyId.ToString()}, CompanyId: {adminUser.CompanyId})";
             logger.LogInformation("✅ Smoke Test Superado: Usuario 'admin' verificado correctamente{CompanyInfo}", companyInfo);
-            Console.WriteLine($"    ✅ Smoke Test Superado: Usuario 'admin' verificado{companyInfo}");
 
             logger.LogInformation("=== Inicialización de base de datos completada exitosamente ===");
         }
@@ -129,7 +128,7 @@ public static class DbInitializer
         {
             var result = await seeder.SeedDemoDataAsync();
             if (result.Loaded && result.Entities.Any())
-                Console.WriteLine($"    Seeds cargados: {string.Join(", ", result.Entities)}");
+                logger.LogInformation("Seeds cargados: {Entities}", string.Join(", ", result.Entities));
         }
     }
 
@@ -149,14 +148,12 @@ public static class DbInitializer
         {
             var errorMessage = "🔥 FALLO CRÍTICO: Usuario 'admin' existe pero no se pudo cargar. Estado inconsistente detectado.";
             logger.LogError(errorMessage);
-            Console.WriteLine($"    ❌ {errorMessage}");
             throw new Exception(errorMessage);
         }
         if (adminUser.CompanyId == Guid.Empty || adminUser.CompanyId == default(Guid))
         {
             var errorMessage = $"🔥 FALLO CRÍTICO DE INTEGRIDAD REFERENCIAL: El usuario 'admin' no tiene CompanyId vinculado (CompanyId: {adminUser.CompanyId}). El sistema sería inaccesible. Revise la vinculación en demo-data.json.";
             logger.LogError(errorMessage);
-            Console.WriteLine($"    ❌ {errorMessage}");
             throw new Exception(errorMessage);
         }
         string? companyName = null;
@@ -168,7 +165,6 @@ public static class DbInitializer
             {
                 var errorMessage = $"🔥 FALLO CRÍTICO DE INTEGRIDAD REFERENCIAL: El usuario 'admin' tiene CompanyId ({adminUser.CompanyId}) pero la empresa no existe en Admin API. Revise la vinculación en demo-data.json.";
                 logger.LogError(errorMessage);
-                Console.WriteLine($"    ❌ {errorMessage}");
                 throw new Exception(errorMessage);
             }
             companyName = company.Name;
@@ -178,16 +174,13 @@ public static class DbInitializer
         if (companyName != null && companyName != EXPECTED_ADMIN_COMPANY_NAME)
         {
             logger.LogWarning("⚠️ ADVERTENCIA: El usuario 'admin' está vinculado a '{Name}' en lugar de '{Expected}'.", companyName, EXPECTED_ADMIN_COMPANY_NAME);
-            Console.WriteLine($"    ⚠ ADVERTENCIA: admin vinculado a '{companyName}'");
         }
         if (adminUser.CompanyId.ToString() != EXPECTED_ADMIN_COMPANY_ID)
         {
             logger.LogWarning("⚠️ ADVERTENCIA: El usuario 'admin' tiene CompanyId '{Id}' en lugar del esperado '{Expected}'.", adminUser.CompanyId, EXPECTED_ADMIN_COMPANY_ID);
-            Console.WriteLine($"    ⚠ ADVERTENCIA: CompanyId admin = {adminUser.CompanyId}");
         }
         var companyInfo = $" (Empresa: {companyName ?? adminUser.CompanyId.ToString()}, CompanyId: {adminUser.CompanyId})";
         logger.LogInformation("✅ Smoke Test Superado: Usuario 'admin' verificado correctamente{CompanyInfo}", companyInfo);
-        Console.WriteLine($"    ✅ Smoke Test Superado: Usuario 'admin' verificado{companyInfo}");
     }
 
     /// <summary>
@@ -228,8 +221,7 @@ public static class DbInitializer
                 try
                 {
                     await context.Database.MigrateAsync();
-                    logger.LogInformation("Migraciones aplicadas correctamente");
-                    Console.WriteLine($"    Migraciones aplicadas: {string.Join(", ", pendingMigrationsList)}");
+                    logger.LogInformation("Migraciones aplicadas correctamente. Migraciones: {Migrations}", string.Join(", ", pendingMigrationsList));
                 }
                 catch (Exception migrateEx)
                 {
@@ -248,8 +240,7 @@ public static class DbInitializer
 
                         if (appliedMigrationsList.Any())
                         {
-                            logger.LogInformation("Las migraciones ya están aplicadas. La base de datos está actualizada.");
-                            Console.WriteLine($"    Migraciones ya aplicadas: {string.Join(", ", appliedMigrationsList)}");
+                            logger.LogInformation("Las migraciones ya están aplicadas. La base de datos está actualizada. Migraciones: {Migrations}", string.Join(", ", appliedMigrationsList));
                         }
                         else
                         {
@@ -290,7 +281,6 @@ public static class DbInitializer
             else
             {
                 logger.LogInformation("No hay migraciones pendientes. La base de datos está actualizada.");
-                Console.WriteLine("    Migraciones: ninguna pendiente");
             }
         }
         catch (InvalidOperationException)

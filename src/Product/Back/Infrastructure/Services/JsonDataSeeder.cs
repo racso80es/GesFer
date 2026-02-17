@@ -92,12 +92,10 @@ public class JsonDataSeeder
         if (!Directory.Exists(_seedsPath))
         {
             _logger.LogWarning("No se encontró la carpeta de seeds. Se esperaba en: {Path}", _seedsPath);
-            Console.WriteLine($"    ⚠ Advertencia: Carpeta de seeds no encontrada. Buscando en: {_seedsPath}");
         }
         else
         {
             _logger.LogInformation("Carpeta de seeds encontrada: {Path}", _seedsPath);
-            Console.WriteLine($"    ✓ Carpeta de seeds encontrada: {_seedsPath}");
         }
     }
 
@@ -417,7 +415,6 @@ public class JsonDataSeeder
         }
 
         _logger.LogInformation("Datos de prueba cargados correctamente");
-        Console.WriteLine("Datos de prueba cargados correctamente");
 
         // CRÍTICO: Limpiar el ChangeTracker para forzar a EF Core a consultar la base de datos real
         // en lugar de usar objetos en memoria. Esto asegura que los datos sembrados estén disponibles
@@ -665,7 +662,6 @@ public class JsonDataSeeder
                     // IMPORTANTE: En entorno real, esto debería comunicarse de forma segura.
                     // Aquí lo logueamos como Warning para que el desarrollador lo vea en la consola al iniciar.
                     _logger.LogWarning("[SEED SECURE] 🔐 Generated RANDOM password for user '{Username}': {Password}", userData.Username, randomPwd);
-                    Console.WriteLine($"    🔐 Clave generada para '{userData.Username}': {randomPwd}");
                 }
                 else
                 {
@@ -746,7 +742,6 @@ public class JsonDataSeeder
         {
             _logger.LogWarning("[SEED] Users: {SkippedCount} registro(s) ignorado(s) por Violación de Dominio (Email inválido) o empresa padre inexistente de {TotalCount} totales",
                 skippedCount, users.Count);
-            Console.WriteLine($"    ⚠ Users: {skippedCount} registro(s) ignorado(s) por datos inválidos");
         }
 
         _logger.LogInformation("[SEED] Users procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales",
@@ -1068,7 +1063,6 @@ public class JsonDataSeeder
         {
             _logger.LogWarning("[SEED] Suppliers: {SkippedCount} registro(s) ignorado(s) por empresa padre inexistente de {TotalCount} totales",
                 skippedCount, suppliers.Count);
-            Console.WriteLine($"    ⚠ Suppliers: {skippedCount} registro(s) ignorado(s) por datos inválidos");
         }
 
         _logger.LogInformation("[SEED] Suppliers procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales",
@@ -1174,7 +1168,6 @@ public class JsonDataSeeder
         {
             _logger.LogWarning("[SEED] Customers: {SkippedCount} registro(s) ignorado(s) por Violación de Dominio (Email/TaxId inválidos) o empresa padre inexistente de {TotalCount} totales",
                 skippedCount, customers.Count);
-            Console.WriteLine($"    ⚠ Customers: {skippedCount} registro(s) ignorado(s) por datos inválidos");
         }
 
         _logger.LogInformation("[SEED] Customers procesados: {ProcessedCount} exitoso(s), {SkippedCount} ignorado(s) de {TotalCount} totales",
