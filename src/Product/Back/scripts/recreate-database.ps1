@@ -36,18 +36,18 @@ Write-Host "   MySQL esta listo" -ForegroundColor Green
 # Esperar un poco mas para asegurar que MySQL este completamente listo
 Start-Sleep -Seconds 3
 
-# Ejecutar InitDatabase.cs para recrear todas las tablas
+# Ejecutar GesFer.Console para recrear todas las tablas
 Write-Host "3. Recreando estructura de base de datos..." -ForegroundColor Yellow
 $scriptsPath = $PSScriptRoot
-$initDatabasePath = Join-Path $scriptsPath "InitDatabase.csproj"
+$consoleProjectPath = Join-Path $scriptsPath "../../../Console/GesFer.Console.csproj"
 
-if (-not (Test-Path $initDatabasePath)) {
-    Write-Host "ERROR: No se encontro InitDatabase.csproj" -ForegroundColor Red
+if (-not (Test-Path $consoleProjectPath)) {
+    Write-Host "ERROR: No se encontro GesFer.Console.csproj en $consoleProjectPath" -ForegroundColor Red
     exit 1
 }
 
-Set-Location $scriptsPath
-dotnet run --project InitDatabase.csproj
+# Ejecutar el comando de inicialización de base de datos (--step8)
+dotnet run --project $consoleProjectPath -- --step8
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: No se pudieron crear las tablas" -ForegroundColor Red
