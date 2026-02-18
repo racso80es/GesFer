@@ -107,7 +107,7 @@ export function CompanyForm({
   const handleSubmit = async (values: FormValues) => {
     setSubmitError(null);
     try {
-      const dataToSubmit: any = { ...values };
+      const dataToSubmit: Partial<CreateCompany & UpdateCompany> = { ...values };
 
       // Handle languageId logic
       if (dataToSubmit.languageId) {
@@ -115,13 +115,13 @@ export function CompanyForm({
       } else {
         delete dataToSubmit.languageId;
       }
-      
+
       // Clean empty strings for optional fields
       if (!dataToSubmit.email) delete dataToSubmit.email;
       if (!dataToSubmit.phone) delete dataToSubmit.phone;
       if (!dataToSubmit.taxId) delete dataToSubmit.taxId;
 
-      await onSubmit(dataToSubmit);
+      await onSubmit(dataToSubmit as CreateCompany | UpdateCompany);
     } catch (error) {
       setSubmitError(
         error instanceof Error ? error.message : t("saveError")
