@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { CompanyForm } from './company-form';
+import type { Company } from '@/lib/types/api';
 
 // Mock translations
 jest.mock('next-intl', () => ({
@@ -62,11 +63,12 @@ describe('CompanyForm', () => {
   });
 
   it('handles edit mode correctly', () => {
-     const initialData: any = {
+     const initialData: Company = {
          id: '1',
          name: 'Existing Company',
          address: 'Existing Address',
-         isActive: true
+         isActive: true,
+         createdAt: new Date().toISOString()
      };
 
      render(

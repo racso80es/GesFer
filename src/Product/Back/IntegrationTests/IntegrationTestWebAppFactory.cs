@@ -96,7 +96,7 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
         var envVar = Environment.GetEnvironmentVariable("TEST_USE_IN_MEMORY");
         if (!string.IsNullOrEmpty(envVar) && (envVar == "1" || envVar.ToLower() == "true"))
         {
-            Console.WriteLine("[IntegrationTestWebAppFactory] TEST_USE_IN_MEMORY detected. Force InMemory.");
+            System.Diagnostics.Debug.WriteLine("[IntegrationTestWebAppFactory] TEST_USE_IN_MEMORY detected. Force InMemory.");
             _useInMemory = true;
             await InitializeInMemoryAsync();
             return;
@@ -105,7 +105,7 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
         // 2. Check Docker Availability
         if (!IsDockerAvailable())
         {
-            Console.WriteLine("[IntegrationTestWebAppFactory] Docker not detected. Switching to InMemory mode.");
+            System.Diagnostics.Debug.WriteLine("[IntegrationTestWebAppFactory] Docker not detected. Switching to InMemory mode.");
             _useInMemory = true;
             await InitializeInMemoryAsync();
             return;
@@ -132,7 +132,7 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"[IntegrationTestWebAppFactory] Docker container failed to start. Switching to InMemory. Error: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"[IntegrationTestWebAppFactory] Docker container failed to start. Switching to InMemory. Error: {ex.Message}");
             _useInMemory = true;
             await InitializeInMemoryAsync();
         }
