@@ -1,5 +1,6 @@
 # EVOLUTION LOG
 
+[2026-02-17] [Product Unit Tests Expansion] [Implemented comprehensive unit tests for ArticleFamilies handlers (Create, Update, Delete, GetById, GetAll) using InMemoryDatabase. Achieved 100% pass rate (41 tests) in GesFer.Product.UnitTests, significantly improving coverage for the Product domain as per audit recommendations.] [S+ Stable]
 [2026-02-15] [Backend Kaizen Audit Execution] [Refactored DbInitializer and JsonDataSeeder to remove prohibited Console.WriteLine calls, replacing them with ILogger. Verified GesFer.IntegrationTests (108 passed) and GesFer.Product.UnitTests (22 passed). Certified "Healthy" state.] [S+ Stable]
 [2026-02-15] [Frontend Kaizen Audit Execution] [Replaced native 'alert()' with 'sonner' toast notifications in 'my-company/page.tsx' to improve UX. Verified with existing tests. Verified Backend Integration Tests (108 passed).] [Completed]
 [2026-02-14] [Frontend Kaizen Audit Execution] [Refactored Product Form component to Shared/Front/components/ui/form.tsx. Fixed A11y (missing htmlFor/id linkage) in Form. Updated TaxTypeForm and ArticleFamilyForm usages. Replaced 'any' with CreateTaxTypeDto in TaxTypesPage. Added A11y aria-labels to page actions. Added TaxTypeForm unit test.] [Completed]
