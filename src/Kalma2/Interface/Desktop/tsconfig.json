@@ -17,7 +17,7 @@
     "jsx": "react-jsx",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["reflect-metadata", "node"]
+    "types": ["reflect-metadata", "node", "vitest/globals", "@testing-library/jest-dom"]
   },
   "include": ["src", "electron"],
   "references": [{ "path": "./tsconfig.node.json" }]
