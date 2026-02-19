@@ -10,10 +10,10 @@ namespace GesFer.Application.Handlers.User;
 
 public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly IAdminApiClient _adminApiClient;
 
-    public UpdateUserCommandHandler(ApplicationDbContext context, IAdminApiClient adminApiClient)
+    public UpdateUserCommandHandler(ProductDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
         _adminApiClient = adminApiClient;

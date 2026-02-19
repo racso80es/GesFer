@@ -1,8 +1,11 @@
 using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
+using GesFer.Product.Back.Infrastructure.Services;
+using GesFer.Product.Back.Infrastructure.DTOs;
 using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Shared.Back.Domain.Services;
+using GesFer.Product.Back.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,7 +35,7 @@ public class DbInitializerTests
 
         // DbContext (InMemory)
         var dbName = Guid.NewGuid().ToString();
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
             options.UseInMemoryDatabase(databaseName: dbName));
 
         // IConfiguration (JsonDataSeeder usa SeedConfig.GetValidCompanyIds)
@@ -43,6 +46,19 @@ public class DbInitializerTests
 
         // Dependencies
         services.AddScoped<JsonDataSeeder>();
+        services.AddScoped<IMigrationService, ProductMigrationService>();
+        services.AddScoped<IIntegrityCheckService, ProductIntegrityService>();
+        services.AddScoped<DbInitializer>();
+
+        // Mock AdminApiClient
+        var mockAdminClient = new Mock<IAdminApiClient>();
+        mockAdminClient.Setup(c => c.GetCompanyAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new AdminCompanyDto
+            {
+                Id = Guid.Parse("550e8400-e29b-41d4-a716-446655440000"),
+                Name = "Empresa Admin"
+            });
+        services.AddSingleton(mockAdminClient.Object);
 
         // Mock Sanitizer (We will use a real instance or mock to verify calls)
         // Since we want to test the flow, let's use a real one if available or a mock that behaves deterministically
@@ -54,11 +70,15 @@ public class DbInitializerTests
         var serviceProvider = services.BuildServiceProvider();
 
         // Act
-        await DbInitializer.InitializeAsync(serviceProvider, isDevelopment: true);
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+            await initializer.InitializeAsync();
+        }
 
         // Assert
-        using var scope = serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        using var scopeAssert = serviceProvider.CreateScope();
+        var context = scopeAssert.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         var admin = await context.Users
             .IgnoreQueryFilters()

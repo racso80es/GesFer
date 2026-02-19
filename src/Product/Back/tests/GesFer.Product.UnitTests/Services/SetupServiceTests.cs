@@ -28,7 +28,7 @@ public class SetupServiceTests
     private readonly Mock<ISensitiveDataSanitizer> _sanitizerMock;
     private readonly Mock<ISequentialGuidGenerator> _guidGeneratorMock;
     private readonly Mock<ILogger<MasterDataSeeder>> _masterDataSeederLoggerMock;
-    private readonly ApplicationDbContext _dbContext;
+    private readonly ProductDbContext _dbContext;
 
     public SetupServiceTests()
     {
@@ -42,10 +42,10 @@ public class SetupServiceTests
         _guidGeneratorMock = new Mock<ISequentialGuidGenerator>();
         _masterDataSeederLoggerMock = new Mock<ILogger<MasterDataSeeder>>();
 
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<ProductDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-        _dbContext = new ApplicationDbContext(options);
+        _dbContext = new ProductDbContext(options);
 
         // Setup Service Provider and Scopes
         _serviceScopeMock.Setup(x => x.ServiceProvider).Returns(_serviceProviderMock.Object);
@@ -53,7 +53,7 @@ public class SetupServiceTests
         _serviceProviderMock.Setup(x => x.GetService(typeof(IServiceScopeFactory))).Returns(_serviceScopeFactoryMock.Object);
 
         // Setup Dependency Resolution
-        _serviceProviderMock.Setup(x => x.GetService(typeof(ApplicationDbContext))).Returns(_dbContext);
+        _serviceProviderMock.Setup(x => x.GetService(typeof(ProductDbContext))).Returns(_dbContext);
         _serviceProviderMock.Setup(x => x.GetService(typeof(ILogger<SetupService>))).Returns(_loggerMock.Object);
 
         // Setup JsonDataSeeder (using concrete class as we cannot mock it easily, but it handles missing files gracefully)

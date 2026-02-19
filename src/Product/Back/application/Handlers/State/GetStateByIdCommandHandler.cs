@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.State;
 
 public class GetStateByIdCommandHandler : ICommandHandler<GetStateByIdCommand, StateDto?>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public GetStateByIdCommandHandler(ApplicationDbContext context)
+    public GetStateByIdCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

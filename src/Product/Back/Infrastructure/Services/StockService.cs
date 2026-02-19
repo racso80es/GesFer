@@ -10,9 +10,9 @@ namespace GesFer.Infrastructure.Services;
 /// </summary>
 public class StockService : IStockService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public StockService(ApplicationDbContext context)
+    public StockService(ProductDbContext context)
     {
         _context = context;
     }
