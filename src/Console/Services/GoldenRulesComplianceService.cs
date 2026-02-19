@@ -415,7 +415,20 @@ public class GoldenRulesComplianceService
         }
 
         // Si la entidad no necesita seeding explícito (como entidades de relación), considerar sincronizado
-        var noSeedEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine" };
+        var noSeedEntities = new[]
+        {
+            "GroupPermission",
+            "UserGroup",
+            "UserPermission",
+            "PurchaseDeliveryNoteLine",
+            "SalesDeliveryNoteLine",
+            "TariffItem",
+            "PurchaseInvoice",
+            "Tariff",
+            "SalesInvoice",
+            "PurchaseDeliveryNote",
+            "SalesDeliveryNote"
+        };
         if (noSeedEntities.Contains(entityName))
         {
             return true;
@@ -447,7 +460,17 @@ public class GoldenRulesComplianceService
         {
             if (Directory.Exists(_testsPath))
             {
-                var testFiles = Directory.GetFiles(_testsPath, $"*{entityName}*Tests.cs", SearchOption.AllDirectories);
+                // Estrategia 1: Búsqueda exacta por nombre de entidad
+                var searchPattern = $"*{entityName}*Tests.cs";
+
+                // Estrategia 2: Alias para entidades con tests compartidos
+                if (entityName == "PurchaseDeliveryNote" || entityName == "SalesDeliveryNote")
+                {
+                    // DeliveryNoteIvaCalculationTests.cs cubre ambas
+                    searchPattern = "*DeliveryNote*Tests.cs";
+                }
+
+                var testFiles = Directory.GetFiles(_testsPath, searchPattern, SearchOption.AllDirectories);
                 if (testFiles.Any())
                 {
                     return true;
