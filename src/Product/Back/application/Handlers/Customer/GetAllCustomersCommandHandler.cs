@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.Customer;
 
 public class GetAllCustomersCommandHandler : ICommandHandler<GetAllCustomersCommand, List<CustomerDto>>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public GetAllCustomersCommandHandler(ApplicationDbContext context)
+    public GetAllCustomersCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

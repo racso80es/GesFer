@@ -7,9 +7,9 @@ namespace GesFer.Application.Handlers.TaxTypes;
 
 public class UpdateTaxTypeCommandHandler : ICommandHandler<UpdateTaxTypeCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public UpdateTaxTypeCommandHandler(ApplicationDbContext context)
+    public UpdateTaxTypeCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

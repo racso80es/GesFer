@@ -32,7 +32,7 @@ public static class DependencyInjection
 
         var isDevelopment = environment?.IsDevelopment() ?? false;
 
-        services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+        services.AddDbContext<ProductDbContext>((serviceProvider, options) =>
         {
             if (environment?.IsEnvironment("Testing") == true)
             {
@@ -75,6 +75,9 @@ public static class DependencyInjection
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IStockService, StockService>();
         services.AddScoped<JsonDataSeeder>();
+        services.AddScoped<IMigrationService, ProductMigrationService>();
+        services.AddScoped<IIntegrityCheckService, ProductIntegrityService>();
+        services.AddScoped<DbInitializer>();
 
         // HttpClient para comunicación con Admin API
         if (environment?.IsEnvironment("Testing") == true)

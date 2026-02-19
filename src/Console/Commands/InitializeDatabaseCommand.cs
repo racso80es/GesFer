@@ -7,6 +7,7 @@ using GesFer.ConsoleApp.Commands.Base;
 using GesFer.ConsoleApp.Commands.Dtos;
 using GesFer.ConsoleApp.Services;
 using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Services;
 using GesFer.Shared.Back.Domain.Services;
 using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -82,7 +83,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             var connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ProductDbContext>(options =>
             {
                 options.UseMySql(
                     connectionString,
@@ -144,16 +145,28 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
             services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
 
+            services.AddScoped<IMigrationService, ProductMigrationService>();
+            services.AddScoped<IIntegrityCheckService, ProductIntegrityService>();
+            services.AddScoped<DbInitializer>();
+
+            var adminApiBaseUrl = configuration["AdminApi:BaseUrl"] ?? "http://localhost:5010";
+            services.AddHttpClient<IAdminApiClient, AdminApiClient>(client =>
+            {
+                client.BaseAddress = new Uri(adminApiBaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(5);
+            });
+
             var serviceProvider = services.BuildServiceProvider();
             
             using (serviceProvider as IDisposable)
             {
                 var scope = serviceProvider.CreateScope();
                 var scopedServices = scope.ServiceProvider;
-                var productContext = scopedServices.GetRequiredService<ApplicationDbContext>();
+                var productContext = scopedServices.GetRequiredService<ProductDbContext>();
                 var adminContext = scopedServices.GetRequiredService<AdminDbContext>();
                 var adminSeeder = scopedServices.GetRequiredService<AdminJsonDataSeeder>();
                 var logger = scopedServices.GetRequiredService<ILogger<InitializeDatabaseCommand>>();
+                var dbInitializer = scopedServices.GetRequiredService<DbInitializer>();
 
                 if (isDetailed) _logService.WriteLog("Eliminando base de datos para empezar de 0...");
                 
@@ -178,8 +191,8 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     try
                     {
                         var connectionStringWithoutDb = connectionString.Replace("Database=ScrapDb;", "");
-                        using var tempContext = new ApplicationDbContext(
-                            new DbContextOptionsBuilder<ApplicationDbContext>()
+                        using var tempContext = new ProductDbContext(
+                            new DbContextOptionsBuilder<ProductDbContext>()
                                 .UseMySql(connectionStringWithoutDb, new MySqlServerVersion(new Version(8, 0, 0)))
                                 .Options);
                         
@@ -209,7 +222,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     // Orden de carga de seeds: 1 - Maestros, 2 - Admin, 3 - Product
                     // 3) Datos maestros (siempre)
                     if (isDetailed) _logService.WriteLog("Cargando datos maestros...");
-                    await DbInitializer.SeedMasterDataAsync(productContext, scopedServices, logger);
+                    await dbInitializer.SeedMasterDataAsync();
 
                     // 4) Datos Admin (companies + admin-users) de forma conjunta
                     if (isDetailed) _logService.WriteLog("Cargando seeds de Admin...");
@@ -222,8 +235,8 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
 
                     // 5) Datos Product (demo-data)
                     if (isDetailed) _logService.WriteLog("Cargando datos de producto (demo)...");
-                    await DbInitializer.SeedDemoDataAsync(productContext, scopedServices, logger);
-                    await DbInitializer.EnsureAdminUserAndSmokeTestAsync(productContext, scopedServices, logger);
+                    await dbInitializer.SeedDemoDataAsync();
+                    await dbInitializer.EnsureAdminUserAndSmokeTestAsync();
 
                     var migrationsAfter = await productContext.Database.GetAppliedMigrationsAsync();
                     var appliedMigrations = migrationsAfter.Except(migrationsBefore).ToList();

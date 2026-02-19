@@ -29,7 +29,7 @@ public class AuditLogService : IAuditLogService
         {
             var auditLog = new AuditLog
             {
-                // El Id se generará automáticamente como Sequential GUID por ApplicationDbContext
+                // El Id se generará automáticamente como Sequential GUID por ProductDbContext
                 CursorId = cursorId,
                 Username = username,
                 Action = action,
