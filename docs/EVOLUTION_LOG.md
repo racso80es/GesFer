@@ -1,5 +1,6 @@
 # EVOLUTION LOG
 
+[2026-02-18] [Product Back Kaizen Coverage] [Created comprehensive unit tests for PurchaseDeliveryNote and SalesDeliveryNote Handlers (Create/Confirm) using InMemoryDatabase and Moq. Addressed critical coverage gap in Product domain. 4 new test classes added with 8 scenarios covering validation, stock updates, and edge cases. 100% pass rate.] [S+ Stable]
 [2026-02-17] [Product Unit Tests Expansion] [Implemented comprehensive unit tests for ArticleFamilies handlers (Create, Update, Delete, GetById, GetAll) using InMemoryDatabase. Achieved 100% pass rate (41 tests) in GesFer.Product.UnitTests, significantly improving coverage for the Product domain as per audit recommendations.] [S+ Stable]
 [2026-02-17] [Backend Audit Execution] [Cleaned up legacy scripts (InitDatabase.cs, GenerateHash) and replaced usage with GesFer.Console. Refactored IntegrationTestWebAppFactory to use Debug.WriteLine instead of Console.WriteLine. Verified build.] [S+ Stable]
 [2026-02-15] [Backend Kaizen Audit Execution] [Refactored DbInitializer and JsonDataSeeder to remove prohibited Console.WriteLine calls, replacing them with ILogger. Verified GesFer.IntegrationTests (108 passed) and GesFer.Product.UnitTests (22 passed). Certified "Healthy" state.] [S+ Stable]
@@ -40,7 +41,7 @@
 [2026-02-12] [Refactor Frontend Terminology & Type Safety (Product)] [Fixed 'Empresa' defaults in Product Login/Env. Removed 'any' in Logger with new LogProperties interface. Verified via tests and manual check.] [Completed]
 [2026-02-12] [KZ-BACK-001 Refactor LogController DTOs] [Extracted nested DTOs to src/Admin/Back/application/Dtos/Logs/. Updated LogController and Tests.] [S+ Stable]
 [2026-02-12] [KZ-BACK-002 Stabilize Audit Tests] [Verified AuditLogServiceTests use range assertions (BeCloseTo) for timestamps. Verified Integration Tests.] [S+ Stable]
-[2026-02-12] [Document Company Entity Usage] [Added documentation to Shared and Product Company entities to clarify inheritance and usage.] [S+ Stable]
+[2026-02-12] [Document Company Usage] [Added documentation to Shared and Product Company entities to clarify inheritance and usage.] [S+ Stable]
 [2026-02-13] [Auditoría Frontend] [FALLA CRÍTICA: 4 violaciones de 'empresa' detectadas] [Requiere Acción]
 [2026-02-13] [Kaizen Test Coverage & Config] [Added .runsettings to exclude Migrations/Designer files. Enhanced SensitiveDataSanitizerTests (4 new tests). Added Unit Tests for Company & PostalCode Commands (6 new tests). All tests passing.] [S+ Stable]
 [2026-02-14] [Frontend Kaizen Audit Resolution] [Refactored Backend LoginRequestDto to support English keys (Company, Username, Password). Mapped new keys in AuthController. Updated Frontend legacy-constants to use English keys, eliminating 'empresa' violation. Verified with new Backend Integration Test and existing Frontend Tests.] [Completed]
@@ -51,5 +52,4 @@
 [2026-02-14] [Fix Backend Build & Audit] [Fixed ApplicationDbContext missing Companies DbSet blocking Infrastructure build. Verified StockBenchmark stability (builds & runs). Verified Admin UnitTests architecture (clean).] [S+ Stable]
 [2026-02-15] [SeedCommand Optimization & Entity Restoration] [Refactored SeedCommand.cs to remove inefficient Task.Run wrapper. Fixed ApplicationDbContext.cs duplicate DbSet definitions. Restored missing Product Company entity file. Verified Compilation and Tests (E2E passed).] [S+ Stable]
 [2026-02-15] [Frontend Kaizen Audit Resolution] [Refactored CompanyForm to use react-hook-form/zod/Shared UI. Added unit tests for CompanyForm. Verified audit fixes (alert removed in my-company/page.tsx, any removed in tax-types/page.tsx). Lint & Tests passing.] [Completed]
-
 [2026-02-15] [Frontend Kaizen Audit Resolution Phase 2] [Moved 'my-company/page.tsx' to '[locale]/my-company' for proper routing. Refactored 'CompanyForm' and tests to strictly remove 'any' usage. Verified lint and tests.] [Completed]
