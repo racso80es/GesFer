@@ -39,6 +39,12 @@ const getLanguageId = (value: string | undefined): string | undefined => {
   return option?.value;
 };
 
+const languageNames: Record<string, Record<string, string>> = {
+  es: { es: "Español", en: "English", ca: "Català" },
+  en: { es: "Spanish", en: "English", ca: "Catalan" },
+  ca: { es: "Espanyol", en: "Anglès", ca: "Català" },
+};
+
 const formSchema = z.object({
   name: z.string().min(1, "nameRequired"),
   taxId: z.string().optional(),
@@ -78,12 +84,6 @@ export function CompanyForm({
     typeof window !== "undefined"
       ? window.location.pathname.split("/")[1] || "es"
       : "es";
-
-  const languageNames: Record<string, Record<string, string>> = {
-    es: { es: "Español", en: "English", ca: "Català" },
-    en: { es: "Spanish", en: "English", ca: "Catalan" },
-    ca: { es: "Espanyol", en: "Anglès", ca: "Català" },
-  };
 
   const currentLanguageNames = languageNames[locale] || languageNames.es;
 
