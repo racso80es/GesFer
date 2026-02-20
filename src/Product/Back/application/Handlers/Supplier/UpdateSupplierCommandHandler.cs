@@ -1,16 +1,16 @@
 using GesFer.Application.Commands.Supplier;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Supplier;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.Supplier;
 
 public class UpdateSupplierCommandHandler : ICommandHandler<UpdateSupplierCommand, SupplierDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public UpdateSupplierCommandHandler(ApplicationDbContext context)
+    public UpdateSupplierCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

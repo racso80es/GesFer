@@ -113,7 +113,7 @@ public class GroupControllerTests : IClassFixture<CustomWebApplicationFactory<Pr
     private async Task SeedTestDataAsync()
     {
         using var scope = _factory.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
         await context.Database.EnsureDeletedAsync();
         await context.Database.EnsureCreatedAsync();
         await TestDataSeeder.SeedTestDataAsync(context);

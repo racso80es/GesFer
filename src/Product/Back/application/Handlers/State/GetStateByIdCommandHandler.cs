@@ -1,16 +1,16 @@
 using GesFer.Application.Commands.State;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.State;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.State;
 
 public class GetStateByIdCommandHandler : ICommandHandler<GetStateByIdCommand, StateDto?>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public GetStateByIdCommandHandler(ApplicationDbContext context)
+    public GetStateByIdCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

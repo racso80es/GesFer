@@ -1,15 +1,15 @@
 using GesFer.Application.Commands.City;
 using GesFer.Application.Common.Interfaces;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.City;
 
 public class DeleteCityCommandHandler : ICommandHandler<DeleteCityCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteCityCommandHandler(ApplicationDbContext context)
+    public DeleteCityCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

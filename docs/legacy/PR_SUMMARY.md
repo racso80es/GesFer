@@ -64,7 +64,7 @@ Este PR implementa la **segregación certificada** del módulo Admin, eliminando
 
 #### Backend (dotnet build)
 - ✅ **Compilación exitosa**: 0 errores
-- ⚠️ **Advertencias**: 1 warning no crítico (nullable type en ApplicationDbContext.cs:137)
+- ⚠️ **Advertencias**: 1 warning no crítico (nullable type en ProductDbContext.cs:137)
 - ✅ **Proyectos compilados**:
   - GesFer.Domain ✅
   - GesFer.Infrastructure ✅

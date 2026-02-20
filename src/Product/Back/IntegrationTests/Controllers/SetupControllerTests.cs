@@ -1,5 +1,5 @@
 using FluentAssertions;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.IntegrationTests.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +43,7 @@ public class SetupControllerTests
     {
         // Arrange - La base de datos ya está inicializada por DatabaseFixture
         using var scope = _fixture.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         // Assert - Verificar que los usuarios se insertaron (ya están en la BD por el fixture)
         var users = await context.Users

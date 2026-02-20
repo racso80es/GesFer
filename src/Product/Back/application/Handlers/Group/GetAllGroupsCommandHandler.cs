@@ -1,16 +1,16 @@
 using GesFer.Application.Commands.Group;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Group;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.Group;
 
 public class GetAllGroupsCommandHandler : ICommandHandler<GetAllGroupsCommand, List<GroupDto>>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public GetAllGroupsCommandHandler(ApplicationDbContext context)
+    public GetAllGroupsCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

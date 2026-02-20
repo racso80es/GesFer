@@ -2,7 +2,7 @@ using GesFer.Application.Commands.User;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.User;
 using GesFer.Shared.Back.Domain.ValueObjects;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,10 +10,10 @@ namespace GesFer.Application.Handlers.User;
 
 public class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand, UserDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly IAdminApiClient _adminApiClient;
 
-    public UpdateUserCommandHandler(ApplicationDbContext context, IAdminApiClient adminApiClient)
+    public UpdateUserCommandHandler(ProductDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
         _adminApiClient = adminApiClient;

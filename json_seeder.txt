@@ -1,0 +1,2 @@
+./src/Product/Back/Infrastructure/Services/JsonDataSeeder.cs:public class JsonDataSeeder
+./src/Product/Back/IntegrationTests/Services/JsonDataSeederTests.cs:public class JsonDataSeederTests

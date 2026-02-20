@@ -18,7 +18,7 @@
 ### Backend
 - [ ] **Domain:** Crear Entidad en `Domain/Entities/`.
 - [ ] **Persistence:** Crear Configuration en `Infrastructure/Persistence/Configurations/`.
-- [ ] **DbContext:** Añadir DbSet en `ApplicationDbContext`.
+- [ ] **DbContext:** Añadir DbSet en `ProductDbContext`.
 - [ ] **Migration:** Generar y revisar migración.
 - [ ] **DTOs:** Crear DTOs (Create, Update, Read) en `Application/DTOs/`.
 - [ ] **Commands:** Implementar Create/Update/Delete Commands + Validators.

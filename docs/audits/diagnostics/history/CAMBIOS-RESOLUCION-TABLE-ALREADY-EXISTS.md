@@ -30,7 +30,7 @@ Se han aplicado cambios críticos en el sistema de tests de integración para re
 
 **Antes:**
 ```csharp
-services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+services.AddDbContext<ProductDbContext>((serviceProvider, options) =>
 {
     // ... configuración ...
 }, ServiceLifetime.Scoped);
@@ -39,7 +39,7 @@ services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
 **Después:**
 ```csharp
 // ServiceLifetime: Singleton para tests - evita que múltiples contextos intenten migrar simultáneamente
-services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+services.AddDbContext<ProductDbContext>((serviceProvider, options) =>
 {
     // ... configuración ...
 }, ServiceLifetime.Singleton);
@@ -63,7 +63,7 @@ services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
 using var client = CreateClient();
 using var scope = Services.CreateScope();
 var services = scope.ServiceProvider;
-var context = services.GetRequiredService<ApplicationDbContext>();
+var context = services.GetRequiredService<ProductDbContext>();
 
 // Paso 4.1: Borrar base de datos (después de crear cliente)
 await context.Database.EnsureDeletedAsync();
@@ -78,7 +78,7 @@ await DbInitializer.InitializeAsync(Services, false);
 using var client = CreateClient();
 using var scope = Services.CreateScope();
 var services = scope.ServiceProvider;
-var context = services.GetRequiredService<ApplicationDbContext>();
+var context = services.GetRequiredService<ProductDbContext>();
 var serviceLoggerFactory = services.GetRequiredService<ILoggerFactory>();
 var serviceLogger = serviceLoggerFactory.CreateLogger("IntegrationTestWebAppFactory");
 

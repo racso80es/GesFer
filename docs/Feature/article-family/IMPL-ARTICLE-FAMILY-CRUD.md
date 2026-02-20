@@ -50,10 +50,10 @@ Este documento unifica todos los touchpoints en el código. No aplica cambios; e
 - **Propuesta:** `IEntityTypeConfiguration<ArticleFamily>`. Tabla `ArticleFamilies`. Configurar propiedades (Code MaxLength 50, Name MaxLength 100, Description MaxLength 500). Índice único (CompanyId, Code). FK a Company y TaxType. OnDelete Restrict.
 - **Dependencias:** 1.1
 
-#### 1.3a – Modificar: ApplicationDbContext – DbSet ArticleFamily
+#### 1.3a – Modificar: ProductDbContext – DbSet ArticleFamily
 - **Id:** 1.3
 - **Acción:** Modificar
-- **Ruta:** `src/Product/Back/Infrastructure/Data/ApplicationDbContext.cs`
+- **Ruta:** `src/Product/Back/Infrastructure/Data/ProductDbContext.cs`
 - **Ubicación:** Región de DbSets (junto a TaxTypes, Families, etc.).
 - **Propuesta:** Añadir `public DbSet<ArticleFamily> ArticleFamilies => Set<ArticleFamily>();` y using al namespace de la entidad.
 - **Dependencias:** 1.1
@@ -95,7 +95,7 @@ Este documento unifica todos los touchpoints en el código. No aplica cambios; e
 - **Acción:** Crear
 - **Ruta:** `src/Product/Back/application/Handlers/ArticleFamilies/CreateArticleFamilyCommandHandler.cs`, `UpdateArticleFamilyCommandHandler.cs`, `DeleteArticleFamilyCommandHandler.cs`, `GetArticleFamiliesQueryHandler.cs`, `GetArticleFamilyByIdQueryHandler.cs`
 - **Ubicación:** Archivos nuevos.
-- **Propuesta:** Handlers que inyecten ApplicationDbContext e IUserContext. Filtrar siempre por CompanyId del usuario. Create/Update: validar unicidad Code, existencia TaxTypeId. Delete: soft delete (IsActive = false, DeletedAt = UtcNow). Queries: solo registros de la compañía.
+- **Propuesta:** Handlers que inyecten ProductDbContext e IUserContext. Filtrar siempre por CompanyId del usuario. Create/Update: validar unicidad Code, existencia TaxTypeId. Delete: soft delete (IsActive = false, DeletedAt = UtcNow). Queries: solo registros de la compañía.
 - **Dependencias:** 1.5, 1.6
 
 #### 1.8 – Crear: ArticleFamiliesController
@@ -197,10 +197,10 @@ Este documento unifica todos los touchpoints en el código. No aplica cambios; e
 - **Propuesta:** Borrar el archivo.
 - **Dependencias:** 2.7
 
-#### 2.9 – Modificar: ApplicationDbContext – quitar DbSet Families
+#### 2.9 – Modificar: ProductDbContext – quitar DbSet Families
 - **Id:** 2.9
 - **Acción:** Modificar
-- **Ruta:** `src/Product/Back/Infrastructure/Data/ApplicationDbContext.cs`
+- **Ruta:** `src/Product/Back/Infrastructure/Data/ProductDbContext.cs`
 - **Ubicación:** Propiedad DbSet<Family> Families.
 - **Propuesta:** Eliminar la línea `public DbSet<Family> Families => Set<Family>();` y el using de Family si ya no se usa.
 - **Dependencias:** 2.8
@@ -366,7 +366,7 @@ Este documento unifica todos los touchpoints en el código. No aplica cambios; e
 - **Acción:** Crear/Modificar
 - **Ruta:** A determinar según proyecto: servicio de auditoría fuera de Product DbContext (ej. API a servicio de auditoría, o BD de auditoría separada).
 - **Ubicación:** Donde se ejecuten Create/Update/Delete de ArticleFamily (handlers o controller); llamada a servicio de log.
-- **Propuesta:** Registrar quién (UserId), cuándo (UtcNow), qué (CreateArticleFamily, UpdateArticleFamily, DeleteArticleFamily) y opcionalmente identificador de entidad. No añadir DbSets de Audit/Log en ApplicationDbContext (respetar auditor.back).
+- **Propuesta:** Registrar quién (UserId), cuándo (UtcNow), qué (CreateArticleFamily, UpdateArticleFamily, DeleteArticleFamily) y opcionalmente identificador de entidad. No añadir DbSets de Audit/Log en ProductDbContext (respetar auditor.back).
 - **Dependencias:** 1.8
 
 #### 5.2 – Revisar: migraciones
@@ -412,7 +412,7 @@ Este documento unifica todos los touchpoints en el código. No aplica cambios; e
 | `src/Product/Back/Infrastructure/Data/Configurations/ArticleFamilyConfiguration.cs` | 1.2 (Crear) |
 | `src/Product/Back/Infrastructure/Data/Configurations/ArticleConfiguration.cs` | 2.2, 2.6 |
 | `src/Product/Back/Infrastructure/Data/Configurations/FamilyConfiguration.cs` | 2.8 (Eliminar) |
-| `src/Product/Back/Infrastructure/Data/ApplicationDbContext.cs` | 1.3a, 2.9 |
+| `src/Product/Back/Infrastructure/Data/ProductDbContext.cs` | 1.3a, 2.9 |
 | `src/Product/Back/Infrastructure/Data/Seeds/demo-data.json` | 0.1, 3.3, 3.5, 3.7 |
 | `src/Product/Back/Infrastructure/Services/JsonDataSeeder.cs` | 0.2, 3.1, 3.2, 3.4, 3.5, 3.6 |
 | `src/Product/Back/Infrastructure/Migrations/*` | 1.3b, 2.5 |

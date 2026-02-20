@@ -1,7 +1,7 @@
 using FluentAssertions;
 using GesFer.Application.Commands.ArticleFamilies;
 using GesFer.Application.Handlers.ArticleFamilies;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Product.Back.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -10,15 +10,15 @@ namespace GesFer.Product.UnitTests.ArticleFamilies;
 
 public class GetArticleFamilyByIdTests
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly GetArticleFamilyByIdCommandHandler _handler;
 
     public GetArticleFamilyByIdTests()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<ProductDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-        _context = new ApplicationDbContext(options);
+        _context = new ProductDbContext(options);
         _handler = new GetArticleFamilyByIdCommandHandler(_context);
     }
 

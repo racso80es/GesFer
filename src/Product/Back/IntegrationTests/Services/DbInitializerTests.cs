@@ -1,8 +1,12 @@
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
+using GesFer.Product.Back.Infrastructure.Services;
+using GesFer.Product.Back.Domain.Services;
+using GesFer.Shared.Back.Domain.Interfaces;
 using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Shared.Back.Domain.Services;
+using GesFer.IntegrationTests.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,49 +32,55 @@ public class DbInitializerTests
         services.AddSingleton(mockEnv.Object);
 
         // Logging
-        services.AddLogging();
+        services.AddLogging(builder => builder.AddConsole());
 
         // DbContext (InMemory)
         var dbName = Guid.NewGuid().ToString();
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
             options.UseInMemoryDatabase(databaseName: dbName));
 
-        // IConfiguration (JsonDataSeeder usa SeedConfig.GetValidCompanyIds)
+        // IConfiguration
         var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["Seed:CompanyId"] = "11111111-1111-1111-1111-111111111115" })
+            .AddInMemoryCollection(new Dictionary<string, string?> {
+                ["Seed:CompanyId"] = "11111111-1111-1111-1111-111111111115",
+                ["AdminApi:BaseUrl"] = "http://localhost:5000" // Not used by MockAdminApiClient
+            })
             .Build();
         services.AddSingleton<IConfiguration>(config);
 
         // Dependencies
         services.AddScoped<JsonDataSeeder>();
 
-        // Mock Sanitizer (We will use a real instance or mock to verify calls)
-        // Since we want to test the flow, let's use a real one if available or a mock that behaves deterministically
+        // Use Mock Sanitizer to have deterministic passwords
         var mockSanitizer = new Mock<ISensitiveDataSanitizer>();
         mockSanitizer.Setup(s => s.GenerateRandomPassword(It.IsAny<int>())).Returns("RandomPass123!");
-        mockSanitizer.Setup(s => s.GenerateRandomEmail(It.IsAny<string>(), It.IsAny<string>())).Returns("admin@gesfer.local");
         services.AddSingleton(mockSanitizer.Object);
+
+        // Register Real Services for DbInitializer dependencies
+        services.AddScoped<IMigrationService, ProductMigrationService>();
+        services.AddScoped<IIntegrityCheckService, ProductIntegrityService>();
+        services.AddScoped<IAdminApiClient, MockAdminApiClient>();
+        services.AddScoped<DbInitializer>();
 
         var serviceProvider = services.BuildServiceProvider();
 
         // Act
-        await DbInitializer.InitializeAsync(serviceProvider, isDevelopment: true);
+        using var scope = serviceProvider.CreateScope();
+        var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+        await initializer.InitializeAsync();
 
         // Assert
-        using var scope = serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         var admin = await context.Users
             .IgnoreQueryFilters()
             .FirstOrDefaultAsync(u => u.Username == "admin");
 
         admin.Should().NotBeNull();
-        // We expect the password hash to be present.
-        // Note: DbInitializer current logic forces FixedAdminHash.
-        // My future refactor will change this to use Sanitizer.
-        // So this test expects the behavior AFTER refactor.
-        // If I run this now, it will pass ensuring admin exists, but might fail on "Sanitized" expectation if I check for specific hash vs Fixed.
-
         admin!.PasswordHash.Should().NotBeNullOrEmpty();
+
+        // Verify CompanyId matches the default fallback used in EnsureAdminUserAsync
+        // which matches MockAdminApiClient's demo company
+        admin.CompanyId.Should().Be(Guid.Parse("11111111-1111-1111-1111-111111111115"));
     }
 }

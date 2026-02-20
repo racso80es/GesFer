@@ -1,6 +1,6 @@
 using GesFer.Application.Commands.PurchaseDeliveryNote;
 using GesFer.Application.Common.Interfaces;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.PurchaseDeliveryNote;
@@ -10,9 +10,9 @@ namespace GesFer.Application.Handlers.PurchaseDeliveryNote;
 /// </summary>
 public class ConfirmPurchaseDeliveryNoteCommandHandler : ICommandHandler<ConfirmPurchaseDeliveryNoteCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public ConfirmPurchaseDeliveryNoteCommandHandler(ApplicationDbContext context)
+    public ConfirmPurchaseDeliveryNoteCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

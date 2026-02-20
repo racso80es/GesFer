@@ -3,7 +3,7 @@
 ## Fase 1: Backend (Dominio e Infraestructura)
 1.  **Entidad:** Crear `src/Product/Back/Domain/Entities/TaxType.cs`.
 2.  **Configuración EF:** Crear `src/Product/Back/Infrastructure/Persistence/Configurations/TaxTypeConfiguration.cs`.
-3.  **DbContext:** Añadir `DbSet<TaxType>` en `ApplicationDbContext`.
+3.  **DbContext:** Añadir `DbSet<TaxType>` en `ProductDbContext`.
 4.  **Migración:** Generar migración EF Core.
 
 ## Fase 2: Backend (Aplicación y API)

@@ -10,7 +10,7 @@
 
 ### 1.1 No hay `CreateTable("Logs")` en migraciones EF del proyecto
 
-- **Admin (InitialAdmin):** La migración `20260213154125_InitialAdmin.cs` crea solo `AdminUsers` y `AuditLogs`. El comentario indica: *"Companies, Logs, etc. ya existen por las migraciones de Product (ApplicationDbContext)."*
+- **Admin (InitialAdmin):** La migración `20260213154125_InitialAdmin.cs` crea solo `AdminUsers` y `AuditLogs`. El comentario indica: *"Companies, Logs, etc. ya existen por las migraciones de Product (ProductDbContext)."*
 - **Product:** No existe ninguna migración en el backend Product que cree la tabla `Logs` (búsqueda en `*Migration*` sin resultados para `CreateTable`/`Logs`).
 
 **Conclusión:** La tabla `Logs` **no se crea por migraciones EF** en el repositorio actual. Queda abierto si en algún momento existió una migración en Product que la creara o si la creación es externa.

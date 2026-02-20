@@ -202,7 +202,7 @@ public async Task GetById_WithValidId_ShouldReturnCompany()
 
     // Debug: Verificar cuántas empresas hay en la base de datos antes del Assert
     using var scope = _factory.Services.CreateScope();
-    var context = scope.ServiceProvider.GetRequiredService<GesFer.Infrastructure.Data.ApplicationDbContext>();
+    var context = scope.ServiceProvider.GetRequiredService<GesFer.Infrastructure.Data.ProductDbContext>();
     var companyCount = await context.Companies.CountAsync();
     Console.WriteLine($"[DEBUG] Número de empresas en la base de datos antes del Assert: {companyCount}");
 
@@ -229,7 +229,7 @@ public async Task GetById_WithValidId_ShouldReturnUser()
 
     // Debug: Verificar cuántos usuarios y empresas hay en la base de datos antes del Assert
     using var scope = _factory.Services.CreateScope();
-    var context = scope.ServiceProvider.GetRequiredService<GesFer.Infrastructure.Data.ApplicationDbContext>();
+    var context = scope.ServiceProvider.GetRequiredService<GesFer.Infrastructure.Data.ProductDbContext>();
     var userCount = await context.Users.CountAsync();
     var companyCount = await context.Companies.CountAsync();
     Console.WriteLine($"[DEBUG] Número de usuarios en la base de datos antes del Assert: {userCount}");

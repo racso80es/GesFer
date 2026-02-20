@@ -12,7 +12,7 @@ Esta rama ejecuta el rol de "Guardián de la Infraestructura" para generar el re
     *   Verificación de compilación de la solución (`dotnet build`).
     *   Validación de invariantes en `Shared/Back`.
     *   Análisis de código para detectar `async void` y uso incorrecto de `Task.Run`.
-    *   Revisión de `ApplicationDbContext` y el patrón Command en `GesFer.Console`.
+    *   Revisión de `ProductDbContext` y el patrón Command en `GesFer.Console`.
 
 2.  **Generación de Reporte:**
     *   Creación del archivo `docs/audits/AUDITORIA_BACKEND_2026_02_17.md` con los hallazgos.

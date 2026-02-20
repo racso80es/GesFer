@@ -19,7 +19,7 @@ Esta auditoría verifica el cumplimiento del Protocolo de Certificación Activa 
 
 ✅ **Estado:** COMPILACIÓN EXITOSA  
 - Proyecto `GesFer.Api` compila sin errores
-- Advertencia no crítica: `CS8629` en `ApplicationDbContext.cs:137` (tipo nullable)
+- Advertencia no crítica: `CS8629` en `ProductDbContext.cs:137` (tipo nullable)
 - **Conclusión:** Backend listo para producción
 
 ### Frontend (TypeScript/Next.js)

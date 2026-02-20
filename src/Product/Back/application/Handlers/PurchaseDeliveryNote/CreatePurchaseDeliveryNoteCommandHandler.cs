@@ -2,7 +2,7 @@ using GesFer.Application.Commands.PurchaseDeliveryNote;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Product.Back.Domain.Entities;
 using GesFer.Product.Back.Domain.Services;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.PurchaseDeliveryNote;
@@ -12,11 +12,11 @@ namespace GesFer.Application.Handlers.PurchaseDeliveryNote;
 /// </summary>
 public class CreatePurchaseDeliveryNoteCommandHandler : ICommandHandler<CreatePurchaseDeliveryNoteCommand, Product.Back.Domain.Entities.PurchaseDeliveryNote>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly IStockService _stockService;
 
     public CreatePurchaseDeliveryNoteCommandHandler(
-        ApplicationDbContext context,
+        ProductDbContext context,
         IStockService stockService)
     {
         _context = context;

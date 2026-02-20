@@ -2,7 +2,7 @@ using FluentAssertions;
 using GesFer.Application.Commands.User;
 using GesFer.Application.DTOs.User;
 using GesFer.Application.Handlers.User;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Product.Back.Infrastructure.DTOs;
 using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +16,11 @@ public class UpdateUserCommandHandlerTests
     [Fact]
     public async Task HandleAsync_WithValidData_ShouldUpdateUser()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<ProductDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        using var context = new ApplicationDbContext(options);
+        using var context = new ProductDbContext(options);
 
         var companyId = Guid.NewGuid();
         var adminMock = new Mock<IAdminApiClient>();
@@ -68,11 +68,11 @@ public class UpdateUserCommandHandlerTests
     [Fact]
     public async Task HandleAsync_WithPassword_ShouldUpdatePasswordHash()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<ProductDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        using var context = new ApplicationDbContext(options);
+        using var context = new ProductDbContext(options);
 
         var companyId = Guid.NewGuid();
         var adminMock = new Mock<IAdminApiClient>();
@@ -110,11 +110,11 @@ public class UpdateUserCommandHandlerTests
     [Fact]
     public async Task HandleAsync_WithDuplicateUsername_ShouldThrowException()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<ProductDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        using var context = new ApplicationDbContext(options);
+        using var context = new ProductDbContext(options);
 
         var companyId = Guid.NewGuid();
         var user1 = new Product.Back.Domain.Entities.User

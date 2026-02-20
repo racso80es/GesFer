@@ -5,7 +5,7 @@ Esta rama tiene como objetivo principal resolver una falla crítica en la integr
 ## Cambios Realizados
 
 1.  **Backend Infrastructure Fix**:
-    -   Se añadió la propiedad faltante `public DbSet<GesFer.Product.Back.Domain.Entities.Company> Companies` en `src/Product/Back/Infrastructure/Data/ApplicationDbContext.cs`.
+    -   Se añadió la propiedad faltante `public DbSet<GesFer.Product.Back.Domain.Entities.Company> Companies` en `src/Product/Back/Infrastructure/Data/ProductDbContext.cs`.
     -   Esto soluciona los errores `CS1061` reportados en `JsonDataSeeder`, `AuthService` y `DbInitializer` donde se intentaba acceder a `_context.Companies`.
     -   Se utilizó el nombre completo de la entidad para evitar ambigüedades.
 

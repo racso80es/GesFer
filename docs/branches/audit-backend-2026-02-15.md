@@ -7,7 +7,7 @@ Esta rama `audit/backend-2026-02-15-ci-fix` tiene como objetivo:
 ## Alcance
 - Auditoría de código (Shared, Product, Admin).
 - Generación de informe en `docs/audits/AUDITORIA_BACKEND_2026_02_15.md`.
-- Corrección de `ApplicationDbContext` (añadir `DbSet<Company>`).
+- Corrección de `ProductDbContext` (añadir `DbSet<Company>`).
 
 ## Métricas Clave (Auditoría)
 - **Salud Arquitectura**: 90%
@@ -16,5 +16,5 @@ Esta rama `audit/backend-2026-02-15-ci-fix` tiene como objetivo:
 ## Acciones Realizadas
 - [x] Generar reporte de auditoría.
 - [x] Diagnosticar error de compilación CS1061.
-- [x] Implementar fix en `ApplicationDbContext.cs`.
+- [x] Implementar fix en `ProductDbContext.cs`.
 - [x] Verificar compilación local exitosa.

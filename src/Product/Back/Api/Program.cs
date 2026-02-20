@@ -1,5 +1,5 @@
 using GesFer.Api;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
@@ -208,7 +208,9 @@ else if (isDevelopment)
 
 if (shouldInitialize)
 {
-    await DbInitializer.InitializeAsync(app.Services, isDevelopment);
+    using var scope = app.Services.CreateScope();
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+    await dbInitializer.InitializeAsync();
 }
 
 // Configurar el pipeline HTTP

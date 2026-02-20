@@ -181,7 +181,7 @@ Estos KPIs definen la salud del sistema como producto SaaS (S+). Su objetivo es 
     - Movimiento de `ISequentialGuidGenerator`, `MySqlSequentialGuidGenerator` y `SequentialGuidValueGenerator` a `src/Shared/Back/Domain/Services/`.
     - Eliminación de archivos duplicados en `Product` y `Admin` Infrastructure.
     - Refactorización de namespaces a `GesFer.Shared.Back.Domain.Services`.
-    - Actualización de consumidores (`ApplicationDbContext`, `AdminDbContext`) para usar la implementación compartida.
+    - Actualización de consumidores (`ProductDbContext`, `AdminDbContext`) para usar la implementación compartida.
     - **Nueva Suite de Tests:** Creación de `GesFer.Shared.Back.UnitTests` para validar el comportamiento aislado del generador.
 - **Validación:**
     - Compilación exitosa de todos los proyectos (`dotnet build`).

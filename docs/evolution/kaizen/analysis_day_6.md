@@ -13,7 +13,7 @@
 
 2.  **Verificación de Pendientes (Día 5):**
     *   **`IAsyncLogPublisher` Warning:** Se verificó el código fuente y la interfaz ya retorna `void` (Fire-and-Forget). El warning CS4014 no debería reproducirse. Considerado **Resuelto**.
-    *   **`ApplicationDbContext` CS8629:** El build actual (`dotnet build`) reporta 0 Warnings. El código utiliza una variable local para comprobar `HasValue` antes de acceder a `Value`. Considerado **Resuelto**.
+    *   **`ProductDbContext` CS8629:** El build actual (`dotnet build`) reporta 0 Warnings. El código utiliza una variable local para comprobar `HasValue` antes de acceder a `Value`. Considerado **Resuelto**.
 
 ## Conclusiones
 El foco de hoy es mejorar la experiencia de usuario y la robustez de la aplicación de consola (`GesFer.Console`). Agregar una verificación temprana de `docker-compose` evitará excepciones no controladas y guiará al usuario si le falta la herramienta.

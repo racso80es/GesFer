@@ -5,7 +5,7 @@
 
 ### Resumen
 - **Arquitectura**: La estructura base es sólida. La lógica compartida (`BaseEntity`, `ValueObjects`) está correctamente centralizada en `Shared`. Todos los proyectos compilan correctamente. Sin embargo, existe duplicidad de lógica de infraestructura en scripts legacy.
-- **Nomenclatura**: Consistente en general. `ApplicationDbContext` es el único punto débil por ser genérico en un contexto multi-dominio (Product vs Admin).
+- **Nomenclatura**: Consistente en general. `ProductDbContext` es el único punto débil por ser genérico en un contexto multi-dominio (Product vs Admin).
 - **Estabilidad Async**: Excelente integridad. No se detectaron patrones `async void` ni `Task.Run` no esperados (salvo excepciones documentadas en Sinks).
 
 ## 2. Pain Points (🔴 Críticos / 🟡 Medios)
@@ -26,8 +26,8 @@
 **Impacto**: Escalabilidad. El comando no puede reutilizarse para otros contextos (ej. Admin) sin modificación.
 
 ### 🟡 Ambigüedad Semántica en Contexto de Datos
-**Hallazgo**: El contexto de base de datos de Product se llama `ApplicationDbContext`, mientras que el de Admin es explícito (`AdminDbContext`).
-**Ubicación**: `src/Product/Back/Infrastructure/Data/ApplicationDbContext.cs`.
+**Hallazgo**: El contexto de base de datos de Product se llama `ProductDbContext`, mientras que el de Admin es explícito (`AdminDbContext`).
+**Ubicación**: `src/Product/Back/Infrastructure/Data/ProductDbContext.cs`.
 **Impacto**: Claridad. En un sistema modular, "Application" es ambiguo. Debería ser `ProductDbContext` para reflejar su bounded context.
 
 ## 3. Acciones Kaizen (Hoja de Ruta para el Executor)
@@ -73,10 +73,10 @@ public class DbInitializer
 - La lógica de migración y verificación está en clases separadas testeables.
 
 ### Acción 3: Renombrado Semántico (ProductDbContext)
-**Instrucción**: Renombrar `ApplicationDbContext` a `ProductDbContext` para alinear la nomenclatura con `AdminDbContext` y el dominio.
+**Instrucción**: Renombrar `ProductDbContext` a `ProductDbContext` para alinear la nomenclatura con `AdminDbContext` y el dominio.
 
 **Pasos**:
-1. Renombrar archivo y clase `ApplicationDbContext` a `ProductDbContext`.
+1. Renombrar archivo y clase `ProductDbContext` a `ProductDbContext`.
 2. Actualizar `DependencyInjection.cs` en `Product.Api`.
 3. Actualizar `Program.cs` y `SeedCommand.cs` en `GesFer.Console`.
 4. Actualizar referencias en Tests (`IntegrationTestWebAppFactory`, etc.).

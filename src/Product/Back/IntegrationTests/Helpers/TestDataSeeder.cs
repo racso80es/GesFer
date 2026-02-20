@@ -1,4 +1,4 @@
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +14,7 @@ public static class TestDataSeeder
     /// <summary>
     /// Inserta datos de prueba en la base de datos desde test-data.json
     /// </summary>
-    public static async Task SeedTestDataAsync(ApplicationDbContext context, IConfiguration? configuration = null)
+    public static async Task SeedTestDataAsync(ProductDbContext context, IConfiguration? configuration = null)
     {
         // Companies: SSOT en Admin; Product no borra Companies. Limpiar solo datos de Product.
         var existingUsers = await context.Users.IgnoreQueryFilters().ToListAsync();

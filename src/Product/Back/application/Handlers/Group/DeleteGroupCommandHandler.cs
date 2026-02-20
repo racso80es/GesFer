@@ -1,15 +1,15 @@
 using GesFer.Application.Commands.Group;
 using GesFer.Application.Common.Interfaces;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.Group;
 
 public class DeleteGroupCommandHandler : ICommandHandler<DeleteGroupCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteGroupCommandHandler(ApplicationDbContext context)
+    public DeleteGroupCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

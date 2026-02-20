@@ -8,4 +8,4 @@
 Realizar la auditoría diaria de tests y cobertura de código.
 
 ## Resultado
-Se detectó un fallo de compilación bloqueante en `ApplicationDbContext`. Se generó el reporte `docs/audits/AUDITORIA_TESTS_2026_02_15.md` documentando el error.
+Se detectó un fallo de compilación bloqueante en `ProductDbContext`. Se generó el reporte `docs/audits/AUDITORIA_TESTS_2026_02_15.md` documentando el error.

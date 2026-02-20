@@ -1,6 +1,6 @@
 using FluentAssertions;
 using GesFer.Application.DTOs.Auth;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
@@ -246,7 +246,7 @@ public class AuthControllerTests
 
         // Verificar primero que el hash en la base de datos sea el correcto
         using var scope = _fixture.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
         
         var demoCompanyId = Guid.Parse("11111111-1111-1111-1111-111111111115");
         var userFromDb = await context.Users

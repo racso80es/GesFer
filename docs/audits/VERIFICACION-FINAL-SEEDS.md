@@ -13,7 +13,7 @@
 - ❌ **NO contiene:** `ExecuteSqlScriptAsync`
 - ❌ **NO contiene:** Referencias a `master-data.sql`, `sample-data.sql`, `test-data.sql`
 - ✅ **SÍ contiene:** `JsonDataSeeder`, `SeedMasterDataAsync()`, `SeedDemoDataAsync()`, `SeedTestDataAsync()`
-- ✅ **Usa:** `ApplicationDbContext` y `JsonDataSeeder` desde Infrastructure
+- ✅ **Usa:** `ProductDbContext` y `JsonDataSeeder` desde Infrastructure
 
 **Métodos:**
 - `ExecuteMasterDataAsync()` → Usa `JsonDataSeeder.SeedMasterDataAsync()`

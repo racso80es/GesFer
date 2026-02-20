@@ -1,16 +1,16 @@
 using GesFer.Application.Commands.Country;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Country;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.Country;
 
 public class UpdateCountryCommandHandler : ICommandHandler<UpdateCountryCommand, CountryDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public UpdateCountryCommandHandler(ApplicationDbContext context)
+    public UpdateCountryCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

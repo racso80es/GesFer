@@ -1,16 +1,16 @@
 using GesFer.Application.Commands.Country;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Country;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.Country;
 
 public class GetAllCountriesCommandHandler : ICommandHandler<GetAllCountriesCommand, List<CountryDto>>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public GetAllCountriesCommandHandler(ApplicationDbContext context)
+    public GetAllCountriesCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

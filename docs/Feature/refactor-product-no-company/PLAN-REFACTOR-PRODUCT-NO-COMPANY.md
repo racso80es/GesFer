@@ -19,15 +19,15 @@ Este plan ordena las tareas para eliminar la dependencia de Product sobre Compan
 - [ ] Verificar que ninguna otra clase de Product referencia `Product.Back.Domain.Entities.Company`
 - **Entregable:** Dominio Product sin entidad Company
 
-### 1.2 Ajustar ApplicationDbContext y configuraciones
-- [ ] Confirmar que `ApplicationDbContext` **no** tiene `DbSet<Company>` (si existe, eliminarlo)
+### 1.2 Ajustar ProductDbContext y configuraciones
+- [ ] Confirmar que `ProductDbContext` **no** tiene `DbSet<Company>` (si existe, eliminarlo)
 - [ ] Eliminar `src/Product/Back/Infrastructure/Data/Configurations/CompanyConfiguration.cs`
 - [ ] Ajustar configuraciones que referencian Company:
   - [ ] `ArticleConfiguration`: eliminar relación HasOne(Company); mantener CompanyId como FK
   - [ ] `UserConfiguration`: eliminar navegación Company
   - [ ] `SupplierConfiguration`, `CustomerConfiguration`, `TariffConfiguration`: eliminar navegación Company
   - [ ] `ArticleFamilyConfiguration`, `TaxTypeConfiguration`: eliminar navegación Company si existe
-- **Entregable:** ApplicationDbContext sin Company; configuraciones sin navegación Company
+- **Entregable:** ProductDbContext sin Company; configuraciones sin navegación Company
 
 ### 1.3 Eliminar navegación Company en entidades
 - [ ] `Article`: quitar `public Company Company { get; set; }`; mantener `CompanyId`
@@ -54,7 +54,7 @@ Este plan ordena las tareas para eliminar la dependencia de Product sobre Compan
 
 ### 2.3 Verificar MyCompanyController
 - [ ] Confirmar que MyCompanyController usa exclusivamente `IAdminApiClient` + `AdminCompanyDto`
-- [ ] No debe usar ApplicationDbContext para Company
+- [ ] No debe usar ProductDbContext para Company
 - **Entregable:** MyCompanyController correcto (GET/PUT proxy a Admin)
 
 ---

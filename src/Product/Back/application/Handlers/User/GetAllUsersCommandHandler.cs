@@ -1,7 +1,7 @@
 using GesFer.Application.Commands.User;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.User;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -10,11 +10,11 @@ namespace GesFer.Application.Handlers.User;
 
 public class GetAllUsersCommandHandler : ICommandHandler<GetAllUsersCommand, List<UserDto>>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly IAdminApiClient _adminApiClient;
     private readonly ILogger<GetAllUsersCommandHandler> _logger;
 
-    public GetAllUsersCommandHandler(ApplicationDbContext context, IAdminApiClient adminApiClient, ILogger<GetAllUsersCommandHandler> logger)
+    public GetAllUsersCommandHandler(ProductDbContext context, IAdminApiClient adminApiClient, ILogger<GetAllUsersCommandHandler> logger)
     {
         _context = context;
         _adminApiClient = adminApiClient;

@@ -1,6 +1,6 @@
 using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Entities;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Services;
 using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -152,7 +152,7 @@ public class SetupService : ISetupService
                     result.Steps.Add("8. Insertando datos maestros de España (geográficos)...");
                     _logger.LogInformation("Insertando datos maestros de España...");
                     var masterDataSeeder = new GesFer.Infrastructure.Services.MasterDataSeeder(
-                        scope.ServiceProvider.GetRequiredService<ApplicationDbContext>(),
+                        scope.ServiceProvider.GetRequiredService<ProductDbContext>(),
                         scope.ServiceProvider.GetRequiredService<ILogger<GesFer.Infrastructure.Services.MasterDataSeeder>>(),
                         scope.ServiceProvider.GetRequiredService<ISequentialGuidGenerator>());
                     await masterDataSeeder.SeedSpainDataAsync();
@@ -306,7 +306,7 @@ public class SetupService : ISetupService
     private async Task CreateDatabaseAsync()
     {
         using var scope = _serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<SetupService>>();
 
         try
@@ -373,7 +373,7 @@ public class SetupService : ISetupService
         try
         {
             using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<SetupService>>();
             var jsonDataSeeder = scope.ServiceProvider.GetRequiredService<JsonDataSeeder>();
 
@@ -403,7 +403,7 @@ public class SetupService : ISetupService
     /// <summary>
     /// Crea proveedores de prueba con direcciones completas
     /// </summary>
-    private async Task SeedTestSuppliersAsync(ApplicationDbContext context, Guid companyId, Country? spain, ILogger logger)
+    private async Task SeedTestSuppliersAsync(ProductDbContext context, Guid companyId, Country? spain, ILogger logger)
     {
         try
         {
@@ -491,7 +491,7 @@ public class SetupService : ISetupService
     /// <summary>
     /// Crea clientes de prueba con direcciones completas
     /// </summary>
-    private async Task SeedTestCustomersAsync(ApplicationDbContext context, Guid companyId, Country? spain, ILogger logger)
+    private async Task SeedTestCustomersAsync(ProductDbContext context, Guid companyId, Country? spain, ILogger logger)
     {
         try
         {
@@ -581,7 +581,7 @@ public class SetupService : ISetupService
         try
         {
             using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
             // Verificar que existe al menos un usuario
             var users = await context.Users

@@ -23,7 +23,7 @@ Extraer toda la "materia Admin" desde el backend de Product hacia el dominio Adm
 **Ubicación destino:** `src/Admin/Back/Api/Controllers/LogController.cs` (ya existe, pero necesita actualización)
 
 **Afectaciones:**
-- ✅ Ya existe `src/Admin/Back/Api/Controllers/LogController.cs` pero usa `ApplicationDbContext` directamente
+- ✅ Ya existe `src/Admin/Back/Api/Controllers/LogController.cs` pero usa `ProductDbContext` directamente
 - ⚠️ El LogController en Product usa comandos (`GetLogsCommand`, `PurgeLogsCommand`) que **NO EXISTEN** en el código actual
 - El LogController en Product tiene dependencias:
   - `ICommandHandler<GetLogsCommand, LogsPagedResponseDto>`
@@ -44,7 +44,7 @@ Extraer toda la "materia Admin" desde el backend de Product hacia el dominio Adm
 - SetupController realiza inicialización global del sistema (Docker, BD, seeds)
 - Usa `ISetupService` ubicado en `src/Product/Back/Api/Services/SetupService.cs`
 - El servicio tiene dependencias de:
-  - `ApplicationDbContext` (Product)
+  - `ProductDbContext` (Product)
   - `JsonDataSeeder` (Product)
   - `MasterDataSeeder` (Product)
   - Crea `AdminUser` manualmente
@@ -52,7 +52,7 @@ Extraer toda la "materia Admin" desde el backend de Product hacia el dominio Adm
 **Acciones requeridas:**
 1. Mover `SetupController.cs` a Admin
 2. Mover `SetupService.cs` e `ISetupService.cs` a Admin
-3. Ajustar referencias de `ApplicationDbContext` (Product) a contexto compartido o Admin
+3. Ajustar referencias de `ProductDbContext` (Product) a contexto compartido o Admin
 4. Verificar que la creación de AdminUser se mantenga en Admin
 5. Eliminar SetupController de Product
 
@@ -65,7 +65,7 @@ Extraer toda la "materia Admin" desde el backend de Product hacia el dominio Adm
 **Afectaciones:**
 - ✅ Ya existe en Admin pero usa `GesFer.Admin.Back.Domain.Entities.AuditLog`
 - ⚠️ El servicio en Product usa `GesFer.Admin.Back.Domain.Entities.AuditLog` (namespace correcto)
-- ⚠️ El servicio en Product usa `ApplicationDbContext` de Product que tiene `DbSet<AuditLog>`
+- ⚠️ El servicio en Product usa `ProductDbContext` de Product que tiene `DbSet<AuditLog>`
 - Usado por `DashboardController` en Product
 
 **Acciones requeridas:**
@@ -91,11 +91,11 @@ Extraer toda la "materia Admin" desde el backend de Product hacia el dominio Adm
 - `src/Admin/Back/domain/Entities/AuditLog.cs` (✅ EXISTE)
 
 **Afectaciones:**
-- `ApplicationDbContext` en Product tiene `DbSet<AuditLog> AuditLogs`
+- `ProductDbContext` en Product tiene `DbSet<AuditLog> AuditLogs`
 - Configuración `AuditLogConfiguration.cs` en Product
 
 **Acciones requeridas:**
-1. Eliminar `DbSet<AuditLog>` de `ApplicationDbContext` en Product
+1. Eliminar `DbSet<AuditLog>` de `ProductDbContext` en Product
 2. Eliminar `AuditLogConfiguration.cs` de Product
 3. Verificar que Admin tenga su propio DbContext con AuditLogs
 4. Crear migración para separar tablas si es necesario
@@ -106,7 +106,7 @@ Extraer toda la "materia Admin" desde el backend de Product hacia el dominio Adm
 - `src/Admin/Back/domain/Entities/Log.cs` (✅ EXISTE según LogController en Admin)
 
 **Afectaciones:**
-- `ApplicationDbContext` en Product tiene `DbSet<Log> Logs`
+- `ProductDbContext` en Product tiene `DbSet<Log> Logs`
 - Configuración `LogConfiguration.cs` en Product
 
 **Acciones requeridas:**
@@ -183,7 +183,7 @@ services.AddHttpClient<IAdminAuditLogProxyService, AdminAuditLogProxyService>();
 3. Eliminar LogController de Product
 
 ### Fase 4: Limpieza de DbContext
-1. Eliminar `DbSet<AuditLog>` de ApplicationDbContext en Product
+1. Eliminar `DbSet<AuditLog>` de ProductDbContext en Product
 2. Eliminar configuraciones de AuditLog y Log de Product (si aplica)
 3. Crear migración si es necesario
 
@@ -216,7 +216,7 @@ services.AddHttpClient<IAdminAuditLogProxyService, AdminAuditLogProxyService>();
 - [ ] SetupController y SetupService movidos a Admin
 - [ ] LogController actualizado/verificado en Admin
 - [ ] LogController eliminado de Product
-- [ ] DbSet<AuditLog> eliminado de ApplicationDbContext en Product
+- [ ] DbSet<AuditLog> eliminado de ProductDbContext en Product
 - [ ] DependencyInjection actualizado en ambos dominios
 - [ ] Tests actualizados
 - [ ] Compilación exitosa en ambos dominios

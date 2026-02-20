@@ -2,7 +2,7 @@ using GesFer.Application.Commands.Customer;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Customer;
 using GesFer.Shared.Back.Domain.ValueObjects;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,10 +10,10 @@ namespace GesFer.Application.Handlers.Customer;
 
 public class CreateCustomerCommandHandler : ICommandHandler<CreateCustomerCommand, CustomerDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly IAdminApiClient _adminApiClient;
 
-    public CreateCustomerCommandHandler(ApplicationDbContext context, IAdminApiClient adminApiClient)
+    public CreateCustomerCommandHandler(ProductDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
         _adminApiClient = adminApiClient;

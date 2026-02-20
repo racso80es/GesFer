@@ -8,7 +8,7 @@
 | **Estabilidad Async** | **100%** | 🟢 Óptima |
 
 ### Resumen Ejecutivo
-El estado general de la infraestructura backend es **robusto**. Se ha verificado el cumplimiento estricto de los patrones de asincronía (Fire-and-Forget) en los sistemas de logging (`AdminApiLogSink`, `AsyncLogPublisher`) y la correcta segregación de contextos en `ApplicationDbContext`. La integridad estructural es alta, aunque se ha detectado una desviación menor respecto al principio de **Invariante Shared** en la lógica de generación de identificadores.
+El estado general de la infraestructura backend es **robusto**. Se ha verificado el cumplimiento estricto de los patrones de asincronía (Fire-and-Forget) en los sistemas de logging (`AdminApiLogSink`, `AsyncLogPublisher`) y la correcta segregación de contextos en `ProductDbContext`. La integridad estructural es alta, aunque se ha detectado una desviación menor respecto al principio de **Invariante Shared** en la lógica de generación de identificadores.
 
 ---
 
@@ -44,7 +44,7 @@ La lógica de generación de GUIDs secuenciales (`SequentialGuidValueGenerator` 
     *   A: `GesFer.Shared.Back.Domain.Services`
 
 3.  **Actualizar Referencias en Producto:**
-    En `src/Product/Back/Infrastructure/Data/ApplicationDbContext.cs`:
+    En `src/Product/Back/Infrastructure/Data/ProductDbContext.cs`:
     *   Agregar `using GesFer.Shared.Back.Domain.Services;`
     *   Eliminar referencias antiguas si es necesario.
     *   Verificar que la resolución de `ISequentialGuidGenerator` a través de `infrastructure.Instance` siga funcionando correctamente (la interfaz habrá cambiado de namespace).
@@ -54,6 +54,6 @@ La lógica de generación de GUIDs secuenciales (`SequentialGuidValueGenerator` 
 
 ### Definition of Done (DoD)
 - [ ] Los archivos de generación de GUIDs existen únicamente en `src/Shared/Back/Domain/Services/`.
-- [ ] `ApplicationDbContext` (Producto) compila y resuelve `SequentialGuidValueGenerator` desde el nuevo namespace.
+- [ ] `ProductDbContext` (Producto) compila y resuelve `SequentialGuidValueGenerator` desde el nuevo namespace.
 - [ ] `AdminDbContext` (Admin) compila y tiene acceso a la misma lógica compartida.
 - [ ] No existen copias duplicadas de `MySqlSequentialGuidGenerator` en los dominios específicos.

@@ -1,16 +1,16 @@
 using GesFer.Application.Commands.Customer;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Customer;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.Customer;
 
 public class GetAllCustomersCommandHandler : ICommandHandler<GetAllCustomersCommand, List<CustomerDto>>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public GetAllCustomersCommandHandler(ApplicationDbContext context)
+    public GetAllCustomersCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

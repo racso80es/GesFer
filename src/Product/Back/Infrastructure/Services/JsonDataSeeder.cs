@@ -2,7 +2,7 @@ using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Infrastructure.Configuration;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,14 +26,14 @@ public class SeedResult
 /// </summary>
 public class JsonDataSeeder
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly ILogger<JsonDataSeeder> _logger;
     private readonly ISensitiveDataSanitizer _sanitizer;
     private readonly IConfiguration _configuration;
     private readonly string _seedsPath;
 
     public JsonDataSeeder(
-        ApplicationDbContext context,
+        ProductDbContext context,
         ILogger<JsonDataSeeder> logger,
         ISensitiveDataSanitizer sanitizer,
         IConfiguration configuration)

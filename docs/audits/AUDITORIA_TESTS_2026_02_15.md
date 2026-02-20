@@ -3,7 +3,7 @@
 ## Resumen Ejecutivo
 **Estado: S (Saludable)**
 
-La auditoría de tests del día 2026-02-15 reporta un estado saludable. Se corrigió un error de compilación bloqueante (`CS1061: 'ApplicationDbContext' does not contain a definition for 'Companies'`) permitiendo la ejecución exitosa de la suite de pruebas.
+La auditoría de tests del día 2026-02-15 reporta un estado saludable. Se corrigió un error de compilación bloqueante (`CS1061: 'ProductDbContext' does not contain a definition for 'Companies'`) permitiendo la ejecución exitosa de la suite de pruebas.
 
 ## Dashboard de Métricas
 
@@ -26,7 +26,7 @@ La auditoría de tests del día 2026-02-15 reporta un estado saludable. Se corri
 
 ## Puntos de Dolor (Pain Points)
 
-1.  **Bloqueo Inicial de CI/CD**: La falta de la propiedad `DbSet<Company> Companies` en `ApplicationDbContext` causó fallos en la integración continua y auditorías previas. Este punto ha sido resuelto.
+1.  **Bloqueo Inicial de CI/CD**: La falta de la propiedad `DbSet<Company> Companies` en `ProductDbContext` causó fallos en la integración continua y auditorías previas. Este punto ha sido resuelto.
 2.  **Cobertura de Código**: Aunque los tests pasan, es necesario analizar los reportes de cobertura generados (XML/JSON) para asegurar que las áreas críticas del negocio estén cubiertas adecuadamente, ya que el reporte en consola es un resumen.
 
 ## Acciones Kaizen (Mejora Continua)
