@@ -9,8 +9,8 @@ Esta rama implementa correcciones críticas y optimizaciones de rendimiento iden
 - **Problema**: Se detectó el uso de `Task.Run` envolviendo una llamada asíncrona (`SeedTestDataAsync`), lo que generaba un cambio de contexto innecesario ("Sync Over Async").
 - **Solución**: Se eliminó el wrapper `Task.Run` y se utiliza `await` directamente dentro de un bloque `switch` estándar, mejorando la legibilidad y eficiencia.
 
-### 2. Corrección de ApplicationDbContext (Prioridad Crítica)
-- **Problema**: `ApplicationDbContext` contenía definiciones duplicadas y ambiguas de `DbSet<Company>`, lo que provocaba errores de compilación y conflictos de resolución de tipos entre los dominios `Shared` y `Product`.
+### 2. Corrección de ProductDbContext (Prioridad Crítica)
+- **Problema**: `ProductDbContext` contenía definiciones duplicadas y ambiguas de `DbSet<Company>`, lo que provocaba errores de compilación y conflictos de resolución de tipos entre los dominios `Shared` y `Product`.
 - **Solución**: Se consolidaron las definiciones en una única propiedad `DbSet` con el nombre completo cualificado `GesFer.Product.Back.Domain.Entities.Company`, eliminando las duplicidades.
 
 ### 3. Restauración de Entidad Company en Product (Prioridad Alta)

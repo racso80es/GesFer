@@ -1,15 +1,15 @@
 using GesFer.Application.Commands.Country;
 using GesFer.Application.Common.Interfaces;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.Country;
 
 public class DeleteCountryCommandHandler : ICommandHandler<DeleteCountryCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteCountryCommandHandler(ApplicationDbContext context)
+    public DeleteCountryCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

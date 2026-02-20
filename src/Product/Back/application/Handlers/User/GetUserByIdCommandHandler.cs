@@ -1,7 +1,7 @@
 using GesFer.Application.Commands.User;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.User;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,10 +9,10 @@ namespace GesFer.Application.Handlers.User;
 
 public class GetUserByIdCommandHandler : ICommandHandler<GetUserByIdCommand, UserDto?>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly IAdminApiClient _adminApiClient;
 
-    public GetUserByIdCommandHandler(ApplicationDbContext context, IAdminApiClient adminApiClient)
+    public GetUserByIdCommandHandler(ProductDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
         _adminApiClient = adminApiClient;

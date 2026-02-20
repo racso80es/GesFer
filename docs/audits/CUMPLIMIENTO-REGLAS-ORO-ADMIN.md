@@ -95,8 +95,8 @@ Se ha realizado una revisión exhaustiva del cumplimiento de las **Reglas de Oro
   - **Estado:** ✅ Completo con todas las propiedades y índices optimizados
   - **Índices:** ✅ CursorId, Username, ActionTimestamp, compuesto (CursorId, ActionTimestamp)
 
-- ✅ **ApplicationDbContext**:
-  - **Ubicación:** `Api/src/Infrastructure/Data/ApplicationDbContext.cs`
+- ✅ **ProductDbContext**:
+  - **Ubicación:** `Api/src/Infrastructure/Data/ProductDbContext.cs`
   - **Estado:** ✅ DbSet<AdminUser> y DbSet<AuditLog> agregados correctamente
 
 ---
@@ -266,7 +266,7 @@ Las siguientes propiedades de `AdminUser` son opcionales pero no se inicializan 
 |------|--------|----------|
 | SetupService.SeedInitialDataAsync() | ✅ | AdminUser incluido con todas las propiedades requeridas |
 | Configuración EF Core | ✅ | AdminUserConfiguration y AuditLogConfiguration completas |
-| ApplicationDbContext | ✅ | DbSets agregados correctamente |
+| ProductDbContext | ✅ | DbSets agregados correctamente |
 | Migración BD | ✅ | Migración creada y aplicada |
 
 ---
@@ -445,7 +445,7 @@ context.AdminUsers.Add(adminUser);
 - ✅ `AdminUser` no tiene relaciones Foreign Key (es independiente)
 - ✅ `AuditLog` no tiene relaciones Foreign Key (solo almacena datos)
 - ✅ El seeding de AdminUser en SetupService se ejecuta después de crear los datos base (orden correcto)
-- ✅ Sequential GUIDs: Configurados automáticamente por ApplicationDbContext para todas las entidades BaseEntity (incluye AdminUser y AuditLog)
+- ✅ Sequential GUIDs: Configurados automáticamente por ProductDbContext para todas las entidades BaseEntity (incluye AdminUser y AuditLog)
 
 ---
 
@@ -508,7 +508,7 @@ context.AdminUsers.Add(adminUser);
 | `Api/src/Api/Services/SetupService.cs` | ✅ | AdminUser agregado correctamente |
 | `Api/src/Infrastructure/Data/Configurations/AdminUserConfiguration.cs` | ✅ | Completo con todas las propiedades |
 | `Api/src/Infrastructure/Data/Configurations/AuditLogConfiguration.cs` | ✅ | Completo con índices optimizados |
-| `Api/src/Infrastructure/Data/ApplicationDbContext.cs` | ✅ | DbSets agregados |
+| `Api/src/Infrastructure/Data/ProductDbContext.cs` | ✅ | DbSets agregados |
 | Migración `AddAdminUsersAndAuditLogs` | ✅ | Creada y aplicada |
 
 ---
@@ -740,7 +740,7 @@ Los tests existentes en `Cliente/__tests__/integration/` cubren:
 |------|--------|----------|
 | SetupService.SeedInitialDataAsync() | ✅ | AdminUser incluido con todas las propiedades requeridas |
 | Configuración EF Core | ✅ | AdminUserConfiguration y AuditLogConfiguration completas |
-| ApplicationDbContext | ✅ | DbSets agregados correctamente |
+| ProductDbContext | ✅ | DbSets agregados correctamente |
 | Migración BD | ✅ | Migración creada y aplicada |
 
 ---

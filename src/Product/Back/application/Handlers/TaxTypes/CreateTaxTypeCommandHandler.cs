@@ -1,16 +1,16 @@
 using GesFer.Application.Commands.TaxTypes;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Product.Back.Domain.Entities;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.TaxTypes;
 
 public class CreateTaxTypeCommandHandler : ICommandHandler<CreateTaxTypeCommand, Guid>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public CreateTaxTypeCommandHandler(ApplicationDbContext context)
+    public CreateTaxTypeCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

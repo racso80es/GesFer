@@ -1,16 +1,16 @@
 using GesFer.Application.Commands.Group;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.Group;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.Group;
 
 public class UpdateGroupCommandHandler : ICommandHandler<UpdateGroupCommand, GroupDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public UpdateGroupCommandHandler(ApplicationDbContext context)
+    public UpdateGroupCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

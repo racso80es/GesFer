@@ -29,7 +29,7 @@
 1.  **Refactorización DbContext (Shared Invariant):**
     *   **Acción:** Se creó `src/Shared/Back/Common/DbContextExtensions.cs`.
     *   **Detalle:** Se centralizó la lógica de `SequentialGuid`, `SoftDelete` y `AuditFields`.
-    *   **Impacto:** Eliminación de código duplicado en `AdminDbContext` y `ApplicationDbContext`.
+    *   **Impacto:** Eliminación de código duplicado en `AdminDbContext` y `ProductDbContext`.
 
 ### 🚀 Para el Executor (Siguientes Pasos)
 

@@ -10,7 +10,7 @@
     *   ✅ Invariante Shared: `BaseEntity`, `Email` y `TaxId` están centralizados en `Shared/Back`. No se detectó duplicación en los dominios `Product` o `Admin`.
 
 *   **Nomenclatura:** **95%**
-    *   ✅ DbContext: `ApplicationDbContext` utiliza la sintaxis correcta `=> Set<T>();` y define explícitamente las entidades.
+    *   ✅ DbContext: `ProductDbContext` utiliza la sintaxis correcta `=> Set<T>();` y define explícitamente las entidades.
     *   ✅ Command Pattern: Los comandos de consola (`SeedCommand`, `SquashMigrationsCommand`) implementan `ICommandHandler` y retornan `CommandResult`.
     *   ⚠️ **Logging:** Se detectó uso de `Console.WriteLine` en servicios de infraestructura, violando las convenciones de observabilidad.
 

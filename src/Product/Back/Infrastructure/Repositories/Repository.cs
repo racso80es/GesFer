@@ -1,5 +1,5 @@
 using GesFer.Shared.Back.Domain.Common;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -10,10 +10,10 @@ namespace GesFer.Infrastructure.Repositories;
 /// </summary>
 public class Repository<T> : IRepository<T> where T : BaseEntity
 {
-    protected readonly ApplicationDbContext _context;
+    protected readonly ProductDbContext _context;
     protected readonly DbSet<T> _dbSet;
 
-    public Repository(ApplicationDbContext context)
+    public Repository(ProductDbContext context)
     {
         _context = context;
         _dbSet = context.Set<T>();

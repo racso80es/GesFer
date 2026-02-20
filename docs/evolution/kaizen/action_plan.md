@@ -24,4 +24,4 @@ Este documento rastrea las acciones de mejora continua identificadas y su estado
 *   **Día 4:** Reparación de rutas relativas en `.csproj` y limpieza de código muerto (`Program2.cs`).
 *   **Día 5:** Verificación de ejecución de Consola y análisis de warnings de infraestructura.
 *   **Día 5 (Verificado Día 6):** Refactorizar `IAsyncLogPublisher` a `void`.
-*   **Día 5 (Verificado Día 6):** Corregir warnings CS8629 en `ApplicationDbContext`.
+*   **Día 5 (Verificado Día 6):** Corregir warnings CS8629 en `ProductDbContext`.

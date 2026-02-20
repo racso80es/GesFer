@@ -1,6 +1,6 @@
 using GesFer.Application.Commands.SalesDeliveryNote;
 using GesFer.Application.Common.Interfaces;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.SalesDeliveryNote;
@@ -10,9 +10,9 @@ namespace GesFer.Application.Handlers.SalesDeliveryNote;
 /// </summary>
 public class ConfirmSalesDeliveryNoteCommandHandler : ICommandHandler<ConfirmSalesDeliveryNoteCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public ConfirmSalesDeliveryNoteCommandHandler(ApplicationDbContext context)
+    public ConfirmSalesDeliveryNoteCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

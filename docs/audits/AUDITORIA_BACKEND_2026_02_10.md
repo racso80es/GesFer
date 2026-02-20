@@ -16,7 +16,7 @@
 
 **Ubicación:**
 *   `src/Admin/Back/Infrastructure/Data/AdminDbContext.cs` (Líneas ~40-100)
-*   `src/Product/Back/Infrastructure/Data/ApplicationDbContext.cs` (Líneas ~50-130)
+*   `src/Product/Back/Infrastructure/Data/ProductDbContext.cs` (Líneas ~50-130)
 
 ### 🟡 Medio: Advertencia de Campo No Usado
 **Hallazgo:** El campo `AdminWebAppFactory._useInMemory` se asigna pero nunca se usa, generando una advertencia de compilación `CS0414`.
@@ -108,7 +108,7 @@
     *   En `OnModelCreating`, llamar a `modelBuilder.ConfigureSharedEntities()`.
     *   En `SaveChanges` y `SaveChangesAsync`, llamar a `ChangeTracker.UpdateSharedAuditFields()`.
 
-3.  **Refactorizar `ApplicationDbContext`:**
+3.  **Refactorizar `ProductDbContext`:**
     *   Realizar los mismos cambios que en `AdminDbContext`.
     *   Mantener `ConfigureUtf8` si es específico de Product o moverlo si también es compartido (actualmente solo está en Product, evaluar si Admin lo necesita).
 

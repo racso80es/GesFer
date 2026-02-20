@@ -4,8 +4,9 @@ using GesFer.Application.Handlers.Auth;
 using GesFer.Application.Handlers.PurchaseDeliveryNote;
 using GesFer.Application.Handlers.SalesDeliveryNote;
 using GesFer.Product.Back.Domain.Services;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Services;
+using GesFer.Shared.Back.Domain.Interfaces;
 using GesFer.Infrastructure.Repositories;
 using GesFer.Infrastructure.Services;
 using GesFer.Product.Back.Infrastructure.Services;
@@ -32,7 +33,7 @@ public static class DependencyInjection
 
         var isDevelopment = environment?.IsDevelopment() ?? false;
 
-        services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+        services.AddDbContext<ProductDbContext>((serviceProvider, options) =>
         {
             if (environment?.IsEnvironment("Testing") == true)
             {
@@ -75,6 +76,11 @@ public static class DependencyInjection
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IStockService, StockService>();
         services.AddScoped<JsonDataSeeder>();
+
+        // DbInitializer & Dependencies
+        services.AddScoped<IMigrationService, ProductMigrationService>();
+        services.AddScoped<IIntegrityCheckService, ProductIntegrityService>();
+        services.AddScoped<DbInitializer>();
 
         // HttpClient para comunicación con Admin API
         if (environment?.IsEnvironment("Testing") == true)

@@ -1,4 +1,4 @@
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,9 +14,9 @@ public static class DatabaseExtensions
     /// <summary>
     /// Aplica las migraciones y ejecuta el seeding de datos maestros únicamente
     /// </summary>
-    public static async Task MigrateAndSeedAsync(this ApplicationDbContext context, IServiceProvider serviceProvider)
+    public static async Task MigrateAndSeedAsync(this ProductDbContext context, IServiceProvider serviceProvider)
     {
-        var logger = serviceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
+        var logger = serviceProvider.GetRequiredService<ILogger<ProductDbContext>>();
 
         try
         {
@@ -42,9 +42,9 @@ public static class DatabaseExtensions
     /// <summary>
     /// Ejecuta solo el seeding de datos (sin migraciones)
     /// </summary>
-    public static async Task SeedDataAsync(this ApplicationDbContext context, IServiceProvider serviceProvider, bool includeTestData = false)
+    public static async Task SeedDataAsync(this ProductDbContext context, IServiceProvider serviceProvider, bool includeTestData = false)
     {
-        var logger = serviceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
+        var logger = serviceProvider.GetRequiredService<ILogger<ProductDbContext>>();
         var seeder = serviceProvider.GetRequiredService<JsonDataSeeder>();
 
         try

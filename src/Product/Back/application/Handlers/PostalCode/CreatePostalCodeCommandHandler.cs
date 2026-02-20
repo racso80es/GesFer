@@ -2,16 +2,16 @@ using GesFer.Application.Commands.PostalCode;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.PostalCode;
 using GesFer.Shared.Back.Domain.Entities;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.PostalCode;
 
 public class CreatePostalCodeCommandHandler : ICommandHandler<CreatePostalCodeCommand, PostalCodeDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public CreatePostalCodeCommandHandler(ApplicationDbContext context)
+    public CreatePostalCodeCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

@@ -1,15 +1,15 @@
 using GesFer.Application.Commands.User;
 using GesFer.Application.Common.Interfaces;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.User;
 
 public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteUserCommandHandler(ApplicationDbContext context)
+    public DeleteUserCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

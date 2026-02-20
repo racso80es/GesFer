@@ -18,7 +18,7 @@ Al iniciar la sesión, se realizó una exploración del código fuente para dete
 3.  `Program.cs(220,43)`: Dereferencia de posible referencia nula (`CS8602`).
 4.  `MenuService.cs(333,13)`: Dereferencia de posible referencia nula (`CS8602`).
 5.  `MenuService.cs(478,35)`: Dereferencia de posible referencia nula (`CS8602`).
-6.  `ApplicationDbContext.cs`: Warning de nulabilidad en infraestructura (fuera del alcance inmediato de la consola, pero notado).
+6.  `ProductDbContext.cs`: Warning de nulabilidad en infraestructura (fuera del alcance inmediato de la consola, pero notado).
 
 ## 2. Diagnóstico
 El proyecto es funcional pero carece de una estructura de desarrollo unificada (Solution File). La presencia de warnings en la aplicación de consola (punto de entrada para mantenimiento) indica deuda técnica menor que debe ser resuelta para mantener el estándar de "Clean Code".

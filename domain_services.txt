@@ -1,0 +1,1 @@
+src/Product/Back/Domain/Services/IIntegrityCheckService.cs:namespace GesFer.Product.Back.Domain.Services;

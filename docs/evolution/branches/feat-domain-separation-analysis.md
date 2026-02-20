@@ -188,7 +188,7 @@ Reinicio de la separación total de dominios **Product** y **Admin** en API y Cl
 - `Api/src/domain/BaseEntity.cs` → `src/Shared/Api/Domain/BaseEntity.cs`
 
 #### Infraestructura Compartida
-- `Api/src/Infrastructure/Data/ApplicationDbContext.cs` → **ANÁLISIS REQUERIDO**: ¿Cómo dividir? ¿Shared con DbSets por dominio?
+- `Api/src/Infrastructure/Data/ProductDbContext.cs` → **ANÁLISIS REQUERIDO**: ¿Cómo dividir? ¿Shared con DbSets por dominio?
 - `Api/src/Infrastructure/Repositories/IRepository.cs` → `src/Shared/Api/Infrastructure/Repositories/IRepository.cs`
 - `Api/src/Infrastructure/Repositories/Repository.cs` → `src/Shared/Api/Infrastructure/Repositories/Repository.cs`
 - `Api/src/Infrastructure/Data/ISequentialGuidGenerator.cs` → `src/Shared/Api/Infrastructure/Data/ISequentialGuidGenerator.cs`
@@ -523,10 +523,10 @@ public enum SeedLevel
 - ✅ DTOs Admin en Backend → Tipos TypeScript Admin en Frontend
 - ✅ DTOs Product en Backend → Tipos TypeScript Product en Frontend
 
-### 4.2 ApplicationDbContext - Estrategia de División
+### 4.2 ProductDbContext - Estrategia de División
 
 **OPCIÓN A: DbContext Único Compartido (Recomendada para Fase 1)**
-- `src/Shared/Api/Infrastructure/Data/ApplicationDbContext.cs`
+- `src/Shared/Api/Infrastructure/Data/ProductDbContext.cs`
 - Contiene todos los `DbSet<T>` de Shared, Product y Admin
 - Product y Admin referencian este DbContext compartido
 - **Ventaja**: Migración más simple, sin cambios en EF Core Migrations
@@ -633,7 +633,7 @@ Los siguientes componentes requieren decisión arquitectónica antes de la migra
 
 ### Riesgos Identificados
 
-1. **ApplicationDbContext**: Decisión sobre estrategia de división
+1. **ProductDbContext**: Decisión sobre estrategia de división
 2. **Componentes pendientes**: Requieren análisis adicional
 3. **Tests de integración**: Requieren actualización de rutas y referencias
 4. **Docker y scripts**: Requieren actualización de rutas
@@ -644,7 +644,7 @@ Los siguientes componentes requieren decisión arquitectónica antes de la migra
 
 1. **Revisión de este análisis** por el equipo
 2. **Decisión sobre componentes pendientes** (LogController, SetupController, etc.)
-3. **Decisión sobre ApplicationDbContext** (Opción A vs Opción B)
+3. **Decisión sobre ProductDbContext** (Opción A vs Opción B)
 4. **Creación de rama**: `feat/domain-separation`
 5. **Inicio de FASE 1**: Creación de estructura base
 

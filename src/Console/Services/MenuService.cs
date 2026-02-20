@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GesFer.ConsoleApp.Commands;
 using GesFer.ConsoleApp.Commands.Dtos;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

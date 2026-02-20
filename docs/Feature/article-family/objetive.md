@@ -20,7 +20,7 @@
 ### Backend
 - [ ] **Domain:** Crear Entidad `ArticleFamily` en `src/Product/Back/domain/Entities/`. Asegurar herencia de `BaseEntity` y propiedad `CompanyId`.
 - [ ] **Persistence:** Crear Configuration `ArticleFamilyConfiguration` en `src/Product/Back/Infrastructure/Persistence/Configurations/`.
-- [ ] **DbContext:** Añadir `DbSet<ArticleFamily>` en `ApplicationDbContext`.
+- [ ] **DbContext:** Añadir `DbSet<ArticleFamily>` en `ProductDbContext`.
 - [ ] **Migration:** Generar y revisar migración (asegurar índices para `CompanyId` y `Code`).
 - [ ] **DTOs:** Crear DTOs en `src/Product/Back/application/DTOs/ArticleFamilies/`:
     - `CreateArticleFamilyDto`

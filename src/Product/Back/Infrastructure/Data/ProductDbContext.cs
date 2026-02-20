@@ -2,14 +2,14 @@ using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace GesFer.Infrastructure.Data;
+namespace GesFer.Product.Back.Infrastructure.Data;
 
 /// <summary>
 /// DbContext principal de la aplicación con soporte para Soft Delete
 /// </summary>
-public class ApplicationDbContext : DbContext
+public class ProductDbContext : DbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    public ProductDbContext(DbContextOptions<ProductDbContext> options) : base(options)
     {
     }
 
@@ -45,7 +45,7 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         // Aplicar configuraciones de entidades
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductDbContext).Assembly);
 
         // Configurar Shared Entities (Sequential GUIDs + Soft Delete)
         modelBuilder.ConfigureSharedEntities();
@@ -101,4 +101,3 @@ public class ApplicationDbContext : DbContext
         return base.SaveChangesAsync(cancellationToken);
     }
 }
-

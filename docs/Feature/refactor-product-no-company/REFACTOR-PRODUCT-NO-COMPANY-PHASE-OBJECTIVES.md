@@ -39,7 +39,7 @@ Que **Product** no dependa de la entidad Company ni de la tabla Companies. Produ
 
 | Objetivo | Estado | Acción |
 |----------|--------|--------|
-| O.4 | Eliminar `DbSet<Company>` de ApplicationDbContext | No hay Companies en Product DbContext |
+| O.4 | Eliminar `DbSet<Company>` de ProductDbContext | No hay Companies en Product DbContext |
 | O.5 | Eliminar `CompanyConfiguration` | Borrar `Configurations/CompanyConfiguration.cs` |
 | O.6 | Ajustar configuraciones que referencian Company | ArticleConfiguration, UserConfiguration, SupplierConfiguration, CustomerConfiguration, TariffConfiguration: relaciones con Companies → eliminar o cambiar a FK sin navegación |
 | O.7 | Migraciones: quitar tabla Companies de Product | La tabla Companies es de Admin. Product no la crea. Si está en migraciones Product, mover/eliminar según plan de migraciones. |

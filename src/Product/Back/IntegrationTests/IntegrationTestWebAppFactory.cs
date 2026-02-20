@@ -1,6 +1,6 @@
 using GesFer.Api;
 using GesFer.Api.Services;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
 using GesFer.IntegrationTests.Helpers;
 using GesFer.Product.Back.Infrastructure.Services;
@@ -33,13 +33,13 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
     {
         builder.ConfigureServices(services =>
         {
-            var dbContextOptionsDescriptors = services.Where(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>)).ToList();
+            var dbContextOptionsDescriptors = services.Where(d => d.ServiceType == typeof(DbContextOptions<ProductDbContext>)).ToList();
             foreach (var descriptor in dbContextOptionsDescriptors) services.Remove(descriptor);
 
-            var dbContextDescriptors = services.Where(d => d.ServiceType == typeof(ApplicationDbContext)).ToList();
+            var dbContextDescriptors = services.Where(d => d.ServiceType == typeof(ProductDbContext)).ToList();
             foreach (var descriptor in dbContextDescriptors) services.Remove(descriptor);
 
-            services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+            services.AddDbContext<ProductDbContext>((serviceProvider, options) =>
             {
                 if (_useInMemory)
                 {
@@ -53,12 +53,6 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
                     {
                          if (_connectionString == null)
                          {
-                            // This should not happen if InitializeAsync works correctly,
-                            // but if it does, it means we are in a broken state.
-                            // Fallback to InMemory or throw?
-                            // Since we are inside ConfigureWebHost, we can't easily switch _useInMemory here effectively
-                            // if services were already built, but here we are defining the service.
-                            // However, let's assume if connection string is null, something went wrong.
                             throw new InvalidOperationException("Connection string not available for MySql, but _useInMemory is false.");
                          }
                          connectionString = _connectionString;
@@ -126,9 +120,11 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
 
             // Only AFTER successful start do we access Services, which triggers Host Build
             using var scope = Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
             await context.Database.EnsureCreatedAsync();
-            await DbInitializer.InitializeAsync(Services, false);
+
+            var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+            await initializer.InitializeAsync();
         }
         catch (Exception ex)
         {
@@ -143,9 +139,11 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
         // Accessing Services triggers Host Build.
         // At this point _useInMemory is guaranteed to be true.
         using var scope = Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
         await context.Database.EnsureCreatedAsync();
-        await DbInitializer.InitializeAsync(Services, false);
+
+        var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+        await initializer.InitializeAsync();
     }
 
     public new async Task DisposeAsync()

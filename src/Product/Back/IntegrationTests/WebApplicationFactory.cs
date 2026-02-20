@@ -1,5 +1,5 @@
 using GesFer.Api;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -26,16 +26,16 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
         {
             // Remover el DbContext real (buscar por el tipo de servicio registrado)
             var descriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
+                d => d.ServiceType == typeof(DbContextOptions<ProductDbContext>));
 
             if (descriptor != null)
             {
                 services.Remove(descriptor);
             }
 
-            // También remover el ApplicationDbContext si está registrado directamente
+            // También remover el ProductDbContext si está registrado directamente
             var dbContextDescriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(ApplicationDbContext));
+                d => d.ServiceType == typeof(ProductDbContext));
 
             if (dbContextDescriptor != null)
             {
@@ -43,7 +43,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
             }
 
             // Agregar DbContext en memoria para tests con nombre único por instancia
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ProductDbContext>(options =>
             {
                 options.UseInMemoryDatabase(_databaseName);
             });

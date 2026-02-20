@@ -23,7 +23,7 @@ Este plan incluye el **reemplazo completo de la entidad Family** por ArticleFami
 |---|-------|---------|--------------|
 | 1.1 | Entidad ArticleFamily | Crear `src/Product/Back/domain/Entities/ArticleFamily.cs`: BaseEntity, CompanyId, Code, Name, Description?, TaxTypeId; navegación Company, TaxType. | — |
 | 1.2 | Configuración EF | Crear `ArticleFamilyConfiguration`: tabla `ArticleFamilies`, índices (CompanyId, Code único), FK TaxType, check si aplica. | 1.1 |
-| 1.3 | DbContext y migración (tabla nueva) | Añadir `DbSet<ArticleFamily>` en `ApplicationDbContext`. Generar migración que **solo cree** tabla `ArticleFamilies` (sin tocar Article/Families aún). Aplicar. | 1.2 |
+| 1.3 | DbContext y migración (tabla nueva) | Añadir `DbSet<ArticleFamily>` en `ProductDbContext`. Generar migración que **solo cree** tabla `ArticleFamilies` (sin tocar Article/Families aún). Aplicar. | 1.2 |
 | 1.4 | DTOs ArticleFamily | Crear en `application/DTOs/ArticleFamilies/`: `ArticleFamilyDto`, `CreateArticleFamilyDto`, `UpdateArticleFamilyDto`. | — |
 | 1.5 | Commands ArticleFamily | Crear en `application/Commands/ArticleFamilies/`: Create, Update, Delete con validadores FluentValidation. | 1.4 |
 | 1.6 | Queries ArticleFamily | Crear en `application/Queries/ArticleFamilies/`: GetArticleFamiliesQuery, GetArticleFamilyByIdQuery. | 1.4 |
@@ -47,7 +47,7 @@ Este plan incluye el **reemplazo completo de la entidad Family** por ArticleFami
 | 2.6 | ArticleConfiguration sin Family | En `ArticleConfiguration`: eliminar HasOne Family; dejar solo HasOne ArticleFamily. | 2.4 |
 | 2.7 | Eliminar entidad Family | Borrar `src/Product/Back/domain/Entities/Family.cs`. | 2.5 |
 | 2.8 | Eliminar FamilyConfiguration | Borrar `Infrastructure/Data/Configurations/FamilyConfiguration.cs`. | 2.7 |
-| 2.9 | DbContext sin Families | En `ApplicationDbContext`: quitar `DbSet<Family> Families`. | 2.8 |
+| 2.9 | DbContext sin Families | En `ProductDbContext`: quitar `DbSet<Family> Families`. | 2.8 |
 | 2.10 | Company sin Families | En `Company.cs`: quitar colección `Families`. | 2.7 |
 | 2.11 | Albaranes: usar ArticleFamily.TaxType | En `CreateSalesDeliveryNoteCommandHandler` y `CreatePurchaseDeliveryNoteCommandHandler`: cambiar `.Include(a => a.Family)` por `.Include(a => a.ArticleFamily).ThenInclude(af => af.TaxType)`; cambiar `article.Family.IvaPercentage` por `article.ArticleFamily.TaxType.Value`. | 2.4 |
 | 2.12 | InitDatabase / scripts | En `InitDatabase.cs` (o scripts que listen tablas): sustituir "Families" por "ArticleFamilies" donde corresponda. | 2.9 |
@@ -115,4 +115,4 @@ Este plan incluye el **reemplazo completo de la entidad Family** por ArticleFami
 ## Archivos nuevos o modificados (referencia rápida)
 
 - Nuevos: ArticleFamily.cs, ArticleFamilyConfiguration, DTOs/Commands/Queries/Handlers/Controller, tests, types/article-family.ts, api/article-families.ts, page y componentes Familias de Artículos.
-- Modificados: Article.cs (ArticleFamilyId, sin FamilyId), ArticleConfiguration, ApplicationDbContext, Company.cs, CreateSalesDeliveryNoteCommandHandler, CreatePurchaseDeliveryNoteCommandHandler, JsonDataSeeder (ArticleFamilies + sin Families), demo-data.json, InitDatabase.cs, Sidebar/menú, permisos.
+- Modificados: Article.cs (ArticleFamilyId, sin FamilyId), ArticleConfiguration, ProductDbContext, Company.cs, CreateSalesDeliveryNoteCommandHandler, CreatePurchaseDeliveryNoteCommandHandler, JsonDataSeeder (ArticleFamilies + sin Families), demo-data.json, InitDatabase.cs, Sidebar/menú, permisos.

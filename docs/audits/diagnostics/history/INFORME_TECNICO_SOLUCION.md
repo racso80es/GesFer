@@ -739,7 +739,7 @@ builder.Services.AddAuthorization(options =>
 Todas las eliminaciones son **lógicas (soft delete)**, no físicas:
 
 ```csharp
-// ApplicationDbContext.cs
+// ProductDbContext.cs
 private void ConfigureSoftDelete(ModelBuilder modelBuilder)
 {
     var entityTypes = modelBuilder.Model.GetEntityTypes()

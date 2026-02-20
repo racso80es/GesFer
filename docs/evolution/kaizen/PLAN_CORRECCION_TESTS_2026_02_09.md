@@ -93,7 +93,7 @@ Utilizar el operador `null!` (null-forgiving) o `default!` en la declaración de
 ```csharp
 public class StockBenchmark
 {
-    private ApplicationDbContext _context = null!;
+    private ProductDbContext _context = null!;
     private StockService _service = null!;
     private List<Guid> _articleIds = null!;
     // ...

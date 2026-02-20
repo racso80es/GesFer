@@ -68,7 +68,7 @@ Permitir el mantenimiento del maestro **Familia de Artículo** (ArticleFamily): 
 
 ### 4.1. Backend (Product.Back)
 *   **Domain:** `src/Product/Back/domain/Entities/ArticleFamily.cs`
-*   **Persistence:** Configuration en `Infrastructure/Persistence/Configurations/`, `DbSet<ArticleFamily>` en `ApplicationDbContext`, migración EF Core (índices: CompanyId, Code).
+*   **Persistence:** Configuration en `Infrastructure/Persistence/Configurations/`, `DbSet<ArticleFamily>` en `ProductDbContext`, migración EF Core (índices: CompanyId, Code).
 *   **Application:** DTOs en `application/DTOs/ArticleFamilies/` (Create, Update, Read). Commands en `application/Commands/ArticleFamilies/`. Queries en `application/Queries/ArticleFamilies/`. Handlers en `application/Handlers/ArticleFamilies/`.
 *   **API:** `ArticleFamiliesController` en `Api/Controllers/`.
 *   **Tests:** Unit en `GesFer.Product.UnitTests/ArticleFamilies/`, integración en `GesFer.Product.IntegrationTests/Controllers/ArticleFamiliesControllerTests.cs`.

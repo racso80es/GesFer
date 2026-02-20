@@ -1,6 +1,6 @@
 using FluentAssertions;
 using GesFer.Application.DTOs.Auth;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http;

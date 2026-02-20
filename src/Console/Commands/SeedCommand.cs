@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using GesFer.ConsoleApp.Commands.Base;
 using GesFer.ConsoleApp.Commands.Dtos;
 using GesFer.ConsoleApp.Services;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Admin.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Services;
 using GesFer.Infrastructure.Services;
@@ -170,7 +170,7 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
             ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
 
         // DbContext Product
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
         {
             options.UseMySql(
                 connectionString,

@@ -1,6 +1,6 @@
 using GesFer.Product.Back.Domain.Entities;
 using GesFer.Product.Back.Domain.Services;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Infrastructure.Services;
@@ -10,9 +10,9 @@ namespace GesFer.Infrastructure.Services;
 /// </summary>
 public class StockService : IStockService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public StockService(ApplicationDbContext context)
+    public StockService(ProductDbContext context)
     {
         _context = context;
     }

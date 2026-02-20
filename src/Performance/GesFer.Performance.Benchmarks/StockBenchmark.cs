@@ -1,5 +1,5 @@
 using BenchmarkDotNet.Attributes;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
 using GesFer.Product.Back.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,7 @@ namespace GesFer.Performance.Benchmarks;
 [MemoryDiagnoser]
 public class StockBenchmark
 {
-    private ApplicationDbContext _context = null!;
+    private ProductDbContext _context = null!;
     private StockService _service = null!;
     private List<Guid> _articleIds = null!;
     private const int ArticleCount = 100;
@@ -17,11 +17,11 @@ public class StockBenchmark
     [GlobalSetup]
     public void Setup()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<ProductDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        _context = new ApplicationDbContext(options);
+        _context = new ProductDbContext(options);
         _service = new StockService(_context);
 
         _articleIds = new List<Guid>();

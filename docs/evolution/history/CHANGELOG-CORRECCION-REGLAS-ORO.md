@@ -175,10 +175,10 @@ ON DUPLICATE KEY UPDATE
 **Cambios específicos:**
 ```csharp
 // Antes:
-services.AddDbContext<ApplicationDbContext>(options =>
+services.AddDbContext<ProductDbContext>(options =>
 
 // Después:
-services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+services.AddDbContext<ProductDbContext>((serviceProvider, options) =>
 
 // Nuevo registro agregado:
 // Generador de GUIDs secuenciales (MySQL optimizado)
@@ -257,7 +257,7 @@ private static readonly object _lockObject = new object();
 private ISequentialGuidGenerator GetGuidGenerator(EntityEntry entry)
 {
     // Intentar obtener el ServiceProvider desde el DbContext usando IInfrastructure<IServiceProvider>
-    if (entry.Context is ApplicationDbContext dbContext)
+    if (entry.Context is ProductDbContext dbContext)
     {
         var infrastructure = dbContext.Database as IInfrastructure<IServiceProvider>;
         if (infrastructure != null)
@@ -309,7 +309,7 @@ public override Guid Next(EntityEntry entry)
 
 ---
 
-### 5. `Api/src/Infrastructure/Data/ApplicationDbContext.cs`
+### 5. `Api/src/Infrastructure/Data/ProductDbContext.cs`
 **Tipo:** DbContext principal  
 **Cambios:** +3 líneas agregadas (documentación actualizada)
 
@@ -357,7 +357,7 @@ idProperty.SetValueGeneratorFactory((property, entityType) => new SequentialGuid
 **Constructor actualizado:**
 ```csharp
 // Antes:
-public MasterDataSeeder(ApplicationDbContext context, ILogger<MasterDataSeeder> logger)
+public MasterDataSeeder(ProductDbContext context, ILogger<MasterDataSeeder> logger)
 {
     _context = context;
     _logger = logger;
@@ -367,7 +367,7 @@ public MasterDataSeeder(ApplicationDbContext context, ILogger<MasterDataSeeder> 
 private readonly ISequentialGuidGenerator _guidGenerator;
 
 public MasterDataSeeder(
-    ApplicationDbContext context, 
+    ProductDbContext context,
     ILogger<MasterDataSeeder> logger,
     ISequentialGuidGenerator guidGenerator)
 {
@@ -409,12 +409,12 @@ Id = _guidGenerator.NewSequentialGuid(),
 ```csharp
 // Antes (línea 118-120):
 var masterDataSeeder = new GesFer.Infrastructure.Services.MasterDataSeeder(
-    scope.ServiceProvider.GetRequiredService<ApplicationDbContext>(),
+    scope.ServiceProvider.GetRequiredService<ProductDbContext>(),
     scope.ServiceProvider.GetRequiredService<ILogger<GesFer.Infrastructure.Services.MasterDataSeeder>>());
 
 // Después (línea 118-121):
 var masterDataSeeder = new GesFer.Infrastructure.Services.MasterDataSeeder(
-    scope.ServiceProvider.GetRequiredService<ApplicationDbContext>(),
+    scope.ServiceProvider.GetRequiredService<ProductDbContext>(),
     scope.ServiceProvider.GetRequiredService<ILogger<GesFer.Infrastructure.Services.MasterDataSeeder>>(),
     scope.ServiceProvider.GetRequiredService<ISequentialGuidGenerator>());
 ```
@@ -483,7 +483,7 @@ context.AdminUsers.Add(adminUser);
 | `Api/scripts/seed-data.sql` | Modificado | +28 | 0 | +28 |
 | `Api/src/Api/DependencyInjection.cs` | Modificado | +6 | -1 | +5 |
 | `Api/src/Api/Services/SetupService.cs` | Modificado | +3 | -1 | +2 |
-| `Api/src/Infrastructure/Data/ApplicationDbContext.cs` | Modificado | +3 | 0 | +3 |
+| `Api/src/Infrastructure/Data/ProductDbContext.cs` | Modificado | +3 | 0 | +3 |
 | `Api/src/Infrastructure/Data/Configurations/AdminUserConfiguration.cs` | Modificado | +4 | 0 | +4 |
 | `Api/src/Infrastructure/Data/SequentialGuidGenerator.cs` | Modificado | +47 | -54 | -7 |
 | `Api/src/Infrastructure/Data/SequentialGuidValueGenerator.cs` | Modificado | +55 | -12 | +43 |
@@ -578,7 +578,7 @@ context.AdminUsers.Add(adminUser);
 5. ✅ **Actualizaciones de dependencias:**
    - `MasterDataSeeder` actualizado para inyectar `ISequentialGuidGenerator`
    - `SetupService` actualizado para proporcionar el generador
-   - `ApplicationDbContext` actualizado para usar generador inyectado
+   - `ProductDbContext` actualizado para usar generador inyectado
 
 ---
 
@@ -658,7 +658,7 @@ En MySQL CHAR(36), estos GUIDs se ordenarán correctamente por fecha de creació
 
 **Patrón implementado:**
 ```
-ApplicationDbContext
+ProductDbContext
     └── SequentialGuidValueGenerator
             └── ISequentialGuidGenerator (interfaz)
                     ├── MySqlSequentialGuidGenerator (implementación actual)

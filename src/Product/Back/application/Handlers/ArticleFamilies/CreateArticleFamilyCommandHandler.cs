@@ -1,7 +1,7 @@
 using GesFer.Application.Commands.ArticleFamilies;
 using GesFer.Application.Common.Interfaces;
 using GesFer.Application.DTOs.ArticleFamilies;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using GesFer.Product.Back.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,9 +9,9 @@ namespace GesFer.Application.Handlers.ArticleFamilies;
 
 public class CreateArticleFamilyCommandHandler : ICommandHandler<CreateArticleFamilyCommand, ArticleFamilyDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public CreateArticleFamilyCommandHandler(ApplicationDbContext context)
+    public CreateArticleFamilyCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

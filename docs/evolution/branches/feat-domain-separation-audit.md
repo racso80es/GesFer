@@ -47,7 +47,7 @@ Se ha realizado una auditoría exhaustiva de la purificación de Shared y la sep
 **Problema**: 57 archivos en Product/Back todavía usan `using GesFer.Domain.Entities` o `using GesFer.Domain.Services`.
 
 **Archivos Afectados** (muestra):
-- `ApplicationDbContext.cs` (línea 1)
+- `ProductDbContext.cs` (línea 1)
 - Todos los Handlers (CreateCountryCommandHandler, CreateCityCommandHandler, etc.)
 - Todas las Configurations (CountryConfiguration, StateConfiguration, etc.)
 - Todos los Services (JsonDataSeeder, AuthService, etc.)
@@ -87,14 +87,14 @@ Se ha realizado una auditoría exhaustiva de la purificación de Shared y la sep
 
 **Acción Requerida**: 
 - Mover las 3 entidades a Admin/Back
-- Actualizar ApplicationDbContext para referenciar desde Admin
+- Actualizar ProductDbContext para referenciar desde Admin
 - Actualizar todas las referencias
 
 ---
 
-### 1.4 ❌ ApplicationDbContext con Referencias Incorrectas
+### 1.4 ❌ ProductDbContext con Referencias Incorrectas
 
-**Problema**: `ApplicationDbContext.cs` tiene múltiples problemas:
+**Problema**: `ProductDbContext.cs` tiene múltiples problemas:
 
 1. **Using incorrecto** (línea 1):
    ```csharp
@@ -115,7 +115,7 @@ Se ha realizado una auditoría exhaustiva de la purificación de Shared y la sep
    public DbSet<City> Cities => Set<City>();
    public DbSet<PostalCode> PostalCodes => Set<PostalCode>();
    ```
-   **Problema**: Estas entidades ahora están en Shared, pero ApplicationDbContext no tiene el using correcto.
+   **Problema**: Estas entidades ahora están en Shared, pero ProductDbContext no tiene el using correcto.
 
 3. **Referencias a Domain.Common.BaseEntity** (líneas 74, 79, 97, 102, 162):
    ```csharp
@@ -291,9 +291,9 @@ Se ha realizado una auditoría exhaustiva de la purificación de Shared y la sep
 
 ## 4. ERRORES DE REFERENCIA DETECTADOS
 
-### 4.1 ApplicationDbContext - Referencias a Entidades Geográficas
+### 4.1 ProductDbContext - Referencias a Entidades Geográficas
 
-**Problema**: `ApplicationDbContext.cs` declara DbSets de entidades geográficas (líneas 37-41) pero:
+**Problema**: `ProductDbContext.cs` declara DbSets de entidades geográficas (líneas 37-41) pero:
 - No tiene `using GesFer.Shared.Back.Domain.Entities;`
 - Usa `using GesFer.Domain.Entities;` (namespace antiguo)
 
@@ -339,7 +339,7 @@ Pero `Country` ahora está en `GesFer.Shared.Back.Domain.Entities`.
 | 1 | Namespaces antiguos en entidades | 🔴 CRÍTICO | 23 entidades | Actualizar a `GesFer.Product.Back.Domain.Entities` |
 | 2 | Referencias al namespace antiguo | 🔴 CRÍTICO | 57 archivos | Actualizar todos los `using` |
 | 3 | Entidades Admin en Product | 🔴 CRÍTICO | 3 entidades | Mover a Admin/Back |
-| 4 | ApplicationDbContext incorrecto | 🔴 CRÍTICO | 1 archivo | Actualizar usings y referencias |
+| 4 | ProductDbContext incorrecto | 🔴 CRÍTICO | 1 archivo | Actualizar usings y referencias |
 | 5 | Configuraciones EF Core incorrectas | 🔴 CRÍTICO | 5 archivos | Actualizar usings |
 | 6 | Componentes duplicados Frontend | 🟡 MEDIO | 13 archivos | Eliminar duplicados |
 | 7 | Tipos TypeScript en Product | 🟡 MEDIO | 1 archivo | Mover a Shared/Front |
@@ -358,7 +358,7 @@ Pero `Country` ahora está en `GesFer.Shared.Back.Domain.Entities`.
    - Mover `AdminUser.cs`, `AuditLog.cs`, `Log.cs` a `src/Admin/Back/src/domain/Entities/`
    - Cambiar namespace a `GesFer.Admin.Back.Domain.Entities`
 
-3. **Actualizar ApplicationDbContext**:
+3. **Actualizar ProductDbContext**:
    - Agregar usings correctos
    - Actualizar referencias a BaseEntity
    - Actualizar DbSets para usar tipos correctos

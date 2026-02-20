@@ -69,13 +69,13 @@ branch: "AddLogger"
 
 #### DbContext Principal
 
-**Clase:** `ApplicationDbContext`  
-**Ubicación:** `Api/src/Infrastructure/Data/ApplicationDbContext.cs`  
+**Clase:** `ProductDbContext`
+**Ubicación:** `Api/src/Infrastructure/Data/ProductDbContext.cs`
 **Namespace:** `GesFer.Infrastructure.Data`
 
 **Características:**
 - Hereda de `DbContext`
-- Constructor con `DbContextOptions<ApplicationDbContext>`
+- Constructor con `DbContextOptions<ProductDbContext>`
 - Implementa Soft Delete global
 - Configuración automática de Sequential GUIDs
 - Gestión automática de campos de auditoría
@@ -96,7 +96,7 @@ branch: "AddLogger"
 
 **Configuración Detallada:**
 ```csharp
-services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+services.AddDbContext<ProductDbContext>((serviceProvider, options) =>
 {
     options.UseMySql(
         connectionString,
@@ -128,7 +128,7 @@ services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
 
 #### ✅ **Filtros Globales de Consulta (Global Query Filters)**
 
-**Implementación:** En `ApplicationDbContext.OnModelCreating()`
+**Implementación:** En `ProductDbContext.OnModelCreating()`
 
 **Propósito:** Soft Delete global para todas las entidades que heredan de `BaseEntity`
 
@@ -158,7 +158,7 @@ private void ConfigureSoftDelete(ModelBuilder modelBuilder)
 
 #### ✅ **Value Generators Personalizados (Sequential GUIDs)**
 
-**Implementación:** En `ApplicationDbContext.OnModelCreating()`
+**Implementación:** En `ProductDbContext.OnModelCreating()`
 
 **Propósito:** Generar GUIDs secuenciales (COMB GUIDs) para mejorar el rendimiento de índices agrupados
 
@@ -192,7 +192,7 @@ private void ConfigureSequentialGuids(ModelBuilder modelBuilder)
 
 #### ✅ **Actualización Automática de Campos de Auditoría**
 
-**Implementación:** Override de `SaveChanges()` y `SaveChangesAsync()` en `ApplicationDbContext`
+**Implementación:** Override de `SaveChanges()` y `SaveChangesAsync()` en `ProductDbContext`
 
 **Código:**
 ```csharp
@@ -569,7 +569,7 @@ private void ConfigureUtf8(ModelBuilder modelBuilder)
 
 **Aplicación Automática:**
 ```csharp
-modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductDbContext).Assembly);
 ```
 
 ---
@@ -781,7 +781,7 @@ El `JsonDataSeeder` busca los archivos en el siguiente orden:
      - `20260113183859_InitialCreate.cs`
      - `20260113183859_InitialCreate.Designer.cs`
 
-2. **`ApplicationDbContextModelSnapshot.cs`**
+2. **`ProductDbContextModelSnapshot.cs`**
    - **Estado:** Snapshot actual del modelo (después de todas las migraciones)
 
 **Total de Migraciones:** 1 migración aplicada
@@ -819,7 +819,7 @@ public async Task<(bool Success, string? Error)> InitializeDatabaseAsync()
     try
     {
         using var scope = _serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<SetupService>>();
 
         // Aplicar migraciones pendientes
@@ -844,9 +844,9 @@ public async Task<(bool Success, string? Error)> InitializeDatabaseAsync()
 
 **Código:**
 ```csharp
-public static async Task MigrateAndSeedAsync(this ApplicationDbContext context, IServiceProvider serviceProvider)
+public static async Task MigrateAndSeedAsync(this ProductDbContext context, IServiceProvider serviceProvider)
 {
-    var logger = serviceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
+    var logger = serviceProvider.GetRequiredService<ILogger<ProductDbContext>>();
     
     try
     {

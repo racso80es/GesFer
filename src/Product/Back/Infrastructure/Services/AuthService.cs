@@ -1,6 +1,6 @@
 using GesFer.Product.Back.Domain.Entities;
 using GesFer.Product.Back.Infrastructure.Services;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
 
@@ -18,10 +18,10 @@ public interface IAuthService
 
 public class AuthService : IAuthService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly IAdminApiClient _adminApiClient;
 
-    public AuthService(ApplicationDbContext context, IAdminApiClient adminApiClient)
+    public AuthService(ProductDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
         _adminApiClient = adminApiClient;

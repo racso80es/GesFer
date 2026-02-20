@@ -21,7 +21,7 @@ Se identificó y corrigió un fallo crítico en la suite de tests de integració
 - Conflicto entre dos fábricas de tests: `CustomWebApplicationFactory` (In-Memory) y `IntegrationTestWebAppFactory` (MySQL con Testcontainers)
 
 ### Causa Raíz
-1. **Registros duplicados de DbContext**: `IntegrationTestWebAppFactory` no eliminaba correctamente todos los registros previos de `DbContextOptions<ApplicationDbContext>`, permitiendo que registros con proveedores no relacionales persistieran.
+1. **Registros duplicados de DbContext**: `IntegrationTestWebAppFactory` no eliminaba correctamente todos los registros previos de `DbContextOptions<ProductDbContext>`, permitiendo que registros con proveedores no relacionales persistieran.
 
 2. **Falta de validación en DbInitializer**: El método `ApplyMigrationsAsync` no verificaba si el proveedor de base de datos era relacional antes de intentar aplicar migraciones.
 
@@ -42,9 +42,9 @@ Se identificó y corrigió un fallo crítico en la suite de tests de integració
 - **Después:** Usa `Where().ToList()` con bucle `foreach` para eliminar **TODOS** los registros previos
 
 ```csharp
-// Eliminar TODOS los registros previos de DbContextOptions<ApplicationDbContext>
+// Eliminar TODOS los registros previos de DbContextOptions<ProductDbContext>
 var dbContextOptionsDescriptors = services
-    .Where(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>))
+    .Where(d => d.ServiceType == typeof(DbContextOptions<ProductDbContext>))
     .ToList();
 
 foreach (var descriptor in dbContextOptionsDescriptors)
@@ -52,9 +52,9 @@ foreach (var descriptor in dbContextOptionsDescriptors)
     services.Remove(descriptor);
 }
 
-// Eliminar TODOS los registros previos de ApplicationDbContext
+// Eliminar TODOS los registros previos de ProductDbContext
 var dbContextDescriptors = services
-    .Where(d => d.ServiceType == typeof(ApplicationDbContext))
+    .Where(d => d.ServiceType == typeof(ProductDbContext))
     .ToList();
 
 foreach (var descriptor in dbContextDescriptors)

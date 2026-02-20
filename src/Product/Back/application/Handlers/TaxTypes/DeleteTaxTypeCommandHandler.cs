@@ -1,15 +1,15 @@
 using GesFer.Application.Commands.TaxTypes;
 using GesFer.Application.Common.Interfaces;
-using GesFer.Infrastructure.Data;
+using GesFer.Product.Back.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GesFer.Application.Handlers.TaxTypes;
 
 public class DeleteTaxTypeCommandHandler : ICommandHandler<DeleteTaxTypeCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteTaxTypeCommandHandler(ApplicationDbContext context)
+    public DeleteTaxTypeCommandHandler(ProductDbContext context)
     {
         _context = context;
     }
