@@ -110,3 +110,12 @@ src/Admin/Front/playwright-report/
 **/TestResults/
 infrastructure/mock-apis/node_modules/
 /src/Tools/Calma-Desktop/node_modules
+bin/
+obj/
+*.log
+*.txt
+build_output.txt
+build_output_2.txt
+build_output_3.txt
+test_output.txt
+integration_test_output.txt
