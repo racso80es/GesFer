@@ -1,0 +1,16 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  GesFer.Shared.Back.Domain -> /app/src/Shared/Back/bin/Debug/net8.0/GesFer.Shared.Back.Domain.dll
+  GesFer.Domain -> /app/src/Product/Back/domain/bin/Debug/net8.0/GesFer.Domain.dll
+  GesFer.Shared.Back.Infrastructure -> /app/src/Shared/Back/Infrastructure/bin/Debug/net8.0/GesFer.Shared.Back.Infrastructure.dll
+  GesFer.Infrastructure -> /app/src/Product/Back/Infrastructure/bin/Debug/net8.0/GesFer.Infrastructure.dll
+  GesFer.Application -> /app/src/Product/Back/application/bin/Debug/net8.0/GesFer.Application.dll
+  GesFer.Api -> /app/src/Product/Back/Api/bin/Debug/net8.0/GesFer.Api.dll
+  GesFer.IntegrationTests -> /app/src/Product/Back/IntegrationTests/bin/Debug/net8.0/GesFer.IntegrationTests.dll
+Test run for /app/src/Product/Back/IntegrationTests/bin/Debug/net8.0/GesFer.IntegrationTests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 18.0.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 2 s - GesFer.IntegrationTests.dll (net8.0)

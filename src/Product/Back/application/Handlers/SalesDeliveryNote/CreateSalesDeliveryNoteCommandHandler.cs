@@ -12,11 +12,11 @@ namespace GesFer.Application.Handlers.SalesDeliveryNote;
 /// </summary>
 public class CreateSalesDeliveryNoteCommandHandler : ICommandHandler<CreateSalesDeliveryNoteCommand, Product.Back.Domain.Entities.SalesDeliveryNote>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly IStockService _stockService;
 
     public CreateSalesDeliveryNoteCommandHandler(
-        ApplicationDbContext context,
+        ProductDbContext context,
         IStockService stockService)
     {
         _context = context;
