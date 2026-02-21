@@ -53,7 +53,7 @@ class Program
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
 
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
         {
             options.UseMySql(
                 connectionString,
@@ -86,7 +86,7 @@ class Program
             }
 
             using var scope = serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
             // Ejecutar seeding según el modo
             await context.SeedDataAsync(scope.ServiceProvider, includeTestData: insertAll);

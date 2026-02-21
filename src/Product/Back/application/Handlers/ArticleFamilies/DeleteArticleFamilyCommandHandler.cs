@@ -7,9 +7,9 @@ namespace GesFer.Application.Handlers.ArticleFamilies;
 
 public class DeleteArticleFamilyCommandHandler : ICommandHandler<DeleteArticleFamilyCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteArticleFamilyCommandHandler(ApplicationDbContext context)
+    public DeleteArticleFamilyCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

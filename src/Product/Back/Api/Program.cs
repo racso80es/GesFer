@@ -208,7 +208,9 @@ else if (isDevelopment)
 
 if (shouldInitialize)
 {
-    await DbInitializer.InitializeAsync(app.Services, isDevelopment);
+    using var scope = app.Services.CreateScope();
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+    await dbInitializer.InitializeAsync(isDevelopment);
 }
 
 // Configurar el pipeline HTTP

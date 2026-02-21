@@ -10,9 +10,9 @@ namespace GesFer.Application.Handlers.SalesDeliveryNote;
 /// </summary>
 public class ConfirmSalesDeliveryNoteCommandHandler : ICommandHandler<ConfirmSalesDeliveryNoteCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public ConfirmSalesDeliveryNoteCommandHandler(ApplicationDbContext context)
+    public ConfirmSalesDeliveryNoteCommandHandler(ProductDbContext context)
     {
         _context = context;
     }
