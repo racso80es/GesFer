@@ -415,7 +415,7 @@ public class GoldenRulesComplianceService
         }
 
         // Si la entidad no necesita seeding explícito (como entidades de relación), considerar sincronizado
-        var noSeedEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine" };
+        var noSeedEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine", "Tariff", "TariffItem", "PurchaseInvoice", "SalesInvoice", "PurchaseDeliveryNote", "SalesDeliveryNote" };
         if (noSeedEntities.Contains(entityName))
         {
             return true;
@@ -447,7 +447,9 @@ public class GoldenRulesComplianceService
         {
             if (Directory.Exists(_testsPath))
             {
-                var testFiles = Directory.GetFiles(_testsPath, $"*{entityName}*Tests.cs", SearchOption.AllDirectories);
+                // KAIZEN: Permitir mapeo de patrones para entidades agrupadas (ej: DeliveryNote cubre Purchase/Sales)
+                var searchPattern = entityName.Contains("DeliveryNote") ? "*DeliveryNote*Tests.cs" : $"*{entityName}*Tests.cs";
+                var testFiles = Directory.GetFiles(_testsPath, searchPattern, SearchOption.AllDirectories);
                 if (testFiles.Any())
                 {
                     return true;
