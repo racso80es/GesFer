@@ -74,6 +74,11 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IStockService, StockService>();
+
+        // Servicios de inicialización (Kaizen SRP)
+        services.AddScoped<IMigrationService, ProductMigrationService>();
+        services.AddScoped<IIntegrityCheckService, ProductIntegrityService>();
+        services.AddScoped<DbInitializer>();
         services.AddScoped<JsonDataSeeder>();
 
         // HttpClient para comunicación con Admin API
