@@ -1,8 +1,10 @@
 using GesFer.Infrastructure.Data;
 using GesFer.Infrastructure.Services;
 using GesFer.Product.Back.Domain.Entities;
-using GesFer.Shared.Back.Domain.ValueObjects;
+using GesFer.Product.Back.Domain.Services;
+using GesFer.Product.Back.Infrastructure.Services;
 using GesFer.Shared.Back.Domain.Services;
+using GesFer.Product.Back.Infrastructure.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,7 +34,7 @@ public class DbInitializerTests
 
         // DbContext (InMemory)
         var dbName = Guid.NewGuid().ToString();
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
             options.UseInMemoryDatabase(databaseName: dbName));
 
         // IConfiguration (JsonDataSeeder usa SeedConfig.GetValidCompanyIds)
@@ -44,33 +46,48 @@ public class DbInitializerTests
         // Dependencies
         services.AddScoped<JsonDataSeeder>();
 
-        // Mock Sanitizer (We will use a real instance or mock to verify calls)
-        // Since we want to test the flow, let's use a real one if available or a mock that behaves deterministically
+        // Mock Migration Service (Skip for InMemory)
+        var mockMigrationService = new Mock<IMigrationService>();
+        services.AddScoped<IMigrationService>(_ => mockMigrationService.Object);
+
+        // Mock Admin API Client
+        var mockAdminApiClient = new Mock<IAdminApiClient>();
+        // Setup GetCompanyAsync to return a valid company for the admin user
+        // The integrity service checks for this company.
+        // Expected ID from test-data.json: 11111111-1111-1111-1111-111111111115
+        var adminCompanyId = Guid.Parse("11111111-1111-1111-1111-111111111115");
+        mockAdminApiClient.Setup(c => c.GetCompanyAsync(adminCompanyId))
+            .ReturnsAsync(new AdminCompanyDto { Id = adminCompanyId, Name = "Empresa Demo" });
+        services.AddScoped<IAdminApiClient>(_ => mockAdminApiClient.Object);
+
+
+        // Mock Sanitizer
         var mockSanitizer = new Mock<ISensitiveDataSanitizer>();
         mockSanitizer.Setup(s => s.GenerateRandomPassword(It.IsAny<int>())).Returns("RandomPass123!");
         mockSanitizer.Setup(s => s.GenerateRandomEmail(It.IsAny<string>(), It.IsAny<string>())).Returns("admin@gesfer.local");
         services.AddSingleton(mockSanitizer.Object);
 
+        // Real Integrity Service (to test EnsureAdminUser logic)
+        services.AddScoped<IIntegrityCheckService, ProductIntegrityService>();
+
+        // Real DbInitializer
+        services.AddScoped<DbInitializer>();
+
         var serviceProvider = services.BuildServiceProvider();
 
         // Act
-        await DbInitializer.InitializeAsync(serviceProvider, isDevelopment: true);
+        using var scope = serviceProvider.CreateScope();
+        var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+        await initializer.InitializeAsync();
 
         // Assert
-        using var scope = serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         var admin = await context.Users
             .IgnoreQueryFilters()
             .FirstOrDefaultAsync(u => u.Username == "admin");
 
         admin.Should().NotBeNull();
-        // We expect the password hash to be present.
-        // Note: DbInitializer current logic forces FixedAdminHash.
-        // My future refactor will change this to use Sanitizer.
-        // So this test expects the behavior AFTER refactor.
-        // If I run this now, it will pass ensuring admin exists, but might fail on "Sanitized" expectation if I check for specific hash vs Fixed.
-
         admin!.PasswordHash.Should().NotBeNullOrEmpty();
     }
 }

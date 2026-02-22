@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.Group;
 
 public class UpdateGroupCommandHandler : ICommandHandler<UpdateGroupCommand, GroupDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public UpdateGroupCommandHandler(ApplicationDbContext context)
+    public UpdateGroupCommandHandler(ProductDbContext context)
     {
         _context = context;
     }
