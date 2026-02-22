@@ -128,7 +128,8 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
             using var scope = Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             await context.Database.EnsureCreatedAsync();
-            await DbInitializer.InitializeAsync(Services, false);
+            var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+            await initializer.InitializeAsync();
         }
         catch (Exception ex)
         {
@@ -145,7 +146,8 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
         using var scope = Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await context.Database.EnsureCreatedAsync();
-        await DbInitializer.InitializeAsync(Services, false);
+        var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+        await initializer.InitializeAsync();
     }
 
     public new async Task DisposeAsync()
