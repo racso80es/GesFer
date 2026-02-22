@@ -33,13 +33,13 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
     {
         builder.ConfigureServices(services =>
         {
-            var dbContextOptionsDescriptors = services.Where(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>)).ToList();
+            var dbContextOptionsDescriptors = services.Where(d => d.ServiceType == typeof(DbContextOptions<ProductDbContext>)).ToList();
             foreach (var descriptor in dbContextOptionsDescriptors) services.Remove(descriptor);
 
-            var dbContextDescriptors = services.Where(d => d.ServiceType == typeof(ApplicationDbContext)).ToList();
+            var dbContextDescriptors = services.Where(d => d.ServiceType == typeof(ProductDbContext)).ToList();
             foreach (var descriptor in dbContextDescriptors) services.Remove(descriptor);
 
-            services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+            services.AddDbContext<ProductDbContext>((serviceProvider, options) =>
             {
                 if (_useInMemory)
                 {
@@ -126,9 +126,10 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
 
             // Only AFTER successful start do we access Services, which triggers Host Build
             using var scope = Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
             await context.Database.EnsureCreatedAsync();
-            await DbInitializer.InitializeAsync(Services, false);
+            var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+            await initializer.InitializeAsync();
         }
         catch (Exception ex)
         {
@@ -143,9 +144,10 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
         // Accessing Services triggers Host Build.
         // At this point _useInMemory is guaranteed to be true.
         using var scope = Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
         await context.Database.EnsureCreatedAsync();
-        await DbInitializer.InitializeAsync(Services, false);
+        var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+        await initializer.InitializeAsync();
     }
 
     public new async Task DisposeAsync()

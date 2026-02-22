@@ -7,9 +7,9 @@ namespace GesFer.Application.Handlers.Customer;
 
 public class DeleteCustomerCommandHandler : ICommandHandler<DeleteCustomerCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteCustomerCommandHandler(ApplicationDbContext context)
+    public DeleteCustomerCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

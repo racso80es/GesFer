@@ -12,12 +12,12 @@ namespace GesFer.Infrastructure.Services;
 /// </summary>
 public class MasterDataSeeder
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly ILogger<MasterDataSeeder> _logger;
     private readonly ISequentialGuidGenerator _guidGenerator;
 
     public MasterDataSeeder(
-        ApplicationDbContext context,
+        ProductDbContext context,
         ILogger<MasterDataSeeder> logger,
         ISequentialGuidGenerator guidGenerator)
     {
