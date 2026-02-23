@@ -5,7 +5,7 @@ namespace GesFer.Shared.Back.Domain.Common;
 /// Implementa Soft Delete y auditoría básica.
 /// 
 /// Nota: El Id se genera automáticamente mediante SequentialGuidValueGenerator
-/// configurado en ApplicationDbContext para mejorar el rendimiento de índices agrupados.
+/// configurado en ProductDbContext para mejorar el rendimiento de índices agrupados.
 /// </summary>
 public abstract class BaseEntity
 {
