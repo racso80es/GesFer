@@ -4,6 +4,12 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 
 ## Pendientes
 
+### [Alta] Fix Frontend Build (CompanyForm Select Prop)
+*   **Origen:** `docs/KAIZEN/2024-10-24_ANALYSIS.md`
+*   **Descripción:** `src/Product/Front` falla al compilar debido a un error de tipos en `CompanyForm`. La propiedad `defaultValue` no es válida en el componente `Select` controlado.
+*   **Impacto:** Bloquea el despliegue y la interacción con el cliente en la interfaz web.
+*   **Estado:** En Progreso (Rama `kaizen/daily-2024-10-24`).
+
 ### [Alta] Fix Golden Rules False Positives
 *   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_16.md`
 *   **Descripción:** `GoldenRulesComplianceService` reporta falsos positivos en Seeds y Tests. Ignora `JsonDataSeeder.cs` (donde están `TaxType`, `Article`) y el directorio moderno de tests `src/Product/Back/tests`.
