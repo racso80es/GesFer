@@ -9,9 +9,9 @@ namespace GesFer.Application.Handlers.ArticleFamilies;
 
 public class CreateArticleFamilyCommandHandler : ICommandHandler<CreateArticleFamilyCommand, ArticleFamilyDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public CreateArticleFamilyCommandHandler(ApplicationDbContext context)
+    public CreateArticleFamilyCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

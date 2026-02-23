@@ -9,6 +9,8 @@ using GesFer.ConsoleApp.Services;
 using GesFer.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Services;
 using GesFer.Infrastructure.Services;
+using GesFer.Product.Back.Domain.Services;
+using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,9 +38,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
         result.Data = new InitializationResultData();
         var isDetailed = input.LogDetail == LogLevelDetail.Detailed;
 
-        // Add "Inicialización de base de datos" to info/logs?
         result.Data.Information.Add("Inicialización de base de datos");
-        // result.AddLog("Inicialización de base de datos"); // Calling code usually prints title.
 
         if (isDetailed)
         {
@@ -82,7 +82,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             var connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ProductDbContext>(options =>
             {
                 options.UseMySql(
                     connectionString,
@@ -144,15 +144,30 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
             services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
 
+            // Servicios refactorizados para DbInitializer
+            services.AddScoped<IIntegrityCheckService, ProductIntegrityService>();
+
+            // IAdminApiClient requerido por ProductIntegrityService (optional but good to have)
+            var adminApiBaseUrl = configuration["AdminApi:BaseUrl"] ?? "http://localhost:5010";
+            services.AddHttpClient<IAdminApiClient, GesFer.Product.Back.Infrastructure.Services.AdminApiClient>(client =>
+            {
+                client.BaseAddress = new Uri(adminApiBaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(5);
+            });
+
+
             var serviceProvider = services.BuildServiceProvider();
             
             using (serviceProvider as IDisposable)
             {
                 var scope = serviceProvider.CreateScope();
                 var scopedServices = scope.ServiceProvider;
-                var productContext = scopedServices.GetRequiredService<ApplicationDbContext>();
+                var productContext = scopedServices.GetRequiredService<ProductDbContext>();
                 var adminContext = scopedServices.GetRequiredService<AdminDbContext>();
                 var adminSeeder = scopedServices.GetRequiredService<AdminJsonDataSeeder>();
+                var productSeeder = scopedServices.GetRequiredService<JsonDataSeeder>();
+                var integrityService = scopedServices.GetRequiredService<IIntegrityCheckService>();
+                var env = scopedServices.GetRequiredService<IHostEnvironment>();
                 var logger = scopedServices.GetRequiredService<ILogger<InitializeDatabaseCommand>>();
 
                 if (isDetailed) _logService.WriteLog("Eliminando base de datos para empezar de 0...");
@@ -178,8 +193,8 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     try
                     {
                         var connectionStringWithoutDb = connectionString.Replace("Database=ScrapDb;", "");
-                        using var tempContext = new ApplicationDbContext(
-                            new DbContextOptionsBuilder<ApplicationDbContext>()
+                        using var tempContext = new ProductDbContext(
+                            new DbContextOptionsBuilder<ProductDbContext>()
                                 .UseMySql(connectionStringWithoutDb, new MySqlServerVersion(new Version(8, 0, 0)))
                                 .Options);
                         
@@ -209,7 +224,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     // Orden de carga de seeds: 1 - Maestros, 2 - Admin, 3 - Product
                     // 3) Datos maestros (siempre)
                     if (isDetailed) _logService.WriteLog("Cargando datos maestros...");
-                    await DbInitializer.SeedMasterDataAsync(productContext, scopedServices, logger);
+                    await productSeeder.SeedMasterDataAsync();
 
                     // 4) Datos Admin (companies + admin-users) de forma conjunta
                     if (isDetailed) _logService.WriteLog("Cargando seeds de Admin...");
@@ -222,8 +237,18 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
 
                     // 5) Datos Product (demo-data)
                     if (isDetailed) _logService.WriteLog("Cargando datos de producto (demo)...");
-                    await DbInitializer.SeedDemoDataAsync(productContext, scopedServices, logger);
-                    await DbInitializer.EnsureAdminUserAndSmokeTestAsync(productContext, scopedServices, logger);
+
+                    if (env.EnvironmentName == "Testing")
+                    {
+                        await productSeeder.SeedTestDataAsync();
+                    }
+                    else
+                    {
+                        await productSeeder.SeedDemoDataAsync();
+                    }
+
+                    // 6) Integrity Check
+                    await integrityService.EnsureIntegrityAsync();
 
                     var migrationsAfter = await productContext.Database.GetAppliedMigrationsAsync();
                     var appliedMigrations = migrationsAfter.Except(migrationsBefore).ToList();
@@ -232,7 +257,6 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     {
                         var info = $"✓ Migraciones Product aplicadas: {string.Join(", ", appliedMigrations)}";
                         result.Data.Information.Add(info);
-                        // result.AddLog(info); // Let caller decide via Data.Information
                     }
                     
                     var adminMigrations = await adminContext.Database.GetAppliedMigrationsAsync();

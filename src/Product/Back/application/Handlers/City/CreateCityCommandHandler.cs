@@ -9,9 +9,9 @@ namespace GesFer.Application.Handlers.City;
 
 public class CreateCityCommandHandler : ICommandHandler<CreateCityCommand, CityDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public CreateCityCommandHandler(ApplicationDbContext context)
+    public CreateCityCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

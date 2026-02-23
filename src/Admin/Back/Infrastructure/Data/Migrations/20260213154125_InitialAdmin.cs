@@ -8,7 +8,7 @@ namespace GesFer.Admin.Infra.Data.Migrations
     /// <inheritdoc />
     /// <summary>
     /// Crea solo las tablas propias de Admin (AdminUsers, AuditLogs) en la BD compartida ScrapDb.
-    /// Companies, Logs, etc. ya existen por las migraciones de Product (ApplicationDbContext).
+    /// Companies, Logs, etc. ya existen por las migraciones de Product (ProductDbContext).
     /// </summary>
     public partial class InitialAdmin : Migration
     {
