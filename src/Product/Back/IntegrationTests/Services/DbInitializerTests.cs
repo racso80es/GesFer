@@ -3,6 +3,7 @@ using GesFer.Infrastructure.Services;
 using GesFer.Product.Back.Domain.Entities;
 using GesFer.Shared.Back.Domain.ValueObjects;
 using GesFer.Shared.Back.Domain.Services;
+using GesFer.Product.Back.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,7 +33,7 @@ public class DbInitializerTests
 
         // DbContext (InMemory)
         var dbName = Guid.NewGuid().ToString();
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
             options.UseInMemoryDatabase(databaseName: dbName));
 
         // IConfiguration (JsonDataSeeder usa SeedConfig.GetValidCompanyIds)
@@ -45,20 +46,31 @@ public class DbInitializerTests
         services.AddScoped<JsonDataSeeder>();
 
         // Mock Sanitizer (We will use a real instance or mock to verify calls)
-        // Since we want to test the flow, let's use a real one if available or a mock that behaves deterministically
         var mockSanitizer = new Mock<ISensitiveDataSanitizer>();
         mockSanitizer.Setup(s => s.GenerateRandomPassword(It.IsAny<int>())).Returns("RandomPass123!");
         mockSanitizer.Setup(s => s.GenerateRandomEmail(It.IsAny<string>(), It.IsAny<string>())).Returns("admin@gesfer.local");
         services.AddSingleton(mockSanitizer.Object);
 
+        // Mock IMigrationService (no-op for test)
+        var mockMigration = new Mock<IMigrationService>();
+        services.AddSingleton(mockMigration.Object);
+
+        // Mock IIntegrityCheckService (no-op for test)
+        var mockIntegrity = new Mock<IIntegrityCheckService>();
+        services.AddSingleton(mockIntegrity.Object);
+
+        // Register DbInitializer
+        services.AddScoped<DbInitializer>();
+
         var serviceProvider = services.BuildServiceProvider();
 
         // Act
-        await DbInitializer.InitializeAsync(serviceProvider, isDevelopment: true);
+        using var scope = serviceProvider.CreateScope();
+        var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+        await initializer.InitializeAsync();
 
         // Assert
-        using var scope = serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         var admin = await context.Users
             .IgnoreQueryFilters()
@@ -66,11 +78,6 @@ public class DbInitializerTests
 
         admin.Should().NotBeNull();
         // We expect the password hash to be present.
-        // Note: DbInitializer current logic forces FixedAdminHash.
-        // My future refactor will change this to use Sanitizer.
-        // So this test expects the behavior AFTER refactor.
-        // If I run this now, it will pass ensuring admin exists, but might fail on "Sanitized" expectation if I check for specific hash vs Fixed.
-
         admin!.PasswordHash.Should().NotBeNullOrEmpty();
     }
 }

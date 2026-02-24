@@ -7,9 +7,9 @@ namespace GesFer.Application.Handlers.Supplier;
 
 public class DeleteSupplierCommandHandler : ICommandHandler<DeleteSupplierCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteSupplierCommandHandler(ApplicationDbContext context)
+    public DeleteSupplierCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

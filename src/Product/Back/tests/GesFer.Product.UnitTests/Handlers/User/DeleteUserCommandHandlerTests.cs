@@ -14,11 +14,11 @@ public class DeleteUserCommandHandlerTests
     public async Task HandleAsync_WithValidId_ShouldSoftDeleteUser()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<ProductDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        using var context = new ApplicationDbContext(options);
+        using var context = new ProductDbContext(options);
 
         var companyId = Guid.NewGuid();
         var user = new GesFer.Product.Back.Domain.Entities.User
@@ -51,11 +51,11 @@ public class DeleteUserCommandHandlerTests
     public async Task HandleAsync_WithInvalidId_ShouldThrowException()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<ProductDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        using var context = new ApplicationDbContext(options);
+        using var context = new ProductDbContext(options);
         var handler = new DeleteUserCommandHandler(context);
         var command = new DeleteUserCommand(Guid.NewGuid());
 

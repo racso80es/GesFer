@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GesFer.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(ProductDbContext))]
     [Migration("20260213141112_InitialCreate")]
     partial class InitialCreate
     {

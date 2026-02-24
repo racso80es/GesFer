@@ -7,9 +7,9 @@ namespace GesFer.Infrastructure.Data;
 /// <summary>
 /// DbContext principal de la aplicación con soporte para Soft Delete
 /// </summary>
-public class ApplicationDbContext : DbContext
+public class ProductDbContext : DbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    public ProductDbContext(DbContextOptions<ProductDbContext> options) : base(options)
     {
     }
 
@@ -45,7 +45,7 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         // Aplicar configuraciones de entidades
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductDbContext).Assembly);
 
         // Configurar Shared Entities (Sequential GUIDs + Soft Delete)
         modelBuilder.ConfigureSharedEntities();
