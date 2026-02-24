@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using GesFer.Admin.Infrastructure.Data;
 using GesFer.Admin.Infrastructure.Services;
 using Pomelo.EntityFrameworkCore.MySql;
+using GesFer.Product.Back.Infrastructure.Services;
 
 namespace GesFer.ConsoleApp.Commands;
 
@@ -78,6 +79,9 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                 .AddJsonFile("appsettings.Development.json", optional: true)
                 .AddEnvironmentVariables()
                 .Build();
+
+            // KAIZEN: Register Configuration for AdminApiClient
+            services.AddSingleton<IConfiguration>(configuration);
 
             var connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
@@ -143,6 +147,14 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             services.AddScoped<AdminJsonDataSeeder>();
             services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
             services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
+
+            // KAIZEN: Register IAdminApiClient to enable Smoke Test validation in DbInitializer
+            var adminApiBaseUrl = configuration["AdminApi:BaseUrl"] ?? "http://localhost:5010";
+            services.AddHttpClient<IAdminApiClient, AdminApiClient>(client =>
+            {
+                client.BaseAddress = new Uri(adminApiBaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(5);
+            });
 
             var serviceProvider = services.BuildServiceProvider();
             
