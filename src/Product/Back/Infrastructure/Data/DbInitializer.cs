@@ -51,46 +51,8 @@ public static class DbInitializer
             // Paso 2: Cargar datos iniciales desde JSON
             await SeedDataFromJsonAsync(context, services, logger);
 
-            // CRÍTICO: Evitar conflictos de tracking (Seeder puede haber dejado entidades en ChangeTracker)
-            // - Si 'admin' ya fue creado por JSON, lo leeremos desde DB sin duplicar instancias.
-            // - Si el seeder dejó una instancia Added/Unchanged en memoria, se elimina para evitar conflicto.
-            context.ChangeTracker.Clear();
-
-            // CRÍTICO: Garantizar usuario admin de forma idempotente y atómica (especialmente en Testing)
-            await EnsureAdminUserAsync(context, services, logger);
-
-            // SMOKE TEST: Verificación de Integridad de Acceso
-            var adminUser = await context.Users
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(u => u.Username == "admin");
-
-            if (adminUser == null)
-            {
-                logger.LogError("🔥 FALLO CRÍTICO: Usuario 'admin' existe pero no se pudo cargar.");
-                throw new Exception("Usuario 'admin' no encontrado.");
-            }
-            if (adminUser.CompanyId == Guid.Empty || adminUser.CompanyId == default)
-            {
-                logger.LogError("🔥 FALLO CRÍTICO: El usuario 'admin' no tiene CompanyId vinculado.");
-                throw new Exception("Usuario 'admin' sin CompanyId.");
-            }
-
-            // Empresa: verificar vía Admin API (Product no conoce BD de empresa)
-            var adminClient = services.GetService<IAdminApiClient>();
-            string? companyName = null;
-            if (adminClient != null)
-            {
-                var company = await adminClient.GetCompanyAsync(adminUser.CompanyId);
-                if (company == null)
-                {
-                    logger.LogError("🔥 FALLO CRÍTICO: La empresa {CompanyId} del admin no existe en Admin API.", adminUser.CompanyId);
-                    throw new Exception("Empresa del admin no encontrada en Admin API.");
-                }
-                companyName = company.Name;
-            }
-
-            var companyInfo = $" (Empresa: {companyName ?? adminUser.CompanyId.ToString()}, CompanyId: {adminUser.CompanyId})";
-            logger.LogInformation("✅ Smoke Test Superado: Usuario 'admin' verificado correctamente{CompanyInfo}", companyInfo);
+            // CRÍTICO: Garantizar usuario admin y ejecutar Smoke Test (Evita duplicidad)
+            await EnsureAdminUserAndSmokeTestAsync(context, services, logger);
 
             logger.LogInformation("=== Inicialización de base de datos completada exitosamente ===");
         }
@@ -169,6 +131,11 @@ public static class DbInitializer
             }
             companyName = company.Name;
         }
+        else
+        {
+            logger.LogWarning("⚠️ ADVERTENCIA: IAdminApiClient no está disponible. No se puede verificar la existencia de la empresa del admin en Admin API.");
+        }
+
         const string EXPECTED_ADMIN_COMPANY_NAME = "Empresa Admin";
         const string EXPECTED_ADMIN_COMPANY_ID = "550e8400-e29b-41d4-a716-446655440000";
         if (companyName != null && companyName != EXPECTED_ADMIN_COMPANY_NAME)
