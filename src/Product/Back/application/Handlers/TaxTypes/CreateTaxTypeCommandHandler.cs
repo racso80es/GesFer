@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.TaxTypes;
 
 public class CreateTaxTypeCommandHandler : ICommandHandler<CreateTaxTypeCommand, Guid>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public CreateTaxTypeCommandHandler(ApplicationDbContext context)
+    public CreateTaxTypeCommandHandler(ProductDbContext context)
     {
         _context = context;
     }
