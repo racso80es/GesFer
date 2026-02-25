@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.Group;
 
 public class GetAllGroupsCommandHandler : ICommandHandler<GetAllGroupsCommand, List<GroupDto>>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public GetAllGroupsCommandHandler(ApplicationDbContext context)
+    public GetAllGroupsCommandHandler(ProductDbContext context)
     {
         _context = context;
     }
