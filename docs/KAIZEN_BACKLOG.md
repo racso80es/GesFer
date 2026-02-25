@@ -34,6 +34,18 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 *   **Impacto:** Compromete la integridad arquitectónica y el aislamiento de contextos.
 *   **Estado:** Pendiente
 
+### [Alta] Implement Customer Unit Tests
+*   **Origen:** `docs/audits/AUDITORIA_TESTS_2026_02_25.md`
+*   **Descripción:** Ausencia total de tests unitarios para `Customer` en `GesFer.Product.UnitTests`. Riesgo de regresión en una entidad core.
+*   **Impacto:** Fallos en gestión de clientes podrían pasar desapercibidos.
+*   **Estado:** Pendiente
+
+### [Media] Refactor Impure Unit Tests (Product)
+*   **Origen:** `docs/audits/AUDITORIA_TESTS_2026_02_25.md`
+*   **Descripción:** `GesFer.Product.UnitTests` utiliza `UseInMemoryDatabase`, creando tests lentos y acoplados a EF Core en lugar de mocks puros.
+*   **Impacto:** Aumenta tiempo de ejecución y fragilidad de tests.
+*   **Estado:** Pendiente
+
 ## Completadas
 
 ### [Alta] Fix Console Build / Missing DbSet Companies
