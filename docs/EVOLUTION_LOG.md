@@ -1,5 +1,6 @@
 # EVOLUTION LOG
 
+[2026-02-18] [Product Unit Tests Expansion] [Implemented pure unit tests for Customer Handlers (Create, Update, Delete, GetById, GetAll) using MockQueryable.Moq. Added 13 new tests (4 Create, 3 Update, 2 Delete, 2 GetById, 2 GetAll). Achieved pure unit testing without InMemoryDatabase for these handlers. Verified all GesFer.Product.UnitTests passing.] [S+ Stable]
 [2026-02-17] [Product Unit Tests Expansion] [Implemented comprehensive unit tests for ArticleFamilies handlers (Create, Update, Delete, GetById, GetAll) using InMemoryDatabase. Achieved 100% pass rate (41 tests) in GesFer.Product.UnitTests, significantly improving coverage for the Product domain as per audit recommendations.] [S+ Stable]
 [2026-02-17] [Backend Audit Execution] [Cleaned up legacy scripts (InitDatabase.cs, GenerateHash) and replaced usage with GesFer.Console. Refactored IntegrationTestWebAppFactory to use Debug.WriteLine instead of Console.WriteLine. Verified build.] [S+ Stable]
 [2026-02-15] [Backend Kaizen Audit Execution] [Refactored DbInitializer and JsonDataSeeder to remove prohibited Console.WriteLine calls, replacing them with ILogger. Verified GesFer.IntegrationTests (108 passed) and GesFer.Product.UnitTests (22 passed). Certified "Healthy" state.] [S+ Stable]
