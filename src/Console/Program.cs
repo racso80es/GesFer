@@ -1,7 +1,9 @@
 using GesFer.ConsoleApp.Commands;
 using GesFer.ConsoleApp.Commands.Dtos;
 using GesFer.ConsoleApp.Services;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -101,6 +103,17 @@ class Program
         // Crear instancia del servicio de log
         var logService = new LogService();
 
+        // Configurar Configuration para comandos que lo requieran
+        var rootPath = logService.GetRootPath();
+        var apiPath = Path.Combine(rootPath, "src", "Product", "Back", "Api");
+
+        var configuration = new ConfigurationBuilder()
+                .SetBasePath(apiPath)
+                .AddJsonFile("appsettings.json", optional: true)
+                .AddJsonFile("appsettings.Development.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
+
         // Crear instancias de los comandos y servicios
         // Docker Commands
         var checkDockerCommand = new CheckDockerCommand(logService);
@@ -125,6 +138,9 @@ class Program
         var runIntegrationTestsCommand = new RunIntegrationTestsCommand(logService);
         var runE2ETestsCommand = new RunE2ETestsCommand(logService);
 
+        // Business Commands
+        var customerCommand = new CustomerCommand(logService, configuration);
+
         // Services (Legacy/Not refactored yet)
         var integrityValidationService = new IntegrityValidationService(logService);
         var goldenRulesService = new GoldenRulesComplianceService(logService);
@@ -145,6 +161,7 @@ class Program
             runUnitTestsCommand,
             runIntegrationTestsCommand,
             runE2ETestsCommand,
+            customerCommand,
             integrityValidationService,
             goldenRulesService,
             logService);

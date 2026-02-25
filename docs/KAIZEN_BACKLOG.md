@@ -4,6 +4,12 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 
 ## Pendientes
 
+### [Alta] Enable Console Customer Interaction
+*   **Origen:** `docs/KAIZEN/2026-02-26_ANALYSIS.md`
+*   **Descripción:** Permitir al usuario listar y crear clientes desde la consola `GesFer.Console` utilizando los Handlers existentes.
+*   **Impacto:** Mejora la usabilidad de la herramienta de consola para gestión de datos.
+*   **Estado:** En Progreso (Rama `kaizen/console-customer-interaction`).
+
 ### [Alta] Fix Golden Rules False Positives
 *   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_16.md`
 *   **Descripción:** `GoldenRulesComplianceService` reporta falsos positivos en Seeds y Tests. Ignora `JsonDataSeeder.cs` (donde están `TaxType`, `Article`) y el directorio moderno de tests `src/Product/Back/tests`.

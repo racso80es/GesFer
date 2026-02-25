@@ -7,6 +7,7 @@ using Xunit.Abstractions;
 using GesFer.ConsoleApp.Services;
 using GesFer.ConsoleApp.Commands;
 using GesFer.ConsoleApp.Commands.Dtos;
+using Microsoft.Extensions.Configuration;
 
 namespace GesFer.Console.E2ETests;
 
@@ -54,6 +55,17 @@ public class Option1IntegrationTest
         var logService = new LogService(rootPath);
         _output.WriteLine($"Log file: {logService.GetLogFilePath()}");
 
+        // Config for CustomerCommand
+        var apiPath = Path.Combine(rootPath, "src", "Product", "Back", "Api");
+        var configuration = new ConfigurationBuilder()
+                .SetBasePath(apiPath)
+                .AddJsonFile("appsettings.json", optional: true)
+                .AddJsonFile("appsettings.Development.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
+
+        var customerCommand = new CustomerCommand(logService, configuration);
+
         var checkDockerCommand = new CheckDockerCommand(logService);
         var checkDockerComposeCommand = new CheckDockerComposeCommand(logService);
         var removeContainersCommand = new RemoveContainersCommand(logService);
@@ -88,6 +100,7 @@ public class Option1IntegrationTest
             runUnitTestsCommand,
             runIntegrationTestsCommand,
             runE2ETestsCommand,
+            customerCommand,
             integrityValidationService,
             goldenRulesService,
             logService);
