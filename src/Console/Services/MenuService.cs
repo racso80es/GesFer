@@ -33,6 +33,7 @@ public class MenuService
     private readonly RunUnitTestsCommand _runUnitTestsCommand;
     private readonly RunIntegrationTestsCommand _runIntegrationTestsCommand;
     private readonly RunE2ETestsCommand _runE2ETestsCommand;
+    private readonly CustomerCommand _customerCommand;
     private readonly IntegrityValidationService _integrityValidationService;
     private readonly GoldenRulesComplianceService _goldenRulesService;
     private readonly LogService _logService;
@@ -53,6 +54,7 @@ public class MenuService
         RunUnitTestsCommand runUnitTestsCommand,
         RunIntegrationTestsCommand runIntegrationTestsCommand,
         RunE2ETestsCommand runE2ETestsCommand,
+        CustomerCommand customerCommand,
         IntegrityValidationService integrityValidationService,
         GoldenRulesComplianceService goldenRulesService,
         LogService logService)
@@ -72,6 +74,7 @@ public class MenuService
         _runUnitTestsCommand = runUnitTestsCommand;
         _runIntegrationTestsCommand = runIntegrationTestsCommand;
         _runE2ETestsCommand = runE2ETestsCommand;
+        _customerCommand = customerCommand;
         _integrityValidationService = integrityValidationService;
         _goldenRulesService = goldenRulesService;
         _logService = logService;
@@ -117,6 +120,7 @@ public class MenuService
             "  9. Squash de migraciones",
             "  10. Salir",
             "  11. Ejecutar tests",
+            "  12. Gestionar Clientes (Product)",
             "");
     }
 
@@ -163,6 +167,9 @@ public class MenuService
                     return false;
                 case 11:
                     return await ExecuteTestsMenuAsync();
+                case 12:
+                    var custResult = await _customerCommand.HandleAsync(new CustomerCommandInput());
+                    return custResult.Success;
                 default:
                     Console.WriteLine("Opción no válida. Presione cualquier tecla para continuar...");
                     SafeReadKey();
