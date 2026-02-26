@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.TaxTypes;
 
 public class GetAllTaxTypesCommandHandler : ICommandHandler<GetAllTaxTypesCommand, List<TaxTypeDto>>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public GetAllTaxTypesCommandHandler(ApplicationDbContext context)
+    public GetAllTaxTypesCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

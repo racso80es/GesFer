@@ -11,10 +11,10 @@ namespace GesFer.Application.Handlers.User;
 
 public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly IAdminApiClient _adminApiClient;
 
-    public CreateUserCommandHandler(ApplicationDbContext context, IAdminApiClient adminApiClient)
+    public CreateUserCommandHandler(ProductDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
         _adminApiClient = adminApiClient;
