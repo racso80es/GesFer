@@ -1,74 +1,13 @@
-# Script para configurar la base de datos
-# 1. Verifica Docker y MySQL
-# 2. Inserta datos de prueba
-
+# Script para configurar la base de datos delegando a GesFer.Console
 Write-Host "=== Configuración de Base de Datos GesFer ===" -ForegroundColor Cyan
-Write-Host ""
+Write-Host "Delegando operación a GesFer.Console..." -ForegroundColor Cyan
 
-# Verificar que Docker esté corriendo
-Write-Host "1. Verificando Docker..." -ForegroundColor Yellow
-docker ps | Out-Null
+# Ejecutar GesFer.Console con la opción de inicialización completa (--initialize)
+dotnet run --project src/Console/GesFer.Console.csproj -- --initialize
+
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: Docker no está corriendo. Por favor, inicia Docker Desktop." -ForegroundColor Red
+    Write-Host "❌ Error durante la configuración." -ForegroundColor Red
     exit 1
 }
-Write-Host "   ✓ Docker está corriendo" -ForegroundColor Green
 
-# Verificar que MySQL esté disponible
-Write-Host "2. Verificando MySQL..." -ForegroundColor Yellow
-docker exec gesfer_api_db mysqladmin ping -h localhost -u root -prootpassword 2>&1 | Out-Null
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: MySQL no está disponible." -ForegroundColor Red
-    exit 1
-}
-Write-Host "   ✓ MySQL está disponible" -ForegroundColor Green
-
-# Verificar si las tablas existen
-Write-Host "3. Verificando si las tablas existen..." -ForegroundColor Yellow
-$tableResult = docker exec gesfer_api_db mysql -u scrapuser -pscrappassword ScrapDb -e "SHOW TABLES;" 2>&1
-$hasTables = $tableResult -match "Companies"
-
-if (-not $hasTables) {
-    Write-Host "   ⚠ Las tablas no existen aún." -ForegroundColor Yellow
-    Write-Host "   Por favor:" -ForegroundColor Yellow
-    Write-Host "   1. Inicia la API desde Visual Studio (F5)" -ForegroundColor White
-    Write-Host "   2. Espera a que las migraciones se ejecuten automáticamente" -ForegroundColor White
-    Write-Host "   3. Vuelve a ejecutar este script para insertar datos de prueba" -ForegroundColor White
-    Write-Host ""
-    Write-Host "   O ejecuta manualmente:" -ForegroundColor Yellow
-    Write-Host "   cd src/Api" -ForegroundColor White
-    Write-Host "   dotnet ef database update --project ../Infrastructure/GesFer.Infrastructure.csproj" -ForegroundColor White
-    exit 0
-}
-
-Write-Host "   ✓ Las tablas existen" -ForegroundColor Green
-
-# NOTA: Los datos ahora se cargan desde archivos JSON, no desde SQL
-# Los datos se cargan automáticamente cuando se inicia la API o mediante el endpoint /api/setup/initialize
-# Los archivos JSON se encuentran en: Api/src/Infrastructure/Seeds/
-# - master-data.json: Datos maestros (idiomas, permisos, grupos)
-# - demo-data.json: Datos de demostración (empresa, usuarios, clientes, proveedores)
-# - test-data.json: Datos de prueba
-Write-Host "4. Información sobre datos iniciales..." -ForegroundColor Yellow
-Write-Host "   ℹ Los datos ahora se cargan desde archivos JSON" -ForegroundColor Cyan
-Write-Host "   ℹ Los datos se cargan automáticamente al iniciar la API" -ForegroundColor Cyan
-Write-Host "   ℹ O mediante el endpoint: POST /api/setup/initialize" -ForegroundColor Cyan
-Write-Host "   ℹ Archivos JSON en: src/Product/Back/Infrastructure/Data/Seeds/" -ForegroundColor Cyan
-
-Write-Host ""
-Write-Host "5. Para cargar los datos, puedes:" -ForegroundColor Yellow
-Write-Host "   - Iniciar la API (F5 en Visual Studio)" -ForegroundColor White
-Write-Host "   - O ejecutar: dotnet run --project src/Product/Back/Api" -ForegroundColor White
-Write-Host "   - O llamar al endpoint: POST http://localhost:5000/api/setup/initialize" -ForegroundColor White
-
-Write-Host ""
-Write-Host "=== Configuración completada ===" -ForegroundColor Green
-Write-Host ""
-Write-Host "Datos de prueba creados:" -ForegroundColor Cyan
-Write-Host "  Empresa: Empresa Demo" -ForegroundColor White
-Write-Host "  Usuario: admin" -ForegroundColor White
-Write-Host "  Password: admin123" -ForegroundColor White
-Write-Host ""
-Write-Host "Puedes probar el login en:" -ForegroundColor Cyan
-Write-Host "  http://localhost:5000/api/auth/login" -ForegroundColor White
-Write-Host ""
+Write-Host "✅ Configuración completada exitosamente." -ForegroundColor Green

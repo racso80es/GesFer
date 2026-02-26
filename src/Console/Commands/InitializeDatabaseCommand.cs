@@ -9,6 +9,7 @@ using GesFer.ConsoleApp.Services;
 using GesFer.Infrastructure.Data;
 using GesFer.Shared.Back.Domain.Services;
 using GesFer.Infrastructure.Services;
+using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -82,7 +83,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             var connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ProductDbContext>(options =>
             {
                 options.UseMySql(
                     connectionString,
@@ -143,6 +144,8 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             services.AddScoped<AdminJsonDataSeeder>();
             services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
             services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
+            services.AddScoped<IMigrationService, ProductMigrationService>();
+            services.AddScoped<IIntegrityCheckService, ProductIntegrityService>();
 
             var serviceProvider = services.BuildServiceProvider();
             
@@ -150,7 +153,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             {
                 var scope = serviceProvider.CreateScope();
                 var scopedServices = scope.ServiceProvider;
-                var productContext = scopedServices.GetRequiredService<ApplicationDbContext>();
+                var productContext = scopedServices.GetRequiredService<ProductDbContext>();
                 var adminContext = scopedServices.GetRequiredService<AdminDbContext>();
                 var adminSeeder = scopedServices.GetRequiredService<AdminJsonDataSeeder>();
                 var logger = scopedServices.GetRequiredService<ILogger<InitializeDatabaseCommand>>();
@@ -178,8 +181,8 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     try
                     {
                         var connectionStringWithoutDb = connectionString.Replace("Database=ScrapDb;", "");
-                        using var tempContext = new ApplicationDbContext(
-                            new DbContextOptionsBuilder<ApplicationDbContext>()
+                        using var tempContext = new ProductDbContext(
+                            new DbContextOptionsBuilder<ProductDbContext>()
                                 .UseMySql(connectionStringWithoutDb, new MySqlServerVersion(new Version(8, 0, 0)))
                                 .Options);
                         
@@ -223,7 +226,9 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     // 5) Datos Product (demo-data)
                     if (isDetailed) _logService.WriteLog("Cargando datos de producto (demo)...");
                     await DbInitializer.SeedDemoDataAsync(productContext, scopedServices, logger);
-                    await DbInitializer.EnsureAdminUserAndSmokeTestAsync(productContext, scopedServices, logger);
+
+                    var integrityService = scopedServices.GetRequiredService<IIntegrityCheckService>();
+                    await integrityService.EnsureIntegrityAsync();
 
                     var migrationsAfter = await productContext.Database.GetAppliedMigrationsAsync();
                     var appliedMigrations = migrationsAfter.Except(migrationsBefore).ToList();

@@ -9,10 +9,10 @@ namespace GesFer.Application.Handlers.Supplier;
 
 public class CreateSupplierCommandHandler : ICommandHandler<CreateSupplierCommand, SupplierDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly IAdminApiClient _adminApiClient;
 
-    public CreateSupplierCommandHandler(ApplicationDbContext context, IAdminApiClient adminApiClient)
+    public CreateSupplierCommandHandler(ProductDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
         _adminApiClient = adminApiClient;
