@@ -4,6 +4,18 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 
 ## Pendientes
 
+### [Alta] Refactor Product Tests to MockQueryable
+*   **Origen:** `docs/audits/AUDITORIA_TESTS_2026_02_26.md`
+*   **Descripción:** Migrar tests legacy en `GesFer.Product.UnitTests` (e.g., `CreateUserCommandHandlerTests`) que usan `UseInMemoryDatabase` a `MockQueryable.Moq` para garantizar pureza y desacoplamiento de EF Core In-Memory.
+*   **Impacto:** Mejora la calidad y velocidad de los tests, reduciendo la fragilidad.
+*   **Estado:** Pendiente
+
+### [Media] Increase Product Domain Coverage
+*   **Origen:** `docs/audits/AUDITORIA_TESTS_2026_02_26.md`
+*   **Descripción:** La cobertura en `GesFer.Product.UnitTests` es crítica (~13%). Se requiere crear tests unitarios puros para Entidades y ValueObjects.
+*   **Impacto:** Alto riesgo de regresión en lógica de negocio core.
+*   **Estado:** Pendiente
+
 ### [Alta] Fix Golden Rules False Positives
 *   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_16.md`
 *   **Descripción:** `GoldenRulesComplianceService` reporta falsos positivos en Seeds y Tests. Ignora `JsonDataSeeder.cs` (donde están `TaxType`, `Article`) y el directorio moderno de tests `src/Product/Back/tests`.
