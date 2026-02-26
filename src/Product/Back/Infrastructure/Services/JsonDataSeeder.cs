@@ -264,6 +264,46 @@ public class JsonDataSeeder
             result.Entities.Add($"{data.Customers.Count} Customer(s)");
         }
 
+        // Seed Tariffs
+        if (data.Tariffs != null && data.Tariffs.Any())
+        {
+            await SeedTariffsAsync(data.Tariffs);
+            await _context.SaveChangesAsync();
+            result.Entities.Add($"{data.Tariffs.Count} Tariff(s)");
+        }
+
+        // Seed PurchaseInvoices
+        if (data.PurchaseInvoices != null && data.PurchaseInvoices.Any())
+        {
+            await SeedPurchaseInvoicesAsync(data.PurchaseInvoices);
+            await _context.SaveChangesAsync();
+            result.Entities.Add($"{data.PurchaseInvoices.Count} PurchaseInvoice(s)");
+        }
+
+        // Seed SalesInvoices
+        if (data.SalesInvoices != null && data.SalesInvoices.Any())
+        {
+            await SeedSalesInvoicesAsync(data.SalesInvoices);
+            await _context.SaveChangesAsync();
+            result.Entities.Add($"{data.SalesInvoices.Count} SalesInvoice(s)");
+        }
+
+        // Seed PurchaseDeliveryNotes (depende de Suppliers y opcionalmente PurchaseInvoices)
+        if (data.PurchaseDeliveryNotes != null && data.PurchaseDeliveryNotes.Any())
+        {
+            await SeedPurchaseDeliveryNotesAsync(data.PurchaseDeliveryNotes);
+            await _context.SaveChangesAsync();
+            result.Entities.Add($"{data.PurchaseDeliveryNotes.Count} PurchaseDeliveryNote(s)");
+        }
+
+        // Seed SalesDeliveryNotes (depende de Customers y opcionalmente SalesInvoices)
+        if (data.SalesDeliveryNotes != null && data.SalesDeliveryNotes.Any())
+        {
+            await SeedSalesDeliveryNotesAsync(data.SalesDeliveryNotes);
+            await _context.SaveChangesAsync();
+            result.Entities.Add($"{data.SalesDeliveryNotes.Count} SalesDeliveryNote(s)");
+        }
+
         result.Loaded = true;
         _logger.LogInformation("Datos de demostración cargados correctamente");
         return result;
@@ -412,6 +452,46 @@ public class JsonDataSeeder
             await SeedCustomersAsync(data.Customers, validCompanyIds);
             await _context.SaveChangesAsync();
             _logger.LogInformation("Customers sembrados: {Count}", data.Customers.Count);
+        }
+
+        // 14. Tariffs (depende de Companies y Articles) - DEBE ejecutarse después de Companies y Articles
+        if (data.Tariffs != null && data.Tariffs.Any())
+        {
+            await SeedTariffsAsync(data.Tariffs);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Tariffs sembrados: {Count}", data.Tariffs.Count);
+        }
+
+        // 15. PurchaseInvoices
+        if (data.PurchaseInvoices != null && data.PurchaseInvoices.Any())
+        {
+            await SeedPurchaseInvoicesAsync(data.PurchaseInvoices);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("PurchaseInvoices sembrados: {Count}", data.PurchaseInvoices.Count);
+        }
+
+        // 16. SalesInvoices
+        if (data.SalesInvoices != null && data.SalesInvoices.Any())
+        {
+            await SeedSalesInvoicesAsync(data.SalesInvoices);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("SalesInvoices sembrados: {Count}", data.SalesInvoices.Count);
+        }
+
+        // 17. PurchaseDeliveryNotes (depende de Suppliers y opcionalmente PurchaseInvoices)
+        if (data.PurchaseDeliveryNotes != null && data.PurchaseDeliveryNotes.Any())
+        {
+            await SeedPurchaseDeliveryNotesAsync(data.PurchaseDeliveryNotes);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("PurchaseDeliveryNotes sembrados: {Count}", data.PurchaseDeliveryNotes.Count);
+        }
+
+        // 18. SalesDeliveryNotes (depende de Customers y opcionalmente SalesInvoices)
+        if (data.SalesDeliveryNotes != null && data.SalesDeliveryNotes.Any())
+        {
+            await SeedSalesDeliveryNotesAsync(data.SalesDeliveryNotes);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("SalesDeliveryNotes sembrados: {Count}", data.SalesDeliveryNotes.Count);
         }
 
         _logger.LogInformation("Datos de prueba cargados correctamente");
@@ -1234,6 +1314,230 @@ public class JsonDataSeeder
         await _context.SaveChangesAsync();
     }
 
+    private async Task SeedTariffsAsync(List<TariffSeed> tariffs)
+    {
+        foreach (var tariffData in tariffs)
+        {
+            var existing = await _context.Tariffs
+                .Include(t => t.TariffItems)
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(t => t.Id == Guid.Parse(tariffData.Id));
+
+            if (existing == null)
+            {
+                var tariff = new Tariff
+                {
+                    Id = Guid.Parse(tariffData.Id),
+                    CompanyId = Guid.Parse(tariffData.CompanyId),
+                    Name = tariffData.Name,
+                    Description = tariffData.Description,
+                    Type = (TariffType)tariffData.Type,
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = true
+                };
+
+                if (tariffData.Items != null)
+                {
+                    foreach (var itemData in tariffData.Items)
+                    {
+                        var item = new TariffItem
+                        {
+                            Id = Guid.Parse(itemData.Id),
+                            ArticleId = Guid.Parse(itemData.ArticleId),
+                            Price = itemData.Price,
+                            CreatedAt = DateTime.UtcNow,
+                            IsActive = true
+                        };
+                        tariff.TariffItems.Add(item);
+                    }
+                }
+
+                _context.Tariffs.Add(tariff);
+            }
+            else if (existing.DeletedAt != null)
+            {
+                existing.DeletedAt = null;
+                existing.IsActive = true;
+                // Reactivar items si es necesario (lógica simplificada)
+            }
+        }
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task SeedPurchaseInvoicesAsync(List<PurchaseInvoiceSeed> invoices)
+    {
+        foreach (var invData in invoices)
+        {
+            var existing = await _context.PurchaseInvoices
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(i => i.Id == Guid.Parse(invData.Id));
+
+            if (existing == null)
+            {
+                var invoice = new PurchaseInvoice
+                {
+                    Id = Guid.Parse(invData.Id),
+                    CompanyId = Guid.Parse(invData.CompanyId),
+                    InvoiceNumber = invData.InvoiceNumber,
+                    Date = invData.Date,
+                    Subtotal = invData.Subtotal,
+                    IvaAmount = invData.IvaAmount,
+                    Total = invData.Total,
+                    PaymentStatus = (PaymentStatus)invData.PaymentStatus,
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = true
+                };
+                _context.PurchaseInvoices.Add(invoice);
+            }
+            else if (existing.DeletedAt != null)
+            {
+                existing.DeletedAt = null;
+                existing.IsActive = true;
+            }
+        }
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task SeedSalesInvoicesAsync(List<SalesInvoiceSeed> invoices)
+    {
+        foreach (var invData in invoices)
+        {
+            var existing = await _context.SalesInvoices
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(i => i.Id == Guid.Parse(invData.Id));
+
+            if (existing == null)
+            {
+                var invoice = new SalesInvoice
+                {
+                    Id = Guid.Parse(invData.Id),
+                    CompanyId = Guid.Parse(invData.CompanyId),
+                    InvoiceNumber = invData.InvoiceNumber,
+                    Date = invData.Date,
+                    Subtotal = invData.Subtotal,
+                    IvaAmount = invData.IvaAmount,
+                    Total = invData.Total,
+                    PaymentStatus = (PaymentStatus)invData.PaymentStatus,
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = true
+                };
+                _context.SalesInvoices.Add(invoice);
+            }
+            else if (existing.DeletedAt != null)
+            {
+                existing.DeletedAt = null;
+                existing.IsActive = true;
+            }
+        }
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task SeedPurchaseDeliveryNotesAsync(List<PurchaseDeliveryNoteSeed> notes)
+    {
+        foreach (var noteData in notes)
+        {
+            var existing = await _context.PurchaseDeliveryNotes
+                .Include(n => n.Lines)
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(n => n.Id == Guid.Parse(noteData.Id));
+
+            if (existing == null)
+            {
+                var note = new PurchaseDeliveryNote
+                {
+                    Id = Guid.Parse(noteData.Id),
+                    CompanyId = Guid.Parse(noteData.CompanyId),
+                    SupplierId = Guid.Parse(noteData.SupplierId),
+                    Date = noteData.Date,
+                    Reference = noteData.Reference,
+                    BillingStatus = (BillingStatus)noteData.BillingStatus,
+                    PurchaseInvoiceId = !string.IsNullOrEmpty(noteData.PurchaseInvoiceId) ? Guid.Parse(noteData.PurchaseInvoiceId) : null,
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = true
+                };
+
+                if (noteData.Lines != null)
+                {
+                    foreach (var lineData in noteData.Lines)
+                    {
+                        var line = new PurchaseDeliveryNoteLine
+                        {
+                            Id = Guid.Parse(lineData.Id),
+                            ArticleId = Guid.Parse(lineData.ArticleId),
+                            Quantity = lineData.Quantity,
+                            Price = lineData.Price,
+                            Total = lineData.Total,
+                            CreatedAt = DateTime.UtcNow,
+                            IsActive = true
+                        };
+                        note.Lines.Add(line);
+                    }
+                }
+
+                _context.PurchaseDeliveryNotes.Add(note);
+            }
+            else if (existing.DeletedAt != null)
+            {
+                existing.DeletedAt = null;
+                existing.IsActive = true;
+            }
+        }
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task SeedSalesDeliveryNotesAsync(List<SalesDeliveryNoteSeed> notes)
+    {
+        foreach (var noteData in notes)
+        {
+            var existing = await _context.SalesDeliveryNotes
+                .Include(n => n.Lines)
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(n => n.Id == Guid.Parse(noteData.Id));
+
+            if (existing == null)
+            {
+                var note = new SalesDeliveryNote
+                {
+                    Id = Guid.Parse(noteData.Id),
+                    CompanyId = Guid.Parse(noteData.CompanyId),
+                    CustomerId = Guid.Parse(noteData.CustomerId),
+                    Date = noteData.Date,
+                    Reference = noteData.Reference,
+                    BillingStatus = (BillingStatus)noteData.BillingStatus,
+                    SalesInvoiceId = !string.IsNullOrEmpty(noteData.SalesInvoiceId) ? Guid.Parse(noteData.SalesInvoiceId) : null,
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = true
+                };
+
+                if (noteData.Lines != null)
+                {
+                    foreach (var lineData in noteData.Lines)
+                    {
+                        var line = new SalesDeliveryNoteLine
+                        {
+                            Id = Guid.Parse(lineData.Id),
+                            ArticleId = Guid.Parse(lineData.ArticleId),
+                            Quantity = lineData.Quantity,
+                            Price = lineData.Price,
+                            Total = lineData.Total,
+                            CreatedAt = DateTime.UtcNow,
+                            IsActive = true
+                        };
+                        note.Lines.Add(line);
+                    }
+                }
+
+                _context.SalesDeliveryNotes.Add(note);
+            }
+            else if (existing.DeletedAt != null)
+            {
+                existing.DeletedAt = null;
+                existing.IsActive = true;
+            }
+        }
+        await _context.SaveChangesAsync();
+    }
+
     #endregion
 
     #region Seed Data Models
@@ -1257,6 +1561,11 @@ public class JsonDataSeeder
         public List<ArticleSeed>? Articles { get; set; }
         public List<SupplierSeed>? Suppliers { get; set; }
         public List<CustomerSeed>? Customers { get; set; }
+        public List<TariffSeed>? Tariffs { get; set; }
+        public List<PurchaseInvoiceSeed>? PurchaseInvoices { get; set; }
+        public List<SalesInvoiceSeed>? SalesInvoices { get; set; }
+        public List<PurchaseDeliveryNoteSeed>? PurchaseDeliveryNotes { get; set; }
+        public List<SalesDeliveryNoteSeed>? SalesDeliveryNotes { get; set; }
     }
 
     private class TestDataSeed
@@ -1273,6 +1582,11 @@ public class JsonDataSeeder
         public List<UserPermissionSeed>? UserPermissions { get; set; }
         public List<SupplierSeed>? Suppliers { get; set; }
         public List<CustomerSeed>? Customers { get; set; }
+        public List<TariffSeed>? Tariffs { get; set; }
+        public List<PurchaseInvoiceSeed>? PurchaseInvoices { get; set; }
+        public List<SalesInvoiceSeed>? SalesInvoices { get; set; }
+        public List<PurchaseDeliveryNoteSeed>? PurchaseDeliveryNotes { get; set; }
+        public List<SalesDeliveryNoteSeed>? SalesDeliveryNotes { get; set; }
     }
 
     private class LanguageSeed
@@ -1411,6 +1725,89 @@ public class JsonDataSeeder
         public string Id { get; set; } = string.Empty;
         public string StateId { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+    }
+
+    private class TariffSeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string CompanyId { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public int Type { get; set; }
+        public List<TariffItemSeed>? Items { get; set; }
+    }
+
+    private class TariffItemSeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string ArticleId { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+    }
+
+    private class PurchaseInvoiceSeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string CompanyId { get; set; } = string.Empty;
+        public string InvoiceNumber { get; set; } = string.Empty;
+        public DateTime Date { get; set; }
+        public decimal Subtotal { get; set; }
+        public decimal IvaAmount { get; set; }
+        public decimal Total { get; set; }
+        public int PaymentStatus { get; set; }
+    }
+
+    private class SalesInvoiceSeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string CompanyId { get; set; } = string.Empty;
+        public string InvoiceNumber { get; set; } = string.Empty;
+        public DateTime Date { get; set; }
+        public decimal Subtotal { get; set; }
+        public decimal IvaAmount { get; set; }
+        public decimal Total { get; set; }
+        public int PaymentStatus { get; set; }
+    }
+
+    private class PurchaseDeliveryNoteSeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string CompanyId { get; set; } = string.Empty;
+        public string SupplierId { get; set; } = string.Empty;
+        public DateTime Date { get; set; }
+        public string? Reference { get; set; }
+        public int BillingStatus { get; set; }
+        public string? PurchaseInvoiceId { get; set; }
+        public List<PurchaseDeliveryNoteLineSeed>? Lines { get; set; }
+    }
+
+    private class PurchaseDeliveryNoteLineSeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string ArticleId { get; set; } = string.Empty;
+        public decimal Quantity { get; set; }
+        public decimal Price { get; set; }
+        public decimal Total { get; set; }
+    }
+
+    private class SalesDeliveryNoteSeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string CompanyId { get; set; } = string.Empty;
+        public string CustomerId { get; set; } = string.Empty;
+        public DateTime Date { get; set; }
+        public string? Reference { get; set; }
+        public int BillingStatus { get; set; }
+        public string? SalesInvoiceId { get; set; }
+        public List<SalesDeliveryNoteLineSeed>? Lines { get; set; }
+    }
+
+    private class SalesDeliveryNoteLineSeed
+    {
+        public string Id { get; set; } = string.Empty;
+        public string ArticleId { get; set; } = string.Empty;
+        public decimal Quantity { get; set; }
+        public decimal Price { get; set; }
+        public decimal Total { get; set; }
     }
 
     #endregion

@@ -594,5 +594,67 @@
       "phone": "952123456",
       "email": "ventas@distribuidoramalaga.es"
     }
+  ],
+  "tariffs": [
+    {
+      "id": "t1t1t1t1-t1t1-t1t1-t1t1-t1t1t1t1t101",
+      "companyId": "11111111-1111-1111-1111-111111111115",
+      "name": "Tarifa Test Venta",
+      "description": "Tarifa para tests",
+      "type": 2
+    },
+    {
+      "id": "t1t1t1t1-t1t1-t1t1-t1t1-t1t1t1t1t102",
+      "companyId": "11111111-1111-1111-1111-111111111115",
+      "name": "Tarifa Test Compra",
+      "description": "Tarifa para tests",
+      "type": 1
+    }
+  ],
+  "purchaseInvoices": [
+    {
+      "id": "p1p1p1p1-p1p1-p1p1-p1p1-p1p1p1p1p101",
+      "companyId": "11111111-1111-1111-1111-111111111115",
+      "invoiceNumber": "TEST-FAC-C-001",
+      "date": "2026-02-01T00:00:00Z",
+      "subtotal": 500.00,
+      "ivaAmount": 105.00,
+      "total": 605.00,
+      "paymentStatus": 2
+    }
+  ],
+  "salesInvoices": [
+    {
+      "id": "s1s1s1s1-s1s1-s1s1-s1s1-s1s1s1s1s101",
+      "companyId": "11111111-1111-1111-1111-111111111115",
+      "invoiceNumber": "TEST-FAC-V-001",
+      "date": "2026-02-02T00:00:00Z",
+      "subtotal": 800.00,
+      "ivaAmount": 168.00,
+      "total": 968.00,
+      "paymentStatus": 1
+    }
+  ],
+  "purchaseDeliveryNotes": [
+    {
+      "id": "d1d1d1d1-d1d1-d1d1-d1d1-d1d1d1d1d101",
+      "companyId": "11111111-1111-1111-1111-111111111115",
+      "supplierId": "aaaaaaaa-1111-1111-1111-111111111111",
+      "date": "2026-02-01T00:00:00Z",
+      "reference": "TEST-ALB-PROV-001",
+      "billingStatus": 2,
+      "purchaseInvoiceId": "p1p1p1p1-p1p1-p1p1-p1p1-p1p1p1p1p101"
+    }
+  ],
+  "salesDeliveryNotes": [
+    {
+      "id": "d2d2d2d2-d2d2-d2d2-d2d2-d2d2d2d2d201",
+      "companyId": "11111111-1111-1111-1111-111111111115",
+      "customerId": "cccccccc-1111-1111-1111-111111111111",
+      "date": "2026-02-02T00:00:00Z",
+      "reference": "TEST-ALB-CLI-001",
+      "billingStatus": 2,
+      "salesInvoiceId": "s1s1s1s1-s1s1-s1s1-s1s1-s1s1s1s1s101"
+    }
   ]
 }
