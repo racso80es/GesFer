@@ -4,6 +4,12 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 
 ## Pendientes
 
+### [Alta] Sync Seeds for Tariffs and Documents
+*   **Origen:** `docs/KAIZEN/2026-02-26_ANALYSIS.md`
+*   **Descripción:** `GoldenRulesComplianceService` reporta que `Tariff`, `PurchaseInvoice`, `SalesInvoice`, etc. no tienen seeds ni tests sincronizados.
+*   **Impacto:** Impide verificar flujos financieros y viola las Reglas de Oro.
+*   **Estado:** En Progreso (Rama `kaizen/daily-2026-02-26`).
+
 ### [Alta] Fix Golden Rules False Positives
 *   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_16.md`
 *   **Descripción:** `GoldenRulesComplianceService` reporta falsos positivos en Seeds y Tests. Ignora `JsonDataSeeder.cs` (donde están `TaxType`, `Article`) y el directorio moderno de tests `src/Product/Back/tests`.
@@ -15,18 +21,6 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 *   **Descripción:** `Article` parece no tener tests dedicados (o su nombre no coincide). Verificar y añadir tests.
 *   **Impacto:** Riesgo de regresión en funcionalidad core de Artículos.
 *   **Estado:** Pendiente
-
-### [Alta] Fix Console Build / Missing DbSet Companies
-*   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_14.md`, `docs/audits/AUDITORIA_KAIZEN_2026_02_15.md`
-*   **Descripción:** `GesFer.Console` falla al compilar debido a errores `CS1061` en `GesFer.Infrastructure`. `ApplicationDbContext` carece de `DbSet<Company>` adecuado (falta entidad en Product).
-*   **Impacto:** Bloquea la funcionalidad de la consola y la inicialización de datos.
-*   **Estado:** Resuelto (Verificado compilación exitosa 2026-02-16).
-
-### [Alta] Fix Benchmark Compilation Errors
-*   **Origen:** `docs/audits/AUDITORIA_BACKEND_2026_02_14.md`
-*   **Descripción:** El proyecto `GesFer.Performance.Benchmarks` falla al compilar debido a cambios en el dominio (`Article.Family` -> `Article.ArticleFamily`).
-*   **Impacto:** Bloquea la construcción de la solución completa.
-*   **Estado:** Resuelto (Verificado compilación exitosa 2026-02-16).
 
 ### [Media] Fix "The Wall" Violation in Admin Tests
 *   **Origen:** `docs/audits/AUDITORIA_BACKEND_2026_02_13.md`
