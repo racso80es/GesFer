@@ -3,23 +3,22 @@ using GesFer.Application.Commands.ArticleFamilies;
 using GesFer.Application.Handlers.ArticleFamilies;
 using GesFer.Infrastructure.Data;
 using GesFer.Product.Back.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
+using Moq;
 using Xunit;
 
 namespace GesFer.Product.UnitTests.ArticleFamilies;
 
 public class GetAllArticleFamiliesTests
 {
-    private readonly ApplicationDbContext _context;
+    private readonly Mock<ApplicationDbContext> _contextMock;
     private readonly GetAllArticleFamiliesCommandHandler _handler;
 
     public GetAllArticleFamiliesTests()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-        _context = new ApplicationDbContext(options);
-        _handler = new GetAllArticleFamiliesCommandHandler(_context);
+        var options = new Microsoft.EntityFrameworkCore.DbContextOptions<ApplicationDbContext>();
+        _contextMock = new Mock<ApplicationDbContext>(options);
+        _handler = new GetAllArticleFamiliesCommandHandler(_contextMock.Object);
     }
 
     [Fact]
@@ -31,16 +30,23 @@ public class GetAllArticleFamiliesTests
         var taxType1 = Guid.NewGuid();
         var taxType2 = Guid.NewGuid();
 
-        _context.TaxTypes.AddRange(
+        var taxTypes = new List<TaxType>
+        {
             new TaxType { Id = taxType1, CompanyId = company1, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true },
             new TaxType { Id = taxType2, CompanyId = company2, Code = "T2", Name = "Tax 2", Value = 20, CreatedAt = DateTime.UtcNow, IsActive = true }
-        );
+        };
 
-        _context.ArticleFamilies.AddRange(
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company1, Code = "F1", Name = "Family 1", TaxTypeId = taxType1, CreatedAt = DateTime.UtcNow, IsActive = true },
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company2, Code = "F2", Name = "Family 2", TaxTypeId = taxType2, CreatedAt = DateTime.UtcNow, IsActive = true }
-        );
-        await _context.SaveChangesAsync();
+        var families = new List<ArticleFamily>
+        {
+            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company1, Code = "F1", Name = "Family 1", TaxTypeId = taxType1, TaxType = taxTypes[0], CreatedAt = DateTime.UtcNow, IsActive = true },
+            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company2, Code = "F2", Name = "Family 2", TaxTypeId = taxType2, TaxType = taxTypes[1], CreatedAt = DateTime.UtcNow, IsActive = true }
+        };
+
+        var taxTypesMock = taxTypes.BuildMockDbSet();
+        var articleFamiliesMock = families.BuildMockDbSet();
+
+        _contextMock.Setup(c => c.TaxTypes).Returns(taxTypesMock.Object);
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesMock.Object);
 
         var command = new GetAllArticleFamiliesCommand();
 
@@ -58,19 +64,15 @@ public class GetAllArticleFamiliesTests
         // Arrange
         var company1 = Guid.NewGuid();
         var company2 = Guid.NewGuid();
-        var taxType1 = Guid.NewGuid();
-        var taxType2 = Guid.NewGuid();
 
-        _context.TaxTypes.AddRange(
-            new TaxType { Id = taxType1, CompanyId = company1, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true },
-            new TaxType { Id = taxType2, CompanyId = company2, Code = "T2", Name = "Tax 2", Value = 20, CreatedAt = DateTime.UtcNow, IsActive = true }
-        );
+        var families = new List<ArticleFamily>
+        {
+            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company1, Code = "F1", Name = "Family 1", CreatedAt = DateTime.UtcNow, IsActive = true },
+            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company2, Code = "F2", Name = "Family 2", CreatedAt = DateTime.UtcNow, IsActive = true }
+        };
 
-        _context.ArticleFamilies.AddRange(
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company1, Code = "F1", Name = "Family 1", TaxTypeId = taxType1, CreatedAt = DateTime.UtcNow, IsActive = true },
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company2, Code = "F2", Name = "Family 2", TaxTypeId = taxType2, CreatedAt = DateTime.UtcNow, IsActive = true }
-        );
-        await _context.SaveChangesAsync();
+        var articleFamiliesMock = families.BuildMockDbSet();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesMock.Object);
 
         var command = new GetAllArticleFamiliesCommand(company1);
 
@@ -87,15 +89,15 @@ public class GetAllArticleFamiliesTests
     {
         // Arrange
         var company = Guid.NewGuid();
-        var taxType = Guid.NewGuid();
 
-        _context.TaxTypes.Add(new TaxType { Id = taxType, CompanyId = company, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true });
+        var families = new List<ArticleFamily>
+        {
+            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company, Code = "F1", Name = "Family 1", CreatedAt = DateTime.UtcNow, IsActive = true },
+            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company, Code = "F2", Name = "Family 2", CreatedAt = DateTime.UtcNow, IsActive = false, DeletedAt = DateTime.UtcNow }
+        };
 
-        _context.ArticleFamilies.AddRange(
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company, Code = "F1", Name = "Family 1", TaxTypeId = taxType, CreatedAt = DateTime.UtcNow, IsActive = true },
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company, Code = "F2", Name = "Family 2", TaxTypeId = taxType, CreatedAt = DateTime.UtcNow, IsActive = false, DeletedAt = DateTime.UtcNow }
-        );
-        await _context.SaveChangesAsync();
+        var articleFamiliesMock = families.BuildMockDbSet();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesMock.Object);
 
         var command = new GetAllArticleFamiliesCommand();
 
@@ -112,15 +114,15 @@ public class GetAllArticleFamiliesTests
     {
         // Arrange
         var company = Guid.NewGuid();
-        var taxType = Guid.NewGuid();
 
-        _context.TaxTypes.Add(new TaxType { Id = taxType, CompanyId = company, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true });
+        var families = new List<ArticleFamily>
+        {
+            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company, Code = "F2", Name = "B Family", CreatedAt = DateTime.UtcNow, IsActive = true },
+            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company, Code = "F1", Name = "A Family", CreatedAt = DateTime.UtcNow, IsActive = true }
+        };
 
-        _context.ArticleFamilies.AddRange(
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company, Code = "F2", Name = "B Family", TaxTypeId = taxType, CreatedAt = DateTime.UtcNow, IsActive = true },
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company, Code = "F1", Name = "A Family", TaxTypeId = taxType, CreatedAt = DateTime.UtcNow, IsActive = true }
-        );
-        await _context.SaveChangesAsync();
+        var articleFamiliesMock = families.BuildMockDbSet();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesMock.Object);
 
         var command = new GetAllArticleFamiliesCommand();
 

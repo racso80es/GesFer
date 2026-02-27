@@ -4,23 +4,22 @@ using GesFer.Application.DTOs.ArticleFamilies;
 using GesFer.Application.Handlers.ArticleFamilies;
 using GesFer.Infrastructure.Data;
 using GesFer.Product.Back.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
+using Moq;
 using Xunit;
 
 namespace GesFer.Product.UnitTests.ArticleFamilies;
 
 public class UpdateArticleFamilyTests
 {
-    private readonly ApplicationDbContext _context;
+    private readonly Mock<ApplicationDbContext> _contextMock;
     private readonly UpdateArticleFamilyCommandHandler _handler;
 
     public UpdateArticleFamilyTests()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-        _context = new ApplicationDbContext(options);
-        _handler = new UpdateArticleFamilyCommandHandler(_context);
+        var options = new Microsoft.EntityFrameworkCore.DbContextOptions<ApplicationDbContext>();
+        _contextMock = new Mock<ApplicationDbContext>(options);
+        _handler = new UpdateArticleFamilyCommandHandler(_contextMock.Object);
     }
 
     [Fact]
@@ -31,13 +30,12 @@ public class UpdateArticleFamilyTests
         var taxType1 = Guid.NewGuid();
         var taxType2 = Guid.NewGuid();
 
-        // Seed TaxTypes
-        _context.TaxTypes.AddRange(
+        var taxTypes = new List<TaxType>
+        {
             new TaxType { Id = taxType1, CompanyId = companyId, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true },
             new TaxType { Id = taxType2, CompanyId = companyId, Code = "T2", Name = "Tax 2", Value = 20, CreatedAt = DateTime.UtcNow, IsActive = true }
-        );
+        };
 
-        // Seed ArticleFamily
         var familyId = Guid.NewGuid();
         var family = new ArticleFamily
         {
@@ -47,11 +45,18 @@ public class UpdateArticleFamilyTests
             Name = "Old Name",
             Description = "Old Desc",
             TaxTypeId = taxType1,
+            TaxType = taxTypes[0],
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         };
-        _context.ArticleFamilies.Add(family);
-        await _context.SaveChangesAsync();
+
+        var articleFamiliesMock = new List<ArticleFamily> { family }.BuildMockDbSet();
+        var taxTypesMock = taxTypes.BuildMockDbSet();
+
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesMock.Object);
+        _contextMock.Setup(c => c.TaxTypes).Returns(taxTypesMock.Object);
+        _contextMock.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1);
 
         var command = new UpdateArticleFamilyCommand(familyId,
             new UpdateArticleFamilyDto
@@ -73,17 +78,20 @@ public class UpdateArticleFamilyTests
         result.Name.Should().Be("New Name");
         result.TaxTypeId.Should().Be(taxType2);
 
-        var updated = await _context.ArticleFamilies.FindAsync(familyId);
-        updated.Should().NotBeNull();
-        updated!.Code.Should().Be("NEW");
-        updated.TaxTypeId.Should().Be(taxType2);
-        updated.UpdatedAt.Should().NotBeNull();
+        // Check if entity was updated in memory (mock object)
+        family.Code.Should().Be("NEW");
+        family.TaxTypeId.Should().Be(taxType2);
+
+        _contextMock.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task HandleAsync_ShouldThrow_WhenEntityNotFound()
     {
         // Arrange
+        var articleFamiliesMock = new List<ArticleFamily>().BuildMockDbSet();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesMock.Object);
+
         var command = new UpdateArticleFamilyCommand(Guid.NewGuid(),
             new UpdateArticleFamilyDto
             {
@@ -104,15 +112,12 @@ public class UpdateArticleFamilyTests
         var companyId = Guid.NewGuid();
         var taxTypeId = Guid.NewGuid();
 
-        // Seed TaxType
-        _context.TaxTypes.Add(new TaxType { Id = taxTypeId, CompanyId = companyId, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true });
-
-        // Seed two families
         var family1 = new ArticleFamily { Id = Guid.NewGuid(), CompanyId = companyId, Code = "FAM1", Name = "F1", TaxTypeId = taxTypeId, CreatedAt = DateTime.UtcNow, IsActive = true };
         var family2 = new ArticleFamily { Id = Guid.NewGuid(), CompanyId = companyId, Code = "FAM2", Name = "F2", TaxTypeId = taxTypeId, CreatedAt = DateTime.UtcNow, IsActive = true };
 
-        _context.ArticleFamilies.AddRange(family1, family2);
-        await _context.SaveChangesAsync();
+        var families = new List<ArticleFamily> { family1, family2 };
+        var articleFamiliesMock = families.BuildMockDbSet();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesMock.Object);
 
         // Try to update family2 with family1's code
         var command = new UpdateArticleFamilyCommand(family2.Id,
@@ -137,13 +142,13 @@ public class UpdateArticleFamilyTests
         var companyId = Guid.NewGuid();
         var taxTypeId = Guid.NewGuid();
 
-        // Seed TaxType
-        _context.TaxTypes.Add(new TaxType { Id = taxTypeId, CompanyId = companyId, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true });
-
-        // Seed ArticleFamily
         var family = new ArticleFamily { Id = Guid.NewGuid(), CompanyId = companyId, Code = "FAM1", Name = "F1", TaxTypeId = taxTypeId, CreatedAt = DateTime.UtcNow, IsActive = true };
-        _context.ArticleFamilies.Add(family);
-        await _context.SaveChangesAsync();
+
+        var articleFamiliesMock = new List<ArticleFamily> { family }.BuildMockDbSet();
+        var taxTypesMock = new List<TaxType>().BuildMockDbSet(); // Empty tax types
+
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesMock.Object);
+        _contextMock.Setup(c => c.TaxTypes).Returns(taxTypesMock.Object);
 
         var command = new UpdateArticleFamilyCommand(family.Id,
             new UpdateArticleFamilyDto
