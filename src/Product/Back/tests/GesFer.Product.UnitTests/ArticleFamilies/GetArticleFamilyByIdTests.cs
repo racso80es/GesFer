@@ -3,23 +3,22 @@ using GesFer.Application.Commands.ArticleFamilies;
 using GesFer.Application.Handlers.ArticleFamilies;
 using GesFer.Infrastructure.Data;
 using GesFer.Product.Back.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
+using Moq;
 using Xunit;
 
 namespace GesFer.Product.UnitTests.ArticleFamilies;
 
 public class GetArticleFamilyByIdTests
 {
-    private readonly ApplicationDbContext _context;
+    private readonly Mock<ApplicationDbContext> _contextMock;
     private readonly GetArticleFamilyByIdCommandHandler _handler;
 
     public GetArticleFamilyByIdTests()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-        _context = new ApplicationDbContext(options);
-        _handler = new GetArticleFamilyByIdCommandHandler(_context);
+        var options = new Microsoft.EntityFrameworkCore.DbContextOptions<ApplicationDbContext>();
+        _contextMock = new Mock<ApplicationDbContext>(options);
+        _handler = new GetArticleFamilyByIdCommandHandler(_contextMock.Object);
     }
 
     [Fact]
@@ -30,18 +29,21 @@ public class GetArticleFamilyByIdTests
         var companyId = Guid.NewGuid();
         var taxTypeId = Guid.NewGuid();
 
-        _context.TaxTypes.Add(new TaxType { Id = taxTypeId, CompanyId = companyId, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true });
-        _context.ArticleFamilies.Add(new ArticleFamily
+        var taxType = new TaxType { Id = taxTypeId, CompanyId = companyId, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true };
+        var family = new ArticleFamily
         {
             Id = id,
             CompanyId = companyId,
             Code = "FAM1",
             Name = "Family 1",
             TaxTypeId = taxTypeId,
+            TaxType = taxType,
             CreatedAt = DateTime.UtcNow,
             IsActive = true
-        });
-        await _context.SaveChangesAsync();
+        };
+
+        var articleFamiliesMock = new List<ArticleFamily> { family }.BuildMockDbSet();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesMock.Object);
 
         var command = new GetArticleFamilyByIdCommand(id);
 
@@ -58,6 +60,9 @@ public class GetArticleFamilyByIdTests
     public async Task HandleAsync_ShouldReturnNull_WhenNotExists()
     {
         // Arrange
+        var articleFamiliesMock = new List<ArticleFamily>().BuildMockDbSet();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesMock.Object);
+
         var command = new GetArticleFamilyByIdCommand(Guid.NewGuid());
 
         // Act
@@ -74,7 +79,7 @@ public class GetArticleFamilyByIdTests
         var id = Guid.NewGuid();
         var companyId = Guid.NewGuid();
 
-        _context.ArticleFamilies.Add(new ArticleFamily
+        var family = new ArticleFamily
         {
             Id = id,
             CompanyId = companyId,
@@ -82,8 +87,10 @@ public class GetArticleFamilyByIdTests
             Name = "Family 1",
             CreatedAt = DateTime.UtcNow,
             IsActive = true
-        });
-        await _context.SaveChangesAsync();
+        };
+
+        var articleFamiliesMock = new List<ArticleFamily> { family }.BuildMockDbSet();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesMock.Object);
 
         var command = new GetArticleFamilyByIdCommand(id, Guid.NewGuid()); // Different CompanyId
 
@@ -99,8 +106,7 @@ public class GetArticleFamilyByIdTests
     {
         // Arrange
         var id = Guid.NewGuid();
-
-        _context.ArticleFamilies.Add(new ArticleFamily
+        var family = new ArticleFamily
         {
             Id = id,
             CompanyId = Guid.NewGuid(),
@@ -109,8 +115,10 @@ public class GetArticleFamilyByIdTests
             CreatedAt = DateTime.UtcNow,
             IsActive = false,
             DeletedAt = DateTime.UtcNow
-        });
-        await _context.SaveChangesAsync();
+        };
+
+        var articleFamiliesMock = new List<ArticleFamily> { family }.BuildMockDbSet();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesMock.Object);
 
         var command = new GetArticleFamilyByIdCommand(id);
 
