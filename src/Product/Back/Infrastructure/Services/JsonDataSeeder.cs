@@ -1416,4 +1416,48 @@ public class JsonDataSeeder
     #endregion
 
     // NOTA: AdminUser seeding se gestiona en el dominio Admin
+
+    private class TariffSeed
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+    }
+
+    private class TariffItemSeed
+    {
+        public Guid Id { get; set; }
+        public Guid TariffId { get; set; }
+        public Guid ArticleId { get; set; }
+        public decimal Price { get; set; }
+    }
+
+    private class PurchaseDeliveryNoteSeed
+    {
+        public Guid Id { get; set; }
+        public string DeliveryNoteNumber { get; set; } = string.Empty;
+        public Guid SupplierId { get; set; }
+    }
+
+    private class SalesDeliveryNoteSeed
+    {
+        public Guid Id { get; set; }
+        public string DeliveryNoteNumber { get; set; } = string.Empty;
+        public Guid CustomerId { get; set; }
+    }
+
+    private class PurchaseInvoiceSeed
+    {
+        public Guid Id { get; set; }
+        public string InvoiceNumber { get; set; } = string.Empty;
+        public Guid SupplierId { get; set; }
+    }
+
+    private class SalesInvoiceSeed
+    {
+        public Guid Id { get; set; }
+        public string InvoiceNumber { get; set; } = string.Empty;
+        public Guid CustomerId { get; set; }
+    }
 }

@@ -4,6 +4,12 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 
 ## Pendientes
 
+### [Alta] Fix Golden Rules Missing Entities in Seeder and Tests
+*   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_28.md`
+*   **Descripción:** `GoldenRulesComplianceService` reporta 6 entidades (Tariff, TariffItem, PurchaseInvoice, SalesInvoice, PurchaseDeliveryNote, SalesDeliveryNote) como no sincronizadas. Se requiere agregar sus clases de serialización a `JsonDataSeeder.cs` y refinar el algoritmo de búsqueda de tests en `GoldenRulesComplianceService.cs`.
+*   **Impacto:** Permite tener un chequeo de Golden Rules real y confiable, sin falsos positivos.
+*   **Estado:** En Progreso (Rama `kaizen/daily-2026-02-28`).
+
 ### [Alta] Fix Golden Rules False Positives
 *   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_16.md`
 *   **Descripción:** `GoldenRulesComplianceService` reporta falsos positivos en Seeds y Tests. Ignora `JsonDataSeeder.cs` (donde están `TaxType`, `Article`) y el directorio moderno de tests `src/Product/Back/tests`.

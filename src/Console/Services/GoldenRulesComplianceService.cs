@@ -442,15 +442,44 @@ public class GoldenRulesComplianceService
         }
 
         // KAIZEN: Buscar tests específicos de la entidad en todo Product/Back (incluye IntegrationTests y tests/)
-        // Usar SearchOption.AllDirectories busca recursivamente
+        // Usar SearchOption.AllDirectories busca recursivamente y mapeos flexibles
         try
         {
             if (Directory.Exists(_testsPath))
             {
-                var testFiles = Directory.GetFiles(_testsPath, $"*{entityName}*Tests.cs", SearchOption.AllDirectories);
+                // Mapeo de nombres base para buscar tests de forma más flexible
+                var searchPattern = entityName;
+                if (entityName == "PurchaseDeliveryNote" || entityName == "SalesDeliveryNote")
+                {
+                    searchPattern = "DeliveryNote";
+                }
+                else if (entityName == "PurchaseInvoice" || entityName == "SalesInvoice")
+                {
+                    searchPattern = "Invoice";
+                }
+                else if (entityName == "TariffItem")
+                {
+                    searchPattern = "Tariff";
+                }
+
+                var testFiles = Directory.GetFiles(_testsPath, $"*{searchPattern}*Tests.cs", SearchOption.AllDirectories);
                 if (testFiles.Any())
                 {
                     return true;
+                }
+
+                // Mapeos adicionales por plurales u otros nombres comunes
+                if (entityName.EndsWith("y"))
+                {
+                    var pluralPattern = entityName.Substring(0, entityName.Length - 1) + "ies";
+                    var pluralFiles = Directory.GetFiles(_testsPath, $"*{pluralPattern}*Tests.cs", SearchOption.AllDirectories);
+                    if (pluralFiles.Any()) return true;
+                }
+                else
+                {
+                    var pluralPattern = entityName + "s";
+                    var pluralFiles = Directory.GetFiles(_testsPath, $"*{pluralPattern}*Tests.cs", SearchOption.AllDirectories);
+                    if (pluralFiles.Any()) return true;
                 }
             }
         }
