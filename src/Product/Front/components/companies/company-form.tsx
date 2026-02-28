@@ -240,7 +240,7 @@ export function CompanyForm({
                   <FormLabel>{t("language")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
                     disabled={isLoading}
                   >
                     <FormControl>
