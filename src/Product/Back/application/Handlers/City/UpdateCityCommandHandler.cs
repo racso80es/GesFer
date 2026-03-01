@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.City;
 
 public class UpdateCityCommandHandler : ICommandHandler<UpdateCityCommand, CityDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public UpdateCityCommandHandler(ApplicationDbContext context)
+    public UpdateCityCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

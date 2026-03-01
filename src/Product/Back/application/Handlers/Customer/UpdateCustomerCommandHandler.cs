@@ -9,9 +9,9 @@ namespace GesFer.Application.Handlers.Customer;
 
 public class UpdateCustomerCommandHandler : ICommandHandler<UpdateCustomerCommand, CustomerDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public UpdateCustomerCommandHandler(ApplicationDbContext context)
+    public UpdateCustomerCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

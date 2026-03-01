@@ -7,9 +7,9 @@ namespace GesFer.Application.Handlers.State;
 
 public class DeleteStateCommandHandler : ICommandHandler<DeleteStateCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteStateCommandHandler(ApplicationDbContext context)
+    public DeleteStateCommandHandler(ProductDbContext context)
     {
         _context = context;
     }
