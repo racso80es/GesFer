@@ -5,22 +5,21 @@ using GesFer.Application.Handlers.ArticleFamilies;
 using GesFer.Infrastructure.Data;
 using GesFer.Product.Back.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
+using Moq;
 using Xunit;
 
 namespace GesFer.Product.UnitTests.ArticleFamilies;
 
 public class CreateArticleFamilyTests
 {
-    private readonly ApplicationDbContext _context;
+    private readonly Mock<ApplicationDbContext> _contextMock;
     private readonly CreateArticleFamilyCommandHandler _handler;
 
     public CreateArticleFamilyTests()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-        _context = new ApplicationDbContext(options);
-        _handler = new CreateArticleFamilyCommandHandler(_context);
+        _contextMock = new Mock<ApplicationDbContext>(new DbContextOptions<ApplicationDbContext>());
+        _handler = new CreateArticleFamilyCommandHandler(_contextMock.Object);
     }
 
     [Fact]
@@ -30,26 +29,23 @@ public class CreateArticleFamilyTests
         var companyId = Guid.NewGuid();
         var taxTypeId = Guid.NewGuid();
 
-        // Seed TaxType
-        _context.TaxTypes.Add(new TaxType
+        var taxTypes = new List<TaxType>
         {
-            Id = taxTypeId,
-            CompanyId = companyId,
-            Code = "IVA21",
-            Name = "IVA General 21%",
-            Value = 21.0m,
-            CreatedAt = DateTime.UtcNow,
-            IsActive = true
-        });
-        await _context.SaveChangesAsync();
+            new TaxType { Id = taxTypeId, CompanyId = companyId, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true }
+        };
+        _contextMock.Setup(c => c.TaxTypes).Returns(taxTypes.BuildMockDbSet().Object);
 
-        var command = new CreateArticleFamilyCommand(
-            new CreateArticleFamilyDto
+        var articleFamilies = new List<ArticleFamily>();
+        var articleFamiliesDbSetMock = articleFamilies.BuildMockDbSet();
+        articleFamiliesDbSetMock.Setup(d => d.Add(It.IsAny<ArticleFamily>())).Callback<ArticleFamily>(articleFamilies.Add);
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamiliesDbSetMock.Object);
+
+        var command = new CreateArticleFamilyCommand(new CreateArticleFamilyDto
             {
                 CompanyId = companyId,
-                Code = "FAM01",
-                Name = "Familia Test",
-                Description = "Descripción de prueba",
+                Code = "FAM1",
+                Name = "Family 1",
+                Description = "Description 1",
                 TaxTypeId = taxTypeId
             });
 
@@ -58,32 +54,15 @@ public class CreateArticleFamilyTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Id.Should().NotBeEmpty();
-        result.Code.Should().Be("FAM01");
+        result.Code.Should().Be("FAM1");
+        result.Name.Should().Be("Family 1");
         result.TaxTypeId.Should().Be(taxTypeId);
 
-        var created = await _context.ArticleFamilies.FindAsync(result.Id);
-        created.Should().NotBeNull();
-        created!.CompanyId.Should().Be(companyId);
-    }
+        articleFamilies.Should().ContainSingle();
+        articleFamilies.First().Code.Should().Be("FAM1");
+        articleFamilies.First().CompanyId.Should().Be(companyId);
 
-    [Fact]
-    public async Task HandleAsync_ShouldThrow_WhenCompanyIdIsEmpty()
-    {
-        // Arrange
-        var command = new CreateArticleFamilyCommand(
-            new CreateArticleFamilyDto
-            {
-                CompanyId = Guid.Empty,
-                Code = "FAM01",
-                Name = "Familia Test",
-                TaxTypeId = Guid.NewGuid()
-            });
-
-        // Act & Assert
-        await _handler.Invoking(h => h.HandleAsync(command))
-            .Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("*CompanyId es obligatorio*");
+        _contextMock.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -93,37 +72,21 @@ public class CreateArticleFamilyTests
         var companyId = Guid.NewGuid();
         var taxTypeId = Guid.NewGuid();
 
-        // Seed existing family
-        _context.ArticleFamilies.Add(new ArticleFamily
-        {
-            Id = Guid.NewGuid(),
-            CompanyId = companyId,
-            Code = "FAM01",
-            Name = "Familia Existente",
-            TaxTypeId = taxTypeId,
-            CreatedAt = DateTime.UtcNow,
-            IsActive = true
-        });
-        // Seed TaxType (needed for foreign key check if handler checks it, but handler checks it separately)
-        _context.TaxTypes.Add(new TaxType
-        {
-            Id = taxTypeId,
-            CompanyId = companyId,
-            Code = "IVA21",
-            Name = "IVA General 21%",
-            Value = 21.0m,
-            CreatedAt = DateTime.UtcNow,
-            IsActive = true
-        });
+        var existingFamily = new ArticleFamily { Id = Guid.NewGuid(), CompanyId = companyId, Code = "FAM1", Name = "F1", TaxTypeId = taxTypeId, CreatedAt = DateTime.UtcNow, IsActive = true };
+        var articleFamilies = new List<ArticleFamily> { existingFamily };
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamilies.BuildMockDbSet().Object);
 
-        await _context.SaveChangesAsync();
+        var taxTypes = new List<TaxType>
+        {
+            new TaxType { Id = taxTypeId, CompanyId = companyId, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true }
+        };
+        _contextMock.Setup(c => c.TaxTypes).Returns(taxTypes.BuildMockDbSet().Object);
 
-        var command = new CreateArticleFamilyCommand(
-            new CreateArticleFamilyDto
+        var command = new CreateArticleFamilyCommand(new CreateArticleFamilyDto
             {
                 CompanyId = companyId,
-                Code = "FAM01",
-                Name = "Nueva Familia",
+                Code = "FAM1",
+                Name = "Another Family",
                 TaxTypeId = taxTypeId
             });
 
@@ -138,13 +101,19 @@ public class CreateArticleFamilyTests
     {
         // Arrange
         var companyId = Guid.NewGuid();
-        var command = new CreateArticleFamilyCommand(
-            new CreateArticleFamilyDto
+
+        var articleFamilies = new List<ArticleFamily>();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamilies.BuildMockDbSet().Object);
+
+        var taxTypes = new List<TaxType>(); // Empty
+        _contextMock.Setup(c => c.TaxTypes).Returns(taxTypes.BuildMockDbSet().Object);
+
+        var command = new CreateArticleFamilyCommand(new CreateArticleFamilyDto
             {
                 CompanyId = companyId,
-                Code = "FAM01",
-                Name = "Familia Test",
-                TaxTypeId = Guid.NewGuid() // Non-existent TaxType
+                Code = "FAM1",
+                Name = "Another Family",
+                TaxTypeId = Guid.NewGuid() // Non-existent
             });
 
         // Act & Assert

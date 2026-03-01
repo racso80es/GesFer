@@ -1,4 +1,7 @@
-using FluentAssertions;
+import sys
+import os
+
+update_user = """using FluentAssertions;
 using GesFer.Application.Commands.User;
 using GesFer.Application.DTOs.User;
 using GesFer.Application.Handlers.User;
@@ -38,7 +41,7 @@ public class UpdateUserCommandHandlerTests
             LastName = "Name",
             Email = "old@example.com",
             PasswordHash = "oldhash",
-
+            PasswordSalt = "oldsalt",
             Address = "Old Address"
         };
 
@@ -54,7 +57,7 @@ public class UpdateUserCommandHandlerTests
 
         var command = new UpdateUserCommand(userId, new UpdateUserDto
         {
-
+            CompanyId = companyId,
             Username = "newuser",
             FirstName = "New",
             LastName = "Name",
@@ -71,7 +74,7 @@ public class UpdateUserCommandHandlerTests
 
         existingUser.Username.Should().Be("newuser");
         existingUser.FirstName.Should().Be("New");
-        existingUser.Email.Value.Value.Should().Be("new@example.com");
+        existingUser.Email.Should().Be("new@example.com");
 
         _contextMock.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -87,7 +90,7 @@ public class UpdateUserCommandHandlerTests
 
         var command = new UpdateUserCommand(Guid.NewGuid(), new UpdateUserDto
         {
-
+            CompanyId = Guid.NewGuid(),
             Username = "testuser"
         });
 
@@ -98,7 +101,7 @@ public class UpdateUserCommandHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_WhenCompanyNotFound_ShouldSetEmptyCompanyName()
+    public async Task HandleAsync_WhenCompanyNotFound_ShouldThrowException()
     {
         var companyId = Guid.NewGuid();
         var userId = Guid.NewGuid();
@@ -120,12 +123,86 @@ public class UpdateUserCommandHandlerTests
 
         var command = new UpdateUserCommand(userId, new UpdateUserDto
         {
+            CompanyId = Guid.NewGuid(),
             Username = "newuser"
         });
 
-        var result = await handler.HandleAsync(command);
+        Func<Task> act = async () => await handler.HandleAsync(command);
 
-        result.Should().NotBeNull();
-        result.CompanyName.Should().BeEmpty();
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*No se encontró la empresa*");
     }
 }
+"""
+
+with open('src/Product/Back/tests/GesFer.Product.UnitTests/Handlers/User/UpdateUserCommandHandlerTests.cs', 'w') as f:
+    f.write(update_user)
+
+delete_user = """using FluentAssertions;
+using GesFer.Application.Commands.User;
+using GesFer.Application.Handlers.User;
+using GesFer.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
+using Moq;
+using Xunit;
+
+namespace GesFer.Product.UnitTests.Handlers.User;
+
+public class DeleteUserCommandHandlerTests
+{
+    private readonly Mock<ApplicationDbContext> _contextMock;
+
+    public DeleteUserCommandHandlerTests()
+    {
+        _contextMock = new Mock<ApplicationDbContext>(new DbContextOptions<ApplicationDbContext>());
+    }
+
+    [Fact]
+    public async Task HandleAsync_WithValidId_ShouldDeleteUser()
+    {
+        var userId = Guid.NewGuid();
+
+        var existingUser = new GesFer.Product.Back.Domain.Entities.User
+        {
+            Id = userId,
+            Username = "testuser",
+            IsActive = true
+        };
+
+        var users = new List<GesFer.Product.Back.Domain.Entities.User> { existingUser };
+        _contextMock.Setup(c => c.Users).Returns(users.BuildMockDbSet().Object);
+        _contextMock.Setup(c => c.Users.FindAsync(userId)).ReturnsAsync(existingUser);
+
+        var handler = new DeleteUserCommandHandler(_contextMock.Object);
+        var command = new DeleteUserCommand(userId);
+
+        await handler.HandleAsync(command);
+
+        existingUser.IsActive.Should().BeFalse();
+        existingUser.DeletedAt.Should().NotBeNull();
+        _contextMock.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task HandleAsync_WhenUserNotFound_ShouldThrowException()
+    {
+        var userId = Guid.NewGuid();
+
+        var users = new List<GesFer.Product.Back.Domain.Entities.User>();
+        _contextMock.Setup(c => c.Users).Returns(users.BuildMockDbSet().Object);
+        _contextMock.Setup(c => c.Users.FindAsync(userId)).ReturnsAsync((GesFer.Product.Back.Domain.Entities.User?)null);
+
+        var handler = new DeleteUserCommandHandler(_contextMock.Object);
+        var command = new DeleteUserCommand(userId);
+
+        Func<Task> act = async () => await handler.HandleAsync(command);
+
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*No se encontró el usuario*");
+    }
+}
+"""
+
+with open('src/Product/Back/tests/GesFer.Product.UnitTests/Handlers/User/DeleteUserCommandHandlerTests.cs', 'w') as f:
+    f.write(delete_user)

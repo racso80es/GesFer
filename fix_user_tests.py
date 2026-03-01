@@ -1,4 +1,7 @@
-using FluentAssertions;
+import sys
+import os
+
+create_user = """using FluentAssertions;
 using GesFer.Application.Commands.User;
 using GesFer.Application.DTOs.User;
 using GesFer.Application.Handlers.User;
@@ -84,3 +87,7 @@ public class CreateUserCommandHandlerTests
             .WithMessage("*No se encontró la empresa*");
     }
 }
+"""
+
+with open('src/Product/Back/tests/GesFer.Product.UnitTests/Handlers/User/CreateUserCommandHandlerTests.cs', 'w') as f:
+    f.write(create_user)
