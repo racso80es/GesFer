@@ -1,4 +1,6 @@
-using FluentAssertions;
+import sys
+
+taxtype = """using FluentAssertions;
 using GesFer.Application.Commands.TaxTypes;
 using GesFer.Application.Handlers.TaxTypes;
 using GesFer.Product.Application.DTOs.TaxTypes;
@@ -120,3 +122,6 @@ public class CreateTaxTypeTests
             .WithMessage("*valor*");
     }
 }
+"""
+with open('src/Product/Back/tests/GesFer.Product.UnitTests/TaxTypes/CreateTaxTypeTests.cs', 'w') as f:
+    f.write(taxtype)

@@ -1,4 +1,6 @@
-using FluentAssertions;
+import sys
+
+content = """using FluentAssertions;
 using GesFer.Application.Commands.ArticleFamilies;
 using GesFer.Application.Handlers.ArticleFamilies;
 using GesFer.Infrastructure.Data;
@@ -69,3 +71,7 @@ public class DeleteArticleFamilyTests
             .WithMessage("*No se encontró la familia de artículos*");
     }
 }
+"""
+
+with open('src/Product/Back/tests/GesFer.Product.UnitTests/ArticleFamilies/DeleteArticleFamilyTests.cs', 'w') as f:
+    f.write(content)

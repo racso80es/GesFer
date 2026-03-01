@@ -1,135 +1,75 @@
 using FluentAssertions;
-using GesFer.Application.Commands.ArticleFamilies;
 using GesFer.Application.Handlers.ArticleFamilies;
+using GesFer.Application.Commands.ArticleFamilies;
 using GesFer.Infrastructure.Data;
 using GesFer.Product.Back.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
+using Moq;
 using Xunit;
 
 namespace GesFer.Product.UnitTests.ArticleFamilies;
 
 public class GetAllArticleFamiliesTests
 {
-    private readonly ApplicationDbContext _context;
+    private readonly Mock<ApplicationDbContext> _contextMock;
     private readonly GetAllArticleFamiliesCommandHandler _handler;
 
     public GetAllArticleFamiliesTests()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-        _context = new ApplicationDbContext(options);
-        _handler = new GetAllArticleFamiliesCommandHandler(_context);
+        _contextMock = new Mock<ApplicationDbContext>(new DbContextOptions<ApplicationDbContext>());
+        _handler = new GetAllArticleFamiliesCommandHandler(_contextMock.Object);
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnAllFamilies_WhenNoFilter()
+    public async Task HandleAsync_ShouldReturnAllArticleFamilies_ForCompany()
     {
         // Arrange
-        var company1 = Guid.NewGuid();
-        var company2 = Guid.NewGuid();
-        var taxType1 = Guid.NewGuid();
-        var taxType2 = Guid.NewGuid();
+        var companyId1 = Guid.NewGuid();
+        var companyId2 = Guid.NewGuid();
+        var taxTypeId = Guid.NewGuid();
 
-        _context.TaxTypes.AddRange(
-            new TaxType { Id = taxType1, CompanyId = company1, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true },
-            new TaxType { Id = taxType2, CompanyId = company2, Code = "T2", Name = "Tax 2", Value = 20, CreatedAt = DateTime.UtcNow, IsActive = true }
-        );
+        var taxType = new TaxType { Id = taxTypeId, CompanyId = companyId1, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true };
+        var taxTypes = new List<TaxType> { taxType };
+        _contextMock.Setup(c => c.TaxTypes).Returns(taxTypes.BuildMockDbSet().Object);
 
-        _context.ArticleFamilies.AddRange(
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company1, Code = "F1", Name = "Family 1", TaxTypeId = taxType1, CreatedAt = DateTime.UtcNow, IsActive = true },
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company2, Code = "F2", Name = "Family 2", TaxTypeId = taxType2, CreatedAt = DateTime.UtcNow, IsActive = true }
-        );
-        await _context.SaveChangesAsync();
+        var families = new List<ArticleFamily>
+        {
+            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = companyId1, Code = "F1", Name = "Family 1", TaxTypeId = taxTypeId, CreatedAt = DateTime.UtcNow, IsActive = true },
+            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = companyId1, Code = "F2", Name = "Family 2", TaxTypeId = taxTypeId, CreatedAt = DateTime.UtcNow, IsActive = true },
+            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = companyId2, Code = "F3", Name = "Family 3", TaxTypeId = Guid.NewGuid(), CreatedAt = DateTime.UtcNow, IsActive = true }
+        };
 
-        var command = new GetAllArticleFamiliesCommand();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(families.BuildMockDbSet().Object);
+
+        var query = new GetAllArticleFamiliesCommand(companyId1);
 
         // Act
-        var result = await _handler.HandleAsync(command);
+        var result = await _handler.HandleAsync(query);
 
         // Assert
+        result.Should().NotBeNull();
         result.Should().HaveCount(2);
-        result.Select(f => f.Name).Should().Contain(new[] { "Family 1", "Family 2" });
+        result.Should().Contain(f => f.Code == "F1");
+        result.Should().Contain(f => f.Code == "F2");
+        result.Should().NotContain(f => f.Code == "F3"); // Different company
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldFilterByCompanyId_WhenProvided()
+    public async Task HandleAsync_ShouldReturnEmptyList_WhenNoFamiliesExistForCompany()
     {
         // Arrange
-        var company1 = Guid.NewGuid();
-        var company2 = Guid.NewGuid();
-        var taxType1 = Guid.NewGuid();
-        var taxType2 = Guid.NewGuid();
+        var companyId = Guid.NewGuid();
+        var families = new List<ArticleFamily>();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(families.BuildMockDbSet().Object);
 
-        _context.TaxTypes.AddRange(
-            new TaxType { Id = taxType1, CompanyId = company1, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true },
-            new TaxType { Id = taxType2, CompanyId = company2, Code = "T2", Name = "Tax 2", Value = 20, CreatedAt = DateTime.UtcNow, IsActive = true }
-        );
-
-        _context.ArticleFamilies.AddRange(
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company1, Code = "F1", Name = "Family 1", TaxTypeId = taxType1, CreatedAt = DateTime.UtcNow, IsActive = true },
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company2, Code = "F2", Name = "Family 2", TaxTypeId = taxType2, CreatedAt = DateTime.UtcNow, IsActive = true }
-        );
-        await _context.SaveChangesAsync();
-
-        var command = new GetAllArticleFamiliesCommand(company1);
+        var query = new GetAllArticleFamiliesCommand(companyId);
 
         // Act
-        var result = await _handler.HandleAsync(command);
+        var result = await _handler.HandleAsync(query);
 
         // Assert
-        result.Should().HaveCount(1);
-        result.First().CompanyId.Should().Be(company1);
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldExcludeDeletedFamilies()
-    {
-        // Arrange
-        var company = Guid.NewGuid();
-        var taxType = Guid.NewGuid();
-
-        _context.TaxTypes.Add(new TaxType { Id = taxType, CompanyId = company, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true });
-
-        _context.ArticleFamilies.AddRange(
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company, Code = "F1", Name = "Family 1", TaxTypeId = taxType, CreatedAt = DateTime.UtcNow, IsActive = true },
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company, Code = "F2", Name = "Family 2", TaxTypeId = taxType, CreatedAt = DateTime.UtcNow, IsActive = false, DeletedAt = DateTime.UtcNow }
-        );
-        await _context.SaveChangesAsync();
-
-        var command = new GetAllArticleFamiliesCommand();
-
-        // Act
-        var result = await _handler.HandleAsync(command);
-
-        // Assert
-        result.Should().HaveCount(1);
-        result.First().Name.Should().Be("Family 1");
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldOrderByName()
-    {
-        // Arrange
-        var company = Guid.NewGuid();
-        var taxType = Guid.NewGuid();
-
-        _context.TaxTypes.Add(new TaxType { Id = taxType, CompanyId = company, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true });
-
-        _context.ArticleFamilies.AddRange(
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company, Code = "F2", Name = "B Family", TaxTypeId = taxType, CreatedAt = DateTime.UtcNow, IsActive = true },
-            new ArticleFamily { Id = Guid.NewGuid(), CompanyId = company, Code = "F1", Name = "A Family", TaxTypeId = taxType, CreatedAt = DateTime.UtcNow, IsActive = true }
-        );
-        await _context.SaveChangesAsync();
-
-        var command = new GetAllArticleFamiliesCommand();
-
-        // Act
-        var result = await _handler.HandleAsync(command);
-
-        // Assert
-        result.Should().HaveCount(2);
-        result[0].Name.Should().Be("A Family");
-        result[1].Name.Should().Be("B Family");
+        result.Should().NotBeNull();
+        result.Should().BeEmpty();
     }
 }

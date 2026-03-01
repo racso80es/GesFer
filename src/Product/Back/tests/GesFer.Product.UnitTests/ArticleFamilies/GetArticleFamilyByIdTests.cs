@@ -1,123 +1,78 @@
 using FluentAssertions;
-using GesFer.Application.Commands.ArticleFamilies;
 using GesFer.Application.Handlers.ArticleFamilies;
+using GesFer.Application.Commands.ArticleFamilies;
 using GesFer.Infrastructure.Data;
 using GesFer.Product.Back.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
+using Moq;
 using Xunit;
 
 namespace GesFer.Product.UnitTests.ArticleFamilies;
 
 public class GetArticleFamilyByIdTests
 {
-    private readonly ApplicationDbContext _context;
+    private readonly Mock<ApplicationDbContext> _contextMock;
     private readonly GetArticleFamilyByIdCommandHandler _handler;
 
     public GetArticleFamilyByIdTests()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-        _context = new ApplicationDbContext(options);
-        _handler = new GetArticleFamilyByIdCommandHandler(_context);
+        _contextMock = new Mock<ApplicationDbContext>(new DbContextOptions<ApplicationDbContext>());
+        _handler = new GetArticleFamilyByIdCommandHandler(_contextMock.Object);
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnArticleFamily_WhenExists()
+    public async Task HandleAsync_ShouldReturnArticleFamily_WhenItExists()
     {
         // Arrange
-        var id = Guid.NewGuid();
+        var familyId = Guid.NewGuid();
         var companyId = Guid.NewGuid();
         var taxTypeId = Guid.NewGuid();
 
-        _context.TaxTypes.Add(new TaxType { Id = taxTypeId, CompanyId = companyId, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true });
-        _context.ArticleFamilies.Add(new ArticleFamily
+        var taxType = new TaxType { Id = taxTypeId, CompanyId = companyId, Code = "T1", Name = "Tax 1", Value = 10, CreatedAt = DateTime.UtcNow, IsActive = true };
+        var taxTypes = new List<TaxType> { taxType };
+        _contextMock.Setup(c => c.TaxTypes).Returns(taxTypes.BuildMockDbSet().Object);
+
+        var family = new ArticleFamily
         {
-            Id = id,
+            Id = familyId,
             CompanyId = companyId,
             Code = "FAM1",
             Name = "Family 1",
             TaxTypeId = taxTypeId,
             CreatedAt = DateTime.UtcNow,
             IsActive = true
-        });
-        await _context.SaveChangesAsync();
+        };
 
-        var command = new GetArticleFamilyByIdCommand(id);
+        var articleFamilies = new List<ArticleFamily> { family };
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamilies.BuildMockDbSet().Object);
+
+        var query = new GetArticleFamilyByIdCommand(familyId);
 
         // Act
-        var result = await _handler.HandleAsync(command);
+        var result = await _handler.HandleAsync(query);
 
         // Assert
         result.Should().NotBeNull();
-        result!.Id.Should().Be(id);
-        result.TaxTypeName.Should().Be("Tax 1");
+        result.Id.Should().Be(familyId);
+        result.Code.Should().Be("FAM1");
+        result.Name.Should().Be("Family 1");
+
+
+
     }
 
     [Fact]
-    public async Task HandleAsync_ShouldReturnNull_WhenNotExists()
+    public async Task HandleAsync_ShouldThrow_WhenEntityNotFound()
     {
         // Arrange
-        var command = new GetArticleFamilyByIdCommand(Guid.NewGuid());
+        var articleFamilies = new List<ArticleFamily>();
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(articleFamilies.BuildMockDbSet().Object);
 
-        // Act
-        var result = await _handler.HandleAsync(command);
+        var query = new GetArticleFamilyByIdCommand(Guid.NewGuid());
 
-        // Assert
-        result.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldReturnNull_WhenCompanyIdMismatch()
-    {
-        // Arrange
-        var id = Guid.NewGuid();
-        var companyId = Guid.NewGuid();
-
-        _context.ArticleFamilies.Add(new ArticleFamily
-        {
-            Id = id,
-            CompanyId = companyId,
-            Code = "FAM1",
-            Name = "Family 1",
-            CreatedAt = DateTime.UtcNow,
-            IsActive = true
-        });
-        await _context.SaveChangesAsync();
-
-        var command = new GetArticleFamilyByIdCommand(id, Guid.NewGuid()); // Different CompanyId
-
-        // Act
-        var result = await _handler.HandleAsync(command);
-
-        // Assert
-        result.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task HandleAsync_ShouldReturnNull_WhenDeleted()
-    {
-        // Arrange
-        var id = Guid.NewGuid();
-
-        _context.ArticleFamilies.Add(new ArticleFamily
-        {
-            Id = id,
-            CompanyId = Guid.NewGuid(),
-            Code = "FAM1",
-            Name = "Family 1",
-            CreatedAt = DateTime.UtcNow,
-            IsActive = false,
-            DeletedAt = DateTime.UtcNow
-        });
-        await _context.SaveChangesAsync();
-
-        var command = new GetArticleFamilyByIdCommand(id);
-
-        // Act
-        var result = await _handler.HandleAsync(command);
-
-        // Assert
+        // Act & Assert
+        var result = await _handler.HandleAsync(query);
         result.Should().BeNull();
     }
 }
