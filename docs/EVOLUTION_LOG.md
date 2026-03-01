@@ -53,3 +53,4 @@
 [2026-02-15] [Frontend Kaizen Audit Resolution] [Refactored CompanyForm to use react-hook-form/zod/Shared UI. Added unit tests for CompanyForm. Verified audit fixes (alert removed in my-company/page.tsx, any removed in tax-types/page.tsx). Lint & Tests passing.] [Completed]
 
 [2026-02-15] [Frontend Kaizen Audit Resolution Phase 2] [Moved 'my-company/page.tsx' to '[locale]/my-company' for proper routing. Refactored 'CompanyForm' and tests to strictly remove 'any' usage. Verified lint and tests.] [Completed]
+[2026-03-01] [Frontend Kaizen Audit Resolution] [Replaced 'alert()' with 'console.error()' in 'id-validation.test.ts'. Replaced 'console.log()' with 'console.error()' in 'companies.spec.ts' and 'console.info()' in 'mock-api.js'. Fixed 'defaultValue' error in 'company-form.tsx'. Verified with daily audit script and unit tests in Product/Front.] [S+ estable]
