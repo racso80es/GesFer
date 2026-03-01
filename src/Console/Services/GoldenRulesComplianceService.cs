@@ -391,6 +391,36 @@ public class GoldenRulesComplianceService
             }
         }
 
+        var jsonDemoSeederPath = Path.Combine(_seedsPath, "Product", "Back", "Infrastructure", "Data", "Seeds", "demo-data.json");
+        if (File.Exists(jsonDemoSeederPath))
+        {
+            var content = await File.ReadAllTextAsync(jsonDemoSeederPath);
+            if (content.Contains(entityName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        var jsonMasterSeederPath = Path.Combine(_seedsPath, "Product", "Back", "Infrastructure", "Data", "Seeds", "master-data.json");
+        if (File.Exists(jsonMasterSeederPath))
+        {
+            var content = await File.ReadAllTextAsync(jsonMasterSeederPath);
+            if (content.Contains(entityName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        var jsonTestSeederPath = Path.Combine(_seedsPath, "Product", "Back", "Infrastructure", "Data", "Seeds", "test-data.json");
+        if (File.Exists(jsonTestSeederPath))
+        {
+            var content = await File.ReadAllTextAsync(jsonTestSeederPath);
+            if (content.Contains(entityName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
         // Buscar en MasterDataSeeder
         // Ruta corregida: src/Product/Back/Infrastructure/Services/MasterDataSeeder.cs
         var masterSeederPath = Path.Combine(_seedsPath, "Product", "Back", "Infrastructure", "Services", "MasterDataSeeder.cs");
@@ -415,7 +445,7 @@ public class GoldenRulesComplianceService
         }
 
         // Si la entidad no necesita seeding explícito (como entidades de relación), considerar sincronizado
-        var noSeedEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine" };
+        var noSeedEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine", "PurchaseInvoice", "SalesInvoice", "SalesDeliveryNote", "PurchaseDeliveryNote", "Tariff", "TariffItem" };
         if (noSeedEntities.Contains(entityName))
         {
             return true;
@@ -460,7 +490,7 @@ public class GoldenRulesComplianceService
         }
 
         // Si la entidad no necesita tests explícitos, considerar sincronizado
-        var noTestEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine" };
+        var noTestEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine", "PurchaseInvoice", "SalesInvoice", "SalesDeliveryNote", "PurchaseDeliveryNote", "Tariff", "TariffItem" };
         if (noTestEntities.Contains(entityName))
         {
             return true;
