@@ -26,14 +26,14 @@ public class SeedResult
 /// </summary>
 public class JsonDataSeeder
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly ILogger<JsonDataSeeder> _logger;
     private readonly ISensitiveDataSanitizer _sanitizer;
     private readonly IConfiguration _configuration;
     private readonly string _seedsPath;
 
     public JsonDataSeeder(
-        ApplicationDbContext context,
+        ProductDbContext context,
         ILogger<JsonDataSeeder> logger,
         ISensitiveDataSanitizer sanitizer,
         IConfiguration configuration)

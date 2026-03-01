@@ -30,7 +30,7 @@ public class ValueObjectValidationTests : IClassFixture<DatabaseFixture>
     {
         // Arrange
         using var scope = _fixture.Factory.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         // Act: Consultar todos los customers en la base de datos
         var allCustomers = await context.Customers
@@ -82,7 +82,7 @@ public class ValueObjectValidationTests : IClassFixture<DatabaseFixture>
     {
         // Arrange
         using var scope = _fixture.Factory.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         // Act: Consultar todos los customers en la base de datos
         var allCustomers = await context.Customers

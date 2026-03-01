@@ -110,7 +110,7 @@ Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappasswor
 
 ## ⚙️ Configuración de EF Core
 
-El `ApplicationDbContext` está configurado con:
+El `ProductDbContext` está configurado con:
 - ✅ Reintentos automáticos en caso de fallo (5 intentos, 30s de delay)
 - ✅ Logging detallado en desarrollo
 - ✅ String comparison habilitado

@@ -1,3 +1,4 @@
+using GesFer.Shared.Back.Domain.Services;
 using GesFer.Api;
 using GesFer.Api.Services;
 using GesFer.Infrastructure.Data;
@@ -33,13 +34,13 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
     {
         builder.ConfigureServices(services =>
         {
-            var dbContextOptionsDescriptors = services.Where(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>)).ToList();
+            var dbContextOptionsDescriptors = services.Where(d => d.ServiceType == typeof(DbContextOptions<ProductDbContext>)).ToList();
             foreach (var descriptor in dbContextOptionsDescriptors) services.Remove(descriptor);
 
-            var dbContextDescriptors = services.Where(d => d.ServiceType == typeof(ApplicationDbContext)).ToList();
+            var dbContextDescriptors = services.Where(d => d.ServiceType == typeof(ProductDbContext)).ToList();
             foreach (var descriptor in dbContextDescriptors) services.Remove(descriptor);
 
-            services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+            services.AddDbContext<ProductDbContext>((serviceProvider, options) =>
             {
                 if (_useInMemory)
                 {
@@ -72,6 +73,9 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
             foreach (var d in adminClientDescriptors)
                 services.Remove(d);
             services.AddScoped<IAdminApiClient, GesFer.IntegrationTests.Helpers.MockAdminApiClient>();
+            services.AddScoped<IMigrationService, GesFer.Product.Back.Infrastructure.Services.ProductMigrationService>();
+            services.AddScoped<IIntegrityCheckService, GesFer.Product.Back.Infrastructure.Services.ProductIntegrityService>();
+            services.AddScoped<DbInitializer>();
 
             // Reemplazar ISetupService por mock para tests (evitar Docker en Initialize_EndpointShouldExist)
             var setupServiceDescriptors = services.Where(d => d.ServiceType == typeof(ISetupService)).ToList();
@@ -126,7 +130,7 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
 
             // Only AFTER successful start do we access Services, which triggers Host Build
             using var scope = Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
             await context.Database.EnsureCreatedAsync();
             await DbInitializer.InitializeAsync(Services, false);
         }
@@ -143,7 +147,7 @@ public class IntegrationTestWebAppFactory<TProgram> : WebApplicationFactory<TPro
         // Accessing Services triggers Host Build.
         // At this point _useInMemory is guaranteed to be true.
         using var scope = Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
         await context.Database.EnsureCreatedAsync();
         await DbInitializer.InitializeAsync(Services, false);
     }

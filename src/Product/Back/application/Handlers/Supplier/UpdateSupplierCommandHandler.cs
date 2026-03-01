@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.Supplier;
 
 public class UpdateSupplierCommandHandler : ICommandHandler<UpdateSupplierCommand, SupplierDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public UpdateSupplierCommandHandler(ApplicationDbContext context)
+    public UpdateSupplierCommandHandler(ProductDbContext context)
     {
         _context = context;
     }
