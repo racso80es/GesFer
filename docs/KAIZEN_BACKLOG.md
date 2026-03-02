@@ -5,10 +5,10 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 ## Pendientes
 
 ### [Alta] Fix Golden Rules False Positives
-*   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_16.md`
-*   **Descripción:** `GoldenRulesComplianceService` reporta falsos positivos en Seeds y Tests. Ignora `JsonDataSeeder.cs` (donde están `TaxType`, `Article`) y el directorio moderno de tests `src/Product/Back/tests`.
+*   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_16.md`, `docs/audits/AUDITORIA_KAIZEN_2026_03_02.md`
+*   **Descripción:** `GoldenRulesComplianceService` reporta falsos positivos en Seeds y Tests. Ignora `JsonDataSeeder.cs` (donde están `TaxType`, `Article`) y el directorio moderno de tests `src/Product/Back/tests`. Falla en entidades agregadas y relacionales como `TariffItem`, `PurchaseInvoice`, `Tariff`, `SalesInvoice`, `PurchaseDeliveryNote`, `SalesDeliveryNote`.
 *   **Impacto:** Reduce la confianza en las herramientas de salud del sistema, impidiendo detectar regresiones reales.
-*   **Estado:** En Progreso (Rama `kaizen/daily-2026-02-16`).
+*   **Estado:** En Progreso (Rama `kaizen/daily-2026-03-02`).
 
 ### [Media] Implement Article Integration Tests
 *   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_16.md`
