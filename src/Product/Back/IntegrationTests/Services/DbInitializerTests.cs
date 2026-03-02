@@ -32,7 +32,7 @@ public class DbInitializerTests
 
         // DbContext (InMemory)
         var dbName = Guid.NewGuid().ToString();
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
             options.UseInMemoryDatabase(databaseName: dbName));
 
         // IConfiguration (JsonDataSeeder usa SeedConfig.GetValidCompanyIds)
@@ -43,6 +43,15 @@ public class DbInitializerTests
 
         // Dependencies
         services.AddScoped<JsonDataSeeder>();
+
+        // Mocks for extracted DbInitializer dependencies
+        var mockMigrationService = new Mock<IMigrationService>();
+        mockMigrationService.Setup(m => m.ApplyMigrationsAsync()).Returns(Task.CompletedTask);
+        services.AddScoped<IMigrationService>(_ => mockMigrationService.Object);
+
+        var mockIntegrityCheckService = new Mock<IIntegrityCheckService>();
+        mockIntegrityCheckService.Setup(i => i.EnsureAdminUserAndSmokeTestAsync()).Returns(Task.CompletedTask);
+        services.AddScoped<IIntegrityCheckService>(_ => mockIntegrityCheckService.Object);
 
         // Mock Sanitizer (We will use a real instance or mock to verify calls)
         // Since we want to test the flow, let's use a real one if available or a mock that behaves deterministically
@@ -58,7 +67,7 @@ public class DbInitializerTests
 
         // Assert
         using var scope = serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         var admin = await context.Users
             .IgnoreQueryFilters()

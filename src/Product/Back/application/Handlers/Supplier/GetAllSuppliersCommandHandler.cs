@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.Supplier;
 
 public class GetAllSuppliersCommandHandler : ICommandHandler<GetAllSuppliersCommand, List<SupplierDto>>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public GetAllSuppliersCommandHandler(ApplicationDbContext context)
+    public GetAllSuppliersCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

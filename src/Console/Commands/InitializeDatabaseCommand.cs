@@ -82,7 +82,7 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             var connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ProductDbContext>(options =>
             {
                 options.UseMySql(
                     connectionString,
@@ -144,13 +144,19 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
             services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
 
+            // New services for DbInitializer separation
+            services.AddScoped<GesFer.Product.Back.Infrastructure.Services.ProductMigrationService>();
+            services.AddScoped<IMigrationService>(sp => sp.GetRequiredService<GesFer.Product.Back.Infrastructure.Services.ProductMigrationService>());
+            services.AddScoped<GesFer.Product.Back.Infrastructure.Services.ProductIntegrityService>();
+            services.AddScoped<IIntegrityCheckService>(sp => sp.GetRequiredService<GesFer.Product.Back.Infrastructure.Services.ProductIntegrityService>());
+
             var serviceProvider = services.BuildServiceProvider();
             
             using (serviceProvider as IDisposable)
             {
                 var scope = serviceProvider.CreateScope();
                 var scopedServices = scope.ServiceProvider;
-                var productContext = scopedServices.GetRequiredService<ApplicationDbContext>();
+                var productContext = scopedServices.GetRequiredService<ProductDbContext>();
                 var adminContext = scopedServices.GetRequiredService<AdminDbContext>();
                 var adminSeeder = scopedServices.GetRequiredService<AdminJsonDataSeeder>();
                 var logger = scopedServices.GetRequiredService<ILogger<InitializeDatabaseCommand>>();
@@ -178,8 +184,8 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     try
                     {
                         var connectionStringWithoutDb = connectionString.Replace("Database=ScrapDb;", "");
-                        using var tempContext = new ApplicationDbContext(
-                            new DbContextOptionsBuilder<ApplicationDbContext>()
+                        using var tempContext = new ProductDbContext(
+                            new DbContextOptionsBuilder<ProductDbContext>()
                                 .UseMySql(connectionStringWithoutDb, new MySqlServerVersion(new Version(8, 0, 0)))
                                 .Options);
                         

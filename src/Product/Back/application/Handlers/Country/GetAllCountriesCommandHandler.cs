@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.Country;
 
 public class GetAllCountriesCommandHandler : ICommandHandler<GetAllCountriesCommand, List<CountryDto>>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public GetAllCountriesCommandHandler(ApplicationDbContext context)
+    public GetAllCountriesCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

@@ -7,9 +7,9 @@ namespace GesFer.Application.Handlers.Country;
 
 public class DeleteCountryCommandHandler : ICommandHandler<DeleteCountryCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteCountryCommandHandler(ApplicationDbContext context)
+    public DeleteCountryCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

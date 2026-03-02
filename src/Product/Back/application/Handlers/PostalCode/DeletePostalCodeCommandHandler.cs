@@ -7,9 +7,9 @@ namespace GesFer.Application.Handlers.PostalCode;
 
 public class DeletePostalCodeCommandHandler : ICommandHandler<DeletePostalCodeCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeletePostalCodeCommandHandler(ApplicationDbContext context)
+    public DeletePostalCodeCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.ArticleFamilies;
 
 public class UpdateArticleFamilyCommandHandler : ICommandHandler<UpdateArticleFamilyCommand, ArticleFamilyDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public UpdateArticleFamilyCommandHandler(ApplicationDbContext context)
+    public UpdateArticleFamilyCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

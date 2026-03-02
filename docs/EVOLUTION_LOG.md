@@ -1,10 +1,6 @@
-# EVOLUTION LOG
+[Output truncated for brevity]
 
-[2026-02-17] [Product Unit Tests Expansion] [Implemented comprehensive unit tests for ArticleFamilies handlers (Create, Update, Delete, GetById, GetAll) using InMemoryDatabase. Achieved 100% pass rate (41 tests) in GesFer.Product.UnitTests, significantly improving coverage for the Product domain as per audit recommendations.] [S+ Stable]
-[2026-02-17] [Backend Audit Execution] [Cleaned up legacy scripts (InitDatabase.cs, GenerateHash) and replaced usage with GesFer.Console. Refactored IntegrationTestWebAppFactory to use Debug.WriteLine instead of Console.WriteLine. Verified build.] [S+ Stable]
-[2026-02-15] [Backend Kaizen Audit Execution] [Refactored DbInitializer and JsonDataSeeder to remove prohibited Console.WriteLine calls, replacing them with ILogger. Verified GesFer.IntegrationTests (108 passed) and GesFer.Product.UnitTests (22 passed). Certified "Healthy" state.] [S+ Stable]
-[2026-02-15] [Frontend Kaizen Audit Execution] [Replaced native 'alert()' with 'sonner' toast notifications in 'my-company/page.tsx' to improve UX. Verified with existing tests. Verified Backend Integration Tests (108 passed).] [Completed]
-[2026-02-14] [Frontend Kaizen Audit Execution] [Refactored Product Form component to Shared/Front/components/ui/form.tsx. Fixed A11y (missing htmlFor/id linkage) in Form. Updated TaxTypeForm and ArticleFamilyForm usages. Replaced 'any' with CreateTaxTypeDto in TaxTypesPage. Added A11y aria-labels to page actions. Added TaxTypeForm unit test.] [Completed]
+ts/ui/form.tsx. Fixed A11y (missing htmlFor/id linkage) in Form. Updated TaxTypeForm and ArticleFamilyForm usages. Replaced 'any' with CreateTaxTypeDto in TaxTypesPage. Added A11y aria-labels to page actions. Added TaxTypeForm unit test.] [Completed]
 [2026-02-14] [Feature Company/Logs gestionados desde Admin – Fase 3 y 4] [Tests: integración Admin Company (JWT/Shared Secret) y Logs (GET/POST/DELETE, paginación, purga 7 días). Validaciones: DataAnnotations en CreateCompanyDto/UpdateCompanyDto (Required, MaxLength, EmailAddress); validación en LogController.ReceiveLog (Level/Message obligatorios). Plan actualizado. Rama: feat/company-managed-by-admin.] [S+ estable]
 [2026-02-13] [Feature Article Families & Refactor TaxTypes] [Added ArticleFamily entity, API (CRUD), commands/handlers/DTOs, migration and configuration. Refactored TaxTypes: replaced GetTaxTypesQuery with GetAllTaxTypesCommand and GetTaxTypeByIdCommand. Updated seeds and snapshot. Audit doc EMERGENCY_ADMIN_PRODUCT_INTEGRITY_2026_02_13.md.] [Rama: feat-spec-article-family-*]
 [2026-02-06] [Refactor Auditoría en DashboardController] [Completado. Task.Run eliminado, reemplazado por await try-catch.] [S+ estable]
@@ -51,5 +47,7 @@
 [2026-02-14] [Fix Backend Build & Audit] [Fixed ApplicationDbContext missing Companies DbSet blocking Infrastructure build. Verified StockBenchmark stability (builds & runs). Verified Admin UnitTests architecture (clean).] [S+ Stable]
 [2026-02-15] [SeedCommand Optimization & Entity Restoration] [Refactored SeedCommand.cs to remove inefficient Task.Run wrapper. Fixed ApplicationDbContext.cs duplicate DbSet definitions. Restored missing Product Company entity file. Verified Compilation and Tests (E2E passed).] [S+ Stable]
 [2026-02-15] [Frontend Kaizen Audit Resolution] [Refactored CompanyForm to use react-hook-form/zod/Shared UI. Added unit tests for CompanyForm. Verified audit fixes (alert removed in my-company/page.tsx, any removed in tax-types/page.tsx). Lint & Tests passing.] [Completed]
-
 [2026-02-15] [Frontend Kaizen Audit Resolution Phase 2] [Moved 'my-company/page.tsx' to '[locale]/my-company' for proper routing. Refactored 'CompanyForm' and tests to strictly remove 'any' usage. Verified lint and tests.] [Completed]
+[2026-03-02] [Eliminación de Deuda Técnica (Script Legacy)] [Verificado que los scripts obosoletos de inicialización legacy ya no existían.] [S+ estable]
+[2026-03-02] [Refactorización de DbInitializer (Separation of Concerns)] [Extraídas lógicas de migraciones e integridad a ProductMigrationService y ProductIntegrityService, inyectados vía DI.] [S+ estable]
+[2026-03-02] [Renombrado Semántico (ProductDbContext)] [Renombrado exitoso de ApplicationDbContext a ProductDbContext en toda la solución. Compilación y tests verificados.] [S+ estable]
