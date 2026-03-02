@@ -53,7 +53,7 @@ class Program
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
 
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
         {
             options.UseMySql(
                 connectionString,
@@ -70,6 +70,19 @@ class Program
 
         // Registrar servicios
         services.AddScoped<JsonDataSeeder>();
+        services.AddSingleton<GesFer.Shared.Back.Domain.Services.ISequentialGuidGenerator, GesFer.Shared.Back.Domain.Services.MySqlSequentialGuidGenerator>();
+        services.AddSingleton<GesFer.Shared.Back.Domain.Services.ISensitiveDataSanitizer, GesFer.Shared.Back.Domain.Services.SensitiveDataSanitizer>();
+
+        // Mocks for IHostEnvironment since we only need EnvironmentName for tests
+        var mockEnv = new Moq.Mock<Microsoft.Extensions.Hosting.IHostEnvironment>();
+        mockEnv.Setup(e => e.EnvironmentName).Returns("Development");
+        services.AddSingleton(mockEnv.Object);
+
+        // New services for DbInitializer separation
+        services.AddScoped<GesFer.Product.Back.Infrastructure.Services.ProductMigrationService>();
+        services.AddScoped<GesFer.Shared.Back.Domain.Services.IMigrationService>(sp => sp.GetRequiredService<GesFer.Product.Back.Infrastructure.Services.ProductMigrationService>());
+        services.AddScoped<GesFer.Product.Back.Infrastructure.Services.ProductIntegrityService>();
+        services.AddScoped<GesFer.Shared.Back.Domain.Services.IIntegrityCheckService>(sp => sp.GetRequiredService<GesFer.Product.Back.Infrastructure.Services.ProductIntegrityService>());
 
         var serviceProvider = services.BuildServiceProvider();
         var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
@@ -86,7 +99,7 @@ class Program
             }
 
             using var scope = serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
             // Ejecutar seeding según el modo
             await context.SeedDataAsync(scope.ServiceProvider, includeTestData: insertAll);

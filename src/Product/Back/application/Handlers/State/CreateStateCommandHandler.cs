@@ -9,9 +9,9 @@ namespace GesFer.Application.Handlers.State;
 
 public class CreateStateCommandHandler : ICommandHandler<CreateStateCommand, StateDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public CreateStateCommandHandler(ApplicationDbContext context)
+    public CreateStateCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

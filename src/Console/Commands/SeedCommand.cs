@@ -170,7 +170,7 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
             ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
 
         // DbContext Product
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
         {
             options.UseMySql(
                 connectionString,
@@ -213,6 +213,12 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
         services.AddScoped<AdminJsonDataSeeder>();
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
         services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
+
+        // New services for DbInitializer separation
+        services.AddScoped<GesFer.Product.Back.Infrastructure.Services.ProductMigrationService>();
+        services.AddScoped<GesFer.Shared.Back.Domain.Services.IMigrationService>(sp => sp.GetRequiredService<GesFer.Product.Back.Infrastructure.Services.ProductMigrationService>());
+        services.AddScoped<GesFer.Product.Back.Infrastructure.Services.ProductIntegrityService>();
+        services.AddScoped<GesFer.Shared.Back.Domain.Services.IIntegrityCheckService>(sp => sp.GetRequiredService<GesFer.Product.Back.Infrastructure.Services.ProductIntegrityService>());
 
         var apiPath = Path.Combine(_rootPath, "src", "Product", "Back", "Api");
         services.AddSingleton<IHostEnvironment>(new DevelopmentHostEnvironment(apiPath));
