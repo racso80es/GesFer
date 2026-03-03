@@ -43,3 +43,21 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 ### [Alta] Fix Benchmark Compilation Errors
 *   **Completado:** 2026-02-16
 *   **Verificación:** `dotnet build` exitoso para Benchmarks.
+
+### [Alta] Campaña de Cobertura de Entidades de Dominio
+*   **Origen:** `docs/audits/AUDITORIA_TESTS_2026_03_03.md`
+*   **Descripción:** Incrementar la cobertura de las entidades de `GesFer.Product.Back.Domain.Entities` (ej. `Article`, `PurchaseInvoice`, `SalesInvoice`). Estas clases deben contar con tests unitarios que aseguren su inicialización correcta y reglas de negocio.
+*   **Impacto:** Riesgo de regresión en funcionalidad core de negocio al estar en 0% de cobertura.
+*   **Estado:** Pendiente
+
+### [Media] Mocks para Servicios de Infraestructura
+*   **Origen:** `docs/audits/AUDITORIA_TESTS_2026_03_03.md`
+*   **Descripción:** Desarrollar pruebas unitarias utilizando `Moq` y `MockQueryable.Moq` para los Handlers de Application que actualmente están en 0% (`TaxTypes`, `PostalCode`, `DeliveryNotes`).
+*   **Impacto:** Los comandos de aplicación para entidades clave carecen de validación de flujos (AAA).
+*   **Estado:** Pendiente
+
+### [Media] Tests E2E o de Integración para Comandos de Consola
+*   **Origen:** `docs/audits/AUDITORIA_TESTS_2026_03_03.md`
+*   **Descripción:** Refactorizar y crear un arnés de pruebas para los comandos de la aplicación de consola, ya que contienen mucha lógica de orquestación vital para el entorno (0% de cobertura actual).
+*   **Impacto:** Los comandos críticos de inicio de la DB pueden fallar sin ser detectados.
+*   **Estado:** Pendiente
