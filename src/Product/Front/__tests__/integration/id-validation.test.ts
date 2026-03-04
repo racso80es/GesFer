@@ -215,7 +215,7 @@ describe("Validación de IDs en peticiones API", () => {
 
       const invalidIds = [
         "../../../etc/passwd", // Path traversal
-        "<script>alert('xss')</script>", // XSS attempt
+        "<script>console.error('xss')</script>", // XSS attempt
         "'; DROP TABLE Companies; --", // SQL injection attempt
       ];
 
@@ -313,7 +313,7 @@ describe("Validación de IDs en peticiones API", () => {
 
       const invalidIds = [
         "../../../etc/passwd", // Path traversal
-        "<script>alert('xss')</script>", // XSS attempt
+        "<script>console.error('xss')</script>", // XSS attempt
         "'; DROP TABLE Users; --", // SQL injection attempt
       ];
 

@@ -59,7 +59,7 @@ const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const path = url.pathname;
 
-  console.log(`${req.method} ${path}`);
+  console.info(`${req.method} ${path}`);
 
   // Login
   if (path === '/api/admin/auth/login' && req.method === 'POST') {
@@ -106,5 +106,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Mock API running on port ${PORT}`);
+  console.info(`Mock API running on port ${PORT}`);
 });
