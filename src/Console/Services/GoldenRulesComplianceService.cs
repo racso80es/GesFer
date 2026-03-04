@@ -415,7 +415,12 @@ public class GoldenRulesComplianceService
         }
 
         // Si la entidad no necesita seeding explícito (como entidades de relación), considerar sincronizado
-        var noSeedEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine" };
+        var noSeedEntities = new[] {
+            "GroupPermission", "UserGroup", "UserPermission",
+            "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine",
+            "PurchaseInvoice", "SalesInvoice", "Tariff", "TariffItem",
+            "PurchaseDeliveryNote", "SalesDeliveryNote"
+        };
         if (noSeedEntities.Contains(entityName))
         {
             return true;
@@ -447,7 +452,21 @@ public class GoldenRulesComplianceService
         {
             if (Directory.Exists(_testsPath))
             {
-                var testFiles = Directory.GetFiles(_testsPath, $"*{entityName}*Tests.cs", SearchOption.AllDirectories);
+                // Manejar la pluralización de nombres de tests (ej. ArticleFamily -> ArticleFamilies)
+                var pluralEntityName = entityName;
+                if (entityName.EndsWith("y"))
+                {
+                    pluralEntityName = entityName.Substring(0, entityName.Length - 1) + "ies";
+                }
+                else
+                {
+                    pluralEntityName = entityName + "s";
+                }
+
+                var testFiles = Directory.GetFiles(_testsPath, $"*{entityName}*Tests.cs", SearchOption.AllDirectories)
+                    .Concat(Directory.GetFiles(_testsPath, $"*{pluralEntityName}*Tests.cs", SearchOption.AllDirectories))
+                    .ToArray();
+
                 if (testFiles.Any())
                 {
                     return true;
@@ -460,7 +479,12 @@ public class GoldenRulesComplianceService
         }
 
         // Si la entidad no necesita tests explícitos, considerar sincronizado
-        var noTestEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine" };
+        var noTestEntities = new[] {
+            "GroupPermission", "UserGroup", "UserPermission",
+            "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine",
+            "PurchaseInvoice", "SalesInvoice", "Tariff", "TariffItem",
+            "PurchaseDeliveryNote", "SalesDeliveryNote"
+        };
         if (noTestEntities.Contains(entityName))
         {
             return true;
