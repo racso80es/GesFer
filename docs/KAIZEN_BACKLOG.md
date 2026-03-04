@@ -36,6 +36,12 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 
 ## Completadas
 
+### [Baja] Limpiar Deuda Técnica Frontend (alert, console.log)
+*   **Completado:** 2026-03-04
+*   **Origen:** `docs/audits/AUDITORIA_FRONTEND_2026_03_04.md`
+*   **Descripción:** Remover usos nativos de `alert()` y `console.log()` en archivos de testing e infraestructura mock en Product/Front y Admin/Front.
+*   **Verificación:** Ejecución de `audit_frontend_daily.py` resultó en 0 advertencias/errores.
+
 ### [Alta] Fix Console Build / Missing DbSet Companies
 *   **Completado:** 2026-02-16
 *   **Verificación:** `dotnet build` exitoso. `DbSet<Company>` presente en `ApplicationDbContext`.
