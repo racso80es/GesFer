@@ -1,3 +1,5 @@
+using GesFer.Product.UnitTests.Infrastructure;
+using MockQueryable.Moq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -42,29 +44,29 @@ public class SetupServiceTests
         _guidGeneratorMock = new Mock<ISequentialGuidGenerator>();
         _masterDataSeederLoggerMock = new Mock<ILogger<MasterDataSeeder>>();
 
+        _serviceProviderMock.Setup(x => x.GetService(typeof(IServiceScopeFactory))).Returns(_serviceScopeFactoryMock.Object);
+        _serviceScopeFactoryMock.Setup(x => x.CreateScope()).Returns(_serviceScopeMock.Object);
+        _serviceScopeMock.Setup(x => x.ServiceProvider).Returns(_serviceProviderMock.Object);
+
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                { "ConnectionStrings:DefaultConnection", "Server=localhost;Database=test;Uid=root;Pwd=test;" }
+            })
+            .Build();
+
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         _dbContext = new ApplicationDbContext(options);
 
-        // Setup Service Provider and Scopes
-        _serviceScopeMock.Setup(x => x.ServiceProvider).Returns(_serviceProviderMock.Object);
-        _serviceScopeFactoryMock.Setup(x => x.CreateScope()).Returns(_serviceScopeMock.Object);
-        _serviceProviderMock.Setup(x => x.GetService(typeof(IServiceScopeFactory))).Returns(_serviceScopeFactoryMock.Object);
-
-        // Setup Dependency Resolution
-        _serviceProviderMock.Setup(x => x.GetService(typeof(ApplicationDbContext))).Returns(_dbContext);
-        _serviceProviderMock.Setup(x => x.GetService(typeof(ILogger<SetupService>))).Returns(_loggerMock.Object);
-
-        // Setup JsonDataSeeder (using concrete class as we cannot mock it easily, but it handles missing files gracefully)
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["Seed:CompanyId"] = "11111111-1111-1111-1111-111111111115" })
-            .Build();
         var jsonSeeder = new JsonDataSeeder(_dbContext, _seederLoggerMock.Object, _sanitizerMock.Object, config);
         _serviceProviderMock.Setup(x => x.GetService(typeof(JsonDataSeeder))).Returns(jsonSeeder);
 
         _serviceProviderMock.Setup(x => x.GetService(typeof(ISequentialGuidGenerator))).Returns(_guidGeneratorMock.Object);
         _serviceProviderMock.Setup(x => x.GetService(typeof(ILogger<MasterDataSeeder>))).Returns(_masterDataSeederLoggerMock.Object);
+        _serviceProviderMock.Setup(x => x.GetService(typeof(ApplicationDbContext))).Returns(_dbContext);
+        _serviceProviderMock.Setup(x => x.GetService(typeof(ILogger<SetupService>))).Returns(_loggerMock.Object);
     }
 
     [Fact]
@@ -78,6 +80,7 @@ public class SetupServiceTests
 
         // Assert
         result.Should().NotBeNull();
+        if (!result.Success) { Console.WriteLine("Errors: " + string.Join(", ", result.Errors)); }
         result.Success.Should().BeTrue();
         result.Steps.Should().Contain(s => s != null && s.Contains("1. Deteniendo y eliminando contenedores Docker"));
         result.Steps.Should().Contain(s => s != null && s.Contains("4. Creando contenedores Docker"));

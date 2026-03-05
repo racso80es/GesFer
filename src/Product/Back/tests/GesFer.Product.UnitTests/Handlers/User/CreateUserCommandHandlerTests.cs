@@ -1,3 +1,4 @@
+using GesFer.Product.UnitTests.Infrastructure;
 using FluentAssertions;
 using GesFer.Application.Commands.User;
 using GesFer.Application.DTOs.User;
@@ -7,6 +8,7 @@ using GesFer.Product.Back.Infrastructure.DTOs;
 using GesFer.Product.Back.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using MockQueryable.Moq;
 
 namespace GesFer.Product.UnitTests.Handlers.User;
 

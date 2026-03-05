@@ -1,3 +1,6 @@
+using GesFer.Product.UnitTests.Infrastructure;
+using MockQueryable.Moq;
+using Moq;
 using FluentAssertions;
 using GesFer.Application.Commands.TaxTypes;
 using GesFer.Application.Handlers.TaxTypes;
@@ -15,14 +18,45 @@ namespace GesFer.Product.UnitTests.TaxTypes;
 public class CreateTaxTypeTests
 {
     private readonly ApplicationDbContext _context;
+    private readonly Mock<ApplicationDbContext> _contextMock;
+    private readonly List<GesFer.Product.Back.Domain.Entities.Company> _companies = new();
+    private readonly List<ArticleFamily> _articleFamilies = new();
+    private readonly List<TaxType> _taxTypes = new();
+
     private readonly CreateTaxTypeCommandHandler _handler;
 
     public CreateTaxTypeTests()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-        _context = new ApplicationDbContext(options);
+        var mockCompanies = _companies.BuildMockDbSet();
+
+        var mockTaxTypes = _taxTypes.BuildMockDbSet();
+
+        mockTaxTypes.Setup(m => m.Add(It.IsAny<TaxType>())).Callback<TaxType>((s) => _taxTypes.Add(s));
+
+
+        mockTaxTypes.Setup(x => x.FindAsync(It.IsAny<object[]>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((object[] ids, CancellationToken token) =>
+            {
+                var id = (Guid)ids[0];
+                return _taxTypes.SingleOrDefault(t => t.Id == id);
+            });
+
+        var mockArticleFamilies = _articleFamilies.BuildMockDbSet();
+        mockArticleFamilies.Setup(x => x.FindAsync(It.IsAny<object[]>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((object[] ids, CancellationToken token) =>
+            {
+                var id = (Guid)ids[0];
+                return _articleFamilies.SingleOrDefault(t => t.Id == id);
+            });
+
+
+        _contextMock = new Mock<ApplicationDbContext>();
+        _contextMock.Setup(c => c.Companies).Returns(mockCompanies.Object);
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(mockArticleFamilies.Object);
+        _contextMock.Setup(c => c.TaxTypes).Returns(mockTaxTypes.Object);
+        mockArticleFamilies.Setup(m => m.Add(It.IsAny<ArticleFamily>())).Callback<ArticleFamily>((s) => _articleFamilies.Add(s));
+
+        _context = _contextMock.Object;
         _handler = new CreateTaxTypeCommandHandler(_context);
     }
 
@@ -42,7 +76,7 @@ public class CreateTaxTypeTests
         var id = await _handler.HandleAsync(command);
 
         id.Should().NotBe(Guid.Empty);
-        var created = await _context.TaxTypes.FindAsync(id);
+        var created = _taxTypes.SingleOrDefault(x => x.Id == id);
         created.Should().NotBeNull();
         created!.Code.Should().Be("IVA21");
         created.CompanyId.Should().Be(companyId);
@@ -60,6 +94,8 @@ public class CreateTaxTypeTests
             },
             null);
 
+
+SetupMocks();
         await _handler.Invoking(h => h.HandleAsync(command))
             .Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("*CompanyId*");
@@ -69,7 +105,7 @@ public class CreateTaxTypeTests
     public async Task HandleAsync_ShouldThrow_WhenCodeAlreadyExists()
     {
         var companyId = Guid.NewGuid();
-        _context.TaxTypes.Add(new TaxType
+        _taxTypes.Add(new TaxType
         {
             Id = Guid.NewGuid(),
             CompanyId = companyId,
@@ -79,7 +115,8 @@ public class CreateTaxTypeTests
             CreatedAt = DateTime.UtcNow,
             IsActive = true
         });
-        await _context.SaveChangesAsync();
+        // // // // // //
+
 
         var command = new CreateTaxTypeCommand(
             new CreateTaxTypeDto
@@ -90,6 +127,8 @@ public class CreateTaxTypeTests
             },
             companyId);
 
+
+SetupMocks();
         await _handler.Invoking(h => h.HandleAsync(command))
             .Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("*código*");
@@ -108,8 +147,43 @@ public class CreateTaxTypeTests
             },
             companyId);
 
+
+SetupMocks();
         await _handler.Invoking(h => h.HandleAsync(command))
             .Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("*valor*");
     }
+
+    private void SetupMocks()
+    {
+
+        var mockCompanies = _companies.BuildMockDbSet();
+
+        var mockTaxTypes = _taxTypes.BuildMockDbSet();
+
+        mockTaxTypes.Setup(m => m.Add(It.IsAny<TaxType>())).Callback<TaxType>((s) => _taxTypes.Add(s));
+
+
+        mockTaxTypes.Setup(x => x.FindAsync(It.IsAny<object[]>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((object[] ids, CancellationToken token) =>
+            {
+                var id = (Guid)ids[0];
+                return _taxTypes.SingleOrDefault(t => t.Id == id);
+            });
+
+        var mockArticleFamilies = _articleFamilies.BuildMockDbSet();
+        mockArticleFamilies.Setup(x => x.FindAsync(It.IsAny<object[]>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((object[] ids, CancellationToken token) =>
+            {
+                var id = (Guid)ids[0];
+                return _articleFamilies.SingleOrDefault(t => t.Id == id);
+            });
+
+
+        _contextMock.Setup(c => c.Companies).Returns(mockCompanies.Object);
+        _contextMock.Setup(c => c.ArticleFamilies).Returns(mockArticleFamilies.Object);
+        _contextMock.Setup(c => c.TaxTypes).Returns(mockTaxTypes.Object);
+        mockArticleFamilies.Setup(m => m.Add(It.IsAny<ArticleFamily>())).Callback<ArticleFamily>((s) => _articleFamilies.Add(s));
+    }
+
 }
