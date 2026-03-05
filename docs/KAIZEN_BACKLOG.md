@@ -5,10 +5,10 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 ## Pendientes
 
 ### [Alta] Fix Golden Rules False Positives
-*   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_16.md`
-*   **Descripción:** `GoldenRulesComplianceService` reporta falsos positivos en Seeds y Tests. Ignora `JsonDataSeeder.cs` (donde están `TaxType`, `Article`) y el directorio moderno de tests `src/Product/Back/tests`.
+*   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_03_05.md`
+*   **Descripción:** `GoldenRulesComplianceService` reporta falsos positivos en Seeds y Tests. Ignora entidades adicionales que no se requiere testear/seeding de forma directa como TariffItem, PurchaseInvoice, Tariff, SalesInvoice, PurchaseDeliveryNote, SalesDeliveryNote.
 *   **Impacto:** Reduce la confianza en las herramientas de salud del sistema, impidiendo detectar regresiones reales.
-*   **Estado:** En Progreso (Rama `kaizen/daily-2026-02-16`).
+*   **Estado:** Completado (Rama `kaizen/daily-2026-03-05`).
 
 ### [Media] Implement Article Integration Tests
 *   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_16.md`
@@ -35,6 +35,10 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 *   **Estado:** Pendiente
 
 ## Completadas
+
+### [Alta] Fix Golden Rules False Positives
+*   **Completado:** 2026-03-05
+*   **Verificación:** `dotnet run --project src/Console/GesFer.Console.csproj -- --golden-rules` exitoso para todas las entidades.
 
 ### [Alta] Fix Console Build / Missing DbSet Companies
 *   **Completado:** 2026-02-16
