@@ -9,36 +9,38 @@ namespace GesFer.Infrastructure.Data;
 /// </summary>
 public class ApplicationDbContext : DbContext
 {
+    public ApplicationDbContext() { }
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
     // DbSets - Solo entidades del dominio Product
-    public DbSet<GesFer.Product.Back.Domain.Entities.Company> Companies => Set<GesFer.Product.Back.Domain.Entities.Company>();
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Group> Groups => Set<Group>();
-    public DbSet<Permission> Permissions => Set<Permission>();
-    public DbSet<UserGroup> UserGroups => Set<UserGroup>();
-    public DbSet<UserPermission> UserPermissions => Set<UserPermission>();
-    public DbSet<GroupPermission> GroupPermissions => Set<GroupPermission>();
-    public DbSet<Article> Articles => Set<Article>();
-    public DbSet<TaxType> TaxTypes => Set<TaxType>();
-    public DbSet<ArticleFamily> ArticleFamilies => Set<ArticleFamily>();
-    public DbSet<Tariff> Tariffs => Set<Tariff>();
-    public DbSet<TariffItem> TariffItems => Set<TariffItem>();
-    public DbSet<Supplier> Suppliers => Set<Supplier>();
-    public DbSet<Customer> Customers => Set<Customer>();
-    public DbSet<PurchaseDeliveryNote> PurchaseDeliveryNotes => Set<PurchaseDeliveryNote>();
-    public DbSet<PurchaseDeliveryNoteLine> PurchaseDeliveryNoteLines => Set<PurchaseDeliveryNoteLine>();
-    public DbSet<PurchaseInvoice> PurchaseInvoices => Set<PurchaseInvoice>();
-    public DbSet<SalesDeliveryNote> SalesDeliveryNotes => Set<SalesDeliveryNote>();
-    public DbSet<SalesDeliveryNoteLine> SalesDeliveryNoteLines => Set<SalesDeliveryNoteLine>();
-    public DbSet<SalesInvoice> SalesInvoices => Set<SalesInvoice>();
-    public DbSet<GesFer.Shared.Back.Domain.Entities.Country> Countries => Set<GesFer.Shared.Back.Domain.Entities.Country>();
-    public DbSet<GesFer.Shared.Back.Domain.Entities.Language> Languages => Set<GesFer.Shared.Back.Domain.Entities.Language>();
-    public DbSet<GesFer.Shared.Back.Domain.Entities.State> States => Set<GesFer.Shared.Back.Domain.Entities.State>();
-    public DbSet<GesFer.Shared.Back.Domain.Entities.City> Cities => Set<GesFer.Shared.Back.Domain.Entities.City>();
-    public DbSet<GesFer.Shared.Back.Domain.Entities.PostalCode> PostalCodes => Set<GesFer.Shared.Back.Domain.Entities.PostalCode>();
+    public virtual DbSet<GesFer.Product.Back.Domain.Entities.Company> Companies => Set<GesFer.Product.Back.Domain.Entities.Company>();
+    public virtual DbSet<User> Users => Set<User>();
+    public virtual DbSet<Group> Groups => Set<Group>();
+    public virtual DbSet<Permission> Permissions => Set<Permission>();
+    public virtual DbSet<UserGroup> UserGroups => Set<UserGroup>();
+    public virtual DbSet<UserPermission> UserPermissions => Set<UserPermission>();
+    public virtual DbSet<GroupPermission> GroupPermissions => Set<GroupPermission>();
+    public virtual DbSet<Article> Articles => Set<Article>();
+    public virtual DbSet<TaxType> TaxTypes => Set<TaxType>();
+    public virtual DbSet<ArticleFamily> ArticleFamilies => Set<ArticleFamily>();
+    public virtual DbSet<Tariff> Tariffs => Set<Tariff>();
+    public virtual DbSet<TariffItem> TariffItems => Set<TariffItem>();
+    public virtual DbSet<Supplier> Suppliers => Set<Supplier>();
+    public virtual DbSet<Customer> Customers => Set<Customer>();
+    public virtual DbSet<PurchaseDeliveryNote> PurchaseDeliveryNotes => Set<PurchaseDeliveryNote>();
+    public virtual DbSet<PurchaseDeliveryNoteLine> PurchaseDeliveryNoteLines => Set<PurchaseDeliveryNoteLine>();
+    public virtual DbSet<PurchaseInvoice> PurchaseInvoices => Set<PurchaseInvoice>();
+    public virtual DbSet<SalesDeliveryNote> SalesDeliveryNotes => Set<SalesDeliveryNote>();
+    public virtual DbSet<SalesDeliveryNoteLine> SalesDeliveryNoteLines => Set<SalesDeliveryNoteLine>();
+    public virtual DbSet<SalesInvoice> SalesInvoices => Set<SalesInvoice>();
+    public virtual DbSet<GesFer.Shared.Back.Domain.Entities.Country> Countries => Set<GesFer.Shared.Back.Domain.Entities.Country>();
+    public virtual DbSet<GesFer.Shared.Back.Domain.Entities.Language> Languages => Set<GesFer.Shared.Back.Domain.Entities.Language>();
+    public virtual DbSet<GesFer.Shared.Back.Domain.Entities.State> States => Set<GesFer.Shared.Back.Domain.Entities.State>();
+    public virtual DbSet<GesFer.Shared.Back.Domain.Entities.City> Cities => Set<GesFer.Shared.Back.Domain.Entities.City>();
+    public virtual DbSet<GesFer.Shared.Back.Domain.Entities.PostalCode> PostalCodes => Set<GesFer.Shared.Back.Domain.Entities.PostalCode>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

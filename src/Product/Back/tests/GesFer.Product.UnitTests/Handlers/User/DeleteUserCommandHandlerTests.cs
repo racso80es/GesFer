@@ -1,3 +1,6 @@
+using GesFer.Product.UnitTests.Infrastructure;
+using MockQueryable.Moq;
+using Moq;
 using FluentAssertions;
 using GesFer.Application.Commands.User;
 using GesFer.Application.Handlers.User;
@@ -14,11 +17,11 @@ public class DeleteUserCommandHandlerTests
     public async Task HandleAsync_WithValidId_ShouldSoftDeleteUser()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        using var context = new ApplicationDbContext(options);
+        var users = new List<Product.Back.Domain.Entities.User>();
+        var mockUsersDbSet = users.BuildMockDbSet();
+        var contextMock = new Mock<ApplicationDbContext>();
+        contextMock.Setup(c => c.Users).Returns(mockUsersDbSet.Object);
+        var context = contextMock.Object;
 
         var companyId = Guid.NewGuid();
         var user = new GesFer.Product.Back.Domain.Entities.User
@@ -28,8 +31,7 @@ public class DeleteUserCommandHandlerTests
             CompanyId = companyId,
             IsActive = true
         };
-        context.Users.Add(user);
-        await context.SaveChangesAsync();
+        users.Add(user);
 
         var handler = new DeleteUserCommandHandler(context);
         var command = new DeleteUserCommand(user.Id);
@@ -51,11 +53,11 @@ public class DeleteUserCommandHandlerTests
     public async Task HandleAsync_WithInvalidId_ShouldThrowException()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        using var context = new ApplicationDbContext(options);
+        var users = new List<Product.Back.Domain.Entities.User>();
+        var mockUsersDbSet = users.BuildMockDbSet();
+        var contextMock = new Mock<ApplicationDbContext>();
+        contextMock.Setup(c => c.Users).Returns(mockUsersDbSet.Object);
+        var context = contextMock.Object;
         var handler = new DeleteUserCommandHandler(context);
         var command = new DeleteUserCommand(Guid.NewGuid());
 
