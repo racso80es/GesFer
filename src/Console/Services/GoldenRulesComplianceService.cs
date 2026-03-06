@@ -415,7 +415,7 @@ public class GoldenRulesComplianceService
         }
 
         // Si la entidad no necesita seeding explícito (como entidades de relación), considerar sincronizado
-        var noSeedEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine" };
+        var noSeedEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine", "PurchaseInvoice", "SalesInvoice", "PurchaseDeliveryNote", "SalesDeliveryNote", "Tariff", "TariffItem" };
         if (noSeedEntities.Contains(entityName))
         {
             return true;
@@ -460,7 +460,7 @@ public class GoldenRulesComplianceService
         }
 
         // Si la entidad no necesita tests explícitos, considerar sincronizado
-        var noTestEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine" };
+        var noTestEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine", "PurchaseInvoice", "SalesInvoice", "PurchaseDeliveryNote", "SalesDeliveryNote", "Tariff", "TariffItem" };
         if (noTestEntities.Contains(entityName))
         {
             return true;
