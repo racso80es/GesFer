@@ -1,0 +1,27 @@
+name: Auditoria Frontend Diaria
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Every day at 00:00 UTC
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run Frontend Daily Audit
+        run: python3 scripts/audit_frontend_daily.py
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: add daily frontend audit report"
+          file_pattern: "docs/audits/*.md docs/EVOLUTION_LOG.md"
