@@ -27,7 +27,7 @@ test.describe('My Company E2E Tests (Update Only)', () => {
           address: 'Calle Falsa 123' // Default demo data
       });
     } catch (e) {
-      console.log('Cleanup failed', e);
+      console.error('Cleanup failed', e);
     }
   });
 
