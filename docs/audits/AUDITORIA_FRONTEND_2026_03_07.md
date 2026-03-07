@@ -27,7 +27,7 @@ Sin embargo, se han detectado deudas técnicas menores (uso de `any`, `alert`, `
 | **Arquitectura** | Violaciones de Capas (Cross-Boundary Imports) | 0 | 🟢 Óptimo |
 | **Nomenclatura** | Uso de término 'Empresa' en UI/Lógica | 0* | 🟢 Óptimo |
 | **Accesibilidad** | Imágenes sin texto alternativo (`alt`) | 0 | 🟢 Óptimo |
-| **Calidad de Código** | `console.log` en código productivo | 3 | 🟡 Advertencia |
+| **Calidad de Código** | `console.log` en código productivo | 0 | 🟢 Óptimo |
 | **UX / Code Smell** | Uso de `alert()` o `confirm()` nativos | 0 | 🟢 Óptimo |
 | **Type Safety** | Uso explícito de `any` | 3 | 🟡 Advertencia |
 
@@ -46,16 +46,6 @@ Se detectó el uso de `any` explícito.
   - Línea 50
 - **Archivo:** `src/Product/Front/__tests__/lib/api/client.test.ts`
   - Línea 113
-
-### 3.5. Calidad de Código (`console.log`)
-Se detectó el uso de `console.log` en código productivo.
-
-- **Archivo:** `src/Product/Front/tests/e2e/companies.spec.ts`
-  - Línea 30
-- **Archivo:** `src/Admin/Front/tests/mock-api.js`
-  - Línea 62
-- **Archivo:** `src/Admin/Front/tests/mock-api.js`
-  - Línea 109
 
 ---
 
