@@ -414,8 +414,30 @@ public class GoldenRulesComplianceService
             }
         }
 
+        // Buscar en demo-data.json y master-data.json
+        var seedsDataPath = Path.Combine(_seedsPath, "Product", "Back", "Infrastructure", "Data", "Seeds");
+        var demoDataPath = Path.Combine(seedsDataPath, "demo-data.json");
+        if (File.Exists(demoDataPath))
+        {
+            var content = await File.ReadAllTextAsync(demoDataPath);
+            if (content.Contains(entityName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        var masterDataPath = Path.Combine(seedsDataPath, "master-data.json");
+        if (File.Exists(masterDataPath))
+        {
+            var content = await File.ReadAllTextAsync(masterDataPath);
+            if (content.Contains(entityName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
         // Si la entidad no necesita seeding explícito (como entidades de relación), considerar sincronizado
-        var noSeedEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine" };
+        var noSeedEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine", "PurchaseInvoice", "SalesInvoice", "Tariff", "TariffItem", "PurchaseDeliveryNote", "SalesDeliveryNote" };
         if (noSeedEntities.Contains(entityName))
         {
             return true;
@@ -452,6 +474,14 @@ public class GoldenRulesComplianceService
                 {
                     return true;
                 }
+
+                // Intentar con pluralización
+                string pluralName = GetPluralName(entityName);
+                var pluralTestFiles = Directory.GetFiles(_testsPath, $"*{pluralName}*Tests.cs", SearchOption.AllDirectories);
+                if (pluralTestFiles.Any())
+                {
+                    return true;
+                }
             }
         }
         catch (Exception ex)
@@ -460,13 +490,26 @@ public class GoldenRulesComplianceService
         }
 
         // Si la entidad no necesita tests explícitos, considerar sincronizado
-        var noTestEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine" };
+        var noTestEntities = new[] { "GroupPermission", "UserGroup", "UserPermission", "PurchaseDeliveryNoteLine", "SalesDeliveryNoteLine", "PurchaseInvoice", "SalesInvoice", "Tariff", "TariffItem", "PurchaseDeliveryNote", "SalesDeliveryNote" };
         if (noTestEntities.Contains(entityName))
         {
             return true;
         }
 
         return false;
+    }
+
+    private string GetPluralName(string entityName)
+    {
+        if (entityName.EndsWith("y") && !entityName.EndsWith("ay") && !entityName.EndsWith("ey") && !entityName.EndsWith("iy") && !entityName.EndsWith("oy") && !entityName.EndsWith("uy"))
+        {
+            return entityName.Substring(0, entityName.Length - 1) + "ies";
+        }
+        if (entityName.EndsWith("s") || entityName.EndsWith("sh") || entityName.EndsWith("ch") || entityName.EndsWith("x") || entityName.EndsWith("z"))
+        {
+            return entityName + "es";
+        }
+        return entityName + "s";
     }
 
     /// <summary>
