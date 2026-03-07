@@ -1,0 +1,34 @@
+name: Daily Frontend Audit
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight UTC
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Specify node version
+
+      - name: Run Frontend Audit Script
+        run: node scripts/audits/frontend-daily.js
+
+      - name: Commit and Create PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "docs(audits): add daily frontend audit report"
+          branch: "kaizen/daily-frontend-audit"
+          title: "Daily Frontend Audit Report"
+          body: "Auditoría Frontend diaria completada. Reporte generado en la carpeta de docs."
+          delete-branch: true
