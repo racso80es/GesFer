@@ -68,6 +68,7 @@ describe('CompanyForm', () => {
          name: 'Existing Company',
          address: 'Existing Address',
          isActive: true,
+         languageId: '10000000-0000-0000-0000-000000000001',
          createdAt: new Date().toISOString()
      };
 
