@@ -7,9 +7,9 @@ namespace GesFer.Application.Handlers.TaxTypes;
 
 public class DeleteTaxTypeCommandHandler : ICommandHandler<DeleteTaxTypeCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteTaxTypeCommandHandler(ApplicationDbContext context)
+    public DeleteTaxTypeCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

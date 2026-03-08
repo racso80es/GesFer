@@ -16,12 +16,12 @@ namespace GesFer.Api.Controllers;
 [Route("api/dashboard")]
 public class DashboardController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly ILogger<DashboardController> _logger;
     private readonly IConfiguration _configuration;
 
     public DashboardController(
-        ApplicationDbContext context,
+        ProductDbContext context,
         ILogger<DashboardController> logger,
         IConfiguration configuration)
     {

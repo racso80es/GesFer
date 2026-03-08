@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.PostalCode;
 
 public class GetPostalCodeByIdCommandHandler : ICommandHandler<GetPostalCodeByIdCommand, PostalCodeDto?>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public GetPostalCodeByIdCommandHandler(ApplicationDbContext context)
+    public GetPostalCodeByIdCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

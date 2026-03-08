@@ -34,7 +34,7 @@ public class JsonDataSeederTests
         var services = new ServiceCollection();
         
         // Configurar DbContext en memoria para el test
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
         {
             options.UseInMemoryDatabase(databaseName: $"TestDb_{Guid.NewGuid()}");
         });
@@ -60,7 +60,7 @@ public class JsonDataSeederTests
         using var scope = serviceProvider.CreateScope();
         
         var seeder = scope.ServiceProvider.GetRequiredService<JsonDataSeeder>();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         // Act
         // Intentar cargar datos maestros (debe encontrar el archivo)
@@ -95,7 +95,7 @@ public class JsonDataSeederTests
         var services = new ServiceCollection();
         
         // Configurar DbContext en memoria
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
         {
             options.UseInMemoryDatabase(databaseName: $"TestDb_{Guid.NewGuid()}");
         });
@@ -119,7 +119,7 @@ public class JsonDataSeederTests
         using var scope = serviceProvider.CreateScope();
         
         var seeder = scope.ServiceProvider.GetRequiredService<JsonDataSeeder>();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         // Act & Assert
         // No debe lanzar excepción incluso si los archivos no se encuentran
@@ -143,7 +143,7 @@ public class JsonDataSeederTests
         var services = new ServiceCollection();
         
         // Configurar DbContext en memoria
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
         {
             options.UseInMemoryDatabase(databaseName: $"TestDb_OrphanUsers_{Guid.NewGuid()}");
         });
@@ -167,7 +167,7 @@ public class JsonDataSeederTests
         using var scope = serviceProvider.CreateScope();
         
         var seeder = scope.ServiceProvider.GetRequiredService<JsonDataSeeder>();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         // Crear Language necesario para la empresa
         var languageId = Guid.Parse("10000000-0000-0000-0000-000000000001");

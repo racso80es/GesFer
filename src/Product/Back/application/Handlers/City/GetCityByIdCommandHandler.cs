@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.City;
 
 public class GetCityByIdCommandHandler : ICommandHandler<GetCityByIdCommand, CityDto?>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public GetCityByIdCommandHandler(ApplicationDbContext context)
+    public GetCityByIdCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

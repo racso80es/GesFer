@@ -32,7 +32,7 @@ public class DbInitializerTests
 
         // DbContext (InMemory)
         var dbName = Guid.NewGuid().ToString();
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
             options.UseInMemoryDatabase(databaseName: dbName));
 
         // IConfiguration (JsonDataSeeder usa SeedConfig.GetValidCompanyIds)
@@ -43,6 +43,8 @@ public class DbInitializerTests
 
         // Dependencies
         services.AddScoped<JsonDataSeeder>();
+        services.AddScoped<GesFer.Shared.Back.Domain.Services.IMigrationService, GesFer.Product.Back.Infrastructure.Services.ProductMigrationService>();
+        services.AddScoped<GesFer.Shared.Back.Domain.Services.IIntegrityCheckService, GesFer.Product.Back.Infrastructure.Services.ProductIntegrityService>();
 
         // Mock Sanitizer (We will use a real instance or mock to verify calls)
         // Since we want to test the flow, let's use a real one if available or a mock that behaves deterministically
@@ -58,7 +60,7 @@ public class DbInitializerTests
 
         // Assert
         using var scope = serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         var admin = await context.Users
             .IgnoreQueryFilters()
