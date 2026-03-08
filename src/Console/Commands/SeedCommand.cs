@@ -170,7 +170,7 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
             ?? "Server=localhost;Port=3306;Database=ScrapDb;User=scrapuser;Password=scrappassword;CharSet=utf8mb4;AllowUserVariables=True;AllowLoadLocalInfile=True;";
 
         // DbContext Product
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
         {
             options.UseMySql(
                 connectionString,

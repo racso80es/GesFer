@@ -7,9 +7,9 @@ namespace GesFer.Application.Handlers.User;
 
 public class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteUserCommandHandler(ApplicationDbContext context)
+    public DeleteUserCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

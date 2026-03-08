@@ -14,15 +14,15 @@ namespace GesFer.Product.UnitTests.TaxTypes;
 /// </summary>
 public class CreateTaxTypeTests
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly CreateTaxTypeCommandHandler _handler;
 
     public CreateTaxTypeTests()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<ProductDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-        _context = new ApplicationDbContext(options);
+        _context = new ProductDbContext(options);
         _handler = new CreateTaxTypeCommandHandler(_context);
     }
 
