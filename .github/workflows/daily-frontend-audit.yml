@@ -1,0 +1,42 @@
+name: Daily Frontend Audit
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Ejecución diaria a la medianoche UTC
+  workflow_dispatch: # Permite ejecución manual
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Daily Frontend Audit Script
+        run: |
+          python scripts/audit_frontend_daily.py
+
+      - name: Create Pull Request with Audit Report
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "docs(audit): auditoría frontend diaria"
+          title: "docs(audit): Auditoría Frontend Diaria"
+          body: |
+            Reporte de la Auditoría Frontend Diaria generado por `scripts/audit_frontend_daily.py`.
+
+            Notificación: "Auditoría Frontend diaria completada. Reporte generado en la carpeta de docs."
+          branch: "kaizen/daily-audit-frontend"
+          base: "master"
+          labels: "audit, automated, frontend"
+          add-paths: |
+            docs/audits/AUDITORIA_FRONTEND_*.md
+            docs/EVOLUTION_LOG.md
