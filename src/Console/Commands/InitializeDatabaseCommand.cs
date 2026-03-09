@@ -114,6 +114,8 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
             });
 
             services.AddSingleton<IHostEnvironment>(new DevelopmentHostEnvironment(apiPath));
+            services.AddScoped<GesFer.Product.Back.Infrastructure.Services.IIntegrityCheckService, GesFer.Product.Back.Infrastructure.Services.IntegrityCheckService>();
+            services.AddScoped<GesFer.Product.Back.Infrastructure.Services.IMigrationService, GesFer.Product.Back.Infrastructure.Services.MigrationService>();
 
             services.AddLogging(builder =>
             {
@@ -223,7 +225,9 @@ public class InitializeDatabaseCommand : ICommandHandler<InitializeDatabaseInput
                     // 5) Datos Product (demo-data)
                     if (isDetailed) _logService.WriteLog("Cargando datos de producto (demo)...");
                     await DbInitializer.SeedDemoDataAsync(productContext, scopedServices, logger);
-                    await DbInitializer.EnsureAdminUserAndSmokeTestAsync(productContext, scopedServices, logger);
+
+                    var integrityCheckService = scopedServices.GetRequiredService<GesFer.Product.Back.Infrastructure.Services.IIntegrityCheckService>();
+                    await integrityCheckService.EnsureAdminUserAndSmokeTestAsync(productContext, scopedServices);
 
                     var migrationsAfter = await productContext.Database.GetAppliedMigrationsAsync();
                     var appliedMigrations = migrationsAfter.Except(migrationsBefore).ToList();
