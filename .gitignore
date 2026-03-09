@@ -110,3 +110,4 @@ src/Admin/Front/playwright-report/
 **/TestResults/
 infrastructure/mock-apis/node_modules/
 /src/Tools/Calma-Desktop/node_modules
+coveragereport/
