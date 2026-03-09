@@ -11,15 +11,15 @@ namespace GesFer.Product.UnitTests.ArticleFamilies;
 
 public class CreateArticleFamilyTests
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly CreateArticleFamilyCommandHandler _handler;
 
     public CreateArticleFamilyTests()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<ProductDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-        _context = new ApplicationDbContext(options);
+        _context = new ProductDbContext(options);
         _handler = new CreateArticleFamilyCommandHandler(_context);
     }
 

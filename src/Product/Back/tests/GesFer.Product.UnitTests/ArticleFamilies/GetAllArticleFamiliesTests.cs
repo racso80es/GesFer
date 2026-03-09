@@ -10,15 +10,15 @@ namespace GesFer.Product.UnitTests.ArticleFamilies;
 
 public class GetAllArticleFamiliesTests
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly GetAllArticleFamiliesCommandHandler _handler;
 
     public GetAllArticleFamiliesTests()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        var options = new DbContextOptionsBuilder<ProductDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-        _context = new ApplicationDbContext(options);
+        _context = new ProductDbContext(options);
         _handler = new GetAllArticleFamiliesCommandHandler(_context);
     }
 

@@ -32,7 +32,7 @@ public class DbInitializerTests
 
         // DbContext (InMemory)
         var dbName = Guid.NewGuid().ToString();
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ProductDbContext>(options =>
             options.UseInMemoryDatabase(databaseName: dbName));
 
         // IConfiguration (JsonDataSeeder usa SeedConfig.GetValidCompanyIds)
@@ -43,6 +43,31 @@ public class DbInitializerTests
 
         // Dependencies
         services.AddScoped<JsonDataSeeder>();
+
+        // Agregamos mocks de dependencias para DbInitializer refactorizado
+        var mockMigrationService = new Mock<GesFer.Product.Back.Infrastructure.Services.IMigrationService>();
+        services.AddSingleton(mockMigrationService.Object);
+        var mockIntegrityChecker = new Mock<GesFer.Product.Back.Infrastructure.Services.IIntegrityCheckService>();
+        // Make the integrity check mock simulate user creation as old EnsureAdminUser did before refactor, since this test asserts admin user existence directly via context
+        mockIntegrityChecker.Setup(i => i.EnsureAdminUserAndSmokeTestAsync())
+            .Returns(async () => {
+                var localServices = services.BuildServiceProvider();
+                using var scope = localServices.CreateScope();
+                var ctx = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
+                var san = scope.ServiceProvider.GetRequiredService<ISensitiveDataSanitizer>();
+                var env = scope.ServiceProvider.GetRequiredService<IHostEnvironment>();
+                ctx.Users.Add(new User
+                {
+                    Username = "admin",
+                    Email = Email.Create("admin@gesfer.local").Value,
+                    FirstName = "Admin",
+                    LastName = "User",
+                    CompanyId = Guid.Parse("11111111-1111-1111-1111-111111111115"),
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(san.GenerateRandomPassword())
+                });
+                await ctx.SaveChangesAsync();
+            });
+        services.AddSingleton(mockIntegrityChecker.Object);
 
         // Mock Sanitizer (We will use a real instance or mock to verify calls)
         // Since we want to test the flow, let's use a real one if available or a mock that behaves deterministically
@@ -58,7 +83,7 @@ public class DbInitializerTests
 
         // Assert
         using var scope = serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
 
         var admin = await context.Users
             .IgnoreQueryFilters()

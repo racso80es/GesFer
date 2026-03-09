@@ -9,7 +9,7 @@ public class ApplyMigrationsInput : CommandInputBase
 
 public class CreateInitialMigrationInput : CommandInputBase
 {
-    // No arguments needed currently
+    public string Domain { get; set; } = "Product";
 }
 
 public class SquashMigrationsInput : CommandInputBase

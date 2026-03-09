@@ -23,9 +23,31 @@ public class CreateInitialMigrationCommand : ICommandHandler<CreateInitialMigrat
         result.Data = false;
 
         var rootPath = _logService.GetRootPath();
-        var apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "Api"));
-        var infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "Infrastructure"));
-        var migrationsPath = Path.Combine(infrastructurePath, "Migrations");
+
+        // Determinar las rutas en función del dominio
+        var domainName = input.Domain ?? "Product";
+        string apiPath;
+        string infrastructurePath;
+        string migrationsPath;
+        string projectFile;
+        string startupProjectFile;
+
+        if (domainName.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+        {
+            apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Admin", "Back", "Api"));
+            infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "src", "Admin", "Back", "Infrastructure"));
+            migrationsPath = Path.Combine(infrastructurePath, "Data", "Migrations");
+            projectFile = "GesFer.Admin.Infra.csproj";
+            startupProjectFile = "GesFer.Admin.Api.csproj";
+        }
+        else
+        {
+            apiPath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "Api"));
+            infrastructurePath = Path.GetFullPath(Path.Combine(rootPath, "src", "Product", "Back", "Infrastructure"));
+            migrationsPath = Path.Combine(infrastructurePath, "Migrations");
+            projectFile = "GesFer.Infrastructure.csproj";
+            startupProjectFile = "GesFer.Api.csproj";
+        }
 
         _logService.WriteLog($"Verificando migraciones en: {migrationsPath}");
 
@@ -45,11 +67,11 @@ public class CreateInitialMigrationCommand : ICommandHandler<CreateInitialMigrat
             }
         }
 
-        result.AddLog("    No se encontraron migraciones. Creando migración inicial...");
-        _logService.WriteLog("No se encontraron migraciones. Creando migración inicial...");
+        result.AddLog($"    No se encontraron migraciones para el dominio {domainName}. Creando migración inicial...");
+        _logService.WriteLog($"No se encontraron migraciones para el dominio {domainName}. Creando migración inicial...");
 
-        var projectPath = Path.Combine(infrastructurePath, "GesFer.Infrastructure.csproj");
-        var startupProjectPath = Path.Combine(apiPath, "GesFer.Api.csproj");
+        var projectPath = Path.Combine(infrastructurePath, projectFile);
+        var startupProjectPath = Path.Combine(apiPath, startupProjectFile);
         var command = $"ef migrations add InitialCreate --project \"{projectPath}\" --startup-project \"{startupProjectPath}\"";
 
         _logService.WriteLog($"Comando: dotnet {command}");

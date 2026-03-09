@@ -2,16 +2,16 @@
 
 ## Migración única (InitialCreate)
 
-Las migraciones se unificaron en una sola **InitialCreate** que refleja el modelo actual del `ApplicationDbContext` (tablas Product: Companies, Users, ArticleFamilies, TaxTypes, Families, Articles, etc.).
+Las migraciones se unificaron en una sola **InitialCreate** que refleja el modelo actual del `ProductDbContext` (tablas Product: Companies, Users, ArticleFamilies, TaxTypes, Families, Articles, etc.).
 
 ## Uso
 
 ```powershell
 # Desde la carpeta Api
-dotnet ef database update --project ../Infrastructure/GesFer.Infrastructure.csproj --context ApplicationDbContext
+dotnet ef database update --project ../Infrastructure/GesFer.Infrastructure.csproj --context ProductDbContext
 
 # Añadir una nueva migración (si cambias el modelo)
-dotnet ef migrations add NombreMigracion --project ../Infrastructure/GesFer.Infrastructure.csproj --context ApplicationDbContext
+dotnet ef migrations add NombreMigracion --project ../Infrastructure/GesFer.Infrastructure.csproj --context ProductDbContext
 ```
 
 ## Bases de datos existentes

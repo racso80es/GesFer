@@ -9,9 +9,9 @@ namespace GesFer.Application.Handlers.Group;
 
 public class CreateGroupCommandHandler : ICommandHandler<CreateGroupCommand, GroupDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public CreateGroupCommandHandler(ApplicationDbContext context)
+    public CreateGroupCommandHandler(ProductDbContext context)
     {
         _context = context;
     }
