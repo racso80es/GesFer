@@ -7,9 +7,9 @@ namespace GesFer.Application.Handlers.Group;
 
 public class DeleteGroupCommandHandler : ICommandHandler<DeleteGroupCommand>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public DeleteGroupCommandHandler(ApplicationDbContext context)
+    public DeleteGroupCommandHandler(ProductDbContext context)
     {
         _context = context;
     }

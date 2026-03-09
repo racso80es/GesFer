@@ -32,7 +32,7 @@ public static class DependencyInjection
 
         var isDevelopment = environment?.IsDevelopment() ?? false;
 
-        services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+        services.AddDbContext<ProductDbContext>((serviceProvider, options) =>
         {
             if (environment?.IsEnvironment("Testing") == true)
             {
@@ -100,6 +100,10 @@ public static class DependencyInjection
 
         // Servicio de logging asíncrono (Fire and Forget)
         services.AddSingleton<IAsyncLogPublisher, AsyncLogPublisher>();
+
+        // Servicios de inicialización y chequeos de BD (Refactor Kaizen)
+        services.AddScoped<IMigrationService, MigrationService>();
+        services.AddScoped<IIntegrityCheckService, IntegrityCheckService>();
 
         // Command Handlers - Registro automático de todos los handlers
         RegisterCommandHandlers(services);

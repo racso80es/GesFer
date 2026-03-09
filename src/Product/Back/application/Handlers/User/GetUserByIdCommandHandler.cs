@@ -9,10 +9,10 @@ namespace GesFer.Application.Handlers.User;
 
 public class GetUserByIdCommandHandler : ICommandHandler<GetUserByIdCommand, UserDto?>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
     private readonly IAdminApiClient _adminApiClient;
 
-    public GetUserByIdCommandHandler(ApplicationDbContext context, IAdminApiClient adminApiClient)
+    public GetUserByIdCommandHandler(ProductDbContext context, IAdminApiClient adminApiClient)
     {
         _context = context;
         _adminApiClient = adminApiClient;

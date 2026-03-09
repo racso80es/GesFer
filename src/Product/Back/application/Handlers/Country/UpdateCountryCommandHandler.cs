@@ -8,9 +8,9 @@ namespace GesFer.Application.Handlers.Country;
 
 public class UpdateCountryCommandHandler : ICommandHandler<UpdateCountryCommand, CountryDto>
 {
-    private readonly ApplicationDbContext _context;
+    private readonly ProductDbContext _context;
 
-    public UpdateCountryCommandHandler(ApplicationDbContext context)
+    public UpdateCountryCommandHandler(ProductDbContext context)
     {
         _context = context;
     }
