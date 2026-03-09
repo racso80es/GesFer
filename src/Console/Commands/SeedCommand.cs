@@ -213,6 +213,8 @@ public class SeedCommand : ICommandHandler<SeedCommandInput, bool>
         services.AddScoped<AdminJsonDataSeeder>();
         services.AddSingleton<ISequentialGuidGenerator, MySqlSequentialGuidGenerator>();
         services.AddSingleton<ISensitiveDataSanitizer, SensitiveDataSanitizer>();
+        services.AddScoped<GesFer.Product.Back.Infrastructure.Services.IIntegrityCheckService, GesFer.Product.Back.Infrastructure.Services.IntegrityCheckService>();
+        services.AddScoped<GesFer.Product.Back.Infrastructure.Services.IMigrationService, GesFer.Product.Back.Infrastructure.Services.MigrationService>();
 
         var apiPath = Path.Combine(_rootPath, "src", "Product", "Back", "Api");
         services.AddSingleton<IHostEnvironment>(new DevelopmentHostEnvironment(apiPath));

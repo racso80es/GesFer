@@ -4,6 +4,24 @@ Este documento mantiene el registro de acciones priorizadas para la mejora conti
 
 ## Pendientes
 
+### [Alta] Remove Legacy Initialization Scripts
+*   **Origen:** `docs/audits/AUDITORIA_DIARIA_2026-03-09.md`
+*   **Descripción:** Eliminar scripts de inicialización obsoletos en `src/Product/Back/scripts` ya que la CLI `GesFer.Console` cubre esta funcionalidad.
+*   **Impacto:** Riesgo de uso de scripts desactualizados y deuda técnica.
+*   **Estado:** En Progreso (Rama `kaizen/daily-2026-03-09`).
+
+### [Alta] Refactor DbInitializer (SRP)
+*   **Origen:** `docs/audits/AUDITORIA_DIARIA_2026-03-09.md`
+*   **Descripción:** Desacoplar responsabilidades de `DbInitializer`. Extraer la lógica de Migración y Verificación (Smoke Test) a `IMigrationService` e `IIntegrityCheckService` en `src/Product/Back/Infrastructure/Services/`.
+*   **Impacto:** Reduce la complejidad cognitiva, facilita el testeo aislado.
+*   **Estado:** En Progreso (Rama `kaizen/daily-2026-03-09`).
+
+### [Media] Rename ApplicationDbContext to ProductDbContext
+*   **Origen:** `docs/audits/AUDITORIA_DIARIA_2026-03-09.md`
+*   **Descripción:** Renombrar el contexto de base de datos genérico de Product a uno más específico `ProductDbContext` para empatar con la estructura de Admin.
+*   **Impacto:** Aclara la división de contextos en la arquitectura.
+*   **Estado:** Pendiente
+
 ### [Alta] Fix Golden Rules False Positives
 *   **Origen:** `docs/audits/AUDITORIA_KAIZEN_2026_02_16.md`
 *   **Descripción:** `GoldenRulesComplianceService` reporta falsos positivos en Seeds y Tests. Ignora `JsonDataSeeder.cs` (donde están `TaxType`, `Article`) y el directorio moderno de tests `src/Product/Back/tests`.

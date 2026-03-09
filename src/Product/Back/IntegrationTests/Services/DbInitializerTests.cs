@@ -43,6 +43,8 @@ public class DbInitializerTests
 
         // Dependencies
         services.AddScoped<JsonDataSeeder>();
+        services.AddScoped<GesFer.Product.Back.Infrastructure.Services.IMigrationService, GesFer.Product.Back.Infrastructure.Services.MigrationService>();
+        services.AddScoped<GesFer.Product.Back.Infrastructure.Services.IIntegrityCheckService, GesFer.Product.Back.Infrastructure.Services.IntegrityCheckService>();
 
         // Mock Sanitizer (We will use a real instance or mock to verify calls)
         // Since we want to test the flow, let's use a real one if available or a mock that behaves deterministically

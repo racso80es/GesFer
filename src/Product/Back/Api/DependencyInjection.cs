@@ -75,6 +75,8 @@ public static class DependencyInjection
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IStockService, StockService>();
         services.AddScoped<JsonDataSeeder>();
+        services.AddScoped<GesFer.Product.Back.Infrastructure.Services.IMigrationService, GesFer.Product.Back.Infrastructure.Services.MigrationService>();
+        services.AddScoped<GesFer.Product.Back.Infrastructure.Services.IIntegrityCheckService, GesFer.Product.Back.Infrastructure.Services.IntegrityCheckService>();
 
         // HttpClient para comunicación con Admin API
         if (environment?.IsEnvironment("Testing") == true)
