@@ -1,0 +1,382 @@
+Summary
+  Generated on: 03/10/2026 - 03:15:06
+  Coverage date: 03/10/2026 - 03:13:50 - 03/10/2026 - 03:14:55
+  Parser: MultiReport (7x Cobertura)
+  Assemblies: 11
+  Classes: 340
+  Files: 302
+  Line coverage: 25.6%
+  Covered lines: 5932
+  Uncovered lines: 17169
+  Coverable lines: 23101
+  Total lines: 32893
+  Branch coverage: 27.5% (824 of 2992)
+  Covered branches: 824
+  Total branches: 2992
+  Method coverage: 63.4% (947 of 1493)
+  Full method coverage: 54.1% (809 of 1493)
+  Covered methods: 947
+  Fully covered methods: 809
+  Total methods: 1493
+
+GesFer.Admin.Api                                                                               78.1%
+  GesFer.Admin.Api.Attributes.AuthorizeSystemOrAdminAttribute                                   100%
+  GesFer.Admin.Api.Controllers.AdminAuthController                                              100%
+  GesFer.Admin.Api.Controllers.AdminLoginRequest                                                100%
+  GesFer.Admin.Api.Controllers.AdminLoginResponse                                               100%
+  GesFer.Admin.Api.Controllers.CompanyController                                                 59%
+  GesFer.Admin.Api.Controllers.DashboardController                                               81%
+  GesFer.Admin.Api.Controllers.LogController                                                   81.2%
+  GesFer.Admin.Api.DependencyInjection                                                         45.2%
+  Program                                                                                        83%
+
+GesFer.Admin.Application                                                                       86.4%
+  GesFer.Admin.Application.Commands.Company.CreateCompanyCommand                                100%
+  GesFer.Admin.Application.Commands.Company.DeleteCompanyCommand                                100%
+  GesFer.Admin.Application.Commands.Company.GetAllCompaniesCommand                              100%
+  GesFer.Admin.Application.Commands.Company.GetCompanyByIdCommand                               100%
+  GesFer.Admin.Application.Commands.Company.GetCompanyByNameCommand                               0%
+  GesFer.Admin.Application.Commands.Company.UpdateCompanyCommand                                100%
+  GesFer.Admin.Application.DTOs.Company.CompanyDto                                              100%
+  GesFer.Admin.Application.DTOs.Company.CreateCompanyDto                                        100%
+  GesFer.Admin.Application.DTOs.Company.UpdateCompanyDto                                        100%
+  GesFer.Admin.Application.DTOs.DashboardSummaryDto                                               0%
+  GesFer.Admin.Application.Dtos.Logs.CreateAuditLogDto                                          100%
+  GesFer.Admin.Application.Dtos.Logs.CreateLogDto                                               100%
+  GesFer.Admin.Application.Dtos.Logs.LogDto                                                     100%
+  GesFer.Admin.Application.Dtos.Logs.LogsPagedResponseDto                                       100%
+  GesFer.Admin.Application.Dtos.Logs.PurgeLogsResponseDto                                       100%
+  GesFer.Admin.Application.Handlers.Company.CreateCompanyHandler                                100%
+  GesFer.Admin.Application.Handlers.Company.DeleteCompanyHandler                                100%
+  GesFer.Admin.Application.Handlers.Company.GetAllCompaniesHandler                              100%
+  GesFer.Admin.Application.Handlers.Company.GetCompanyByIdHandler                               100%
+  GesFer.Admin.Application.Handlers.Company.GetCompanyByNameHandler                               0%
+  GesFer.Admin.Application.Handlers.Company.UpdateCompanyHandler                                100%
+
+GesFer.Admin.Domain                                                                              73%
+  GesFer.Admin.Back.Domain.Entities.AdminUser                                                    75%
+  GesFer.Admin.Back.Domain.Entities.AuditLog                                                    100%
+  GesFer.Admin.Back.Domain.Entities.Log                                                        54.5%
+
+GesFer.Admin.Infra                                                                             23.4%
+  GesFer.Admin.Infra.Data.Migrations.AddMissingColumnsToLogs                                      0%
+  GesFer.Admin.Infra.Data.Migrations.AdminDbContextModelSnapshot                                  0%
+  GesFer.Admin.Infra.Data.Migrations.CreateLogsTableIfNotExists                                   0%
+  GesFer.Admin.Infra.Data.Migrations.InitialAdmin                                                 0%
+  GesFer.Admin.Infrastructure.Data.AdminDbContext                                              84.6%
+  GesFer.Admin.Infrastructure.Data.AdminDbContextFactory                                          0%
+  GesFer.Admin.Infrastructure.Data.Configurations.CompanyConfiguration                         95.3%
+  GesFer.Admin.Infrastructure.DTOs.DashboardSummaryDto                                          100%
+  GesFer.Admin.Infrastructure.Services.AdminAuthService                                         100%
+  GesFer.Admin.Infrastructure.Services.AdminJsonDataSeeder                                     60.7%
+  GesFer.Admin.Infrastructure.Services.AdminJwtService                                          100%
+  GesFer.Admin.Infrastructure.Services.AdminSeedResult                                          100%
+  GesFer.Admin.Infrastructure.Services.AuditLogService                                          100%
+  GesFer.Admin.Infrastructure.Services.ProductApiClient                                        86.3%
+
+GesFer.Api                                                                                     46.5%
+  GesFer.Api.Controllers.ArticleFamiliesController                                             57.2%
+  GesFer.Api.Controllers.AuthController                                                        73.3%
+  GesFer.Api.Controllers.CityController                                                        64.1%
+  GesFer.Api.Controllers.CountryController                                                     72.5%
+  GesFer.Api.Controllers.CustomerController                                                    67.8%
+  GesFer.Api.Controllers.DashboardController                                                      0%
+  GesFer.Api.Controllers.GroupController                                                         73%
+  GesFer.Api.Controllers.HealthController                                                       100%
+  GesFer.Api.Controllers.MyCompanyController                                                     63%
+  GesFer.Api.Controllers.PostalCodeController                                                     0%
+  GesFer.Api.Controllers.ProfileController                                                        0%
+  GesFer.Api.Controllers.SetupController                                                       66.6%
+  GesFer.Api.Controllers.StateController                                                       62.5%
+  GesFer.Api.Controllers.SupplierController                                                      73%
+  GesFer.Api.Controllers.TaxTypesController                                                    29.7%
+  GesFer.Api.Controllers.TelemetryController                                                      0%
+  GesFer.Api.Controllers.UserController                                                        67.8%
+  GesFer.Api.DependencyInjection                                                                 56%
+  GesFer.Api.Services.MockAdminApiClient                                                          0%
+  GesFer.Api.Services.SetupResult                                                               100%
+  GesFer.Api.Services.SetupService                                                             32.4%
+  GesFer.Api.Swagger.DefaultValueSchemaFilter                                                     0%
+  Program                                                                                        72%
+
+GesFer.Application                                                                             70.4%
+  GesFer.Application.Commands.ArticleFamilies.CreateArticleFamilyCommand                        100%
+  GesFer.Application.Commands.ArticleFamilies.DeleteArticleFamilyCommand                        100%
+  GesFer.Application.Commands.ArticleFamilies.GetAllArticleFamiliesCommand                      100%
+  GesFer.Application.Commands.ArticleFamilies.GetArticleFamilyByIdCommand                       100%
+  GesFer.Application.Commands.ArticleFamilies.UpdateArticleFamilyCommand                        100%
+  GesFer.Application.Commands.Auth.GetUserPermissionsCommand                                    100%
+  GesFer.Application.Commands.Auth.LoginCommand                                                 100%
+  GesFer.Application.Commands.City.CreateCityCommand                                            100%
+  GesFer.Application.Commands.City.DeleteCityCommand                                            100%
+  GesFer.Application.Commands.City.GetAllCitiesCommand                                          100%
+  GesFer.Application.Commands.City.GetCityByIdCommand                                           100%
+  GesFer.Application.Commands.City.UpdateCityCommand                                            100%
+  GesFer.Application.Commands.Country.CreateCountryCommand                                      100%
+  GesFer.Application.Commands.Country.DeleteCountryCommand                                      100%
+  GesFer.Application.Commands.Country.GetAllCountriesCommand                                    100%
+  GesFer.Application.Commands.Country.GetCountryByIdCommand                                     100%
+  GesFer.Application.Commands.Country.UpdateCountryCommand                                      100%
+  GesFer.Application.Commands.Customer.CreateCustomerCommand                                    100%
+  GesFer.Application.Commands.Customer.DeleteCustomerCommand                                    100%
+  GesFer.Application.Commands.Customer.GetAllCustomersCommand                                   100%
+  GesFer.Application.Commands.Customer.GetCustomerByIdCommand                                   100%
+  GesFer.Application.Commands.Customer.UpdateCustomerCommand                                    100%
+  GesFer.Application.Commands.Group.CreateGroupCommand                                          100%
+  GesFer.Application.Commands.Group.DeleteGroupCommand                                          100%
+  GesFer.Application.Commands.Group.GetAllGroupsCommand                                         100%
+  GesFer.Application.Commands.Group.GetGroupByIdCommand                                         100%
+  GesFer.Application.Commands.Group.UpdateGroupCommand                                          100%
+  GesFer.Application.Commands.PostalCode.CreatePostalCodeCommand                                100%
+  GesFer.Application.Commands.PostalCode.DeletePostalCodeCommand                                100%
+  GesFer.Application.Commands.PostalCode.GetAllPostalCodesCommand                                 0%
+  GesFer.Application.Commands.PostalCode.GetPostalCodeByIdCommand                                 0%
+  GesFer.Application.Commands.PostalCode.UpdatePostalCodeCommand                                100%
+  GesFer.Application.Commands.PurchaseDeliveryNote.ConfirmPurchaseDeliveryNoteCommand             0%
+  GesFer.Application.Commands.PurchaseDeliveryNote.CreatePurchaseDeliveryNoteCommand              0%
+  GesFer.Application.Commands.PurchaseDeliveryNote.PurchaseDeliveryNoteLineDto                    0%
+  GesFer.Application.Commands.SalesDeliveryNote.ConfirmSalesDeliveryNoteCommand                   0%
+  GesFer.Application.Commands.SalesDeliveryNote.CreateSalesDeliveryNoteCommand                    0%
+  GesFer.Application.Commands.SalesDeliveryNote.SalesDeliveryNoteLineDto                          0%
+  GesFer.Application.Commands.State.CreateStateCommand                                          100%
+  GesFer.Application.Commands.State.DeleteStateCommand                                          100%
+  GesFer.Application.Commands.State.GetAllStatesCommand                                         100%
+  GesFer.Application.Commands.State.GetStateByIdCommand                                         100%
+  GesFer.Application.Commands.State.UpdateStateCommand                                          100%
+  GesFer.Application.Commands.Supplier.CreateSupplierCommand                                    100%
+  GesFer.Application.Commands.Supplier.DeleteSupplierCommand                                    100%
+  GesFer.Application.Commands.Supplier.GetAllSuppliersCommand                                   100%
+  GesFer.Application.Commands.Supplier.GetSupplierByIdCommand                                   100%
+  GesFer.Application.Commands.Supplier.UpdateSupplierCommand                                    100%
+  GesFer.Application.Commands.TaxTypes.CreateTaxTypeCommand                                     100%
+  GesFer.Application.Commands.TaxTypes.DeleteTaxTypeCommand                                       0%
+  GesFer.Application.Commands.TaxTypes.GetAllTaxTypesCommand                                      0%
+  GesFer.Application.Commands.TaxTypes.GetTaxTypeByIdCommand                                      0%
+  GesFer.Application.Commands.TaxTypes.UpdateTaxTypeCommand                                       0%
+  GesFer.Application.Commands.User.CreateUserCommand                                            100%
+  GesFer.Application.Commands.User.DeleteUserCommand                                            100%
+  GesFer.Application.Commands.User.GetAllUsersCommand                                           100%
+  GesFer.Application.Commands.User.GetUserByIdCommand                                           100%
+  GesFer.Application.Commands.User.UpdateUserCommand                                            100%
+  GesFer.Application.DTOs.Admin.Auth.AdminLoginRequest                                            0%
+  GesFer.Application.DTOs.Admin.Auth.AdminLoginResponse                                           0%
+  GesFer.Application.DTOs.Admin.DashboardSummaryDto                                               0%
+  GesFer.Application.DTOs.ArticleFamilies.ArticleFamilyDto                                      100%
+  GesFer.Application.DTOs.ArticleFamilies.CreateArticleFamilyDto                                100%
+  GesFer.Application.DTOs.ArticleFamilies.UpdateArticleFamilyDto                                100%
+  GesFer.Application.DTOs.Auth.LoginRequestDto                                                  100%
+  GesFer.Application.DTOs.Auth.LoginResponseDto                                                 100%
+  GesFer.Application.DTOs.City.CityDto                                                          100%
+  GesFer.Application.DTOs.City.CreateCityDto                                                    100%
+  GesFer.Application.DTOs.City.UpdateCityDto                                                    100%
+  GesFer.Application.DTOs.Country.CountryDto                                                    100%
+  GesFer.Application.DTOs.Country.CreateCountryDto                                              100%
+  GesFer.Application.DTOs.Country.UpdateCountryDto                                              100%
+  GesFer.Application.DTOs.Customer.CreateCustomerDto                                            100%
+  GesFer.Application.DTOs.Customer.CustomerDto                                                  100%
+  GesFer.Application.DTOs.Customer.UpdateCustomerDto                                            100%
+  GesFer.Application.DTOs.Group.CreateGroupDto                                                  100%
+  GesFer.Application.DTOs.Group.GroupDto                                                        100%
+  GesFer.Application.DTOs.Group.UpdateGroupDto                                                  100%
+  GesFer.Application.DTOs.PostalCode.CreatePostalCodeDto                                        100%
+  GesFer.Application.DTOs.PostalCode.PostalCodeDto                                                0%
+  GesFer.Application.DTOs.PostalCode.UpdatePostalCodeDto                                        100%
+  GesFer.Application.DTOs.State.CreateStateDto                                                  100%
+  GesFer.Application.DTOs.State.StateDto                                                        100%
+  GesFer.Application.DTOs.State.UpdateStateDto                                                  100%
+  GesFer.Application.DTOs.Supplier.CreateSupplierDto                                            100%
+  GesFer.Application.DTOs.Supplier.SupplierDto                                                  100%
+  GesFer.Application.DTOs.Supplier.UpdateSupplierDto                                            100%
+  GesFer.Application.DTOs.User.CreateUserDto                                                    100%
+  GesFer.Application.DTOs.User.UpdateUserDto                                                    100%
+  GesFer.Application.DTOs.User.UserDto                                                          100%
+  GesFer.Application.Handlers.ArticleFamilies.CreateArticleFamilyCommandHandler                 100%
+  GesFer.Application.Handlers.ArticleFamilies.DeleteArticleFamilyCommandHandler                 100%
+  GesFer.Application.Handlers.ArticleFamilies.GetAllArticleFamiliesCommandHandler               100%
+  GesFer.Application.Handlers.ArticleFamilies.GetArticleFamilyByIdCommandHandler                100%
+  GesFer.Application.Handlers.ArticleFamilies.UpdateArticleFamilyCommandHandler                 100%
+  GesFer.Application.Handlers.Auth.GetUserPermissionsCommandHandler                             100%
+  GesFer.Application.Handlers.Auth.LoginCommandHandler                                          100%
+  GesFer.Application.Handlers.City.CreateCityCommandHandler                                    95.2%
+  GesFer.Application.Handlers.City.DeleteCityCommandHandler                                    92.3%
+  GesFer.Application.Handlers.City.GetAllCitiesCommandHandler                                  97.2%
+  GesFer.Application.Handlers.City.GetCityByIdCommandHandler                                   96.2%
+  GesFer.Application.Handlers.City.UpdateCityCommandHandler                                    91.8%
+  GesFer.Application.Handlers.Country.CreateCountryCommandHandler                              94.7%
+  GesFer.Application.Handlers.Country.DeleteCountryCommandHandler                              94.1%
+  GesFer.Application.Handlers.Country.GetAllCountriesCommandHandler                             100%
+  GesFer.Application.Handlers.Country.GetCountryByIdCommandHandler                              100%
+  GesFer.Application.Handlers.Country.UpdateCountryCommandHandler                              92.1%
+  GesFer.Application.Handlers.Customer.CreateCustomerCommandHandler                            68.4%
+  GesFer.Application.Handlers.Customer.DeleteCustomerCommandHandler                             100%
+  GesFer.Application.Handlers.Customer.GetAllCustomersCommandHandler                            100%
+  GesFer.Application.Handlers.Customer.GetCustomerByIdCommandHandler                            100%
+  GesFer.Application.Handlers.Customer.UpdateCustomerCommandHandler                            65.5%
+  GesFer.Application.Handlers.Group.CreateGroupCommandHandler                                   100%
+  GesFer.Application.Handlers.Group.DeleteGroupCommandHandler                                   100%
+  GesFer.Application.Handlers.Group.GetAllGroupsCommandHandler                                  100%
+  GesFer.Application.Handlers.Group.GetGroupByIdCommandHandler                                  100%
+  GesFer.Application.Handlers.Group.UpdateGroupCommandHandler                                  96.4%
+  GesFer.Application.Handlers.PostalCode.CreatePostalCodeCommandHandler                           0%
+  GesFer.Application.Handlers.PostalCode.DeletePostalCodeCommandHandler                           0%
+  GesFer.Application.Handlers.PostalCode.GetAllPostalCodesCommandHandler                          0%
+  GesFer.Application.Handlers.PostalCode.GetPostalCodeByIdCommandHandler                          0%
+  GesFer.Application.Handlers.PostalCode.UpdatePostalCodeCommandHandler                           0%
+  GesFer.Application.Handlers.PurchaseDeliveryNote.ConfirmPurchaseDeliveryNoteCommandHandler      0%
+  GesFer.Application.Handlers.PurchaseDeliveryNote.CreatePurchaseDeliveryNoteCommandHandler       0%
+  GesFer.Application.Handlers.SalesDeliveryNote.ConfirmSalesDeliveryNoteCommandHandler            0%
+  GesFer.Application.Handlers.SalesDeliveryNote.CreateSalesDeliveryNoteCommandHandler             0%
+  GesFer.Application.Handlers.State.CreateStateCommandHandler                                  97.4%
+  GesFer.Application.Handlers.State.DeleteStateCommandHandler                                  88.2%
+  GesFer.Application.Handlers.State.GetAllStatesCommandHandler                                  100%
+  GesFer.Application.Handlers.State.GetStateByIdCommandHandler                                  100%
+  GesFer.Application.Handlers.State.UpdateStateCommandHandler                                  94.2%
+  GesFer.Application.Handlers.Supplier.CreateSupplierCommandHandler                            64.7%
+  GesFer.Application.Handlers.Supplier.DeleteSupplierCommandHandler                             100%
+  GesFer.Application.Handlers.Supplier.GetAllSuppliersCommandHandler                            100%
+  GesFer.Application.Handlers.Supplier.GetSupplierByIdCommandHandler                            100%
+  GesFer.Application.Handlers.Supplier.UpdateSupplierCommandHandler                            61.2%
+  GesFer.Application.Handlers.TaxTypes.CreateTaxTypeCommandHandler                             91.8%
+  GesFer.Application.Handlers.TaxTypes.DeleteTaxTypeCommandHandler                               25%
+  GesFer.Application.Handlers.TaxTypes.GetAllTaxTypesCommandHandler                            14.8%
+  GesFer.Application.Handlers.TaxTypes.GetTaxTypeByIdCommandHandler                            16.6%
+  GesFer.Application.Handlers.TaxTypes.UpdateTaxTypeCommandHandler                             10.2%
+  GesFer.Application.Handlers.User.CreateUserCommandHandler                                    74.2%
+  GesFer.Application.Handlers.User.DeleteUserCommandHandler                                     100%
+  GesFer.Application.Handlers.User.GetAllUsersCommandHandler                                   91.3%
+  GesFer.Application.Handlers.User.GetUserByIdCommandHandler                                    100%
+  GesFer.Application.Handlers.User.UpdateUserCommandHandler                                    74.2%
+  GesFer.Product.Application.DTOs.TaxTypes.CreateTaxTypeDto                                      80%
+  GesFer.Product.Application.DTOs.TaxTypes.TaxTypeDto                                             0%
+  GesFer.Product.Application.DTOs.TaxTypes.UpdateTaxTypeDto                                       0%
+
+GesFer.Console                                                                                  0.4%
+  GesFer.ConsoleApp.Commands.ApplyMigrationsCommand                                               0%
+  GesFer.ConsoleApp.Commands.Base.CommandInputBase                                                0%
+  GesFer.ConsoleApp.Commands.Base.CommandResult                                                   0%
+  GesFer.ConsoleApp.Commands.Base.CommandResult<T>                                                0%
+  GesFer.ConsoleApp.Commands.CheckDockerCommand                                                   0%
+  GesFer.ConsoleApp.Commands.CheckDockerComposeCommand                                            0%
+  GesFer.ConsoleApp.Commands.ClarifyCommand                                                       0%
+  GesFer.ConsoleApp.Commands.CreateContainersCommand                                              0%
+  GesFer.ConsoleApp.Commands.CreateInitialMigrationCommand                                        0%
+  GesFer.ConsoleApp.Commands.Dtos.ClarifyInput                                                    0%
+  GesFer.ConsoleApp.Commands.Dtos.EnforceGoldenRulesInput                                         0%
+  GesFer.ConsoleApp.Commands.Dtos.GoldenRulesResultData                                           0%
+  GesFer.ConsoleApp.Commands.Dtos.InitializationResultData                                        0%
+  GesFer.ConsoleApp.Commands.Dtos.IntegrityValidationResultData                                   0%
+  GesFer.ConsoleApp.Commands.Dtos.MigrationSquashResultData                                       0%
+  GesFer.ConsoleApp.Commands.Dtos.PlanInput                                                       0%
+  GesFer.ConsoleApp.Commands.Dtos.SeedCommandInput                                                0%
+  GesFer.ConsoleApp.Commands.Dtos.SpecInput                                                       0%
+  GesFer.ConsoleApp.Commands.EnsureEfToolCommand                                                  0%
+  GesFer.ConsoleApp.Commands.InitializeDatabaseCommand                                            0%
+  GesFer.ConsoleApp.Commands.PlanCommand                                                          0%
+  GesFer.ConsoleApp.Commands.RemoveContainersCommand                                              0%
+  GesFer.ConsoleApp.Commands.RunE2ETestsCommand                                                   0%
+  GesFer.ConsoleApp.Commands.RunIntegrationTestsCommand                                           0%
+  GesFer.ConsoleApp.Commands.RunUnitTestsCommand                                                  0%
+  GesFer.ConsoleApp.Commands.SeedCommand                                                          0%
+  GesFer.ConsoleApp.Commands.SpecCommand                                                          0%
+  GesFer.ConsoleApp.Commands.SquashMigrationsCommand                                              0%
+  GesFer.ConsoleApp.Commands.StartLocalEnvironmentCommand                                         0%
+  GesFer.ConsoleApp.Commands.StartLocalEnvironmentInput                                           0%
+  GesFer.ConsoleApp.Commands.WaitMySqlReadyCommand                                                0%
+  GesFer.ConsoleApp.Program                                                                       0%
+  GesFer.ConsoleApp.Services.AuditorService                                                       0%
+  GesFer.ConsoleApp.Services.GoldenRulesComplianceService                                         0%
+  GesFer.ConsoleApp.Services.IntegrityValidationService                                           0%
+  GesFer.ConsoleApp.Services.Interfaces.SecurityScanResult                                        0%
+  GesFer.ConsoleApp.Services.LogService                                                           0%
+  GesFer.ConsoleApp.Services.MenuService                                                        1.9%
+  GesFer.ConsoleApp.Services.SecurityScanner                                                      0%
+  GesFer.ConsoleApp.TestGoldenRules                                                               0%
+
+GesFer.Domain                                                                                  42.7%
+  GesFer.Product.Back.Domain.Entities.Article                                                     0%
+  GesFer.Product.Back.Domain.Entities.ArticleFamily                                             100%
+  GesFer.Product.Back.Domain.Entities.Company                                                     0%
+  GesFer.Product.Back.Domain.Entities.Customer                                                 70.5%
+  GesFer.Product.Back.Domain.Entities.Group                                                     100%
+  GesFer.Product.Back.Domain.Entities.GroupPermission                                           100%
+  GesFer.Product.Back.Domain.Entities.Permission                                                100%
+  GesFer.Product.Back.Domain.Entities.PurchaseDeliveryNote                                        0%
+  GesFer.Product.Back.Domain.Entities.PurchaseDeliveryNoteLine                                    0%
+  GesFer.Product.Back.Domain.Entities.PurchaseInvoice                                             0%
+  GesFer.Product.Back.Domain.Entities.SalesDeliveryNote                                           0%
+  GesFer.Product.Back.Domain.Entities.SalesDeliveryNoteLine                                       0%
+  GesFer.Product.Back.Domain.Entities.SalesInvoice                                                0%
+  GesFer.Product.Back.Domain.Entities.Supplier                                                 70.5%
+  GesFer.Product.Back.Domain.Entities.Tariff                                                      0%
+  GesFer.Product.Back.Domain.Entities.TariffItem                                                  0%
+  GesFer.Product.Back.Domain.Entities.TaxType                                                   100%
+  GesFer.Product.Back.Domain.Entities.User                                                       80%
+  GesFer.Product.Back.Domain.Entities.UserGroup                                                 100%
+  GesFer.Product.Back.Domain.Entities.UserPermission                                            100%
+
+GesFer.Infrastructure                                                                          17.4%
+  GesFer.Infrastructure.Configuration.SeedConfig                                                100%
+  GesFer.Infrastructure.Data.ApplicationDbContext                                              77.4%
+  GesFer.Infrastructure.Data.Configurations.ArticleConfiguration                                100%
+  GesFer.Infrastructure.Data.Configurations.ArticleFamilyConfiguration                          100%
+  GesFer.Infrastructure.Data.Configurations.CityConfiguration                                   100%
+  GesFer.Infrastructure.Data.Configurations.CountryConfiguration                                100%
+  GesFer.Infrastructure.Data.Configurations.CustomerConfiguration                              96.6%
+  GesFer.Infrastructure.Data.Configurations.GroupConfiguration                                  100%
+  GesFer.Infrastructure.Data.Configurations.GroupPermissionConfiguration                        100%
+  GesFer.Infrastructure.Data.Configurations.LanguageConfiguration                               100%
+  GesFer.Infrastructure.Data.Configurations.PermissionConfiguration                             100%
+  GesFer.Infrastructure.Data.Configurations.PostalCodeConfiguration                             100%
+  GesFer.Infrastructure.Data.Configurations.PurchaseDeliveryNoteConfiguration                   100%
+  GesFer.Infrastructure.Data.Configurations.PurchaseDeliveryNoteLineConfiguration               100%
+  GesFer.Infrastructure.Data.Configurations.PurchaseInvoiceConfiguration                        100%
+  GesFer.Infrastructure.Data.Configurations.SalesDeliveryNoteConfiguration                      100%
+  GesFer.Infrastructure.Data.Configurations.SalesDeliveryNoteLineConfiguration                  100%
+  GesFer.Infrastructure.Data.Configurations.SalesInvoiceConfiguration                           100%
+  GesFer.Infrastructure.Data.Configurations.StateConfiguration                                  100%
+  GesFer.Infrastructure.Data.Configurations.SupplierConfiguration                               100%
+  GesFer.Infrastructure.Data.Configurations.TariffConfiguration                                 100%
+  GesFer.Infrastructure.Data.Configurations.TariffItemConfiguration                             100%
+  GesFer.Infrastructure.Data.Configurations.TaxTypeConfiguration                                100%
+  GesFer.Infrastructure.Data.Configurations.UserConfiguration                                  98.3%
+  GesFer.Infrastructure.Data.Configurations.UserGroupConfiguration                              100%
+  GesFer.Infrastructure.Data.Configurations.UserPermissionConfiguration                         100%
+  GesFer.Infrastructure.Data.DbInitializer                                                     33.4%
+  GesFer.Infrastructure.Extensions.DatabaseExtensions                                             0%
+  GesFer.Infrastructure.Logging.AdminApiLogSink                                                  90%
+  GesFer.Infrastructure.Logging.AsyncLogPublisher                                              76.4%
+  GesFer.Infrastructure.Migrations.AddArticleFamilyIdToArticle                                    0%
+  GesFer.Infrastructure.Migrations.ApplicationDbContextModelSnapshot                              0%
+  GesFer.Infrastructure.Migrations.InitialCreate                                                  0%
+  GesFer.Infrastructure.Migrations.RemoveFamilyAndFamilyId                                        0%
+  GesFer.Infrastructure.Repositories.Repository<T>                                                0%
+  GesFer.Infrastructure.Services.AuthService                                                   91.8%
+  GesFer.Infrastructure.Services.JsonDataSeeder                                                  76%
+  GesFer.Infrastructure.Services.JwtService                                                    91.3%
+  GesFer.Infrastructure.Services.MasterDataSeeder                                              70.9%
+  GesFer.Infrastructure.Services.SeedResult                                                     100%
+  GesFer.Infrastructure.Services.StockService                                                     0%
+  GesFer.Product.Back.Infrastructure.DTOs.AdminCompanyDto                                       100%
+  GesFer.Product.Back.Infrastructure.DTOs.AdminUpdateCompanyDto                                 100%
+  GesFer.Product.Back.Infrastructure.Services.AdminApiClient                                   46.9%
+
+GesFer.Shared.Back.Domain                                                                      62.1%
+  GesFer.Shared.Back.Domain.Common.BaseEntity                                                  83.3%
+  GesFer.Shared.Back.Domain.Entities.City                                                       100%
+  GesFer.Shared.Back.Domain.Entities.Company                                                   66.6%
+  GesFer.Shared.Back.Domain.Entities.Country                                                     80%
+  GesFer.Shared.Back.Domain.Entities.Language                                                   100%
+  GesFer.Shared.Back.Domain.Entities.PostalCode                                                 100%
+  GesFer.Shared.Back.Domain.Entities.State                                                      100%
+  GesFer.Shared.Back.Domain.Services.MySqlSequentialGuidGenerator                              86.6%
+  GesFer.Shared.Back.Domain.Services.SensitiveDataSanitizer                                     100%
+  GesFer.Shared.Back.Domain.ValueObjects.Email                                                 62.7%
+  GesFer.Shared.Back.Domain.ValueObjects.EmailJsonConverter                                       0%
+  GesFer.Shared.Back.Domain.ValueObjects.EmailTypeConverter                                       0%
+  GesFer.Shared.Back.Domain.ValueObjects.TaxId                                                 67.9%
+  GesFer.Shared.Back.Domain.ValueObjects.TaxIdJsonConverter                                       0%
+  GesFer.Shared.Back.Domain.ValueObjects.TaxIdTypeConverter                                       0%
+
+GesFer.Shared.Back.Infrastructure                                                              87.1%
+  GesFer.Shared.Back.Infrastructure.Persistence.DbContextExtensions                              82%
+  GesFer.Shared.Back.Infrastructure.Persistence.SequentialGuidValueGenerator                   93.5%
