@@ -10,57 +10,56 @@ namespace GesFer.Product.UnitTests.Handlers.User;
 
 public class DeleteUserCommandHandlerTests
 {
-    [Fact]
-    public async Task HandleAsync_WithValidId_ShouldSoftDeleteUser()
+    private readonly ApplicationDbContext _context;
+    private readonly DeleteUserCommandHandler _handler;
+
+    public DeleteUserCommandHandlerTests()
     {
-        // Arrange
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
+        _context = new ApplicationDbContext(options);
+        _handler = new DeleteUserCommandHandler(_context);
+    }
 
-        using var context = new ApplicationDbContext(options);
-
-        var companyId = Guid.NewGuid();
-        var user = new GesFer.Product.Back.Domain.Entities.User
+    [Fact]
+    public async Task HandleAsync_ShouldSoftDeleteUser_WhenUserExists()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        _context.Users.Add(new Product.Back.Domain.Entities.User
         {
-            Id = Guid.NewGuid(),
-            Username = "user",
-            CompanyId = companyId,
+            Id = userId,
+            CompanyId = Guid.NewGuid(),
+            Username = "testuser",
+            PasswordHash = "hash",
+            FirstName = "Test",
+            LastName = "User",
             IsActive = true
-        };
-        context.Users.Add(user);
-        await context.SaveChangesAsync();
+        });
+        await _context.SaveChangesAsync();
 
-        var handler = new DeleteUserCommandHandler(context);
-        var command = new DeleteUserCommand(user.Id);
+        var command = new DeleteUserCommand(userId);
 
         // Act
-        await handler.HandleAsync(command);
+        await _handler.HandleAsync(command);
 
         // Assert
-        var deletedUser = await context.Users
-            .IgnoreQueryFilters()
-            .FirstOrDefaultAsync(u => u.Id == user.Id);
-
+        var deletedUser = await _context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == userId);
         deletedUser.Should().NotBeNull();
         deletedUser!.DeletedAt.Should().NotBeNull();
         deletedUser.IsActive.Should().BeFalse();
     }
 
     [Fact]
-    public async Task HandleAsync_WithInvalidId_ShouldThrowException()
+    public async Task HandleAsync_ShouldThrow_WhenUserNotFound()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-        using var context = new ApplicationDbContext(options);
-        var handler = new DeleteUserCommandHandler(context);
         var command = new DeleteUserCommand(Guid.NewGuid());
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            async () => await handler.HandleAsync(command));
+        await _handler.Invoking(h => h.HandleAsync(command))
+            .Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage($"*No se encontró el usuario con ID {command.Id}*");
     }
 }
