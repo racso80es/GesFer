@@ -83,4 +83,44 @@ describe('CompanyForm', () => {
     expect(screen.getByRole('button', { name: 'update' })).toBeInTheDocument();
     expect(screen.getByLabelText(/isActive/i)).toBeInTheDocument();
   });
+
+  it('selects language correctly without explicit any type', async () => {
+    const user = userEvent.setup();
+    render(
+      <CompanyForm
+        onSubmit={mockOnSubmit}
+        onCancel={mockOnCancel}
+      />
+    );
+
+    const nameInput = screen.getByLabelText(/name/i);
+    const addressInput = screen.getByLabelText(/address/i);
+    const emailInput = screen.getByLabelText(/email/i);
+
+    await user.type(nameInput, 'Test Company');
+    await user.type(addressInput, '123 Test St');
+    await user.type(emailInput, 'test@example.com');
+
+    // Find the select trigger and click it
+    const languageSelect = screen.getByRole('combobox');
+    await user.click(languageSelect);
+
+    // Select "Español"
+    const option = screen.getByText('Español');
+    await user.click(option);
+
+    const submitBtn = screen.getByRole('button', { name: 'create' });
+    await user.click(submitBtn);
+
+    await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    expect(mockOnSubmit).toHaveBeenCalledWith(expect.objectContaining({
+        name: 'Test Company',
+        address: '123 Test St',
+        email: 'test@example.com',
+        languageId: '10000000-0000-0000-0000-000000000001'
+    }));
+  });
 });
